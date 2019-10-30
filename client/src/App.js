@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-
+import Product from './../src/components/Product/Product.js'
 function App() {
   return (
       <div>
-        Init app online store
+         <Product></Product> {/*just test  */}
       </div>
   );
 }
