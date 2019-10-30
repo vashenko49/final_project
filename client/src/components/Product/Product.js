@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 // import Buttons from './../Buttons' //waiting for component Buttons
 
-import LoadImage from './LoadImage'
+import LoadImage from '../ImageLoader/ImageLoader'
 import Rating from './../common/rating'
 import './Product.css'
 
