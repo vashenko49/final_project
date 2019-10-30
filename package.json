@@ -23,8 +23,10 @@
     "express": "^4.17.1",
     "express-validator": "^6.2.0",
     "jsonwebtoken": "^8.5.1",
+    "materialize-css": "^1.0.0-rc.2",
     "mongoose": "^5.7.5",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "react-reveal": "^1.2.2"
   },
   "devDependencies": {
     "concurrently": "^5.0.0",
