@@ -7,6 +7,7 @@
 }
 .card{
     overflow: hidden;
+    min-width: 250px;
 }
 .image-container{
     margin: 0 auto;
