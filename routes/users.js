@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {check, validationResult} = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
@@ -31,13 +31,13 @@ router.post(
             })
         }
 
-        const {name, email, password} = req.body;
+        const { name, email, password } = req.body;
 
         try {
-            let user = await UserSchema.findOne({email});
+            let user = await UserSchema.findOne({ email });
 
             if (user) {
-                return res.status(400).json({msg: "User already exists"});
+                return res.status(400).json({ msg: "User already exists" });
             }
 
             user = new UserSchema({
@@ -60,7 +60,7 @@ router.post(
                 expiresIn: 36000
             }, (err, token) => {
                 if (err) throw err;
-                res.json({token});
+                res.json({ token });
             });
 
 
