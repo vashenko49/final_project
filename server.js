@@ -4,7 +4,7 @@ const connectDB = require('./config/db');
 const path = require('path');
 
 
-//connect database
+//connect data base
 connectDB();
 
 //init middleware
