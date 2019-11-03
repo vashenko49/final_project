@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.css';
 
+import Container from './components/auth/Container'
 function App() {
   return (
-      <div>
-        Init app online store
-      </div>
+    <div>
+      <Container />
+    </div>
   );
 }
 
