@@ -10,7 +10,7 @@ client/.pnp.js
 # testing
 client/coverage
 
-# production
+# productiont
 client/build
 
 # misc
