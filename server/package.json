@@ -15,15 +15,23 @@
   "author": "iWhiteN, iamr0man, khanbabaev, AlexRusanov, Vlad-Udovenko, vashenko49",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "config": "^3.2.3",
     "express": "^4.17.1",
-    "express-validator": "^6.2.0",
+    "google-auth-library": "^5.5.1",
+    "googleapis": "^45.0.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
     "materialize-css": "^1.0.0-rc.2",
     "mongoose": "^5.7.5",
+    "order-id": "^1.1.0",
+    "passport": "^0.4.0",
+    "passport-custom": "^1.1.0",
+    "passport-jwt": "^4.0.0",
     "path": "^0.12.7",
-    "react-reveal": "^1.2.2"
+    "validator": "^12.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"

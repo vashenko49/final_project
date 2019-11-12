@@ -7,6 +7,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import axios from 'axios';
+import GoogleLogin from 'react-google-login';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -31,12 +33,30 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const responseGoogle= (response) => {
+    console.log(response);
+    axios.post('/oauth/google', {
+        access_token: response.accessToken
+    })
+        .then((req, res) => {
+            console.log(req);
+        });
+};
+
 export default function SignIn() {
     const classes = useStyles();
 
     return (
         <Container>
+
             <CssBaseline />
+            <GoogleLogin
+                clientId="265989474253-6frqdlrfjt641v8banje7i3pfpijnk6s.apps.googleusercontent.com"
+                buttonText="Login"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy={'single_host_origin'}
+                />
             <div className={classes.card}>
                 <Typography component="h1" variant="h5">
                     Returning Customer
