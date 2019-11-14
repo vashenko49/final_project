@@ -1,5 +1,6 @@
 node_modules/
 .idea/
+tasks
 
 # dependencies
 
@@ -9,7 +10,7 @@ client/.pnp.js
 # testing
 client/coverage
 
-# production
+# productiont
 client/build
 
 # misc

@@ -1,0 +1,34 @@
+.cost{
+    font-weight: bold;
+}
+.card_image{
+    height: 210px;
+    transition-duration: 500ms;
+}
+.card{
+    overflow: hidden;
+    min-width: 250px;
+}
+.image-container{
+    margin: 0 auto;
+    
+}
+.button_container{
+    display: none;
+}
+.product__header{
+    color: gray;
+    font-weight: bold;
+}
+.card.hoverable:hover .button_container{
+    display: block;
+    position: absolute;
+    left: 20px;
+    background-color: red;
+}
+.card.hoverable:hover .product__header{
+    color: black;
+}
+.card.hoverable:hover .card_image{
+    transform: scale(1.1);
+}

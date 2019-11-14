@@ -1,4 +1,0 @@
-{
-  "mongoURI": "mongodb+srv://sergey:vashenko@cluster0-zdqsh.mongodb.net/final_project?retryWrites=true&w=majority",
-  "jwtSecret": "Well,_its_very_secret,_its_not_a_joke"
-}
