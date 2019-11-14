@@ -65,7 +65,8 @@ module.exports = async passport => {
                         firstName: given_name,
                         lastName: family_name,
                         email: email,
-                        avatarUrl: picture
+                        avatarUrl: picture,
+                        typeSocial: 0
                     };
 
                     done(null, customer);
@@ -74,6 +75,7 @@ module.exports = async passport => {
         } catch (e) {
             return done(e, false, e.message);
         }
+
     }));
 
 
@@ -82,23 +84,23 @@ module.exports = async passport => {
             const {access_token, client_id} = req.body;
             let response = await axios.get(`https://graph.facebook.com/v2.11/${client_id}?fields=id,name,picture,email&access_token=${access_token}`);
 
-            let fullname = response.name.split(' ');
-            let email = response.email;
-            let picture = response.picture.data.url;
+            let fullname = response.data.name.split(' ');
+            let email = response.data.email;
+            let picture = response.data.picture.data.url;
 
             const customer = {
                 firstName: fullname[0],
                 lastName: fullname[1],
                 email: email,
-                avatarUrl: picture
+                avatarUrl: picture,
+                typeSocial: 1
             };
 
-            done(null, customer);
+            return done(null, customer);
 
         } catch (e) {
             return done(e, false, e.message);
         }
-        done(null, true);
     }));
 
     passport.use('github-local', new LocalStrategy(async function (req, done) {
@@ -125,6 +127,9 @@ module.exports = async passport => {
                 }
             });
 
+            let customersEmail = getUsersEmail.data[0].email;
+
+
             let response = await axios({
                 method: 'get',
                 url: `https://api.github.com/user`,
@@ -132,16 +137,23 @@ module.exports = async passport => {
                     Authorization: `token ${getAccessToken.data.access_token}`
                 }
             });
+
+
+            let fullname = response.data.name.split(' ');
+
+            let customer = {
+                firstName: fullname[1],
+                lastName: fullname[0],
+                email: customersEmail,
+                avatarUrl: response.data.avatar_url,
+                typeSocial: 3
+            };
+
+            return done(null, customer);
+
         } catch (e) {
-
+            return done(e, false, e.message);
         }
-
-        console.log(getUsersEmail.data);
-        console.log(response.data);
-
-
-        done(null, true);
-
     }));
 
 };

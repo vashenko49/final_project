@@ -9,18 +9,20 @@ const {
     getCustomer,
     editCustomerInfo,
     updatePassword,
-    createCustomerGoogle
+    createCustomerSocialNetwork,
+    confirmCustomer
 } = require("../controllers/oauth");
 
-// @route   POST /oauth
+// @route   POST /oaut/customer
 // @desc    Register customer
 // @access  Public
-router.post("/", createCustomer);
+router.post("/customer", createCustomer);
 
-// @route   POST /oauth/google
-// @desc    Register customer
-// @access  Private вызов авторизации происходит внутри контроллера
-router.post('/google', createCustomerGoogle);
+
+// @route   POST /oauth/confirm
+// @desc    confirm Customer
+// @access  Public
+router.get('/confirm/:emailtoken', confirmCustomer);
 
 
 // @route   POST /oauth/login
@@ -28,11 +30,21 @@ router.post('/google', createCustomerGoogle);
 // @access  Public
 router.post("/login", loginCustomer);
 
+// @route   POST /oauth/google
+// @desc    Login Customer or SignUp / Returning JWT Token
+// @access  Public
+router.post("/google", passport.authenticate('google-local', {session: false}), createCustomerSocialNetwork);
 
-// @route   POST /oauth/login/google
-// @desc    Login Customer / Returning JWT Token
+
+// @route   POST /oauth/facebook
+// @desc    Login Customer or SignUp / Returning JWT Token
 // @access  Private
-router.post("/login/google", passport.authenticate('google-local', {session: false}), loginCustomer);
+router.post("/facebook", passport.authenticate('facebook-local', {session: false}), createCustomerSocialNetwork);
+
+// @route   POST /oauth/github
+// @desc    Login Customer or signUp / Returning JWT Token
+// @access  Private
+router.post("/github", passport.authenticate('github-local', {session: false}), createCustomerSocialNetwork);
 
 // @route   GET oauth/customer
 // @desc    Return current customer
@@ -44,7 +56,7 @@ router.get(
 );
 
 // @route   PUT /oauth
-// @desc    Return current customer
+// @desc    Edit current customer
 // @access  Private
 router.put(
     "/",

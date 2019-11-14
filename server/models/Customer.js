@@ -25,14 +25,13 @@ const CustomerSchema = new Schema({
   },
   password: {
     type: String,
-    default: ""
   },
   telephone: {
     type: String
   },
   socialmedia:{
     type: Array,
-    default:[]
+    default:[]  /*0-google, 1-facebook, 2-github, 3-local*/
   },
   birthdate: {
     type: String
@@ -51,7 +50,7 @@ const CustomerSchema = new Schema({
   enabled: {
     type: Boolean,
     required: true,
-    default: true
+    default: false
   },
   date: {
     type: Date,
