@@ -6,7 +6,7 @@ cache: yarn
 install:
   - yarn run installAll
 script:
-  - yarn -cwd ./client run test
+  - yarn run test
 deploy:
   provider: heroku
   api_key:
