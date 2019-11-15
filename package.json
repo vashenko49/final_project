@@ -22,5 +22,8 @@
   "homepage": "https://github.com/vashenko49/final_project#readme",
   "devDependencies": {
     "concurrently": "^5.0.0"
+  },
+  "dependencies": {
+    "travis": "^0.1.1"
   }
 }
