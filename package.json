@@ -4,7 +4,7 @@
   "description": "/*\r @route GET api/contacts\r @desc Get all users contacts\r @access Private\r  */",
   "main": "server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "yarn --cwd ./client run test",
     "start": "yarn --cwd ./server run start",
     "installAll": "yarn install && yarn --cwd ./server install && yarn --cwd ./client install",
     "start-dev": "concurrently \"yarn --cwd ./server run server\" \"yarn --cwd ./client run start\"",
@@ -22,5 +22,8 @@
   "homepage": "https://github.com/vashenko49/final_project#readme",
   "devDependencies": {
     "concurrently": "^5.0.0"
+  },
+  "dependencies": {
+    "travis": "^0.1.1"
   }
 }
