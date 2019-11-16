@@ -36,7 +36,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "eslint": "eslint --fix 'src/**/*.js'",
-    "prettier": "prettier --write 'src/**/*.js'",
     "stylelint-dev": "stylelint 'src/**/*.scss' --cache --cache-location './.stylelintcache' ; exit 0",
     "stylelint-build": "stylelint 'src/**/*.scss'",
     "stylelint-fix-sass": "stylelint --fix 'src/**/*.scss'",
