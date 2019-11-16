@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+  - "stable"
+
+cache:
+  directories:
+    - ./client/node_modules
+      ./server/node_modules
+
+before_script:
+  - yarn run installAll
+
+script:
+  - yarn --cwd ./client run build
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: 02fd9fe8-39cd-481e-abf9-09fd627f4ae1
+  app: final-project-online-store
+  on:
+    repo: vashenko49/final_project

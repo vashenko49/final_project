@@ -1,4 +1,18 @@
 {
+  "watch": {
+    "stylelint-dev": {
+      "patterns": [
+        "src/**/*.scss"
+      ],
+      "extensions": "scss"
+    },
+    "eslint-dev": {
+      "patterns": [
+        "src/**/*.js"
+      ],
+      "extensions": "js"
+    }
+  },
   "name": "client",
   "version": "0.1.0",
   "private": true,
@@ -16,13 +30,27 @@
     "react-scripts": "3.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start-js": "react-scripts start",
+    "start": "concurrently \"yarn run watch-sass-js\" \"yarn run start-js\"",
+    "build": "yarn run eslint-build && yarn run stylelint-build && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "eslint-dev": "eslint --fix src/**/*.js --cache --cache-location './.eslintcache'",
+    "eslint-build": "eslint --fix src/**/*.js",
+    "stylelint-dev": "stylelint --fix src/**/*.scss --cache --cache-location './.stylelintcache'",
+    "stylelint-build": "stylelint --fix src/**/*.scss",
+    "watch-sass-js": "npm-watch"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "husky": {
+    "hooks": {
+      "pre-push": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "yarn run build",
+      "git add"
+    ]
   },
   "browserslist": {
     "production": [
@@ -36,5 +64,23 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "concurrently": "^5.0.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.3",
+    "npm-watch": "^0.6.0",
+    "prettier": "^1.19.1",
+    "standart": "^6.1.0",
+    "stylelint": "^11.1.1",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-order": "^3.1.1"
+  }
 }
