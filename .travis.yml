@@ -1,0 +1,15 @@
+ branches:
+  only:
+    - master
+
+ cache:
+   directories:
+     - ./client/node_modules
+       ./server/node_modules
+
+ before_script:
+   - yarn run installAll
+
+ script:
+    - yarn run eslint ./client
+      yarn run test
