@@ -1,0 +1,53 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "mocha": true
+  },
+  "extends": [
+    "standard",
+    "react-app",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-trailing-spaces": [
+      "error",
+      {
+        "skipBlankLines": true
+      }
+    ],
+    "jsx-quotes": [
+        1,
+        "prefer-double"
+    ],
+    "jsx-a11y/img-redundant-alt": [ 2, {
+      "components": [ "Image" ],
+      "words": [ "Bild", "Foto" ]
+    }],
+    "no-return-assign": 0,
+    "eol-last": 0,
+    "semi": 0,
+    "camelcase": 0,
+    "object-curly-spacing": 0,
+    "comma-dangle": 0,
+    "no-console": 0,
+    "no-debugger": 1,
+    "no-alert": 1
+  },
+  "plugins": [
+    "prettier",
+    "jsx-a11y"
+  ],
+  "settings": {
+    "react": {
+      "createClass": "createReactClass",
+      "pragma": "React",
+      "version": "16.11.0",
+      "flowVersion": "0.86"
+    },
+    "propWrapperFunctions": [
+      "forbidExtraProps"
+    ]
+  }
+}
