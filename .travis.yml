@@ -12,4 +12,3 @@
 
  script:
     - yarn run eslint ./client
-      yarn run test
