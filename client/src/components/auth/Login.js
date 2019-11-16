@@ -14,6 +14,8 @@ import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import GitHubLogin from 'react-github-login';
 
+const test = '';
+
 const useStyles = makeStyles(theme => ({
   card: {
     marginTop: theme.spacing(8),
