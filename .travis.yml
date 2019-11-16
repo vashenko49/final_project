@@ -4,12 +4,10 @@
     - 10.16.0
 
   cache: yarn
-  cache: npm
 
-  cache:
-    directories:
-      - ./client/node_modules
-        ./server/node_modules
+  cash-directories:
+    - ./client/node_modules
+      ./server/node_modules
 
   before_script:
     - yarn run installAll
