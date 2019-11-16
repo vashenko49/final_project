@@ -1,14 +1,11 @@
 node_modules/
 .idea/
 tasks
-<<<<<<< HEAD
 
 .gitpod.yml
 .theia/
 
-=======
 yarn-error.log
->>>>>>> 9b556c8c86d228326a6c29bd3a35a13b01dec5e4
 # dependencies
 
 client/.pnp

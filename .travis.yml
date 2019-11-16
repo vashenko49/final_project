@@ -14,7 +14,7 @@
     - yarn run installAll
 
   script:
-    - yarn run eslint ./client
+    - yarn run build ./client
 
   deploy:
     provider: heroku
