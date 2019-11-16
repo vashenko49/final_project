@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App';
 
 import Container from './components/auth/Container';
 function App() {
