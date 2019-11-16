@@ -12,7 +12,5 @@ module.exports = function validationHelper(data) {
   const customValidator = new FormValidator(currentValidationRules);
   const validation = customValidator.validate(data);
 
-  const errors = validation;
-
   return validation;
 };

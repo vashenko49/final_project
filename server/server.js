@@ -22,7 +22,8 @@ require("./config/passport")(passport);
 
 // Use Routes
 app.use('/oauth',require('./routes/oauth'));
-
+app.use('/filters',require('./routes/filters'));
+app.use('/products',require('./routes/products'));
 
 
 app.use(express.static('../client/build'));
@@ -34,5 +35,5 @@ app.get('*',(req,res)=>{
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`server start on ${PORT}`);
+    console.log(`Server start on ${PORT}`);
 });
