@@ -35,9 +35,9 @@
     "build": "yarn run eslint-build && yarn run stylelint-build && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "eslint-dev": "eslint --fix src/**/*.js --cache --cache-location './.eslintcache'",
+    "eslint-dev": "eslint --fix src/**/*.js --cache --cache-location .eslintcache",
     "eslint-build": "eslint --fix src/**/*.js",
-    "stylelint-dev": "stylelint --fix src/**/*.scss --cache --cache-location './.stylelintcache'",
+    "stylelint-dev": "stylelint --fix src/**/*.scss --cache --cache-location .stylelintcache",
     "stylelint-build": "stylelint --fix src/**/*.scss",
     "watch-sass-js": "npm-watch"
   },
