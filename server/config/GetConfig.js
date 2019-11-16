@@ -10,9 +10,7 @@ module.exports = (nameConfigFile) => {
         throw (`${nameConfigFile} configuration not found`);
       }
 
-
-      if (process.env.NODE_ENV === "production") {
-        console.log(config.production.nodemailer.service + "prod");
+      if (process.env.NODE_ENV) {
         process.env.domen = config.production.domen;
         process.env.urlDataBase = config.production.database.uri;
         process.env.nodemailer_service = config.production.nodemailer.service;
