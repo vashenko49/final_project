@@ -7,7 +7,8 @@ const {
   addProduct,
   updateProduct,
   getProducts,
-  deleteProduct
+  deleteProduct,
+  getProductById
 } = require("../controllers/products");
 
 // @route   POST /products
@@ -16,6 +17,14 @@ const {
 router.post(
   "/",
   addProduct
+);
+
+// @route   GET /products/:id
+// @desc    Get product by id
+// @access  Public
+router.get(
+  "/:id",
+  getProductById
 );
 
 // @route   PUT /products/:id
