@@ -16,19 +16,16 @@ getConfig('configs-v1')
   .then(() => {
     // connectDB();
     connectDB(process.env.urlDataBase);
+
+
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {
-  console.error(err);
+    console.error(err);
 });
 
 
 app.use(bodyParser.json());
-
-
-// Passport middleware
-
-// Passport Config
 
 // Use Routes
 app.use('/oauth', require('./routes/oauth'));

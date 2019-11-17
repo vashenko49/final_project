@@ -29,6 +29,17 @@ const ConfigSchema = new Schema({
         type: String
       }
     },
+    cloudinary:{
+      cloudName:{
+        type:String
+      },
+      apiKey:{
+        type:String
+      },
+      apiSecret:{
+        type:String
+      }
+    },
     auth: {
       JWT_SECRET: {
         type: String
@@ -109,6 +120,17 @@ const ConfigSchema = new Schema({
       },
       service: {
         type: String
+      }
+    },
+    cloudinary:{
+      cloudName:{
+        type:String
+      },
+      apiKey:{
+        type:String
+      },
+      apiSecret:{
+        type:String
       }
     },
     auth: {
