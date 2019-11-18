@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const path = require('path');
 const getConfig = require('./config/GetConfig');
-
+const cors = require('cors');
 
 const app = express();
-
+app.use(cors());
 // Body parser middleware
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -28,7 +28,7 @@ getConfig('configs-v1')
 app.use(bodyParser.json());
 
 // Use Routes
-app.use('/oauth', require('./routes/oauth'));
+app.use('/customers', require('./routes/customers'));
 app.use('/configs', require('./routes/configs'));
 app.use('/filters',require('./routes/filters'));
 app.use('/products',require('./routes/products'));

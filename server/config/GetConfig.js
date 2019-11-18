@@ -11,13 +11,15 @@ module.exports = (nameConfigFile) => {
       }
 
       if (process.env.NODE_ENV) {
-        process.env.domen = config.production.domen;
+        process.env.domen = config.production.domen.domenServer;
+        process.env.domen_client = config.production.domen.domenClient;
         process.env.urlDataBase = config.production.database.uri;
         process.env.nodemailer_service = config.production.nodemailer.service;
         process.env.nodemailer_email = config.production.nodemailer.email;
         process.env.nodemailer_password = config.production.nodemailer.password;
         process.env.JWT_SECRET = config.production.auth.JWT_SECRET;
         process.env.JWT_EMAIL_SECRET = config.production.auth.JWT_EMAIL_SECRET;
+        process.env.JWT_FORGOT_PASSWORD = config.production.auth.JWT_FORGOT_PASSWORD;
         process.env.usersIdSecret = config.production.auth.usersIdSecret;
         process.env.orderIdSecret = config.production.auth.orderIdSecret;
         process.env.google_clientID = config.production.auth.oauth.google.clientID;
@@ -33,13 +35,15 @@ module.exports = (nameConfigFile) => {
 
         resolve(config.production);
       } else {
-        process.env.domen = config.development.domen;
+        process.env.domen = config.development.domen.domenServer;
+        process.env.domen_client = config.development.domen.domenClient;
         process.env.urlDataBase = config.development.database.uri;
         process.env.nodemailer_service = config.development.nodemailer.service;
         process.env.nodemailer_email = config.development.nodemailer.email;
         process.env.nodemailer_password = config.development.nodemailer.password;
         process.env.JWT_SECRET = config.development.auth.JWT_SECRET;
         process.env.JWT_EMAIL_SECRET = config.development.auth.JWT_EMAIL_SECRET;
+        process.env.JWT_FORGOT_PASSWORD = config.production.auth.JWT_FORGOT_PASSWORD;
         process.env.usersIdSecret = config.development.auth.usersIdSecret;
         process.env.orderIdSecret = config.development.auth.orderIdSecret;
         process.env.google_clientID = config.development.auth.oauth.google.clientID;

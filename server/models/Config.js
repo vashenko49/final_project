@@ -10,8 +10,12 @@ const ConfigSchema = new Schema({
   },
   development: {
     domen: {
-      type: String,
-      require: true
+      domenServer:{
+        type: String
+      },
+      domenClient:{
+        type: String
+      }
     },
     database: {
       uri: {
@@ -45,6 +49,9 @@ const ConfigSchema = new Schema({
         type: String
       },
       JWT_EMAIL_SECRET: {
+        type: String
+      },
+      JWT_FORGOT_PASSWORD: {
         type: String
       },
       usersIdSecret: {
@@ -103,8 +110,12 @@ const ConfigSchema = new Schema({
   },
   production: {
     domen: {
-      type: String,
-      require: true
+      domenServer:{
+        type: String
+      },
+      domenClient:{
+        type: String
+      }
     },
     database: {
       uri: {
@@ -138,6 +149,9 @@ const ConfigSchema = new Schema({
         type: String
       },
       JWT_EMAIL_SECRET: {
+        type: String
+      },
+      JWT_FORGOT_PASSWORD: {
         type: String
       },
       usersIdSecret: {

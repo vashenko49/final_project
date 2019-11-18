@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/vashenko49/final_project.git"
   },
-  "author": "",
+  "author": "iWhiteN, iamr0man, khanbabaev, AlexRusanov, Vlad-Udovenko, vashenko49",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vashenko49/final_project/issues"
@@ -24,7 +24,6 @@
     "concurrently": "^5.0.0"
   },
   "dependencies": {
-    "express-validator": "^6.2.0",
     "travis": "^0.1.1"
   }
 }

@@ -1,15 +1,13 @@
-const Filter = require("../models/Filter")
+const Filter = require("../models/Filter");
 const queryCreator = require("../common/queryCreator");
 
 const _ = require("lodash");
 
-const { validationResult } = require("express-validator")
+const { validationResult } = require("express-validator");
 
-// Load validation helper to validate all received fields
-const validateRegistrationForm = require("../validation/validationHelper");
 
-exports.createFilter = async (req, res, next) => {
-    const errors = validationResult(req)
+exports.createFilter = async (req, res) => {
+    const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
@@ -19,16 +17,16 @@ exports.createFilter = async (req, res, next) => {
     const newFilter = new Filter(queryCreator(initialQuery));
 
     try {
-        let filter = await Filter.findOne(newFilter)
+        let filter = await Filter.findOne(newFilter);
 
         if (filter) {
             return res.status(400).json({
                 message: `Filter ${filter.title} already exist`
             })
         }
-        filter = new Filter(newFilter)
+        filter = new Filter(newFilter);
 
-        await filter.save()
+        await filter.save();
         res.status(200).json(filter);
 
     } catch (err) {
@@ -36,27 +34,27 @@ exports.createFilter = async (req, res, next) => {
             message: 'Server Error!'
         })
     }
-}
+};
 
-exports.getAllFilters = async (req, res, next) => {
+exports.getAllFilters = async (req, res) => {
     try {
-        const filters = await Filter.find().sort({ data: -1 })
+        const filters = await Filter.find().sort({ data: -1 });
 
-        res.json(filters)
+        res.status(200).json(filters);
     } catch (err) {
-        console.error(err.message)
+        console.error(err.message);
         res.status(500).send('Server error')
     }
-}
-exports.updateFilter = async (req, res, next) => {
+};
+exports.updateFilter = async (req, res) => {
     try {
-        const errors = validationResult(req)
+        const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() })
         }
 
-        let filter = await Filter.findOne({ _id: req.params.id })
+        let filter = await Filter.findOne({ _id: req.params.id });
 
         if (!filter) {
             return res.status(400).json({
@@ -71,7 +69,7 @@ exports.updateFilter = async (req, res, next) => {
             { _id: req.params.id },
             { $set: updatedFilter },
             { new: true }
-        )
+        );
 
         res.status(200).json(filter);
 
@@ -80,17 +78,17 @@ exports.updateFilter = async (req, res, next) => {
             message: `Error happened on server: ${err}`
         })
     }
-}
+};
 
-exports.deleteFilter = async (req, res, next) => {
+exports.deleteFilter = async (req, res) => {
     try {
-        await Filter.findOneAndRemove({ _id: req.params.id }) //don`t know about params.id
+        await Filter.findOneAndRemove({ _id: req.params.id }); //don`t know about params.id
 
-        res.json({ msg: 'Filter deleted' })
+        res.status(200).json({ msg: 'Filter deleted' })
     } catch (err) {
         res.status(500).json({
             message: `Error happened on server: "${err}" `
         })
     }
-}
+};
 
