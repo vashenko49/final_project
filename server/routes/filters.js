@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const { check } = require('express-validator');
 
-//$TODO$ ADD middleware 
+//$TODO$ ADD middleware
 
 //Import controllers
 const {
@@ -11,7 +11,7 @@ const {
     updateFilter,
     getAllFilters,
     deleteFilter
-} = require("../controllers/filters")
+} = require("../controllers/filters");
 
 // @route POST /filters
 // @desc Create new filter
@@ -34,14 +34,14 @@ router.put(
     check('name', 'Name is required')
         .not()
         .isEmpty(),
-    updateFilter)
+    updateFilter);
 
 // @route GET /filters/all
 // @desc Get all filters
 // @access Private
 router.get(
     "/all",
-    getAllFilters)
+    getAllFilters);
 
 // @route   DELETE /filters/:id
 // @desc    Delete filter

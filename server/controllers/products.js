@@ -98,7 +98,7 @@ exports.deleteProduct = async (req, res, next) => {
       message: `Error happened on server: "${err}" `
     })
   }
-}
+};
 
 exports.getProducts = async (req, res, next) => {
   try {
