@@ -1,8 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
-import Login from './components/auth/Login'
-import Registration from './components/auth/Registration'
+import Login from './components/auth/Login';
+import Registration from './components/auth/Registration';
 
 import PrivateRoute from './components/routing/PrivateRoute';
 
@@ -28,7 +28,7 @@ function App() {
         </Switch>
       </div>
     </Router>
-  )
+  );
 }
 
 export default App;
