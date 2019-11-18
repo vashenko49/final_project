@@ -1,13 +1,34 @@
 import React from 'react';
-import './../node_modules/materialize-css/dist/css/materialize.min.css'
-import materialize from './../node_modules/materialize-css/dist/js/materialize.min.js'
-import './App.css';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 
-import Container from './components/auth/Container'
+import Login from './components/auth/Login'
+import Registration from './components/auth/Registration'
+
+import PrivateRoute from './components/routing/PrivateRoute';
+
+import './App.scss';
+
 function App() {
   return (
-     <Container />
-  );
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/subscribe">Subscribe</Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route exact path="/" component={Registration} />
+          <PrivateRoute exact path="/subscribe" component={Login} />
+        </Switch>
+      </div>
+    </Router>
+  )
 }
 
 export default App;

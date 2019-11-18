@@ -13,7 +13,7 @@ const {
     confirmCustomer
 } = require("../controllers/oauth");
 
-// @route   POST /oaut/customer
+// @route   POST /oauth/customer
 // @desc    Register customer
 // @access  Public
 router.post("/customer", createCustomer);

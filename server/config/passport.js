@@ -1,7 +1,5 @@
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
-const mongoose = require("mongoose");
-const config = require('./index');
 const LocalStrategy = require('passport-custom').Strategy;
 const Customer = require('../models/Customer');
 const axios = require('axios');
@@ -11,7 +9,7 @@ const {google} = require('googleapis');
 module.exports = async passport => {
     const opts = {};
     opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-    opts.secretOrKey = config.JWT_SECRET;
+    opts.secretOrKey = process.env.JWT_SECRET;
 
     passport.use(
         "jwt",
@@ -49,7 +47,7 @@ module.exports = async passport => {
             const {access_token} = req.body;
 
             const OAuth2 = google.auth.OAuth2;
-            const oauth2Client = new OAuth2(config.oauth.google.clientID, config.oauth.google.clientSecret);
+            const oauth2Client = new OAuth2(process.env.google_clientID, process.env.google_clientSecret);
             oauth2Client.setCredentials({access_token});
             const oauth2 = google.oauth2({
                 auth: oauth2Client,
@@ -111,7 +109,7 @@ module.exports = async passport => {
 
             let getAccessToken = await axios({
                 method: 'post',
-                url: `https://github.com/login/oauth/access_token?client_id=${config.oauth.github.clientID}&client_secret=${config.oauth.github.clientSecret}&code=${code}`,
+                url: `https://github.com/login/oauth/access_token?client_id=${process.env.facebook_clientID}&client_secret=${process.env.facebook_clientSecret}&code=${code}`,
                 headers: {
                     accept: 'application/json'
                 }
