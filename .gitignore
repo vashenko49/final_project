@@ -3,6 +3,8 @@ node_modules/
 tasks
 
 
+package.json
+yarn.lock
 
 .gitpod.yml
 .theia/
