@@ -35,7 +35,7 @@
   "scripts": {
     "start-js": "react-scripts start",
     "start": "concurrently \"yarn run watch-sass-js\" \"yarn run start-js\"",
-    "heroku-build": "react-scripts build",
+    "heroku-cli": "react-scripts build",
     "build": "yarn run eslint-build && yarn run stylelint-build && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -45,16 +45,8 @@
     "stylelint-build": "stylelint --fix src/**/*.scss",
     "watch-sass-js": "npm-watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vashenko49/final_project.git"
-  },
   "author": "iWhiteN, iamr0man, khanbabaev, AlexRusanov, Vlad-Udovenko, vashenko49",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vashenko49/final_project/issues"
-  },
-  "homepage": "https://github.com/vashenko49/final_project#readme",
   "husky": {
     "hooks": {
       "pre-push": "lint-staged"

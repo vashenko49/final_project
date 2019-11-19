@@ -21,7 +21,7 @@ getConfig('configs-v1')
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {
-    console.error(err);
+  console.error(err);
 });
 
 
@@ -30,8 +30,8 @@ app.use(bodyParser.json());
 // Use Routes
 app.use('/customers', require('./routes/customers'));
 app.use('/configs', require('./routes/configs'));
-app.use('/filters',require('./routes/filters'));
-app.use('/products',require('./routes/products'));
+app.use('/filters', require('./routes/filters'));
+app.use('/products', require('./routes/products'));
 
 
 app.use(express.static('../client/build'));
@@ -43,6 +43,8 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
+  if (!process.env.NODE_ENV) {
     console.log(`Server start on ${PORT}`);
+  }
 });
 
