@@ -44,7 +44,7 @@ const failSocial = response => {
 const responseGoogle = response => {
   console.log(response);
   axios
-    .post('/oauth/google', {
+    .post('/customers/google', {
       access_token: response.accessToken
     })
     .then((req, res) => {
@@ -55,7 +55,7 @@ const responseFacebook = response => {
   console.log(response);
 
   axios
-    .post('/oauth/facebook', {
+    .post('/customers/facebook', {
       access_token: response.accessToken,
       client_id: response.id
     })
@@ -67,7 +67,7 @@ const responseFacebook = response => {
 const responseGitHub = response => {
   console.log(response);
   axios
-    .post('/oauth/github', {
+    .post('/customers/github', {
       code: response.code
     })
     .then((req, res) => {

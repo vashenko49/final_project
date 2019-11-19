@@ -152,7 +152,21 @@ const formValidationRules = [
     validWhen: false,
     message:
       "This operation involves sending a letter to the client. Please provide field 'letterHtml' for the letter."
-  }
+  },
+  {
+    field: "title",
+    method: FormValidator.isEmpty,
+    validWhen: false,
+    message:
+      "This operation involves sending a letter to the client. Please provide field 'title' for the letter."
+  },
+  {
+    field: "name",
+    method: FormValidator.isEmpty,
+    validWhen: false,
+    message:
+      "This operation involves sending a letter to the client. Please provide field 'name' for the letter."
+  },
 ];
 
 module.exports = formValidationRules;
