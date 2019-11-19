@@ -357,8 +357,6 @@ exports.forgotPassword = async (req, res) => {
         expiresIn: 1800
       });
 
-    console.log(tokenChangePassword);
-
     let url = `${process.env.domen}/customers/forgotpassword/${encodeURI(tokenChangePassword)}`;
 
     await sendEmail(customer.email, `Hi ${customer.firstName}! Change password`, `<a href=${url}>Confirm</a>`);

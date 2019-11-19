@@ -8,7 +8,7 @@
     "start": "yarn --cwd ./server run start",
     "installAll": "yarn install && yarn --cwd ./server install && yarn --cwd ./client install",
     "start-dev": "concurrently \"yarn --cwd ./server run server\" \"yarn --cwd ./client run start\"",
-    "heroku-postbuild": "set NODE_ENV=production && yarn run installAll && yarn --cwd ./client run heroku-build"
+    "heroku-postbuild": "set NODE_ENV=production YARN_PRODUCTION=true && yarn run installAll && yarn --cwd ./client run heroku-build"
   },
   "repository": {
     "type": "git",
