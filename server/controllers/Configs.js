@@ -1,5 +1,5 @@
 let ConfigSchema = require('../models/Config');
-const connectDB = require('../config/db');
+const connectDB = require('../common/db');
 const getConfig = require('../config/GetConfig');
 
 exports.addConfig = (req, res) => {

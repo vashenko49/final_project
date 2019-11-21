@@ -3,23 +3,10 @@ const Product = require("../models/Product");
 const uniqueRandom = require("unique-random");
 const rand = uniqueRandom(0, 999999);
 
-const queryCreator = require("../common/queryCreator");
 const _ = require("lodash");
 
-const { validationResult } = require('express-validator');
-
-// *TODO*
-exports.addImages = (req, res, next) => {
-
-};
 
 exports.addProduct = async (req, res, next) => {
-
-  const errors = validationResult(req)
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() })
-  }
 
   const productFields = _.cloneDeep(req.body);
 
@@ -31,13 +18,11 @@ exports.addProduct = async (req, res, next) => {
     .replace(/\s\s+/g, " "); //replace few whitespace
 
 
-  const updatedProduct = queryCreator(productFields);
-
   try {
 
-    const newProduct = new Product(updatedProduct);
+    const newProduct = new Product(productFields);
 
-    const product = await newProduct.save()
+    const product = await newProduct.save();
 
     res.status(200).json(product)
 
@@ -49,12 +34,6 @@ exports.addProduct = async (req, res, next) => {
 };
 
 exports.updateProduct = async (req, res, next) => {
-
-  const errors = validationResult(req)
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() })
-  }
 
   try {
 
@@ -73,13 +52,11 @@ exports.updateProduct = async (req, res, next) => {
       .trim()
       .replace(/\s\s+/g, " ");
 
-    const updatedProduct = queryCreator(productFields);
-
     product = await Product.findOneAndUpdate(
       { _id: req.params.id },
-      { $set: updatedProduct },
+      { $set: productFields },
       { new: true }
-    )
+    );
     res.status(200).json({ isUpdated: true })
   } catch (err) {
     res.status(500).json({

@@ -1,5 +1,5 @@
 const express = require('express');
-const connectDB = require('./config/db');
+const connectDB = require('./common/db');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const path = require('path');
@@ -16,8 +16,6 @@ getConfig('configs-v1')
   .then(() => {
     // connectDB();
     connectDB(process.env.urlDataBase);
-
-
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {

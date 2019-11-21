@@ -1,20 +1,11 @@
 const Filter = require("../models/Filter");
-const queryCreator = require("../common/queryCreator");
 
 const _ = require("lodash");
 
-const { validationResult } = require("express-validator");
-
-
 exports.createFilter = async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
-    }
 
     const initialQuery = _.cloneDeep(req.body);
-    const newFilter = new Filter(queryCreator(initialQuery));
+    const newFilter = new Filter(initialQuery);
 
     try {
         let filter = await Filter.findOne(newFilter);
@@ -48,12 +39,6 @@ exports.getAllFilters = async (req, res) => {
 };
 exports.updateFilter = async (req, res) => {
     try {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
-        }
-
         let filter = await Filter.findOne({ _id: req.params.id });
 
         if (!filter) {
@@ -63,11 +48,10 @@ exports.updateFilter = async (req, res) => {
         }
 
         const initialQuery = _.cloneDeep(req.body);
-        const updatedFilter = queryCreator(initialQuery);
 
         filter = await Filter.findOneAndUpdate(
             { _id: req.params.id },
-            { $set: updatedFilter },
+            { $set: initialQuery },
             { new: true }
         );
 
