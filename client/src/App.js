@@ -33,16 +33,6 @@ function App() {
 
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-<<<<<<< HEAD
-          <Switch>
-            <Route exact path="/" component={Registration} />
-            <Route path="/admin-panel" component={AdminPanel} />
-            <PrivateRoute exact path="/subscribe" component={Login} />
-          </Switch>
-        </div>
-      </Router>
-    </Provider>
-=======
         <Switch>
           <Route exact path="/" component={Registration} />
           <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
@@ -50,7 +40,7 @@ function App() {
         </Switch>
       </div>
     </Router>
->>>>>>> d1142fdcb37de15e2089f52f0d158ef341164592
+    </Provider>
   );
 }
 
