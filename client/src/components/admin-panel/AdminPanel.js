@@ -3,6 +3,8 @@ import React from 'react';
 import Products from './Products';
 import CreateProduct from './CreateProduct';
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,6 +18,17 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+
+const useStyles = makeStyles({
+  create: {
+    position: 'fixed',
+    bottom: 50,
+    right: 50
+  },
+  main: {
+    padding: 20
+  }
+});
 
 export default function AdminPanel() {
   const [isOpenMenu, setIsOpenMenu] = React.useState(false);
@@ -34,6 +47,8 @@ export default function AdminPanel() {
   const onClickCreateProduct = () => {
     setIsOpenCreate(!isOpenCreate);
   };
+
+  const classes = useStyles();
 
   return (
     <div>
@@ -55,12 +70,7 @@ export default function AdminPanel() {
 
       <CreateProduct open={isOpenCreate} handleOpen={onClickCreateProduct} />
 
-      <Fab
-        color="primary"
-        size="medium"
-        style={{ position: 'absolute', bottom: 70, right: 70 }}
-        onClick={onClickCreateProduct}
-      >
+      <Fab color="primary" size="medium" className={classes.create} onClick={onClickCreateProduct}>
         <AddIcon />
       </Fab>
 
@@ -84,7 +94,7 @@ export default function AdminPanel() {
         </List>
         <Divider />
       </Drawer>
-      <main>{activeMenu === 'products' ? <Products /> : null}</main>
+      <main className={classes.main}>{activeMenu === 'products' ? <Products /> : null}</main>
     </div>
   );
 }

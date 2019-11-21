@@ -33,13 +33,14 @@ function App() {
 
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-        <Switch>
-          <Route exact path="/" component={Registration} />
-          <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
-          <PrivateRoute exact path="/subscribe" component={Login} />
-        </Switch>
-      </div>
-    </Router>
+          <Switch>
+            <Route exact path="/" component={Registration} />
+            <Route exact path="/admin-panel" component={AdminPanel} />
+            <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
+            <PrivateRoute exact path="/subscribe" component={Login} />
+          </Switch>
+        </div>
+      </Router>
     </Provider>
   );
 }

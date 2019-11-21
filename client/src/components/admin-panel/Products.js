@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as adminProductsAction from '../../actions/adminProductsAction';
 
+import Grid from '@material-ui/core/Grid';
+
 import ProductsItem from './ProductsItem';
 
 class Products extends Component {
@@ -14,14 +16,15 @@ class Products extends Component {
 
   render() {
     const { products } = this.props;
-    console.log(products);
 
     return (
-      <>
+      <Grid container spacing={2}>
         {products.map(item => (
-          <ProductsItem product={item} key={item.id} />
+          <Grid item xs={3} key={item.id}>
+            <ProductsItem product={item} />
+          </Grid>
         ))}
-      </>
+      </Grid>
     );
   }
 }
