@@ -10,8 +10,4 @@ export default class AdminProductAPI {
       ]);
     });
   }
-
-  static addProduct(data) {
-    console.log('API ADD PRODUCT --> done');
-  }
 }

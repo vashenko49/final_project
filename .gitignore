@@ -39,3 +39,4 @@ client/.eslintcache
 
 # dev
 client/src/components/admin-panel
+client/src/components/admin-panel/AdminProductAPI.js
