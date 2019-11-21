@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/styles';
 import clsx from 'clsx';
 
@@ -15,7 +14,7 @@ import Box from '@material-ui/core/Box';
 
 import Link from '../common/styled/StyledLink';
 
-const styles = () => ({
+const styles = {
   btnColor: {
     marginRight: 15,
     width: 23,
@@ -27,7 +26,7 @@ const styles = () => ({
   checkedBtnColor: {
     borderColor: 'black'
   }
-});
+};
 
 class ProductsItem extends Component {
   state = {
@@ -53,7 +52,7 @@ class ProductsItem extends Component {
     const { classes } = this.props;
 
     return (
-      <Card>
+      <Card data-id={id}>
         <Box display="flex" style={{ backgroundColor: '#F5F5F5', padding: '22px 0 25px 20px' }}>
           {subProduct.map(({ color }) => (
             <Avatar
@@ -97,12 +96,14 @@ class ProductsItem extends Component {
 }
 
 ProductsItem.propTypes = {
-  id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  categories: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired,
-  subProduct: PropTypes.array.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  product: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    categories: PropTypes.string.isRequired,
+    price: PropTypes.string.isRequired,
+    subProduct: PropTypes.array.isRequired
+  })
 };
 
 ProductsItem.defaultProps = {};

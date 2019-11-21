@@ -30,12 +30,10 @@ class Products extends Component {
 }
 
 Products.propTypes = {
-  products: PropTypes.array
+  products: PropTypes.arrayOf(PropTypes.object.isRequired)
 };
 
-Products.defaultProps = {
-  products: [{}]
-};
+Products.defaultProps = {};
 
 function mapStateToProps(state) {
   return {
