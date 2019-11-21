@@ -83,6 +83,7 @@
     "node-sass": "^4.13.0",
     "npm-watch": "^0.6.0",
     "prettier": "^1.19.1",
+    "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "standart": "^6.1.0",

@@ -1,15 +1,17 @@
-import * as COMMON from '../constants/common';
-import * as ADMIN_PRODUCTS from '../constants/adminProducts';
+import * as PRODUCTS from '../constants/adminProducts';
 
 const initState = {
-  products: [],
-  filters: [],
-  loading: false
+  data: [],
+  loading: false,
+  error: {
+    status: false,
+    msg: ''
+  }
 };
 
 export default function(state = initState, action) {
   switch (action.type) {
-    case COMMON.REQUEST_SEND:
+    case PRODUCTS.GET_API_REQUEST:
       return {
         ...state,
         ...{
@@ -17,22 +19,27 @@ export default function(state = initState, action) {
         }
       };
 
-    case ADMIN_PRODUCTS.ADD:
+    case PRODUCTS.GET_API_SUCCEEDED:
       return {
         ...state,
         ...{
-          products: [...state.products, ...[action.payload]]
-        }
-      };
-
-    case ADMIN_PRODUCTS.LIST:
-      return {
-        ...state,
-        ...{
-          products: action.payload,
+          data: action.payload,
           loading: false
         }
       };
+
+    case PRODUCTS.GET_API_FAILED:
+      return {
+        ...state,
+        ...{
+          loading: false,
+          error: {
+            status: true,
+            msg: action.payload
+          }
+        }
+      };
+
     default:
       return state;
   }

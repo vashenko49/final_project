@@ -1,30 +1,26 @@
-import * as COMMON from '../constants/common';
-import * as ADMIN_PRODUCTS from '../constants/adminProducts';
+import * as PRODUCTS from '../constants/adminProducts';
 
 import AdminProductAPI from '../services/AdminProductAPI';
 
 export function getProducts() {
   return dispatch => {
     dispatch({
-      type: COMMON.REQUEST_SEND
+      type: PRODUCTS.GET_API_REQUEST
     });
 
-    AdminProductAPI.getProducts().then(data => {
-      return dispatch({
-        type: ADMIN_PRODUCTS.LIST,
-        payload: data
-      });
-    });
-  };
-}
+    AdminProductAPI.getProducts()
+      .then(res => {
+        return dispatch({
+          type: PRODUCTS.GET_API_SUCCEEDED,
+          payload: res
+        });
+      })
 
-export function addProduct(data) {
-  return dispatch => {
-    AdminProductAPI.addProduct(data).then(res => {
-      dispatch({
-        type: ADMIN_PRODUCTS.ADD,
-        payload: res
+      .catch(err => {
+        return dispatch({
+          type: PRODUCTS.GET_API_FAILED,
+          payload: err
+        });
       });
-    });
   };
 }

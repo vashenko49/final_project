@@ -34,3 +34,8 @@ client/yarn.lock
 # code style
 client/.stylelintcache
 client/.eslintcache
+
+
+
+# dev
+client/src/components/admin-panel

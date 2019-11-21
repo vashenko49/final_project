@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -7,32 +7,36 @@ import * as adminProductsAction from '../../actions/adminProductsAction';
 
 import ProductsItem from './ProductsItem';
 
-const Products = ({ products, ...data }) => {
-  React.useEffect(() => {
-    console.log(products);
-    console.log(data);
-  }, []);
+class Products extends Component {
+  componentDidMount() {
+    this.props.adminProductsAction.getProducts();
+  }
 
-  return (
-    <>
-      {products.map(item => (
-        <ProductsItem product={item} key={item.id} />
-      ))}
-    </>
-  );
-};
+  render() {
+    const { products } = this.props;
+    console.log(products);
+
+    return (
+      <>
+        {products.map(item => (
+          <ProductsItem product={item} key={item.id} />
+        ))}
+      </>
+    );
+  }
+}
 
 Products.propTypes = {
   products: PropTypes.array
 };
 
 Products.defaultProps = {
-  products: [{ id: 0 }]
+  products: [{}]
 };
 
 function mapStateToProps(state) {
   return {
-    products: state.products
+    products: state.adminProducts.data
   };
 }
 
