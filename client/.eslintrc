@@ -7,7 +7,7 @@
   "extends": [
     "standard",
     "react-app",
-    "plugin:prettier/recommended"
+    "prettier"
   ],
   "rules": {
     "prettier/prettier": "error",
