@@ -3,7 +3,12 @@ const Schema = mongoose.Schema;
 
 const FilterSchema = new Schema(
   {
-    type: {
+    _idFilter: {
+      type: Schema.Types.ObjectID,
+      ref:"filters",
+      required: true
+    },
+    name:{
       type: String,
       required: true
     },
@@ -14,4 +19,4 @@ const FilterSchema = new Schema(
   }
 );
 
-module.exports = Filter = mongoose.model("filters", FilterSchema);
+module.exports = Filter = mongoose.model("subfilters", FilterSchema);
