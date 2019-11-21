@@ -10,8 +10,8 @@ import { Route, Redirect } from 'react-router-dom';
 // with false - hide
 const PrivateRoute = ({
   component: Component,
-  isAuthenticated = false,
-  loading = false,
+  isAuthenticated = true,
+  loading = true,
   ...rest
 }) => {
   return (

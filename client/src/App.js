@@ -11,6 +11,7 @@ import AdminPanel from './components/admin-panel/AdminPanel';
 import PrivateRoute from './components/routing/PrivateRoute';
 
 import './App.scss';
+import PasswordRecovery from './components/auth/PasswordRecovery';
 
 const store = configureStore();
 
@@ -32,6 +33,7 @@ function App() {
 
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
+<<<<<<< HEAD
           <Switch>
             <Route exact path="/" component={Registration} />
             <Route path="/admin-panel" component={AdminPanel} />
@@ -40,6 +42,15 @@ function App() {
         </div>
       </Router>
     </Provider>
+=======
+        <Switch>
+          <Route exact path="/" component={Registration} />
+          <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
+          <PrivateRoute exact path="/subscribe" component={Login} />
+        </Switch>
+      </div>
+    </Router>
+>>>>>>> d1142fdcb37de15e2089f52f0d158ef341164592
   );
 }
 

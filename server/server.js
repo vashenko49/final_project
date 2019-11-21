@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const path = require('path');
 const getConfig = require('./config/GetConfig');
-
+const cors = require('cors');
 
 const app = express();
-
+app.use(cors());
 // Body parser middleware
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -16,6 +16,8 @@ getConfig('configs-v1')
   .then(() => {
     // connectDB();
     connectDB(process.env.urlDataBase);
+
+
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {
@@ -25,16 +27,11 @@ getConfig('configs-v1')
 
 app.use(bodyParser.json());
 
-
-// Passport middleware
-
-// Passport Config
-
 // Use Routes
-app.use('/oauth', require('./routes/oauth'));
+app.use('/customers', require('./routes/customers'));
 app.use('/configs', require('./routes/configs'));
-app.use('/filters',require('./routes/filters'));
-app.use('/products',require('./routes/products'));
+app.use('/filters', require('./routes/filters'));
+app.use('/products', require('./routes/products'));
 
 
 app.use(express.static('../client/build'));
@@ -46,6 +43,8 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
+  if (!process.env.NODE_ENV) {
     console.log(`Server start on ${PORT}`);
+  }
 });
 
