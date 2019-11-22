@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import Products from './Products';
 import CreateProduct from './CreateProduct';
+import CreateModal from './CreateModal';
 
-import { withStyles } from '@material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -17,15 +18,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import Box from '@material-ui/core/Box';
 
 const styles = {
-  create: {
-    position: 'fixed',
-    bottom: 50,
-    right: 50
-  },
   main: {
     padding: 20
   }
@@ -34,7 +29,6 @@ const styles = {
 class AdminPanel extends Component {
   state = {
     isOpenMenu: false,
-    isOpenCreate: false,
     activeMenu: 'products'
   };
 
@@ -47,16 +41,12 @@ class AdminPanel extends Component {
     this.setState({ isOpenMenu: !this.state.isOpenMenu });
   };
 
-  onClickCreateProduct = () => {
-    this.setState({ isOpenCreate: !this.state.isOpenCreate });
-  };
-
   render() {
-    const { isOpenMenu, isOpenCreate, activeMenu } = this.state;
+    const { isOpenMenu, activeMenu } = this.state;
     const { classes } = this.props;
 
     return (
-      <div>
+      <Box>
         <AppBar position="fixed">
           <Toolbar>
             <IconButton
@@ -73,16 +63,9 @@ class AdminPanel extends Component {
           </Toolbar>
         </AppBar>
 
-        <CreateProduct open={isOpenCreate} handleOpen={this.onClickCreateProduct} />
-
-        <Fab
-          color="primary"
-          size="medium"
-          className={classes.create}
-          onClick={this.onClickCreateProduct}
-        >
-          <AddIcon />
-        </Fab>
+        <CreateModal title={activeMenu}>
+          <CreateProduct></CreateProduct>
+        </CreateModal>
 
         <Drawer variant="temporary" anchor="left" open={isOpenMenu} onClose={this.handleOpenMenu}>
           <div>
@@ -109,7 +92,7 @@ class AdminPanel extends Component {
         </Drawer>
 
         <main className={classes.main}>{activeMenu === 'products' ? <Products /> : null}</main>
-      </div>
+      </Box>
     );
   }
 }
