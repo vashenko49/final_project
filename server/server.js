@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 // Body parser middleware
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //connect data base
 getConfig('configs-v1')
@@ -21,8 +21,8 @@ getConfig('configs-v1')
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {
-  console.error(err);
-});
+    console.error(err);
+  });
 
 
 app.use(bodyParser.json());
@@ -32,6 +32,8 @@ app.use('/customers', require('./routes/customers'));
 app.use('/configs', require('./routes/configs'));
 app.use('/filters', require('./routes/filters'));
 app.use('/products', require('./routes/products'));
+
+app.use('/cart', require('./routes/cart'));
 
 
 app.use(express.static('../client/build'));
