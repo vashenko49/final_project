@@ -39,3 +39,6 @@ client/yarn.lock
 # code style
 client/.stylelintcache
 client/.eslintcache
+
+# vs code debug
+.vscode

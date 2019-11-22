@@ -12,13 +12,12 @@ const validateRegistrationForm = require("../validation/validationHelper");
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
   try {
-
+    
     const {errors, isValid} = validateRegistrationForm(req.body);
 
     if (!isValid) {
       return res.status(400).json(errors);
     }
-
 
     const {firstName, lastName, login, email, password, telephone, gender} = req.body;
 
@@ -102,7 +101,6 @@ exports.confirmCustomer = async (req, res) => {
 exports.createCustomerSocialNetwork = async (req, res) => {
 
   try {
-
     let customer = req.user;
 
     //проверяем почту в базе данных
