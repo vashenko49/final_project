@@ -10,8 +10,7 @@ const CustomerModel = require('../models/Customer');
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
   try {
-
-
+    
 
     const {firstName, lastName, login, email, password, telephone, gender} = req.body;
 
@@ -95,7 +94,6 @@ exports.confirmCustomer = async (req, res) => {
 exports.createCustomerSocialNetwork = async (req, res) => {
 
   try {
-
     let customer = req.user;
 
     //проверяем почту в базе данных
