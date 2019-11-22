@@ -69,7 +69,6 @@ exports.deleteProduct = async (req, res, next) => {
         })
       }  
       
-    debugger
     const foundProduct = wishlist.products.map(v => v.toString());
     
     const removeIndex = foundProduct.indexOf(req.body.product);
