@@ -21,7 +21,7 @@ exports.updateWishlist = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() })
   }
   try {
-    debugger
+
     let wishlist = await Wishlist.findOne({ customerId: req.params.id }) //change
     const product = await Product.findById(req.body.product)
 
