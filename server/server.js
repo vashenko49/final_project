@@ -29,6 +29,7 @@ app.use(bodyParser.json());
 app.use('/customers', require('./routes/customers'));
 app.use('/configs', require('./routes/configs'));
 app.use('/filters', require('./routes/filters'));
+app.use('/catalog', require('./routes/catalog'));
 app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
 
