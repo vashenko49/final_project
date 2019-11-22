@@ -9,6 +9,7 @@ const CatalogSchema = new Schema(
     },
     parentId: {
       type: String,
+      ref:"rootcatalogs",
       required: true
     },
     filter:[

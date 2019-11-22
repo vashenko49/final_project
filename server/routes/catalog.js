@@ -17,8 +17,8 @@ const {
   deleteChildCatalog,
 } = require("../controllers/catalog");
 
-// @route   POST /catalog
-// @desc    Create new category
+// @route   POST /catalog/root
+// @desc    Create new root category
 // @access  Private
 router.post(
   "/root/",[
@@ -29,8 +29,8 @@ router.post(
   addROOTCatalog
 );
 
-// @route   PUT /catalog/:id
-// @desc    Update existing category
+// @route   PUT /catalog/root
+// @desc    Update existing root category
 // @access  Private
 router.put(
   "/root",
@@ -45,19 +45,19 @@ router.put(
   updateROOTCatalog
 );
 
-// @route   DELETE /catalog/:id
-// @desc    Delete existing category
+// @route   DELETE /catalog/root/:id
+// @desc    Delete existing root category and child category
 // @access  Private
 router.delete(
-  "/root/:id",
+  "/root/:_idrootcatalog",
   deleteROOTCatalog
 );
 
-// @route   GET /catalog
-// @desc    GET existing categories
+// @route   GET /catalog/root
+// @desc    GET existing root categories
 // @access  Public
 router.get(
-  "/root/",
+  "/root",
   getROOTCategories
 );
 
@@ -65,16 +65,23 @@ router.get(
 // @desc    GET existing categorie
 // @access  Public
 router.get(
-  "/root/:id",
+  "/root/:_idrootcatalog",
   getROOTCategory
 );
 
 
 // @route   POST /catalog
-// @desc    Create new category
+// @desc    Create new a new child category
 // @access  Private
 router.post(
-  "/child/",
+  "/child",[
+    check('name',"Name is require")
+      .not()
+      .isEmpty(),
+    check("parentId", "Parent id is require")
+      .not()
+      .isEmpty()
+  ],
   addChildCatalog
 );
 
@@ -82,7 +89,7 @@ router.post(
 // @desc    Update existing category
 // @access  Private
 router.put(
-  "/child/:id",
+  "/child",
   updateChildCatalog
   );
 
