@@ -1,8 +1,14 @@
 let ConfigSchema = require('../models/Config');
 const connectDB = require('../common/db');
 const getConfig = require('../config/GetConfig');
+const {validationResult } = require('express-validator');
 
 exports.addConfig = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   if (!req.body) {
     return res
       .status(400)
