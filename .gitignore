@@ -37,3 +37,6 @@ client/package-lock.json
 # code style
 client/.stylelintcache
 client/.eslintcache
+
+# vs code debug
+.vscode
