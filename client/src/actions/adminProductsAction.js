@@ -1,24 +1,24 @@
-import * as PRODUCTS from '../constants/adminProducts';
+import * as BRANDS from '../constants/adminBrands';
 
-import AdminProductAPI from '../services/AdminProductAPI';
+import AdminBrandsAPI from '../services/AdminBrandsAPI';
 
-export function getProducts() {
+export function getBrands() {
   return dispatch => {
     dispatch({
-      type: PRODUCTS.GET_API_REQUEST
+      type: BRANDS.GET_API_BRANDS_REQUEST
     });
 
-    AdminProductAPI.getProducts()
+    AdminBrandsAPI.getBrands()
       .then(res => {
         return dispatch({
-          type: PRODUCTS.GET_API_SUCCEEDED,
+          type: BRANDS.GET_API_BRANDS_SUCCEEDED,
           payload: res
         });
       })
 
       .catch(err => {
         return dispatch({
-          type: PRODUCTS.GET_API_FAILED,
+          type: BRANDS.GET_API_BRANDS_FAILED,
           payload: err
         });
       });

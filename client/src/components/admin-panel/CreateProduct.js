@@ -75,9 +75,7 @@ class CreateProduct extends Component {
     });
   };
 
-  onSubmitForm = () => {
-
-  }
+  onSubmitForm = () => {};
 
   render() {
     const { classes, categories, brands, colors, sizes } = this.props;
