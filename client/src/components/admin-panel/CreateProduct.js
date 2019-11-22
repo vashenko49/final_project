@@ -23,34 +23,78 @@ const styles = {
 
 class CreateProduct extends Component {
   state = {
-    subCards: [0]
+    title: '',
+    description: '',
+    brands: '',
+    categories: '',
+    subCards: [
+      {
+        id: new Date().getTime(),
+        color: '',
+        sizes: [],
+        quantity: '',
+        amount: '',
+        images: []
+      }
+    ]
   };
 
   onClickNewCard = () => {
     const { subCards } = this.state;
 
     this.setState({
-      subCards: [...subCards, subCards.length - 1 + 1]
+      subCards: [
+        ...subCards,
+        { id: new Date().getTime(), color: '', sizes: [], quantity: '', amount: '', images: [] }
+      ]
     });
   };
 
   onClickDeleteCard = dataKey => {
+    const { subCards } = this.state;
+
     this.setState({
-      subCards: [...this.state.subCards].splice(dataKey, 1)
+      subCards: subCards.filter(item => item.id !== dataKey)
     });
   };
 
-  onClickCreateProduct = () => {};
+  onChangeValue = (name, val) => {
+    this.setState({ [name]: val });
+  };
+
+  onChangeSubCards = (id, name, val) => {
+    const newSubCards = this.state.subCards.map(item => {
+      if (item.id === id) {
+        item[name] = val;
+      }
+      return item;
+    });
+
+    this.setState({
+      subCards: newSubCards
+    });
+  };
+
+  onSubmitForm = () => {
+
+  }
 
   render() {
-    const { classes, categories, brands } = this.props;
-    const { subCards } = this.state;
+    const { classes, categories, brands, colors, sizes } = this.props;
+    const { subCards, title, description } = this.state;
 
     return (
-      <form autoComplete="off" className={classes.form}>
+      <form autoComplete="off" className={classes.form} id="create-form">
         <Typography align="center" variant="h5" component="h2" color="primary"></Typography>
+
         <FormControl margin="normal">
-          <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+          <TextField
+            id="outlined-basic"
+            label="Title"
+            variant="outlined"
+            value={title}
+            onChange={e => this.onChangeValue('title', e.currentTarget.value)}
+          />
         </FormControl>
 
         <FormControl margin="normal">
@@ -60,6 +104,8 @@ class CreateProduct extends Component {
             placeholder="Input max desctiption for products"
             multiline
             variant="outlined"
+            value={description}
+            onChange={e => this.onChangeValue('description', e.currentTarget.value)}
           />
         </FormControl>
 
@@ -67,10 +113,11 @@ class CreateProduct extends Component {
           <Autocomplete
             id="brands"
             options={brands}
+            onChange={(e, val) => this.onChangeValue('brands', val)}
             getOptionLabel={brands => brands.title}
             style={{ width: 300 }}
             renderInput={params => (
-              <TextField {...params} label="Brand" variant="outlined" fullWidth />
+              <TextField {...params} label="brand" variant="outlined" fullWidth />
             )}
           />
         </FormControl>
@@ -79,6 +126,7 @@ class CreateProduct extends Component {
           <Autocomplete
             id="categories"
             options={categories}
+            onChange={(e, val) => this.onChangeValue('categories', val)}
             groupBy={categories => categories.title}
             getOptionLabel={categories => categories.subtitle}
             style={{ width: 300 }}
@@ -90,9 +138,16 @@ class CreateProduct extends Component {
 
         <FormControl margin="normal">
           <Grid container spacing={4}>
-            {subCards.map(idx => (
-              <Grid item xs={4} key={idx}>
-                <CreateSubProduct onClickDeleteCard={this.onClickDeleteCard} dataKey={idx} />
+            {subCards.map(it => (
+              <Grid item xs={4} key={it.id}>
+                <CreateSubProduct
+                  lastCard={subCards.length === 1 ? 'true' : 'false'}
+                  onClickDeleteCard={this.onClickDeleteCard}
+                  dataKey={it.id}
+                  onChangeSubCards={this.onChangeSubCards}
+                  colors={colors}
+                  sizes={sizes}
+                />
               </Grid>
             ))}
           </Grid>
@@ -105,8 +160,8 @@ class CreateProduct extends Component {
         </FormControl>
 
         <Box align="right">
-          <Button onClick={this.onClickCreateProduct} variant="contained" color="primary">
-            Craete
+          <Button onClick={this.onSubmitForm} variant="contained" color="primary">
+            Create
           </Button>
         </Box>
       </form>
@@ -119,10 +174,28 @@ CreateProduct.propTypes = {
 };
 
 CreateProduct.defaultProps = {
-  brands: [{ title: 'Бренд 1' }, { title: 'Бренд 2' }],
+  brands: [
+    { id: 1, title: 'Бренд 1' },
+    { id: 2, title: 'Бренд 2' }
+  ],
   categories: [
-    { title: 'Категория 1', subtitle: 'Подкатегория 1' },
-    { title: 'Категория 2', subtitle: 'Подкатегория 2' }
+    { id: 1, title: 'Категория 1', subtitle: 'Подкатегория 1' },
+    { id: 2, title: 'Категория 2', subtitle: 'Подкатегория 2' }
+  ],
+  colors: [
+    { id: 1, title: 'red' },
+    { id: 2, title: 'yellow' },
+    { id: 3, title: 'green' },
+    { id: 4, title: 'white' },
+    { id: 5, title: 'black' }
+  ],
+  sizes: [
+    { id: 1, title: '40' },
+    { id: 2, title: '41' },
+    { id: 3, title: '42' },
+    { id: 4, title: '43' },
+    { id: 5, title: '44' },
+    { id: 6, title: '45' }
   ]
 };
 

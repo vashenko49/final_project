@@ -12,9 +12,14 @@ import Avatar from '@material-ui/core/Avatar';
 import Popover from '@material-ui/core/Popover';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Checkbox from '@material-ui/core/Checkbox';
+import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import InputLabel from '@material-ui/core/InputLabel';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Typography from '@material-ui/core/Typography';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
@@ -44,12 +49,32 @@ const styles = theme => ({
 
 class CreateSubProduct extends Component {
   state = {
-    colorProduct: 'black',
-    anchorEl: null
+    colorProduct: {},
+    anchorEl: null,
+    filesName: ''
   };
 
-  handleClickColor = e => {
-    this.setState({ colorProduct: e.currentTarget.dataset.color, anchorEl: null });
+  handleClickColor = (dataKey, color, onChangeSubCards) => {
+    this.setState({ colorProduct: color, anchorEl: null });
+
+    onChangeSubCards(dataKey, 'color', color);
+  };
+
+  onChangeValue = (dataKey, val, name, onChangeSubCards) => {
+    onChangeSubCards(dataKey, name, val);
+  };
+
+  onChangeImages = (dataKey, e, onChangeSubCards) => {
+    const { files } = e.currentTarget;
+    const nameFiles = [];
+
+    for (let i = 0; i < files.length; i++) {
+      nameFiles.push(files[i].name);
+    }
+
+    this.setState({ filesName: nameFiles.toString().replace(/,/gi, ', ') });
+
+    onChangeSubCards(dataKey, 'images', files);
   };
 
   handleClick = event => {
@@ -61,109 +86,146 @@ class CreateSubProduct extends Component {
   };
 
   render() {
-    const { colors, sizes, classes, onClickDeleteCard, dataKey } = this.props;
-    const { anchorEl, colorProduct } = this.state;
+    const {
+      colors,
+      sizes,
+      classes,
+      onClickDeleteCard,
+      dataKey,
+      lastCard,
+      onChangeSubCards
+    } = this.props;
+    const { anchorEl, colorProduct, filesName } = this.state;
 
     const opopenPopover = Boolean(anchorEl);
     const id = opopenPopover ? 'simple-popover' : undefined;
 
     return (
       <Paper className={classes.paper}>
-        <Box
-          className={classes.delete}
-          onClick={() => {
-            onClickDeleteCard(dataKey);
-          }}
-        >
-          <IconButton aria-label="delete">
-            <DeleteIcon fontSize="small" color="error" />
-          </IconButton>
-        </Box>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Box align="center">
-              <Avatar
-                className={classes.colorBox}
-                id="color"
-                size="small"
-                style={{ backgroundColor: colorProduct }}
-                onClick={this.handleClick}
-              ></Avatar>
-              <Popover
-                id={id}
-                open={opopenPopover}
-                anchorEl={anchorEl}
-                onClose={this.handleClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center'
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center'
-                }}
-              >
-                <Grid container spacing={4} className={classes.popover}>
-                  {colors.map(color => (
-                    <Grid key={color.title} item xs={2}>
-                      <Avatar
-                        className={classes.colorBox}
-                        size="small"
-                        data-color={color.title}
-                        style={{ backgroundColor: color.title }}
-                        onClick={this.handleClickColor}
-                      ></Avatar>
-                    </Grid>
-                  ))}
+        {lastCard === 'true' ? null : (
+          <Box
+            className={classes.delete}
+            onClick={() => {
+              onClickDeleteCard(dataKey);
+            }}
+          >
+            <IconButton aria-label="delete">
+              <DeleteIcon fontSize="small" color="error" />
+            </IconButton>
+          </Box>
+        )}
+
+        <Box margin="normal" align="center">
+          <Avatar
+            className={classes.colorBox}
+            id="color"
+            size="small"
+            style={{ backgroundColor: colorProduct.title }}
+            onClick={this.handleClick}
+          />
+          <Popover
+            id={id}
+            open={opopenPopover}
+            anchorEl={anchorEl}
+            onClose={this.handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center'
+            }}
+          >
+            <Grid container spacing={4} className={classes.popover}>
+              {colors.map(color => (
+                <Grid key={color.title} item xs={2}>
+                  <Avatar
+                    className={classes.colorBox}
+                    size="small"
+                    style={{ backgroundColor: color.title }}
+                    onClick={() => this.handleClickColor(dataKey, color, onChangeSubCards)}
+                  ></Avatar>
                 </Grid>
-              </Popover>
-            </Box>
-          </Grid>
+              ))}
+            </Grid>
+          </Popover>
+        </Box>
 
-          <Grid item xs={12}>
-            <Autocomplete
-              multiple
-              id="sizes"
-              options={sizes}
-              disableCloseOnSelect
-              getOptionLabel={sizes => sizes.title}
-              renderOption={(sizes, { selected }) => (
-                <>
-                  <Checkbox
-                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                    checkedIcon={<CheckBoxIcon fontSize="small" />}
-                    style={{ marginRight: 8 }}
-                    checked={selected}
-                  />
-                  {sizes.title}
-                </>
-              )}
-              renderInput={params => (
-                <TextField {...params} variant="outlined" label="Sizes" fullWidth />
-              )}
-            />
-          </Grid>
+        <FormControl fullWidth margin="normal">
+          <Autocomplete
+            multiple
+            id="sizes"
+            options={sizes}
+            disableCloseOnSelect
+            onChange={(e, val) => this.onChangeValue(dataKey, val, 'sizes', onChangeSubCards)}
+            getOptionLabel={sizes => sizes.title}
+            renderOption={(sizes, { selected }) => (
+              <>
+                <Checkbox
+                  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                  checkedIcon={<CheckBoxIcon fontSize="small" />}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {sizes.title}
+              </>
+            )}
+            renderInput={params => (
+              <TextField {...params} variant="outlined" label="Sizes" fullWidth />
+            )}
+          />
+        </FormControl>
 
-          <Grid item xs={12}>
-            <input
-              accept="image/*"
-              className={classes.input}
-              id="button-file"
-              multiple
-              type="file"
-            />
-            <label htmlFor="button-file">
-              <Button
-                variant="contained"
-                color="default"
-                startIcon={<CloudUploadIcon />}
-                component="span"
-              >
-                Upload
-              </Button>
-            </label>
-          </Grid>
-        </Grid>
+        <FormControl margin="normal" fullWidth>
+          <TextField
+            type="number"
+            id="quantity"
+            label="Quantity"
+            variant="outlined"
+            onChange={e => {
+              this.onChangeValue(dataKey, e.currentTarget.value, 'quantity', onChangeSubCards);
+            }}
+          />
+        </FormControl>
+
+        <FormControl margin="normal" fullWidth variant="outlined">
+          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            labelWidth={60}
+            onChange={e => {
+              this.onChangeValue(dataKey, e.currentTarget.value, 'amount', onChangeSubCards);
+            }}
+          />
+        </FormControl>
+
+        <FormControl margin="normal">
+          <input
+            accept="image/*"
+            className={classes.input}
+            id={dataKey}
+            multiple
+            type="file"
+            onChange={e => {
+              this.onChangeImages(dataKey, e, onChangeSubCards);
+            }}
+          />
+          <label htmlFor={dataKey}>
+            <Button
+              variant="contained"
+              color="default"
+              startIcon={<CloudUploadIcon />}
+              component="span"
+            >
+              Upload
+            </Button>
+          </label>
+          <Typography color="textSecondary" variant="caption">
+            {filesName}
+          </Typography>
+        </FormControl>
       </Paper>
     );
   }
@@ -174,25 +236,11 @@ CreateSubProduct.propTypes = {
   sizes: PropTypes.array,
   classes: PropTypes.object.isRequired,
   onClickDeleteCard: PropTypes.func.isRequired,
-  dataKey: PropTypes.number.isRequired
+  dataKey: PropTypes.number.isRequired,
+  lastCard: PropTypes.string.isRequired,
+  onChangeSubCards: PropTypes.func.isRequired
 };
 
-CreateSubProduct.defaultProps = {
-  colors: [
-    { title: 'red' },
-    { title: 'yellow' },
-    { title: 'green' },
-    { title: 'white' },
-    { title: 'black' }
-  ],
-  sizes: [
-    { title: '40' },
-    { title: '41' },
-    { title: '42' },
-    { title: '43' },
-    { title: '44' },
-    { title: '45' }
-  ]
-};
+CreateSubProduct.defaultProps = {};
 
 export default withStyles(styles)(CreateSubProduct);
