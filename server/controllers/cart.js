@@ -1,6 +1,6 @@
-const Cart = require("../models/Cart")
-const Product = require("../models/Product")
-const Customer = require("../models/Customer")
+const Cart = require("../models/Cart");
+const Product = require("../models/Product");
+const Customer = require("../models/Customer");
 
 const { validationResult } = require("express-validator");
 
