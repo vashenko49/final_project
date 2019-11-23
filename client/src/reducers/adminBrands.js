@@ -11,7 +11,7 @@ const initState = {
 
 export default function(state = initState, action) {
   switch (action.type) {
-    case BRANDS.GET_API_REQUEST:
+    case BRANDS.GET_API_BRANDS_REQUEST:
       return {
         ...state,
         ...{
@@ -19,7 +19,7 @@ export default function(state = initState, action) {
         }
       };
 
-    case BRANDS.GET_API_SUCCEEDED:
+    case BRANDS.GET_API_BRANDS_SUCCEEDED:
       return {
         ...state,
         ...{
@@ -28,7 +28,7 @@ export default function(state = initState, action) {
         }
       };
 
-    case BRANDS.GET_API_FAILED:
+    case BRANDS.GET_API_BRANDS_FAILED:
       return {
         ...state,
         ...{
