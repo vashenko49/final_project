@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
 
+import MainPage from './components/MainPage/MainPage';
+
 import Login from './components/auth/Login';
 import Registration from './components/auth/Registration';
 
@@ -29,6 +31,7 @@ function App() {
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
           <Switch>
+            <Route exact path="/main" component={MainPage} />
             <Route exact path="/" component={Registration} />
             <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
             <PrivateRoute exact path="/subscribe" component={Login} />

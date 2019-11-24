@@ -33,6 +33,7 @@ app.use('/configs', require('./routes/configs'));
 app.use('/filters', require('./routes/filters'));
 app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
+app.use('/links', require('./routes/links'));
 
 
 app.use(express.static('../client/build'));
