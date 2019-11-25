@@ -34,6 +34,7 @@ app.use('/filters', require('./routes/filters'));
 app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
 app.use('/links', require('./routes/links'));
+app.use('/pages', require('./routes/pages'));
 
 
 app.use(express.static('../client/build'));
