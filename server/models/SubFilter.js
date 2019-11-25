@@ -12,6 +12,10 @@ const FilterSchema = new Schema(
       type: String,
       required: true
     },
+    enabled:{
+      type: Boolean,
+      default: false
+    },
     date: {
       type: Date,
       default: Date.now
@@ -19,4 +23,4 @@ const FilterSchema = new Schema(
   }
 );
 
-module.exports = Filter = mongoose.model("subfilters", FilterSchema);
+module.exports = Filter = mongoose.model("subfilters", FilterSchema,'subfilters');

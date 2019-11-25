@@ -1,5 +1,7 @@
 const rootCatalog = require("../models/RootCatalog");
 const childCatalog = require("../models/ChildCatalog");
+const filterModel = require('../models/Filter');
+const subFilterModel = require('../models/SubFilter');
 
 const {validationResult} = require('express-validator');
 
@@ -41,7 +43,7 @@ exports.updateROOTCatalog = async (req, res, next) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {name, _idRootCatalog} = req.body;
+    const {name, _idRootCatalog, enabled = false} = req.body;
 
     const catalog = await rootCatalog.findById(_idRootCatalog);
 
@@ -60,6 +62,7 @@ exports.updateROOTCatalog = async (req, res, next) => {
 
 
     catalog.name = name;
+    catalog.enabled = enabled;
     await catalog.save();
     res.status(200).json(catalog);
 
@@ -95,6 +98,37 @@ exports.deleteROOTCatalog = async (req, res, next) => {
 
 };
 
+
+exports.getActiveROOTCategories = async (req, res, next) => {
+  try {
+    const category = await rootCatalog.find({"enabled": "true"});
+    res.status(200).json(category);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.getActiveROOTCategory = async (req, res, next) => {
+  try {
+    const {_idrootcatalog} = req.params;
+    const catalog = await rootCatalog.find({
+      $and: [
+        {
+          "enabled": "true",
+          "_id": _idrootcatalog
+        }
+      ]
+    });
+    res.status(200).json(catalog);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
 exports.getROOTCategories = async (req, res, next) => {
   try {
     const category = await rootCatalog.find();
@@ -118,6 +152,7 @@ exports.getROOTCategory = async (req, res, next) => {
   }
 };
 
+
 ///////////////////////////////////////////////////////////////////
 exports.addChildCatalog = async (req, res, next) => {
   try {
@@ -125,7 +160,7 @@ exports.addChildCatalog = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()});
     }
-    const {name, parentId, filter = []} = req.body;
+    const {name, parentId, filters = []} = req.body;
 
     const isChildCatalogExists = await childCatalog.findOne({name: name});
 
@@ -136,9 +171,9 @@ exports.addChildCatalog = async (req, res, next) => {
     }
 
     let catalog = new childCatalog({
-      name:name,
-      parentId:parentId,
-      filter:filter
+      name: name,
+      parentId: parentId,
+      filters: filters
     });
 
     catalog = await catalog.save();
@@ -150,18 +185,165 @@ exports.addChildCatalog = async (req, res, next) => {
   }
 };
 
-exports.updateChildCatalog = (req, res, next) => {
+exports.updateChildCatalog = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
 
+    const {name, _id, enabled = false} = req.body;
+
+    const catalog = await childCatalog.findById(_id);
+
+    if (!catalog) {
+      return res.status(400).json({
+        message: `Child catalog with id ${_id} is not found`
+      })
+    }
+
+    const isFilterExists = await childCatalog.findOne({name: name});
+    if (isFilterExists) {
+      return res.status(400).json({
+        message: `Child catalog ${name} already exists`
+      })
+    }
+
+
+    catalog.name = name;
+    catalog.enabled = enabled;
+    await catalog.save();
+    res.status(200).json(catalog);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
 };
 
-exports.deleteChildCatalog = (req, res, next) => {
+exports.deleteChildCatalog = async (req, res, next) => {
+  try {
+    const {id} = req.params;
+    const catalog = await childCatalog.findById(id);
+    if (!catalog) {
+      return res.status(400).json({
+        message: `Catalog with id "${id}" is not found.`
+      });
+    }
 
+    await catalog.delete();
+    res.status(200).json({
+      message: `Child catalog witn id "${id}" is successfully deleted from DB.`,
+      deletedCategoryInfo: catalog
+    })
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
 };
 
-exports.getChildCategories = (req, res, next) => {
 
+exports.getActiveChildCategoryForClient = async (req, res, next) => {
+  try {
+    const {id} = req.params;
+
+    const catalog = await childCatalog.findById(id)
+      .populate('parentId')
+      .populate('filters.filter')
+      .populate('filters.subfilters');
+
+    res.status(200).json(catalog);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
 };
 
-exports.getChildCategory = (req, res, next) => {
+exports.getChildCategories = async (req, res, next) => {
+  try {
+    const category = await childCatalog.find();
+    res.status(200).json(category);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
 
+exports.getChildCategory = async (req, res, next) => {
+  try {
+    const {_idchildcatalog} = req.params;
+    const catalog = await childCatalog.findById(_idchildcatalog);
+    res.status(200).json(catalog);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.getChildCategoriesWithRootID = async (req, res, next) => {
+  try {
+    const {_idrootcatalog} = req.params;
+    const catalog = await childCatalog.find({"parentId": _idrootcatalog});
+    res.status(200).json(catalog);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.getActiveChildCategories = async (req, res, next) => {
+  try {
+    const category = await childCatalog.find({"enabled": "true"});
+    res.status(200).json(category);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.getActiveChildCategory = async (req, res, next) => {
+  try {
+    const {_idchildcatalog} = req.params;
+    const catalog = await childCatalog.find({
+      $and: [
+        {
+          "enabled": "true",
+          "_id": _idchildcatalog
+        }
+      ]
+    });
+    res.status(200).json(catalog);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.getActiveChildCategoriesWithRootID = async (req, res, next) => {
+  try {
+    const {_idrootcatalog} = req.params;
+    const catalog = await childCatalog.find({
+      $and: [
+        {
+          "enabled": "true",
+          "parentId": _idrootcatalog
+        }
+      ]
+    });
+    res.status(200).json(catalog);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
 };

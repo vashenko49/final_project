@@ -12,10 +12,24 @@ const CatalogSchema = new Schema(
       ref:"rootcatalogs",
       required: true
     },
-    filter:[
+    enabled:{
+      type: Boolean,
+      default: false
+    },
+    filters:[
       {
-        type:Schema.Types.ObjectID,
-        ref:'filters'
+        filter:{
+          type: Schema.Types.ObjectID,
+          required:true,
+          ref:'filters'
+        },
+        subfilters:[
+          {
+            type: Schema.Types.ObjectID,
+            required:true,
+            ref:'subfilters'
+          }
+        ]
       }
     ],
     date: {
@@ -25,4 +39,4 @@ const CatalogSchema = new Schema(
   }
 );
 
-module.exports = Catalog = mongoose.model("childcatalogs", CatalogSchema);
+module.exports = Catalog = mongoose.model("childcatalogs", CatalogSchema, 'childcatalogs');

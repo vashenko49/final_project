@@ -11,18 +11,25 @@ const {
   updateChildCatalog,
   getROOTCategories,
   getChildCategories,
+  getActiveROOTCategories,
+  getActiveROOTCategory,
+  getActiveChildCategories,
+  getActiveChildCategory,
   getChildCategory,
   getROOTCategory,
+  getChildCategoriesWithRootID,
+  getActiveChildCategoriesWithRootID,
   deleteROOTCatalog,
   deleteChildCatalog,
+  getActiveChildCategoryForClient
 } = require("../controllers/catalog");
 
 // @route   POST /catalog/root
 // @desc    Create new root category
 // @access  Private
 router.post(
-  "/root/",[
-    check('name',"Name is require")
+  "/root/", [
+    check('name', "Name is require")
       .not()
       .isEmpty()
   ],
@@ -35,10 +42,10 @@ router.post(
 router.put(
   "/root",
   [
-    check('name',"Name is require")
+    check('name', "Name is require")
       .not()
       .isEmpty(),
-    check('_idRootCatalog','Id catalog is require')
+    check('_idRootCatalog', 'Id catalog is require')
       .not()
       .isEmpty()
   ],
@@ -53,29 +60,46 @@ router.delete(
   deleteROOTCatalog
 );
 
-// @route   GET /catalog/root
+// @route   GET /catalog/root/private
 // @desc    GET existing root categories
-// @access  Public
+// @access  Private
 router.get(
-  "/root",
+  "/root/private",
   getROOTCategories
 );
 
-// @route   GET /catalog/:id
-// @desc    GET existing categorie
-// @access  Public
+// @route   GET /catalog/root/private/:id
+// @desc    GET any existing category
+// @access  Private
 router.get(
-  "/root/:_idrootcatalog",
+  "/root/private/:_idrootcatalog",
   getROOTCategory
 );
 
+// @route   GET /catalog/root/public
+// @desc    GET active existing root categories
+// @access  Public
+router.get(
+  "/root/public",
+  getActiveROOTCategories
+);
 
+// @route   GET /catalog/root/public/:id
+// @desc    GET active existing category
+// @access  Public
+router.get(
+  "/root/public/:_idrootcatalog",
+  getActiveROOTCategory
+);
+
+
+///////////////////////////////////////////////////////////////////////////////////
 // @route   POST /catalog
 // @desc    Create new a new child category
 // @access  Private
 router.post(
-  "/child",[
-    check('name',"Name is require")
+  "/child", [
+    check('name', "Name is require")
       .not()
       .isEmpty(),
     check("parentId", "Parent id is require")
@@ -85,15 +109,25 @@ router.post(
   addChildCatalog
 );
 
-// @route   PUT /catalog/:id
+// @route   PUT /catalog/child
 // @desc    Update existing category
 // @access  Private
 router.put(
-  "/child",
+  "/child", [
+    check('_id', "Id child catalog is require")
+      .not()
+      .isEmpty(),
+    check('name', "Name is require")
+      .not()
+      .isEmpty(),
+    check("parentId", "Parent id is require")
+      .not()
+      .isEmpty()
+  ],
   updateChildCatalog
-  );
+);
 
-// @route   DELETE /catalog/:id
+// @route   DELETE /catalog/root/:id
 // @desc    Delete existing category
 // @access  Private
 router.delete(
@@ -101,20 +135,61 @@ router.delete(
   deleteChildCatalog
 );
 
-// @route   GET /catalog
-// @desc    GET existing categories
-// @access  Public
+// @route   GET /catalog/child/private
+// @desc    GET existing child categories
+// @access  Private
 router.get(
-  "/child/",
+  "/child/private",
   getChildCategories
 );
 
-// @route   GET /catalog/:id
-// @desc    GET existing categorie
+// @route   GET /catalog/child/private/:id
+// @desc    GET any existing child category
+// @access  Private
+router.get(
+  "/child/private/:_idchildcatalog",
+  getChildCategory
+);
+
+// @route   GET /catalog/child/private/:id
+// @desc    GET any existing child category  use id root catalog
+// @access  Private
+router.get(
+  "/child/private/idparent/:_idrootcatalog",
+  getChildCategoriesWithRootID
+);
+
+
+// @route   GET /catalog/child/public
+// @desc    GET active existing child categories
 // @access  Public
 router.get(
-  "/child/:id",
-  getChildCategory
+  "/child/public",
+  getActiveChildCategories
+);
+
+// @route   GET /catalog/child/public/:id
+// @desc    GET active existing child category
+// @access  Public
+router.get(
+  "/child/public/:_idchildcatalog",
+  getActiveChildCategory
+);
+
+// @route   GET /catalog/child/public/:id
+// @desc    GET active existing child category use id root catalog
+// @access  Public
+router.get(
+  "/child/public/idparent/:_idrootcatalog",
+  getActiveChildCategoriesWithRootID
+);
+
+// @route   GET /catalog/child/:id
+// @desc    GET active existing catalog use id child catalog for client (С Ромой обсудили этот роут)
+// @access  Public
+router.get(
+  '/child/:id',
+  getActiveChildCategoryForClient
 );
 
 

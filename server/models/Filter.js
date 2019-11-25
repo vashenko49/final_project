@@ -10,8 +10,12 @@ const FilterSchema = new Schema(
     date: {
       type: Date,
       default: Date.now
-    }
+    },
+    enabled:{
+      type: Boolean,
+      default: false
+    },
   }
 );
 
-module.exports = Filter = mongoose.model("filters", FilterSchema);
+module.exports = Filter = mongoose.model("filters", FilterSchema,'filters');

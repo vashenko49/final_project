@@ -10,7 +10,11 @@ const CatalogSchema = new Schema(
     date: {
       type: Date,
       default: Date.now
-    }
+    },
+    enabled:{
+      type: Boolean,
+      default: false
+    },
   }
 );
 
