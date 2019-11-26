@@ -3,23 +3,24 @@ const Schema = mongoose.Schema;
 
 const FilterSchema = new Schema(
   {
-    type: {
-      type: String,
+    _idFilter: {
+      type: Schema.Types.ObjectID,
+      ref:"filters",
       required: true
     },
-    serviceName:{
+    name:{
       type: String,
       required: true
-    },
-    date: {
-      type: Date,
-      default: Date.now
     },
     enabled:{
       type: Boolean,
       default: false
     },
+    date: {
+      type: Date,
+      default: Date.now
+    }
   }
 );
 
-module.exports = Filter = mongoose.model("filters", FilterSchema,'filters');
+module.exports = Filter = mongoose.model("subfilters", FilterSchema,'subfilters');

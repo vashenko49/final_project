@@ -1,5 +1,5 @@
 const express = require('express');
-const connectDB = require('./config/db');
+const connectDB = require('./common/db');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const path = require('path');
@@ -16,8 +16,6 @@ getConfig('configs-v1')
   .then(() => {
     // connectDB();
     connectDB(process.env.urlDataBase);
-
-
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {
@@ -31,6 +29,7 @@ app.use(bodyParser.json());
 app.use('/customers', require('./routes/customers'));
 app.use('/configs', require('./routes/configs'));
 app.use('/filters', require('./routes/filters'));
+app.use('/catalog', require('./routes/catalog'));
 app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
 

@@ -1,13 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const FilterSchema = new Schema(
+const CatalogSchema = new Schema(
   {
-    type: {
-      type: String,
-      required: true
-    },
-    serviceName:{
+    name: {
       type: String,
       required: true
     },
@@ -22,4 +18,4 @@ const FilterSchema = new Schema(
   }
 );
 
-module.exports = Filter = mongoose.model("filters", FilterSchema,'filters');
+module.exports = Catalog = mongoose.model("rootcatalogs", CatalogSchema);

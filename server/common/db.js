@@ -9,7 +9,7 @@ const connectDB = async (urlBaseData) => {
       useFindAndModify: false,
       useUnifiedTopology: true
     });
-    console.log(urlBaseData);
+      console.log(urlBaseData);
   } catch (e) {
     console.error(e.message);
     process.exit(1);
