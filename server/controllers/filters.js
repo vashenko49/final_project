@@ -14,7 +14,7 @@ exports.createFilter = async (req, res) => {
     }
 
     const initialQuery = _.cloneDeep(req.body);
-    const newFilter = new Filter(queryCreator(initialQuery));
+    const newFilter = new Filter(initialQuery);
 
     try {
         let filter = await Filter.findOne(newFilter);
@@ -63,7 +63,7 @@ exports.updateFilter = async (req, res) => {
         }
 
         const initialQuery = _.cloneDeep(req.body);
-        const updatedFilter = queryCreator(initialQuery);
+        const updatedFilter = initialQuery;
 
         filter = await Filter.findOneAndUpdate(
             { _id: req.params.id },
