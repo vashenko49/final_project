@@ -21,7 +21,8 @@ const {
   getActiveChildCategoriesWithRootID,
   deleteROOTCatalog,
   deleteChildCatalog,
-  getActiveChildCategoryForClient
+  getActiveChildCategoryForClientSelectSubfilter,
+  getActiveChildCategoryForClientAnySubfilter
 } = require("../controllers/catalog");
 
 // @route   POST /catalog/root
@@ -184,13 +185,20 @@ router.get(
   getActiveChildCategoriesWithRootID
 );
 
-// @route   GET /catalog/child/:id
+// @route   GET /catalog/child/select/:id
 // @desc    GET active existing catalog use id child catalog for client (С Ромой обсудили этот роут)
 // @access  Public
 router.get(
-  '/child/:id',
-  getActiveChildCategoryForClient
+  '/child/select/:id',
+  getActiveChildCategoryForClientSelectSubfilter
 );
 
+// @route   GET /catalog/child/any/:id
+// @desc    GET active existing catalog use id child catalog for client (С Ромой обсудили этот роут)
+// @access  Public
+router.get(
+  '/child/any/:id',
+  getActiveChildCategoryForClientAnySubfilter
+);
 
 module.exports = router;

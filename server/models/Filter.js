@@ -7,6 +7,10 @@ const FilterSchema = new Schema(
       type: String,
       required: true
     },
+    serviceName:{
+      type: String,
+      required: true
+    },
     date: {
       type: Date,
       default: Date.now

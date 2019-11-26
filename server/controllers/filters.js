@@ -6,24 +6,17 @@ const _ = require("lodash");
 
 exports.createFilter = async (req, res) => {
 
-  const initialQuery = _.cloneDeep(req.body);
-  const newFilter = new Filter(initialQuery);
-
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const {type} = req.body;
-    let filter = await Filter.findOne({type: type});
-
-    if (filter) {
-      return res.status(400).json({
-        message: `Filter ${filter.type} already exist`
-      })
-    }
-    filter = new Filter(newFilter);
+    const {type,serviceName } = req.body;
+    let filter = new Filter({
+      type:type,
+      serviceName:serviceName
+    });
 
     await filter.save();
     res.status(200).json(filter);
@@ -74,7 +67,7 @@ exports.updateFilter = async (req, res) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const {type, _id} = req.body;
+    const {type, _id, serviceName, enabled} = req.body;
     let filter = await Filter.findOne({_id: _id});
 
 
@@ -84,7 +77,9 @@ exports.updateFilter = async (req, res) => {
       })
     }
 
-    filter.type = type;
+    filter.type = type?type:filter.type;
+    filter.serviceName = serviceName?serviceName:filter.serviceName;
+    filter.enabled = typeof enabled ==="boolean"?enabled:filter.enabled;
 
     await filter.save();
 

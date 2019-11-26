@@ -1,11 +1,10 @@
 const rootCatalog = require("../models/RootCatalog");
 const childCatalog = require("../models/ChildCatalog");
-const filterModel = require('../models/Filter');
 const subFilterModel = require('../models/SubFilter');
 
 const {validationResult} = require('express-validator');
 
-exports.addROOTCatalog = async (req, res, next) => {
+exports.addROOTCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -36,7 +35,7 @@ exports.addROOTCatalog = async (req, res, next) => {
   }
 };
 
-exports.updateROOTCatalog = async (req, res, next) => {
+exports.updateROOTCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -74,7 +73,7 @@ exports.updateROOTCatalog = async (req, res, next) => {
   }
 };
 
-exports.deleteROOTCatalog = async (req, res, next) => {
+exports.deleteROOTCatalog = async (req, res) => {
   try {
     const {_idrootcatalog} = req.params;
     const catalog = await rootCatalog.findById(_idrootcatalog);
@@ -98,8 +97,7 @@ exports.deleteROOTCatalog = async (req, res, next) => {
 
 };
 
-
-exports.getActiveROOTCategories = async (req, res, next) => {
+exports.getActiveROOTCategories = async (req, res) => {
   try {
     const category = await rootCatalog.find({"enabled": "true"});
     res.status(200).json(category);
@@ -110,7 +108,7 @@ exports.getActiveROOTCategories = async (req, res, next) => {
   }
 };
 
-exports.getActiveROOTCategory = async (req, res, next) => {
+exports.getActiveROOTCategory = async (req, res) => {
   try {
     const {_idrootcatalog} = req.params;
     const catalog = await rootCatalog.find({
@@ -129,7 +127,7 @@ exports.getActiveROOTCategory = async (req, res, next) => {
   }
 };
 
-exports.getROOTCategories = async (req, res, next) => {
+exports.getROOTCategories = async (req, res) => {
   try {
     const category = await rootCatalog.find();
     res.status(200).json(category);
@@ -140,7 +138,7 @@ exports.getROOTCategories = async (req, res, next) => {
   }
 };
 
-exports.getROOTCategory = async (req, res, next) => {
+exports.getROOTCategory = async (req, res) => {
   try {
     const {_idrootcatalog} = req.params;
     const catalog = await rootCatalog.findById(_idrootcatalog);
@@ -154,7 +152,7 @@ exports.getROOTCategory = async (req, res, next) => {
 
 
 ///////////////////////////////////////////////////////////////////
-exports.addChildCatalog = async (req, res, next) => {
+exports.addChildCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -185,7 +183,7 @@ exports.addChildCatalog = async (req, res, next) => {
   }
 };
 
-exports.updateChildCatalog = async (req, res, next) => {
+exports.updateChildCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -223,7 +221,7 @@ exports.updateChildCatalog = async (req, res, next) => {
   }
 };
 
-exports.deleteChildCatalog = async (req, res, next) => {
+exports.deleteChildCatalog = async (req, res) => {
   try {
     const {id} = req.params;
     const catalog = await childCatalog.findById(id);
@@ -246,8 +244,7 @@ exports.deleteChildCatalog = async (req, res, next) => {
   }
 };
 
-
-exports.getActiveChildCategoryForClient = async (req, res, next) => {
+exports.getActiveChildCategoryForClientSelectSubfilter = async (req, res) => {
   try {
     const {id} = req.params;
 
@@ -264,7 +261,27 @@ exports.getActiveChildCategoryForClient = async (req, res, next) => {
   }
 };
 
-exports.getChildCategories = async (req, res, next) => {
+exports.getActiveChildCategoryForClientAnySubfilter = async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    const catalog = await childCatalog.findById(id)
+      .populate('parentId')
+      .populate('filters.filter');
+
+    for (let i =0; i <catalog.filters.length;i++){
+      catalog.filters[i].subfilters = await subFilterModel.find({"_idFilter":catalog.filters[i].filter._id});
+    }
+
+    res.status(200).json(catalog);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.getChildCategories = async (req, res) => {
   try {
     const category = await childCatalog.find();
     res.status(200).json(category);
@@ -275,7 +292,7 @@ exports.getChildCategories = async (req, res, next) => {
   }
 };
 
-exports.getChildCategory = async (req, res, next) => {
+exports.getChildCategory = async (req, res) => {
   try {
     const {_idchildcatalog} = req.params;
     const catalog = await childCatalog.findById(_idchildcatalog);
@@ -287,7 +304,7 @@ exports.getChildCategory = async (req, res, next) => {
   }
 };
 
-exports.getChildCategoriesWithRootID = async (req, res, next) => {
+exports.getChildCategoriesWithRootID = async (req, res) => {
   try {
     const {_idrootcatalog} = req.params;
     const catalog = await childCatalog.find({"parentId": _idrootcatalog});
@@ -299,7 +316,7 @@ exports.getChildCategoriesWithRootID = async (req, res, next) => {
   }
 };
 
-exports.getActiveChildCategories = async (req, res, next) => {
+exports.getActiveChildCategories = async (req, res) => {
   try {
     const category = await childCatalog.find({"enabled": "true"});
     res.status(200).json(category);
@@ -310,7 +327,7 @@ exports.getActiveChildCategories = async (req, res, next) => {
   }
 };
 
-exports.getActiveChildCategory = async (req, res, next) => {
+exports.getActiveChildCategory = async (req, res) => {
   try {
     const {_idchildcatalog} = req.params;
     const catalog = await childCatalog.find({
@@ -329,7 +346,7 @@ exports.getActiveChildCategory = async (req, res, next) => {
   }
 };
 
-exports.getActiveChildCategoriesWithRootID = async (req, res, next) => {
+exports.getActiveChildCategoriesWithRootID = async (req, res) => {
   try {
     const {_idrootcatalog} = req.params;
     const catalog = await childCatalog.find({

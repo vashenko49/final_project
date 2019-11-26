@@ -22,10 +22,14 @@ const {
 // @desc Create new filter
 // @access Private
 router.post(
-  "/main/",
+  "/main/",[
   check('type', 'Type is required')
     .not()
     .isEmpty(),
+    check('serviceName', "serviceName is required")
+      .not()
+      .isEmpty()
+  ],
   createFilter);
 
 // @route PUT /filters/:id
@@ -33,9 +37,6 @@ router.post(
 // @access Private
 router.put(
   "/main/", [
-    check('type', 'Type is required')
-      .not()
-      .isEmpty(),
     check('_id', 'Filters id is required')
       .not()
       .isEmpty()],
