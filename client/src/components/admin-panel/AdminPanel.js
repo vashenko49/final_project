@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+import Filters from './Filters';
+import FiltersCreate from './FiltersCreate';
 import Products from './Products';
-import CreateProduct from './CreateProduct';
-import CreateModal from './CreateModal';
+import Categories from './Categories';
+
+import StyledLink from '../common/styled/StyledLink';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -20,79 +24,76 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
 
-const styles = {
-  main: {
-    padding: 20
-  }
-};
+const styles = {};
 
 class AdminPanel extends Component {
   state = {
-    isOpenMenu: false,
-    activeMenu: 'products'
+    isOpenMenu: false
   };
 
   handleOpenMenu = () => {
     this.setState({ isOpenMenu: !this.state.isOpenMenu });
   };
 
-  onClickItemMenu = item => {
-    this.setState({ activeMenu: item });
-    this.setState({ isOpenMenu: !this.state.isOpenMenu });
-  };
-
   render() {
-    const { isOpenMenu, activeMenu } = this.state;
-    const { classes } = this.props;
+    const { isOpenMenu } = this.state;
 
     return (
-      <Box>
-        <AppBar position="fixed">
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={this.handleOpenMenu}
-              edge="start"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              Administrative Panel
-            </Typography>
-          </Toolbar>
-        </AppBar>
+      <Router>
+        <Box>
+          <AppBar position="fixed">
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.handleOpenMenu}
+                edge="start"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap>
+                Administrative Panel
+              </Typography>
+            </Toolbar>
+          </AppBar>
 
-        <CreateModal title={activeMenu}>
-          <CreateProduct></CreateProduct>
-        </CreateModal>
+          <Drawer variant="temporary" anchor="left" open={isOpenMenu} onClose={this.handleOpenMenu}>
+            <div>
+              <IconButton onClick={this.handleOpenMenu}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </div>
+            <Divider />
+            <List>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/products">Products</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/categories">Categories</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/filters">Filters</StyledLink>
+                </ListItemText>
+              </ListItem>
+            </List>
+            <Divider />
+          </Drawer>
+        </Box>
 
-        <Drawer variant="temporary" anchor="left" open={isOpenMenu} onClose={this.handleOpenMenu}>
-          <div>
-            <IconButton onClick={this.handleOpenMenu}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <List>
-            <ListItem button>
-              <ListItemText primary="Products" onClick={() => this.onClickItemMenu('products')} />
-            </ListItem>
-            <ListItem button>
-              <ListItemText
-                primary="Categories"
-                onClick={() => this.onClickItemMenu('categories')}
-              />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="Brands" onClick={() => this.onClickItemMenu('brands')} />
-            </ListItem>
-          </List>
-          <Divider />
-        </Drawer>
-
-        <main className={classes.main}>{activeMenu === 'products' ? <Products /> : null}</main>
-      </Box>
+        <Box p={1}>
+          <Switch>
+            <Route exact path="/admin-panel/products" component={Products} />
+            <Route exact path="/admin-panel/filters" component={Filters} />
+            <Route exact path="/admin-panel/filters/create/:id" component={FiltersCreate} />
+            <Route exact path="/admin-panel/categories" component={Categories} />
+          </Switch>
+        </Box>
+      </Router>
     );
   }
 }

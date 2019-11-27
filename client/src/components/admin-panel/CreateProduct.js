@@ -81,6 +81,8 @@ class CreateProduct extends Component {
     const { classes, categories, brands, colors, sizes } = this.props;
     const { subCards, title, description } = this.state;
 
+    console.log(this.state);
+
     return (
       <form autoComplete="off" className={classes.form} id="create-form">
         <Typography align="center" variant="h5" component="h2" color="primary"></Typography>
