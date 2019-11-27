@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 
-import './Cart.scss'
+import './Cart.scss';
 
 export default class Bag extends Component {
-  
-  constructor(){
+  constructor() {
     super();
     this.state = {
       items: 2,
       price: 299
-    }
+    };
   }
-  
-  render(){
+
+  render() {
     return (
       <div className="bag">
         <h2>BAG</h2>
         <div>
-          <p className="about-item">{this.state.items} items | <span className="price">${this.state.price}</span></p>
+          <p className="about-item">
+            {this.state.items} items | <span className="price">${this.state.price}</span>
+          </p>
         </div>
       </div>
-    )
+    );
   }
 }

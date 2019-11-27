@@ -1,21 +1,30 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { getCurrentProduct } from '../../actions/product';
 
-import './ProductPage.scss'
+import './ProductPage.scss';
 
-export default class ProductPage extends Component {
-  
-  state = {
+class ProductPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       category: "Older Kids' Shoe",
-      name: "Nike Shox R4",
+      // name: this.props.profile.nameProduct,
       price: 58.97,
       property: [
-        "Colour Shown:White/Metallic Silver/Bright Crimson/Metallic Silver",
-        "Style:BQ4000-100"
+        'Colour Shown:White/Metallic Silver/Bright Crimson/Metallic Silver',
+        'Style:BQ4000-100'
       ]
+    };
   }
-  
-  render(){
 
+  componentDidMount() {
+    const { getCurrentProduct, match } = this.props;
+    getCurrentProduct(match.params.id);
+    console.log(this.props);
+  }
+
+  render() {
     const { category, name, price, property } = this.state;
 
     return (
@@ -32,11 +41,13 @@ export default class ProductPage extends Component {
         </div>
         <div className="product-select">
           <div className="sizes-info">
-              <p>Select Size</p>
-              <a href="/" className="size-guide">Size Guide</a>
+            <p>Select Size</p>
+            <a href="/" className="size-guide">
+              Size Guide
+            </a>
           </div>
         </div>
-        {/* need to iterate*/}
+        {/* need to iterate */}
         <div className="product-sizes container">
           <button className="light-btn">US 40</button>
           <button className="light-btn">US 40.5</button>
@@ -55,10 +66,18 @@ export default class ProductPage extends Component {
         <div className="product-discription container">
           <p className="short-discription"></p>
           <ul className="property">
-            {property.map(v => <li>{v}</li>)}
+            {property.map(v => (
+              <li>{v}</li>
+            ))}
           </ul>
         </div>
       </div>
-    )
+    );
   }
 }
+
+const mapStateToProps = state => ({
+  product: state.product
+});
+
+export default connect(mapStateToProps, { getCurrentProduct })(ProductPage);

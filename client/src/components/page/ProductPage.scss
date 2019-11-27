@@ -9,14 +9,14 @@
   padding: 20px 15px 10px 15px;
 
   .header-info {
+    font-weight: 400;
 
     font-size: 17px;
-    font-weight: 400;
 
     h2 {
       margin-top: 10px;
-      font-size: 25px;
       font-weight: 500;
+      font-size: 25px;
     }
   }
 }
@@ -47,13 +47,13 @@
   padding: 10px 20px;
 
   .light-btn {
-    text-align: center;
-    padding: 10px 0;
-    background-color: #eee;
     width: 70px;
-    border-radius: 3px;
-    color: black;
     margin: 10px;
+    padding: 10px 0;
+    color: black;
+    text-align: center;
+    background-color: #eee;
+    border-radius: 3px;
   }
 }
 
@@ -63,16 +63,16 @@
 
   button {
     width: 90%;
-    border-radius: 17px;
-    padding: 15px 0;
-    text-transform: uppercase;
-    font-size: 17px;
     margin-top: 10px;
+    padding: 15px 0;
+    font-size: 17px;
+    text-transform: uppercase;
+    border-radius: 17px;
   }
 
   .add-to-bag-btn {
-    background-color: #000;
     color: white;
+    background-color: #000;
   }
 
   .favorite-btn {
