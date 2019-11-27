@@ -185,7 +185,8 @@ exports.getAllSubFilters = async (req, res) => {
   try {
     const {_idfilter} = req.params;
 
-    const subfilters = await SubFilter.find({_idFilter:_idfilter});
+    const subfilters = await SubFilter.find({_idFilter:_idfilter})
+      .populate('_idFilter');
 
     if(!subfilters){
       return res.status(400).json({
@@ -206,7 +207,13 @@ exports.getOneSubFilter = async (req, res) => {
   try {
     const {_idSubfilter} = req.params;
 
-    const subfilter = await SubFilter.findById(_idSubfilter);
+    const subfilter = await SubFilter.findById(_idSubfilter)
+      .populate({
+        path:'populate',
+        model:'filters'
+      });
+
+
 
     if(!subfilter){
       return res.status(400).json({

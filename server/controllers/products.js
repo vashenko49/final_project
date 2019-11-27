@@ -1,5 +1,4 @@
 const Product = require("../models/Product");
-const uuid = require('order-id')(process.env.orderIdSecret);
 const _ = require('lodash');
 
 const {validationResult} = require('express-validator');
@@ -17,13 +16,13 @@ exports.addProduct = async (req, res, next) => {
       }
     }));
 
-    product.itemNo = uuid.generate();
 
     let newProduct = new Product(product);
     await newProduct.save();
 
     res.status(200).json(newProduct);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })
@@ -45,7 +44,6 @@ exports.addModelForProduct = async (req, res, next) => {
     const product = await Product.findById(model._idProduct);
 
     model = _.omit(model, '_idProduct');
-    model.modelNo = uuid.generate();
 
     product.model.push(model);
 
@@ -65,7 +63,7 @@ exports.updateProduct = async (req, res, next) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {_idProduct, enabled, description, productUrlImg, nameProduct, _idChildCategory} = req.body;
+    const {_idProduct, enabled,model, description, productUrlImg, nameProduct, _idChildCategory} = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -74,11 +72,13 @@ exports.updateProduct = async (req, res, next) => {
     product.productUrlImg = _.isArray(productUrlImg) ? productUrlImg : product.productUrlImg;
     product.nameProduct = _.isString(nameProduct) ? nameProduct : product.nameProduct;
     product._idChildCategory = _.isString(_idChildCategory) ? _idChildCategory : product._idChildCategory;
+    product.model = _.isArray(model)?model:product.model;
 
 
     await product.save();
     res.status(200).json(product);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })

@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const uuid = require('order-id')(process.env.orderIdSecret);
 
 const ProductSchema = new Schema(
   {
     itemNo:{
       type:String,
-      required: true
+      default: uuid.generate()
     },
     nameProduct:{
       type:String,
@@ -65,7 +66,7 @@ const ProductSchema = new Schema(
         },
         modelNo:{
           type:String,
-          required:true
+          default: uuid.generate()
         }
       }
     ]
