@@ -6,11 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 export function configureStore(initState) {
   const logger = createLogger();
-  const store = createStore(
-    reducers,
-    initState,
-    composeWithDevTools(applyMiddleware(logger, thunk))
-  );
+  const store = createStore(reducers, {}, composeWithDevTools(applyMiddleware(logger, thunk)));
 
   return store;
 }

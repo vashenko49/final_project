@@ -1,22 +1,20 @@
 import { GET_PRODUCT, PRODUCT_ERROR } from '../constants/product';
 
 const initialState = {
-  product: null,
+  product: '',
   products: [],
-  loading: true,
+  loading: false,
   error: {}
 };
 
 export default function(state = initialState, action) {
   const { type, payload } = action;
-  console.log(payload);
-
   switch (type) {
     case GET_PRODUCT:
       return {
         ...state,
-        product: payload,
-        loading: false
+        product: payload.description,
+        loading: true
       };
     default:
       return state;
