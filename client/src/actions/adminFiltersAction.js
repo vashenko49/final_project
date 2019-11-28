@@ -8,7 +8,7 @@ export function getFilters() {
       type: FILTERS.GET_API_FILTERS_REQUEST
     });
 
-    AdminFiltersAPI.getProducts()
+    AdminFiltersAPI.getFilters()
       .then(res => {
         return dispatch({
           type: FILTERS.GET_API_FILTERS_SUCCEEDED,
@@ -42,6 +42,28 @@ export function getFiltersById(id) {
       .catch(err => {
         return dispatch({
           type: FILTERS.GET_ID_API_FILTERS_FAILED,
+          payload: err
+        });
+      });
+  };
+}
+
+export function addFilters(data) {
+  return dispatch => {
+    dispatch({
+      type: FILTERS.ADD_API_FILTERS_REQUEST
+    });
+
+    AdminFiltersAPI.addFilters(data)
+      .then(res => {
+        return dispatch({
+          type: FILTERS.ADD_API_FILTERS_SUCCEEDED,
+          payload: res
+        });
+      })
+      .catch(err => {
+        return dispatch({
+          type: FILTERS.ADD_API_FILTERS_FAILED,
           payload: err
         });
       });

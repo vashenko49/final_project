@@ -89,7 +89,8 @@ class AdminPanel extends Component {
           <Switch>
             <Route exact path="/admin-panel/products" component={Products} />
             <Route exact path="/admin-panel/filters" component={Filters} />
-            <Route exact path="/admin-panel/filters/create/:id" component={FiltersCreate} />
+            <Route exact path="/admin-panel/filters/new" component={FiltersCreate} />
+            <Route exact path="/admin-panel/filters/:id" component={FiltersCreate} />
             <Route exact path="/admin-panel/categories" component={Categories} />
           </Switch>
         </Box>

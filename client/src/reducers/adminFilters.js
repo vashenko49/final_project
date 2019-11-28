@@ -2,6 +2,7 @@ import * as FILTERS from '../constants/adminFilters';
 
 const initState = {
   data: [],
+  dataOne: {},
   loading: false,
   error: {
     status: false,
@@ -52,12 +53,41 @@ export default function(state = initState, action) {
       return {
         ...state,
         ...{
-          data: action.payload,
+          dataOne: { ...action.payload },
           loading: false
         }
       };
 
     case FILTERS.GET_ID_API_FILTERS_FAILED:
+      return {
+        ...state,
+        ...{
+          loading: false,
+          error: {
+            status: true,
+            msg: action.payload
+          }
+        }
+      };
+
+    case FILTERS.ADD_API_FILTERS_REQUEST:
+      return {
+        ...state,
+        ...{
+          loading: true
+        }
+      };
+
+    case FILTERS.ADD_API_FILTERS_SUCCEEDED:
+      return {
+        ...state,
+        ...{
+          data: [...state.data, ...action.payload],
+          loading: false
+        }
+      };
+
+    case FILTERS.ADD_API_FILTERS_FAILED:
       return {
         ...state,
         ...{

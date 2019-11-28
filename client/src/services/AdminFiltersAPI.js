@@ -2,15 +2,16 @@ export default class AdminFiltersAPI {
   static data = [
     {
       id: '0',
-      title: 'Filter 1',
-      subFilter: [
+      title: 'Color',
+      serviceName: 'filter for color',
+      subFilters: [
         {
           id: '00',
-          title: 'sub filter 0 1'
+          title: 'blue'
         },
         {
           id: '01',
-          title: 'sub filter 0 2'
+          title: 'red'
         }
       ]
     },
@@ -52,7 +53,14 @@ export default class AdminFiltersAPI {
 
   static getFiltersById(id) {
     return new Promise((resolve, reject) => {
-      resolve(this.data.filter(i => i.id == id));
+      resolve(this.data.filter(i => i.id === id)[0]);
+    });
+  }
+
+  static addFilters(data) {
+    console.log(data);
+    return new Promise((resolve, reject) => {
+      resolve([data]);
     });
   }
 }
