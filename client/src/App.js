@@ -14,6 +14,11 @@ import PasswordRecovery from './components/auth/PasswordRecovery';
 
 const store = configureStore();
 
+store.subscribe(() => {
+  console.log('--> ');
+  console.log(store.getState());
+});
+
 function App() {
   return (
     <Provider store={store}>

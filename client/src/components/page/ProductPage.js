@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getCurrentProduct } from '../../actions/product';
 
 import './ProductPage.scss';
+import { bindActionCreators } from 'redux';
 
 class ProductPage extends Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class ProductPage extends Component {
   componentDidMount() {
     const { getCurrentProduct, match } = this.props;
     getCurrentProduct(match.params.id);
+    console.log('--->');
     console.log(this.props);
   }
 
@@ -63,6 +65,7 @@ class ProductPage extends Component {
         {/* <div className="product-photos">
           <img></img>
         </div> */}
+        <p>{this.props.product.product}</p>
         <div className="product-discription container">
           <p className="short-discription"></p>
           <ul className="property">
@@ -76,8 +79,18 @@ class ProductPage extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  product: state.product
-});
+const mapStateToProps = state => {
+  console.log('---> state');
+  console.log(state);
+  return {
+    ...state
+  };
+};
 
-export default connect(mapStateToProps, { getCurrentProduct })(ProductPage);
+function mapDispatchToProps(dispatch) {
+  return {
+    getCurrentProduct: bindActionCreators(getCurrentProduct, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);
