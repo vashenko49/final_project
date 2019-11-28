@@ -4,74 +4,97 @@ const uuid = require('order-id')(process.env.orderIdSecret);
 
 const ProductSchema = new Schema(
   {
-    itemNo:{
-      type:String,
+    itemNo: {
+      type: String,
       default: uuid.generate()
     },
-    nameProduct:{
-      type:String,
+    nameProduct: {
+      type: String,
       required: true
     },
-    enabled:{
+    warning: [{
+      type: String
+    }],
+    enabled: {
       type: Boolean,
       default: false
     },
-    _idChildCategory:{
+    _idChildCategory: {
       type: Schema.Types.ObjectID,
-      required:true,
+      required: true,
       ref: "childcatalogs"
     },
-    description:{
+    description: {
       type: String,
       default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultrices nunc sit amet ipsum auctor, eu laoreet ante mattis. Nullam nibh nibh, suscipit in aliquet in, sodales vitae tellus. Nam ut lorem aliquam, ornare nunc non, interdum ex. Aenean sit amet pretium mauris. Nunc eu diam eu odio feugiat eleifend ut non ex. Vestibulum sed magna in nisl ultrices consequat. Curabitur luctus sapien eu nunc efficitur, eu mattis libero sollicitudin. Aliquam accumsan magna a varius consectetur. Aliquam non ligula ex. Maecenas luctus arcu nulla, vitae auctor odio fringilla quis. Nam sollicitudin eu sem ac sodales. Sed ac nibh nunc."
     },
-    filters:[
+    filters: [
       {
-        type:Schema.Types.ObjectID,
-        ref:'subfilters'
+        filter: {
+          type: Schema.Types.ObjectID,
+          ref: 'filters'
+        },
+        subFilter: {
+
+          type: Schema.Types.ObjectID,
+          ref: 'subfilters'
+        }
       }
     ],
-    productUrlImg:[
+    productUrlImg: [
       {
         type: String
       }
     ],
-    model:[
+    model: [
       {
-        filter:[
+        warning: [{
+          type: String
+        }],
+        filters: [
           {
-            type:Schema.Types.ObjectID,
-            ref:'subfilters'
+            filter: {
+              type: Schema.Types.ObjectID,
+              ref: 'filters'
+            },
+            subFilter: {
+
+              type: Schema.Types.ObjectID,
+              ref: 'subfilters'
+            }
           }
         ],
-        modelUrlImg:[
+        modelUrlImg: [
           {
-            type:String
+            type: String
           }
         ],
-        quantity:{
+        quantity: {
           type: Number,
           required: true
         },
-        currentPrice:{
+        currentPrice: {
           type: Number,
-          required:true
+          required: true
         },
-        previousPrice:{
+        previousPrice: {
           type: Number
         },
-        enabled:{
+        enabled: {
           type: Boolean,
           default: false
         },
-        modelNo:{
-          type:String,
+        modelNo: {
+          type: String,
           default: uuid.generate()
         }
       }
     ]
-  },
-  { strict: false }
+  }
 );
 
 module.exports = Product = mongoose.model("products", ProductSchema, 'products');
+
+
+
+
