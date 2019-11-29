@@ -15,6 +15,8 @@ const {
   updateSubFilter,
   getAllSubFilters,
   getOneSubFilter,
+  searchInSubFilter,
+  searchInFilter,
   deleteSubFilter
 } = require("../controllers/filters");
 
@@ -22,7 +24,7 @@ const {
 // @desc Create new filter
 // @access Private
 router.post(
-  "/main/",[
+  "/main",[
   check('type', 'Type is required')
     .not()
     .isEmpty(),
@@ -36,7 +38,7 @@ router.post(
 // @desc Update filter
 // @access Private
 router.put(
-  "/main/", [
+  "/main", [
     check('_id', 'Filters id is required')
       .not()
       .isEmpty()],
@@ -48,6 +50,14 @@ router.put(
 router.get(
   "/main/all",
   getAllFilters
+);
+
+// @route GET /filters/all
+// @desc Get all filters
+// @access Private
+router.get(
+  "/main/all/:searchWord",
+  searchInFilter
 );
 
 // @route GET /filters/one/:_idfilter
@@ -98,11 +108,18 @@ router.put(
   updateSubFilter
 );
 
-// @route GET /all/idfilter
+// @route GET /all/searchWord
+// @desc Search subfilter by name
+// @access public
+router.get(
+  "/sub/all/:searchWord",
+  searchInSubFilter);
+
+// @route GET /all
 // @desc Get all subfilters thought id filter
 // @access public
 router.get(
-  "/sub/all/:_idfilter",
+  "/sub/all",
   getAllSubFilters);
 
 // @route GET /subfilters/idfilter

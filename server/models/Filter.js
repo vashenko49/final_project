@@ -7,6 +7,13 @@ const FilterSchema = new Schema(
       type: String,
       required: true
     },
+    _idSubFilters:[
+      {
+        type:Schema.Types.ObjectID,
+        required:true,
+        ref:'subfilters'
+      }
+    ],
     serviceName:{
       type: String,
       required: true

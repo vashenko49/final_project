@@ -13,19 +13,22 @@ const {
   deleteProduct,
   deleteModelProduct,
   getProductById,
+  getProductsFilterParams,
+  searchProductsHeader,
+  searchProducts
 } = require("../controllers/products");
 
 // @route   POST /products
 // @desc    Create new product
 // @access  Private
 router.post(
-  "/",[
-  check('nameProduct', 'nameProduct is required')
-    .not()
-    .isEmpty(),
-  check('_idChildCategory', '_idChildCategory is required')
-    .not()
-    .isEmpty(),
+  "/", [
+    check('nameProduct', 'nameProduct is required')
+      .not()
+      .isEmpty(),
+    check('_idChildCategory', '_idChildCategory is required')
+      .not()
+      .isEmpty(),
   ],
   addProduct
 );
@@ -39,7 +42,7 @@ router.post(
     check('_idProduct', 'Id product is require')
       .not()
       .isEmpty(),
-    check('filter', 'Filter is require')
+    check('filters', 'Filter is require')
       .isArray(),
     check('quantity', 'Subfilter is require')
       .not()
@@ -66,11 +69,11 @@ router.put(
 // @desc    Update existing product
 // @access  Private
 router.put(
-  "/model",[
-  check('_idProduct', '_idProduct is required')
-    .not()
-    .isEmpty(),
-    check('modelNo','modelNo is require')
+  "/model", [
+    check('_idProduct', '_idProduct is required')
+      .not()
+      .isEmpty(),
+    check('modelNo', 'modelNo is require')
       .not()
       .isEmpty()
   ],
@@ -89,6 +92,21 @@ router.get("/", getProducts);
 router.get(
   "/:id",
   getProductById
+);
+
+
+// @route   GET /products/searchheader/:searchheader
+// @desc    search for header. give 5 products
+// @access  Public
+router.get('/searchheader/:searchheader',
+  searchProductsHeader
+);
+
+// @route   GET /products/searchheader/:searchheader
+// @desc    Seach products
+// @access  Public
+router.get('/search/:searchheader',
+  searchProducts
 );
 
 // @route   DELETE /products/:id

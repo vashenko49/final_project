@@ -1,6 +1,10 @@
 const Filter = require("../models/Filter");
 const SubFilter = require("../models/SubFilter");
-const {validationResult } = require('express-validator');
+const ChildCatalog = require('../models/ChildCatalog');
+const Product = require('../models/Product');
+const {validationResult} = require('express-validator');
+const commonFilterOrSubFilter = require('../common/commonFilterOrSubFilter');
+const mongoose = require('mongoose');
 
 const _ = require("lodash");
 
@@ -9,28 +13,57 @@ exports.createFilter = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const {type,serviceName } = req.body;
-    let filter = new Filter({
-      type:type,
-      serviceName:serviceName
-    });
 
-    await filter.save();
-    res.status(200).json(filter);
+    let filter = _.cloneDeepWith(req.body, (value => {
+      if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
+        return value;
+      }
+    }));
+
+    const isExist = await Filter.findOne({serviceName: filter.serviceName});
+
+    if (isExist) {
+      return res.status(400).json({
+        message: `Filter with service name (${filter.serviceName}) already exist`
+      })
+    }
+
+    if (filter._idSubFilters) {
+      filter._idSubFilters = await commonFilterOrSubFilter.sortingSubFilter(filter);
+    }
+
+    let newFilter = new Filter(filter);
+
+    await newFilter.save();
+    res.status(200).json(newFilter);
 
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: 'Server Error!'
     })
   }
 };
 
+exports.searchInFilter = async (req, res) => {
+  try {
+    const {searchWord} = req.params;
+    const filters = await Filter.find({"serviceName": {$regex: decodeURI(searchWord)}});
+    res.status(200).json(filters);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    });
+  }
+};
+
 exports.getAllFilters = async (req, res) => {
   try {
-    const filters = await Filter.find().sort({data: -1});
+    const filters = await Filter.find().sort({data: -1})
+      .populate('_idSubFilters');
 
     res.status(200).json(filters);
   } catch (err) {
@@ -43,9 +76,10 @@ exports.getOneFilters = async (req, res) => {
   try {
     const {_idfilter} = req.params;
 
-    const filter = await Filter.findById(_idfilter);
+    const filter = await Filter.findById(_idfilter)
+      .populate('_idSubFilters');
 
-    if(!filter){
+    if (!filter) {
       return res.status(400).json({
         message: `Filter with id ${_idfilter} is not found`
       })
@@ -64,11 +98,18 @@ exports.updateFilter = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const {type, _id, serviceName, enabled} = req.body;
-    let filter = await Filter.findOne({_id: _id});
+
+    let newDataFilter = _.cloneDeepWith(req.body, (value => {
+      if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
+        return value;
+      }
+    }));
+    newDataFilter._idSubFilters = await commonFilterOrSubFilter.sortingSubFilter(newDataFilter);
+
+    let filter = await Filter.findOne({_id: newDataFilter._id});
 
 
     if (!filter) {
@@ -77,9 +118,11 @@ exports.updateFilter = async (req, res) => {
       })
     }
 
-    filter.type = type?type:filter.type;
-    filter.serviceName = serviceName?serviceName:filter.serviceName;
-    filter.enabled = typeof enabled ==="boolean"?enabled:filter.enabled;
+
+    filter.type = _.isString(newDataFilter.type) ? newDataFilter.type : filter.type;
+    filter.serviceName = _.isString(newDataFilter.serviceName) ? newDataFilter.serviceName : filter.serviceName;
+    filter.enabled = _.isBoolean(newDataFilter.enabled) ? newDataFilter.enabled : filter.enabled;
+    filter._idSubFilters = _.isArray(newDataFilter._idSubFilters) ? newDataFilter._idSubFilters : filter._idSubFilters;
 
     await filter.save();
 
@@ -97,13 +140,45 @@ exports.deleteFilter = async (req, res) => {
 
     let filter = await Filter.findById(req.params._id);
 
-    if(!filter){
+    if (!filter) {
       return res.status(400).json({
         message: `Filter with id ${req.params._id} is not found`
       })
     }
 
-    await filter.delete();
+    //1 - product
+    //2 - catalog
+    //3 - filter
+
+    let modelFilter = await Product.find({'model.filters.filter':filter});
+
+    if(modelFilter.length>0){
+      return res.status(200).json({
+        message: `Filter is used a product'\s model `,
+        product:modelFilter
+      })
+    }
+
+    let productFilter = await Product.find({'filters.filter':filter});
+
+    if(productFilter.length>0){
+      return res.status(200).json({
+        message: `Filter is used a product `,
+        product:productFilter
+      })
+    }
+
+    let catalog = await ChildCatalog.find({"filters.filter":filter});
+
+    if(catalog.length>0){
+      return res.status(200).json({
+        message: `Filter is used a catalog `,
+        catalog:catalog
+      })
+    }
+
+
+    //await filter.delete();
 
     res.status(200).json({msg: 'Filter deleted'})
   } catch (err) {
@@ -125,7 +200,7 @@ exports.createSubFilter = async (req, res) => {
 
     if (subFilter) {
       return res.status(400).json({
-        message: `Filter ${name} already exist`
+        message: `Subfilter ${name} already exist`
       })
     }
     subFilter = new SubFilter({
@@ -160,14 +235,15 @@ exports.updateSubFilter = async (req, res) => {
       })
     }
 
-    let findDuplicate = await SubFilter.find({name:name});
+    let findDuplicate = await SubFilter.find({name: name});
 
 
-    if(findDuplicate.length>0){
+    if (findDuplicate.length > 0) {
       return res.status(400).json({
         message: `SubFilter with name ${name} is exists`
       })
     }
+
     subFilter.name = name;
 
     await subFilter.save();
@@ -181,17 +257,22 @@ exports.updateSubFilter = async (req, res) => {
   }
 };
 
+exports.searchInSubFilter = async (req, res) => {
+  try {
+    const {searchWord} = req.params;
+    const subfilters = await SubFilter.find({"name": {$regex: decodeURI(searchWord)}});
+    res.status(200).json(subfilters);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    });
+  }
+};
+
 exports.getAllSubFilters = async (req, res) => {
   try {
-    const {_idfilter} = req.params;
 
-    const subfilters = await SubFilter.find({_idFilter:_idfilter});
-
-    if(!subfilters){
-      return res.status(400).json({
-        message: `SubFilters with a filter\'s id ${_idfilter} is not found`
-      })
-    }
+    const subfilters = await SubFilter.find();
 
     res.status(200).json(subfilters);
 
@@ -208,7 +289,7 @@ exports.getOneSubFilter = async (req, res) => {
 
     const subfilter = await SubFilter.findById(_idSubfilter);
 
-    if(!subfilter){
+    if (!subfilter) {
       return res.status(400).json({
         message: `SubFilter with id ${_idSubfilter} is not found`
       })
@@ -223,19 +304,61 @@ exports.getOneSubFilter = async (req, res) => {
   }
 };
 
+
 exports.deleteSubFilter = async (req, res) => {
   try {
     const {_idSubfilter} = req.params;
     let subFilter = await SubFilter.findById(_idSubfilter);
 
-    if(!subFilter){
+    if (!subFilter) {
       return res.status(400).json({
         message: `SubFilter with id ${_idSubfilter} is not found`
       })
     }
 
-    await subFilter.delete();
+    //1 - product
+    //2 - catalog
+    //3 - filter
 
+    let modelFilter = await Product.find({'model.filters.subFilter':_idSubfilter});
+
+    if(modelFilter.length>0){
+      return res.status(200).json({
+        message: `subfilter is using a product'\s model `,
+        product:modelFilter
+      })
+    }
+
+    let productFilter = await Product.find({'filters.subFilter':_idSubfilter});
+
+    if(productFilter.length>0){
+      return res.status(200).json({
+        message: `subfilter is using a product `,
+        product:productFilter
+      })
+    }
+
+    let catalog = await ChildCatalog.find({"filters.subfilters":_idSubfilter});
+
+    if(catalog.length>0){
+      return res.status(200).json({
+        message: `subfilter is using a catalog `,
+        catalog:catalog
+      })
+    }
+
+    let filter = await Filter.find({"_idSubFilters":_idSubfilter});
+
+    if(filter.length>0){
+      return res.status(200).json({
+        message: `subfilter is used a filter `,
+        filter:filter
+      })
+    }
+
+
+
+    await subFilter.delete();
     res.status(200).json({msg: 'SubFilter deleted'})
   } catch (err) {
     res.status(500).json({

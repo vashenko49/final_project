@@ -1,6 +1,10 @@
+const Product =  require ("../models/Product");
+
 const rootCatalog = require("../models/RootCatalog");
 const childCatalog = require("../models/ChildCatalog");
 const subFilterModel = require('../models/SubFilter');
+
+const _ = require('lodash');
 
 const {validationResult} = require('express-validator');
 
@@ -82,7 +86,17 @@ exports.deleteROOTCatalog = async (req, res) => {
         message: `Catalog with id "${_idrootcatalog}" is not found.`
       });
     }
-    await childCatalog.deleteMany({parentId: catalog._id});
+
+
+
+    let childCatalogy = await childCatalog.find({parentId: catalog._id});
+
+    if(childCatalogy.length>0){
+      return res.status(200).json({
+        message: `Root catalog is using a child catalog `,
+        product:childCatalogy
+      })
+    }
 
     await catalog.delete();
     res.status(200).json({
@@ -160,13 +174,6 @@ exports.addChildCatalog = async (req, res) => {
     }
     const {name, parentId, filters = []} = req.body;
 
-    const isChildCatalogExists = await childCatalog.findOne({name: name});
-
-    if (isChildCatalogExists) {
-      return res.status(400).json({
-        message: `Child catalog ${name} already exists`
-      })
-    }
 
     let catalog = new childCatalog({
       name: name,
@@ -190,7 +197,7 @@ exports.updateChildCatalog = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {name, _id, enabled = false} = req.body;
+    const {name, _id, enabled = false, filters} = req.body;
 
     const catalog = await childCatalog.findById(_id);
 
@@ -200,21 +207,18 @@ exports.updateChildCatalog = async (req, res) => {
       })
     }
 
-    const isFilterExists = await childCatalog.findOne({name: name});
-    if (isFilterExists) {
-      return res.status(400).json({
-        message: `Child catalog ${name} already exists`
-      })
-    }
-
 
     catalog.name = name;
     catalog.enabled = enabled;
+    catalog.filters = filters;
+
+
     await catalog.save();
     res.status(200).json(catalog);
 
 
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })
@@ -231,7 +235,19 @@ exports.deleteChildCatalog = async (req, res) => {
       });
     }
 
-    await catalog.delete();
+    const product = await Product.find({'_idChildCategory':id});
+
+    if(product.length>0){
+      return res.status(200).json({
+        message: `Child catalog is using a product `,
+        product:product
+      })
+    }
+
+
+
+    //await catalog.delete();
+
     res.status(200).json({
       message: `Child catalog witn id "${id}" is successfully deleted from DB.`,
       deletedCategoryInfo: catalog
@@ -267,11 +283,12 @@ exports.getActiveChildCategoryForClientAnySubfilter = async (req, res) => {
 
     const catalog = await childCatalog.findById(id)
       .populate('parentId')
-      .populate('filters.filter');
-
-    for (let i =0; i <catalog.filters.length;i++){
-      catalog.filters[i].subfilters = await subFilterModel.find({"_idFilter":catalog.filters[i].filter._id});
-    }
+      .populate({
+        path: 'filters.filter',
+        populate:{
+          path: "_idSubFilters"
+        }
+      });
 
     res.status(200).json(catalog);
   } catch (e) {
