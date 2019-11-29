@@ -6,6 +6,7 @@ import Filters from './Filters';
 import FiltersDetail from './FiltersDetail';
 import Products from './Products';
 import Categories from './Categories';
+import CategoriesDetail from './CategoriesDetail';
 
 import StyledLink from '../common/styled/StyledLink';
 
@@ -92,6 +93,8 @@ class AdminPanel extends Component {
             <Route exact path="/admin-panel/filters/new" component={FiltersDetail} />
             <Route exact path="/admin-panel/filters/:id" component={FiltersDetail} />
             <Route exact path="/admin-panel/categories" component={Categories} />
+            <Route exact path="/admin-panel/categories/new" component={CategoriesDetail} />
+            <Route exact path="/admin-panel/categories/:id" component={CategoriesDetail} />
           </Switch>
         </Box>
       </Router>

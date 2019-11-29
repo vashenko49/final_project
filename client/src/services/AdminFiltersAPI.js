@@ -1,52 +1,6 @@
 import axios from 'axios';
 
 export default class AdminFiltersAPI {
-  static data = [
-    {
-      id: '0',
-      title: 'Color',
-      serviceName: 'filter for color',
-      subFilters: [
-        {
-          id: '00',
-          title: 'blue'
-        },
-        {
-          id: '01',
-          title: 'red'
-        }
-      ]
-    },
-    {
-      id: '1',
-      title: 'Filter 2',
-      subFilter: [
-        {
-          id: '10',
-          title: 'sub filter 1 1'
-        },
-        {
-          id: '11',
-          title: 'sub filter 1 2'
-        }
-      ]
-    },
-    {
-      id: '2',
-      title: 'Filter 3',
-      subFilter: [
-        {
-          id: '20',
-          title: 'sub filter 2 1'
-        },
-        {
-          id: '21',
-          title: 'sub filter 2 2'
-        }
-      ]
-    }
-  ];
-
   static apiHost = 'https://5000-f1d638f2-52f2-40ef-b477-c73308c7e1c1.ws-eu01.gitpod.io';
 
   static getFilters() {

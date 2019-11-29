@@ -178,7 +178,7 @@ exports.deleteFilter = async (req, res) => {
     }
 
 
-    //await filter.delete();
+    await filter.delete();
 
     res.status(200).json({msg: 'Filter deleted'})
   } catch (err) {
