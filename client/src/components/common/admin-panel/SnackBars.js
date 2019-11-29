@@ -102,8 +102,6 @@ class SnackBars extends Component {
     const { variant, message } = this.props;
     const { open } = this.state;
 
-    console.log('render', this.state.open, this.props.open);
-
     return (
       <div>
         <Snackbar

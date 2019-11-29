@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default class AdminFiltersAPI {
   static data = [
     {
@@ -45,6 +47,8 @@ export default class AdminFiltersAPI {
     }
   ];
 
+  static apiHost = 'http://localhost:5000';
+
   static getFilters() {
     return new Promise((resolve, reject) => {
       resolve(this.data);
@@ -59,9 +63,14 @@ export default class AdminFiltersAPI {
 
   static addFilters(data) {
     console.log('addFilters', data);
-    return new Promise((resolve, reject) => {
-      resolve([data]);
-    });
+
+    const sendData = {
+      type: data.title,
+      serviceName: data.serviceName,
+      _idSubFilters: data.subFilters.map(item => ({ name: item }))
+    };
+
+    return axios.post(`${this.apiHost}/filters/main`, sendData);
   }
 
   static updateFilters(data) {
