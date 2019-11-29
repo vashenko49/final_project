@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const {validationResult} = require('express-validator');
-const mongoose =require('mongoose');
+const mongoose = require('mongoose');
 
 const Product = require("../models/Product");
 const ChildCatalog = require('../models/ChildCatalog');
@@ -35,20 +35,22 @@ exports.addProduct = async (req, res, next) => {
       }
     );
 
-    let childCatalog = await ChildCatalog.findOne({'filters.filter':filter.map(element=>{
-      return mongoose.Types.ObjectId(element.filter);
-      })});
+    let childCatalog = await ChildCatalog.findOne({
+      'filters.filter': filter.map(element => {
+        return mongoose.Types.ObjectId(element.filter);
+      })
+    });
 
     //добавляем в каталог ранее не используемые под фильтры
-    childCatalog.filters.forEach((catalog, index)=>{
-      filter.forEach((fil)=>{
-        if(catalog.filter.toString()===fil.filter){
-          childCatalog.filters[index].subfilters = _.union(childCatalog.filters[index].subfilters,[fil.subFilter])
+    childCatalog.filters.forEach((catalog, index) => {
+      filter.forEach((fil) => {
+        if (catalog.filter.toString() === fil.filter) {
+          childCatalog.filters[index].subfilters = _.union(childCatalog.filters[index].subfilters, [fil.subFilter])
         }
       })
     });
 
-    await  childCatalog.save();
+    await childCatalog.save();
 
 
     let newProduct = new Product(product);
@@ -86,7 +88,6 @@ exports.addModelForProduct = async (req, res, next) => {
     model = _.omit(model, '_idProduct');
 
     product.model.push(model);
-    console.log(model);
     await product.save();
     res.status(200).json(product)
   } catch (e) {
@@ -107,7 +108,11 @@ exports.updateProduct = async (req, res, next) => {
 
     const product = await Product.findById(_idProduct);
 
-
+    if(!product){
+      res.status(400).json({
+        message:"Product not found"
+      })
+    }
 
 
     let filter = _.isArray(filters) ? filters : product.filters;
@@ -126,23 +131,22 @@ exports.updateProduct = async (req, res, next) => {
     );
 
 
-    let childCatalog = await ChildCatalog.findOne({'filters.filter':filter.map(element=>{
+    let childCatalog = await ChildCatalog.findOne({
+      'filters.filter': filter.map(element => {
         return mongoose.Types.ObjectId(element.filter);
-      })});
+      })
+    });
 
     //добавляем в каталог ранее не используемые под фильтры
-    childCatalog.filters.forEach((catalog, index)=>{
-      filter.forEach((fil)=>{
-        if(catalog.filter.toString()===fil.filter){
-          childCatalog.filters[index].subfilters = _.union(childCatalog.filters[index].subfilters,[fil.subFilter])
+    childCatalog.filters.forEach((catalog, index) => {
+      filter.forEach((fil) => {
+        if (catalog.filter.toString() === fil.filter) {
+          childCatalog.filters[index].subfilters = _.union(childCatalog.filters[index].subfilters, [fil.subFilter])
         }
       })
     });
 
-    await  childCatalog.save();
-
-
-
+    await childCatalog.save();
 
 
     product.enabled = _.isBoolean(enabled) ? enabled : product.enabled;
@@ -208,6 +212,48 @@ exports.deleteProduct = async (req, res, next) => {
         message: `Product with id ${id} is not found`
       })
     }
+
+
+    let filter = product.filters;
+    product.model.forEach(element => {
+      filter = _.concat(filter, element.filters);
+    });
+
+    filter = filter.map(element => {
+      const {filter, subFilter} = element;
+      return {filter, subFilter};
+    });
+
+    filter = _.map(
+      _.uniq(
+        _.map(filter, function (obj) {
+          return JSON.stringify(obj);
+        })
+      ), function (obj) {
+        return JSON.parse(obj);
+      }
+    );
+
+
+    //контроль не используемых подфильтров в категории
+    for (let i = 0; i < filter.length; i++) {
+      const {subFilter, filter} = filter[i];
+      const isUseSubFilterInProduct = await Product.find({
+        $or: [
+          {"filters.subFilter": subFilter},
+          {"model.filters.subFilter": subFilter}
+        ]
+      });
+      if (isUseSubFilterInProduct.length <= 0) {
+        await ChildCatalog
+          .update(
+            {_id:mongoose.Types.ObjectId(filter)},
+            {$pull:{"filters.$[].subfilters":subFilter}},
+          )
+      }
+    }
+
+
     await product.delete();
     res.status(200).json({msg: 'Product deleted'})
   } catch (err) {
@@ -277,11 +323,6 @@ exports.getProductById = async (req, res, next) => {
   }
 };
 
-
-exports.getProductsFilterParams = async (req, res, next) => {
-
-};
-
 exports.searchProductsHeader = async (req, res, next) => {
   try {
     const {searchheader} = req.params;
@@ -296,10 +337,26 @@ exports.searchProductsHeader = async (req, res, next) => {
 
 exports.searchProducts = async (req, res, next) => {
   try {
-    const {searchheader} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}});
+    const {search} = req.params;
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}});
     res.status(200).json(products);
   } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    });
+  }
+};
+
+
+exports.getProductsFilterParams = async (req, res, next) => {
+  try {
+    let {_idChildCatalog, _idSubFilters} = req.query;
+    _idSubFilters =_idSubFilters.split(',');
+    console.log(_idSubFilters);
+    console.log(_idChildCatalog);
+    res.status(200).send('sdsdsdf')
+
+  }catch (e) {
     res.status(500).json({
       message: 'Server Error!'
     });

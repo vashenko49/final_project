@@ -13,7 +13,7 @@ exports.createFilter = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(400).json({errors: errors.array()});
     }
 
 
@@ -146,39 +146,15 @@ exports.deleteFilter = async (req, res) => {
       })
     }
 
-    //1 - product
-    //2 - catalog
-    //3 - filter
 
-    let modelFilter = await Product.find({'model.filters.filter':filter});
+    let validate = await commonFilterOrSubFilter.validateRemoveFilter(req.params._id);
 
-    if(modelFilter.length>0){
-      return res.status(200).json({
-        message: `Filter is used a product'\s model `,
-        product:modelFilter
-      })
-    }
-
-    let productFilter = await Product.find({'filters.filter':filter});
-
-    if(productFilter.length>0){
-      return res.status(200).json({
-        message: `Filter is used a product `,
-        product:productFilter
-      })
-    }
-
-    let catalog = await ChildCatalog.find({"filters.filter":filter});
-
-    if(catalog.length>0){
-      return res.status(200).json({
-        message: `Filter is used a catalog `,
-        catalog:catalog
-      })
+    if (validate) {
+      return res.status(400).json(validate);
     }
 
 
-    //await filter.delete();
+    await filter.delete();
 
     res.status(200).json({msg: 'Filter deleted'})
   } catch (err) {
@@ -188,14 +164,60 @@ exports.deleteFilter = async (req, res) => {
   }
 };
 
+exports.removeManyFilters = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
+
+    let response = [];
+
+    const {_idFiltersForDeletion} = req.body;
+
+    for (let i = 0; i < _idFiltersForDeletion.length; i++) {
+
+      let responseOneFilter = {};
+      let filter = await Filter.findById(_idFiltersForDeletion[i]);
+
+      if (!filter) {
+        return res.status(400).json({
+          message: `Filter with id ${req.params._id} is not found`
+        })
+      }
+
+
+      let validate = await commonFilterOrSubFilter.validateRemoveFilter(_idFiltersForDeletion[i]);
+
+      responseOneFilter._idFilter = _idFiltersForDeletion[i];
+      if (validate) {
+        responseOneFilter.validate = validate;
+        responseOneFilter.status = 400;
+      } else {
+        responseOneFilter.status = 200;
+        await filter.delete();
+
+      }
+
+      response.push(responseOneFilter);
+    }
+    res.status(200).json(response);
+  } catch (e) {
+    res.status(500).json({
+      message: `Error happened on server: "${e}" `
+    })
+  }
+};
+
+
 exports.createSubFilter = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()});
     }
-    const {_idFilter, name} = req.body;
-    let subFilter = await SubFilter.findOne({name: name, _idFilter: _idFilter});
+    const {name} = req.body;
+    let subFilter = await SubFilter.findOne({name: name});
 
 
     if (subFilter) {
@@ -204,7 +226,6 @@ exports.createSubFilter = async (req, res) => {
       })
     }
     subFilter = new SubFilter({
-      _idFilter: _idFilter,
       name: name
     });
 
@@ -304,7 +325,6 @@ exports.getOneSubFilter = async (req, res) => {
   }
 };
 
-
 exports.deleteSubFilter = async (req, res) => {
   try {
     const {_idSubfilter} = req.params;
@@ -316,49 +336,13 @@ exports.deleteSubFilter = async (req, res) => {
       })
     }
 
-    //1 - product
-    //2 - catalog
-    //3 - filter
 
-    let modelFilter = await Product.find({'model.filters.subFilter':_idSubfilter});
-
-    if(modelFilter.length>0){
-      return res.status(200).json({
-        message: `subfilter is using a product'\s model `,
-        product:modelFilter
-      })
+    let validate = await commonFilterOrSubFilter.validateRemoveSubFilters(_idSubfilter);
+    if (validate) {
+      return res.status(400).json(validate);
     }
 
-    let productFilter = await Product.find({'filters.subFilter':_idSubfilter});
-
-    if(productFilter.length>0){
-      return res.status(200).json({
-        message: `subfilter is using a product `,
-        product:productFilter
-      })
-    }
-
-    let catalog = await ChildCatalog.find({"filters.subfilters":_idSubfilter});
-
-    if(catalog.length>0){
-      return res.status(200).json({
-        message: `subfilter is using a catalog `,
-        catalog:catalog
-      })
-    }
-
-    let filter = await Filter.find({"_idSubFilters":_idSubfilter});
-
-    if(filter.length>0){
-      return res.status(200).json({
-        message: `subfilter is used a filter `,
-        filter:filter
-      })
-    }
-
-
-
-    await subFilter.delete();
+    //await subFilter.delete();
     res.status(200).json({msg: 'SubFilter deleted'})
   } catch (err) {
     res.status(500).json({
@@ -367,3 +351,50 @@ exports.deleteSubFilter = async (req, res) => {
   }
 };
 
+exports.removeManySubFilters = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
+
+    const {_idSubFiltersForDeletion} = req.body;
+
+    let response = [];
+
+
+    for (let i = 0; i < _idSubFiltersForDeletion.length; i++) {
+
+      let responseOneSubFilter = {};
+      let subfilter = await SubFilter.findById(_idSubFiltersForDeletion[i]);
+
+      if (!subfilter) {
+        return res.status(400).json({
+          message: `SUbFilter with id ${req.params._id} is not found`
+        })
+      }
+
+
+      let validate = await commonFilterOrSubFilter.validateRemoveSubFilters(_idSubFiltersForDeletion[i]);
+
+      responseOneSubFilter._idFilter = _idSubFiltersForDeletion[i];
+      if (validate) {
+        responseOneSubFilter.validate = validate;
+        responseOneSubFilter.status = 400;
+      } else {
+        responseOneSubFilter.status = 200;
+        await subfilter.delete();
+
+      }
+
+      response.push(responseOneSubFilter);
+    }
+    res.status(200).json(response);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: `Error happened on server: "${e}" `
+    })
+  }
+};
