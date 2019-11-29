@@ -7,15 +7,26 @@ const FilterSchema = new Schema(
       type: String,
       required: true
     },
-    name: {
+    _idSubFilters:[
+      {
+        type:Schema.Types.ObjectID,
+        required:true,
+        ref:'subfilters'
+      }
+    ],
+    serviceName:{
       type: String,
       required: true
     },
     date: {
       type: Date,
       default: Date.now
-    }
+    },
+    enabled:{
+      type: Boolean,
+      default: false
+    },
   }
 );
 
-module.exports = Filter = mongoose.model("filters", FilterSchema);
+module.exports = Filter = mongoose.model("filters", FilterSchema,'filters');

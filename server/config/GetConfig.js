@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 let ConfigSchema = require('../models/Config');
-let ConfigDataBAse = require('../config/ConfigDataBase');
+let ConfigDataBAse = require('./ConfigDataBase');
 
 module.exports = (nameConfigFile) => {
   return new Promise((resolve, reject) => {

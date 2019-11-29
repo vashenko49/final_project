@@ -35,12 +35,16 @@ client/package-lock.json
 server/package-lock.json
 client/yarn.lock
 
+server/package-lock.json
+client/yarn.lock
+
 # code style
 client/.stylelintcache
 client/.eslintcache
 
-
-
 # dev
 client/src/components/admin-panel
 client/src/components/admin-panel/AdminProductAPI.js
+
+# vs code debug
+.vscode
