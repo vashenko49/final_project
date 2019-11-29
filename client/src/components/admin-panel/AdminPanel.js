@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Filters from './Filters';
-import FiltersCreate from './FiltersCreate';
+import FiltersDetail from './FiltersDetail';
 import Products from './Products';
 import Categories from './Categories';
 
@@ -89,8 +89,8 @@ class AdminPanel extends Component {
           <Switch>
             <Route exact path="/admin-panel/products" component={Products} />
             <Route exact path="/admin-panel/filters" component={Filters} />
-            <Route exact path="/admin-panel/filters/new" component={FiltersCreate} />
-            <Route exact path="/admin-panel/filters/:id" component={FiltersCreate} />
+            <Route exact path="/admin-panel/filters/new" component={FiltersDetail} />
+            <Route exact path="/admin-panel/filters/:id" component={FiltersDetail} />
             <Route exact path="/admin-panel/categories" component={Categories} />
           </Switch>
         </Box>

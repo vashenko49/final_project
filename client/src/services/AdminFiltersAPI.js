@@ -47,23 +47,17 @@ export default class AdminFiltersAPI {
     }
   ];
 
-  static apiHost = 'http://localhost:5000';
+  static apiHost = 'https://5000-f1d638f2-52f2-40ef-b477-c73308c7e1c1.ws-eu01.gitpod.io';
 
   static getFilters() {
-    return new Promise((resolve, reject) => {
-      resolve(this.data);
-    });
+    return axios.get(`${this.apiHost}/filters/main/all`);
   }
 
   static getFiltersById(id) {
-    return new Promise((resolve, reject) => {
-      resolve(this.data.filter(i => i.id === id)[0]);
-    });
+    return axios.get(`${this.apiHost}/filters/main/one/${id}`);
   }
 
   static addFilters(data) {
-    console.log('addFilters', data);
-
     const sendData = {
       type: data.title,
       serviceName: data.serviceName,
@@ -74,9 +68,22 @@ export default class AdminFiltersAPI {
   }
 
   static updateFilters(data) {
-    console.log('updateFilters', data);
-    return new Promise((resolve, reject) => {
-      resolve([data]);
-    });
+    const sendData = {
+      type: data.title,
+      serviceName: data.serviceName,
+      _idSubFilters: data.subFilters.map(item => ({ name: item })),
+      _id: data.idUpdate,
+      enabled: data.enabledFilter
+    };
+
+    return axios.put(`${this.apiHost}/filters/main`, sendData);
+  }
+
+  static deleteFilters(id) {
+    return axios.delete(`${this.apiHost}/filters/main/${id}`);
+  }
+
+  static deleteSubFilters(id) {
+    return axios.delete(`${this.apiHost}/filters/sub/${id}`);
   }
 }
