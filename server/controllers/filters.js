@@ -62,7 +62,8 @@ exports.searchInFilter = async (req, res) => {
 
 exports.getAllFilters = async (req, res) => {
   try {
-    const filters = await Filter.find().sort({data: -1});
+    const filters = await Filter.find().sort({data: -1})
+      .populate('_idSubFilters');
 
     res.status(200).json(filters);
   } catch (err) {
@@ -75,7 +76,8 @@ exports.getOneFilters = async (req, res) => {
   try {
     const {_idfilter} = req.params;
 
-    const filter = await Filter.findById(_idfilter);
+    const filter = await Filter.findById(_idfilter)
+      .populate('_idSubFilters');
 
     if (!filter) {
       return res.status(400).json({
