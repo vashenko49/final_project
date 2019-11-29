@@ -10,79 +10,99 @@ const ConfigSchema = new Schema({
   },
   development: {
     domen: {
-      domenServer:{
-        type: String
+      domenServer: {
+        type: String,
+        require: true
       },
-      domenClient:{
-        type: String
+      domenClient: {
+        type: String,
+        require: true
       }
     },
     database: {
       uri: {
         type: String,
+        require: true
       }
     },
     nodemailer: {
       email: {
-        type: String
+        type: String,
+        require: true
       },
       password: {
-        type: String
+        type: String,
+        require: true
       },
       service: {
-        type: String
+        type: String,
+        require: true
       }
     },
-    cloudinary:{
-      cloudName:{
-        type:String
+    cloudinary: {
+      cloudName: {
+        type: String,
+        require: true
       },
-      apiKey:{
-        type:String
+      apiKey: {
+        type: String,
+        require: true
       },
-      apiSecret:{
-        type:String
+      apiSecret: {
+        type: String,
+        require: true
       }
     },
     auth: {
       JWT_SECRET: {
-        type: String
+        type: String,
+        require: true
       },
       JWT_EMAIL_SECRET: {
-        type: String
+        type: String,
+        require: true
       },
       JWT_FORGOT_PASSWORD: {
-        type: String
+        type: String,
+        require: true
       },
       usersIdSecret: {
-        type: String
+        type: String,
+        require: true
       },
       orderIdSecret: {
-        type: String
+        type: String,
+        require: true
       },
-      oauth:{
-        google:{
-          clientID:{
-            type:String,
+      oauth: {
+        google: {
+          clientID: {
+            type: String,
+            require: true
           },
-          clientSecret:{
-            type:String
+          clientSecret: {
+            type: String,
+            require: true
           }
         },
-        facebook:{
-          clientID:{
-            type:String,
+        facebook: {
+          clientID: {
+            type: String,
+            require: true
           },
-          clientSecret:{
-            type:String
+          clientSecret: {
+            type: String,
+            require: true
           }
         },
-        github:{
-          clientID:{
-            type:String,
+        github: {
+          clientID: {
+            type: String,
+            require: true
           },
-          clientSecret:{
-            type:String
+          clientSecret: {
+            type: String,
+            require: true
           }
         }
       }
@@ -110,79 +130,113 @@ const ConfigSchema = new Schema({
   },
   production: {
     domen: {
-      domenServer:{
-        type: String
+      domenServer: {
+        type: String,
+        require: true
       },
-      domenClient:{
-        type: String
+      domenClient: {
+        type: String,
+        require: true
       }
     },
     database: {
       uri: {
         type: String,
+        require: true
       }
     },
     nodemailer: {
       email: {
-        type: String
+        type: String,
+        require: true
+
       },
       password: {
-        type: String
+        type: String,
+        require: true
+
       },
       service: {
-        type: String
+        type: String,
+        require: true
+
       }
     },
-    cloudinary:{
-      cloudName:{
-        type:String
+    cloudinary: {
+      cloudName: {
+        type: String,
+        require: true
+
       },
-      apiKey:{
-        type:String
+      apiKey: {
+        type: String,
+        require: true
+
       },
-      apiSecret:{
-        type:String
+      apiSecret: {
+        type: String,
+        require: true
+
       }
     },
     auth: {
       JWT_SECRET: {
-        type: String
+        type: String,
+        require: true
+
       },
       JWT_EMAIL_SECRET: {
-        type: String
+        type: String,
+        require: true
+
       },
       JWT_FORGOT_PASSWORD: {
-        type: String
+        type: String,
+        require: true
+
       },
       usersIdSecret: {
-        type: String
+        type: String,
+        require: true
+
       },
       orderIdSecret: {
-        type: String
+        type: String,
+        require: true
+
       },
-      oauth:{
-        google:{
-          clientID:{
-            type:String,
+      oauth: {
+        google: {
+          clientID: {
+            type: String,
+            require: true
           },
-          clientSecret:{
-            type:String
+          clientSecret: {
+            type: String,
+            require: true
+
           }
         },
-        facebook:{
-          clientID:{
-            type:String,
+        facebook: {
+          clientID: {
+            type: String,
+            require: true
           },
-          clientSecret:{
-            type:String
+          clientSecret: {
+            type: String,
+            require: true
+
           }
         },
-        github:{
-          clientID:{
-            type:String,
+        github: {
+          clientID: {
+            type: String,
+            require: true
           },
-          clientSecret:{
-            type:String
+          clientSecret: {
+            type: String,
+            require: true
+
           }
         }
       }

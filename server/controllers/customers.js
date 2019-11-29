@@ -3,21 +3,14 @@ const jwt = require("jsonwebtoken");
 const customerid = require('order-id')(process.env.usersIdSecret);
 
 
-const sendEmail = require('../config/sendEmail');
+const sendEmail = require('../common/sendEmail');
 const CustomerModel = require('../models/Customer');
 
-// Load validation helper to validate all received fields
-const validateRegistrationForm = require("../validation/validationHelper");
 
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
   try {
     
-    const {errors, isValid} = validateRegistrationForm(req.body);
-
-    if (!isValid) {
-      return res.status(400).json(errors);
-    }
 
     const {firstName, lastName, login, email, password, telephone, gender} = req.body;
 
@@ -155,14 +148,8 @@ exports.createCustomerSocialNetwork = async (req, res) => {
 // Controller for customer login
 exports.loginCustomer = async (req, res) => {
   try {
-    const {errors, isValid} = validateRegistrationForm(req.body);
-
     const {loginOrEmail, password} = req.body;
 
-    // Check Validation
-    if (!isValid) {
-      return res.status(400).json(errors);
-    }
 
     // Find customer by email
     CustomerModel.findOne({
