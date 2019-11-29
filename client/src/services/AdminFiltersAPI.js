@@ -58,7 +58,14 @@ export default class AdminFiltersAPI {
   }
 
   static addFilters(data) {
-    console.log(data);
+    console.log('addFilters', data);
+    return new Promise((resolve, reject) => {
+      resolve([data]);
+    });
+  }
+
+  static updateFilters(data) {
+    console.log('updateFilters', data);
     return new Promise((resolve, reject) => {
       resolve([data]);
     });
