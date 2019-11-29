@@ -80,11 +80,26 @@ router.put(
   updateModelForProduct
 );
 
-// @route   GET /products
-// @desc    GET existing products
+// @route   GET /products/searchheader/:searchheader
+// @desc    search for header. give 5 products
 // @access  Public
-router.get("/", getProducts);
+router.get('/searchheader/:searchheader',
+  searchProductsHeader
+);
 
+// @route   GET /products/filter
+// @desc    Search products
+// @access  Public
+router.get('/filter',
+  getProductsFilterParams
+);
+
+// @route   GET /products/search/:search
+// @desc    Search products
+// @access  Public
+router.get('/search/:search',
+  searchProducts
+);
 
 // @route   GET /products/:id
 // @desc    Get product by id
@@ -94,20 +109,10 @@ router.get(
   getProductById
 );
 
-
-// @route   GET /products/searchheader/:searchheader
-// @desc    search for header. give 5 products
+// @route   GET /products
+// @desc    GET existing products
 // @access  Public
-router.get('/searchheader/:searchheader',
-  searchProductsHeader
-);
-
-// @route   GET /products/searchheader/:searchheader
-// @desc    Seach products
-// @access  Public
-router.get('/search/:searchheader',
-  searchProducts
-);
+router.get("/", getProducts);
 
 // @route   DELETE /products/:id
 // @desc    Delete product

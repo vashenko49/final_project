@@ -12,7 +12,7 @@ exports.addROOTCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(400).json({errors: errors.array()});
     }
 
     const {name} = req.body;
@@ -43,7 +43,7 @@ exports.updateROOTCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(400).json({errors: errors.array()});
     }
 
     const {name, _idRootCatalog, enabled = false} = req.body;
@@ -92,7 +92,7 @@ exports.deleteROOTCatalog = async (req, res) => {
     let childCatalogy = await childCatalog.find({parentId: catalog._id});
 
     if(childCatalogy.length>0){
-      return res.status(200).json({
+      return res.status(400).json({
         message: `Root catalog is using a child catalog `,
         product:childCatalogy
       })
@@ -238,7 +238,7 @@ exports.deleteChildCatalog = async (req, res) => {
     const product = await Product.find({'_idChildCategory':id});
 
     if(product.length>0){
-      return res.status(200).json({
+      return res.status(400).json({
         message: `Child catalog is using a product `,
         product:product
       })
@@ -246,7 +246,7 @@ exports.deleteChildCatalog = async (req, res) => {
 
 
 
-    //await catalog.delete();
+    await catalog.delete();
 
     res.status(200).json({
       message: `Child catalog witn id "${id}" is successfully deleted from DB.`,
