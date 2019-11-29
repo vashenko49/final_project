@@ -10,3 +10,14 @@ export function configureStore(initState) {
 
   return store;
 }
+
+// const initialState = {};
+
+// const store = createStore(
+//   reducers,
+//   initialState,
+//   composeWithDevTools(applyMiddleware(thunk))
+// )
+
+// export default store;
+

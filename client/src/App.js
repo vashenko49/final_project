@@ -12,12 +12,7 @@ import PrivateRoute from './components/routing/PrivateRoute';
 import './App.scss';
 import PasswordRecovery from './components/auth/PasswordRecovery';
 
-const store = configureStore();
-
-store.subscribe(() => {
-  console.log('--> ');
-  console.log(store.getState());
-});
+const store = configureStore()
 
 function App() {
   return (

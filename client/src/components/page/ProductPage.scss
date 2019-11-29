@@ -45,9 +45,10 @@
   display: flex;
   flex-wrap: wrap;
   padding: 10px 20px;
-
+  
   .light-btn {
-    width: 70px;
+    border: none;
+    width: 40%;
     margin: 10px;
     padding: 10px 0;
     color: black;
@@ -68,6 +69,7 @@
     font-size: 17px;
     text-transform: uppercase;
     border-radius: 17px;
+    border: none;
   }
 
   .add-to-bag-btn {
@@ -83,5 +85,69 @@
 
 .product-discription {
   margin: 45px;
-  font-size: 19px;
+  
+  .short-description {
+    font-size: 19px;
+    line-height: 1.75;
+  }
+
+  .property-description {
+    margin-top: 20px;
+
+    li {
+      list-style-type: disc;
+      margin-left: 16px;
+      font-size: 18px;
+    }
+  }
+}
+
+.product-reviews {
+  .reviews-body {
+    font-size: 18px;
+    border-top: 1px solid rgba(0, 0, 0, 0.226);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.226);
+    // display: flex;
+    // justify-content: space-between;
+    
+    .review-header {
+      cursor: pointer;
+      .title {
+        padding: 28px;
+        font-size: 20px;
+        letter-spacing: 1px;
+        display: inline-block;
+        width: 80.3%;
+      }
+    
+      .arrow {
+        position: relative;
+        top: -10px;
+        right: 10px;
+        display: inline-block;
+        box-sizing: border-box;
+        height: 5vw;
+        width: 5vw;
+        border-style: solid;
+        border-color: black;
+        border-width: 0px 1px 1px 0px;
+        transform: rotate(45deg);
+        transition: border-width 250ms ease-in-out;
+      }
+
+      .arrow:hover {
+        border-bottom-width: 4px;
+        border-right-width: 4px;
+      }
+    }
+    
+    .review-content {
+      display: none;
+      padding: 25px;
+    }
+
+    .active {
+      display: inline-block;
+    }
+  }
 }

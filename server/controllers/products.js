@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const {validationResult} = require('express-validator');
+const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
 const Product = require("../models/Product");
@@ -10,7 +10,7 @@ exports.addProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(422).json({ errors: errors.array() });
     }
 
     let product = _.cloneDeepWith(req.body, (value => {
@@ -69,7 +69,7 @@ exports.addModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(422).json({ errors: errors.array() });
     }
     let model = _.cloneDeepWith(req.body, (value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
@@ -101,16 +101,16 @@ exports.updateProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(422).json({ errors: errors.array() });
     }
 
-    const {_idProduct, warning, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory} = req.body;
+    const { _idProduct, warning, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory } = req.body;
 
     const product = await Product.findById(_idProduct);
 
-    if(!product){
+    if (!product) {
       res.status(400).json({
-        message:"Product not found"
+        message: "Product not found"
       })
     }
 
@@ -173,10 +173,10 @@ exports.updateModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(422).json({ errors: errors.array() });
     }
 
-    const {_idProduct, modelNo, filter, modelUrlImg, enabled, quantity, currentPrice, previousPrice} = req.body;
+    const { _idProduct, modelNo, filter, modelUrlImg, enabled, quantity, currentPrice, previousPrice } = req.body;
 
 
     let product = await Product.findById(_idProduct);
@@ -204,7 +204,7 @@ exports.updateModelForProduct = async (req, res, next) => {
 
 exports.deleteProduct = async (req, res, next) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -220,8 +220,8 @@ exports.deleteProduct = async (req, res, next) => {
     });
 
     filter = filter.map(element => {
-      const {filter, subFilter} = element;
-      return {filter, subFilter};
+      const { filter, subFilter } = element;
+      return { filter, subFilter };
     });
 
     filter = _.map(
@@ -237,25 +237,25 @@ exports.deleteProduct = async (req, res, next) => {
 
     //контроль не используемых подфильтров в категории
     for (let i = 0; i < filter.length; i++) {
-      const {subFilter, filter} = filter[i];
+      const { subFilter, filter } = filter[i];
       const isUseSubFilterInProduct = await Product.find({
         $or: [
-          {"filters.subFilter": subFilter},
-          {"model.filters.subFilter": subFilter}
+          { "filters.subFilter": subFilter },
+          { "model.filters.subFilter": subFilter }
         ]
       });
       if (isUseSubFilterInProduct.length <= 0) {
         await ChildCatalog
           .update(
-            {_id:mongoose.Types.ObjectId(filter)},
-            {$pull:{"filters.$[].subfilters":subFilter}},
+            { _id: mongoose.Types.ObjectId(filter) },
+            { $pull: { "filters.$[].subfilters": subFilter } },
           )
       }
     }
 
 
     await product.delete();
-    res.status(200).json({msg: 'Product deleted'})
+    res.status(200).json({ msg: 'Product deleted' })
   } catch (err) {
     res.status(500).json({
       message: `Error happened on server: "${err}" `
@@ -265,7 +265,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.deleteModelProduct = async (req, res) => {
   try {
-    const {id, modelno} = req.params;
+    const { id, modelno } = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -280,7 +280,7 @@ exports.deleteModelProduct = async (req, res) => {
       }
     });
     await product.save();
-    res.status(200).json({msg: 'Product\'s model deleted'})
+    res.status(200).json({ msg: 'Product\'s model deleted' })
   } catch (err) {
     res.status(500).json({
       message: `Error happened on server: "${err}" `
@@ -301,8 +301,9 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProductById = async (req, res, next) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     let product = await Product.findById(id)
+      .populate('_idChildCategory')
       .populate('filters.filter')
       .populate('filters.subFilter')
       .populate('model.filters.filter')
@@ -325,8 +326,8 @@ exports.getProductById = async (req, res, next) => {
 
 exports.searchProductsHeader = async (req, res, next) => {
   try {
-    const {searchheader} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}}).limit(5);
+    const { searchheader } = req.params;
+    const products = await Product.find({ "nameProduct": { $regex: decodeURI(searchheader) } }).limit(5);
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -337,8 +338,8 @@ exports.searchProductsHeader = async (req, res, next) => {
 
 exports.searchProducts = async (req, res, next) => {
   try {
-    const {search} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}});
+    const { search } = req.params;
+    const products = await Product.find({ "nameProduct": { $regex: decodeURI(search) } });
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -350,13 +351,13 @@ exports.searchProducts = async (req, res, next) => {
 
 exports.getProductsFilterParams = async (req, res, next) => {
   try {
-    let {_idChildCatalog, _idSubFilters} = req.query;
-    _idSubFilters =_idSubFilters.split(',');
+    let { _idChildCatalog, _idSubFilters } = req.query;
+    _idSubFilters = _idSubFilters.split(',');
     console.log(_idSubFilters);
     console.log(_idChildCatalog);
     res.status(200).send('sdsdsdf')
 
-  }catch (e) {
+  } catch (e) {
     res.status(500).json({
       message: 'Server Error!'
     });
