@@ -48,11 +48,6 @@
   },
   "author": "iWhiteN, iamr0man, khanbabaev, AlexRusanov, Vlad-Udovenko, vashenko49",
   "license": "ISC",
-  "husky": {
-    "hooks": {
-      "pre-push": "lint-staged"
-    }
-  },
   "lint-staged": {
     "src/**/*.js": [
       "yarn run build",
