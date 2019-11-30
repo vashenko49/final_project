@@ -18,7 +18,10 @@ export default class Item extends Component {
   render() {
     return (
       <div className="bag-item">
-        <img src="https://images.nike.com/is/image/DotCom/CJ0784_001_A_PREM?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"></img>
+        <img
+          src="https://images.nike.com/is/image/DotCom/CJ0784_001_A_PREM?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
+          alt="product not found"
+        ></img>
         <div className="bag-item-info">
           <h2 className="info-title">{this.state.name}</h2>
           <p>{this.state.category}</p>

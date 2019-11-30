@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
 
@@ -12,7 +12,7 @@ import PrivateRoute from './components/routing/PrivateRoute';
 import './App.scss';
 import PasswordRecovery from './components/auth/PasswordRecovery';
 
-const store = configureStore()
+const store = configureStore();
 
 function App() {
   return (

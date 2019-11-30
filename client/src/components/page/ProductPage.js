@@ -39,7 +39,10 @@ class ProductPage extends Component {
           <p className="item-price">£{price.toFixed(2)}</p>
         </div>
         <div className="product-photo">
-          <img src="https://c.static-nike.com/a/images/t_PDP_1280_v1/f_auto,b_rgb:f5f5f5/jasoksaru5oyf7g4nszw/shox-r4-older-shoe-0zblqw.jpg"></img>
+          <img
+            src="https://c.static-nike.com/a/images/t_PDP_1280_v1/f_auto,b_rgb:f5f5f5/jasoksaru5oyf7g4nszw/shox-r4-older-shoe-0zblqw.jpg"
+            alt="product not found"
+          ></img>
         </div>
         <div className="product-select">
           <div className="sizes-info">

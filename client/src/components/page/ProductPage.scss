@@ -14,21 +14,21 @@
     font-size: 17px;
 
     h2 {
+      color: #111;
       font-weight: 400;
-      font-size: 25px;
-      color: #111
+      font-size: 25px
     }
 
     .item-No {
       color: #6d6d6d;
-      font-size: 17px;
       font-weight: 500;
+      font-size: 17px;
     }
   }
   .item-price {
     margin-top: 6px;
-    font-size: 17px;
     font-weight: 400;
+    font-size: 17px;
   }
 }
 
@@ -58,7 +58,6 @@
   padding: 10px 20px;
   
   .light-btn {
-    border: 1px solid #e5e5e5;
     width: 44%;
     margin: 10px;
     padding: 10px 0;
@@ -67,6 +66,7 @@
     font-size: 17px;
     text-align: center;
     background-color: #fff;
+    border: 1px solid #e5e5e5;
     box-shadow: rgb(229, 229, 229) 0px 0px 0px 1px;
   }
 }
@@ -81,8 +81,8 @@
     padding: 15px 0;
     font-size: 17px;
     text-transform: uppercase;
-    border-radius: 17px;
     border: none;
+    border-radius: 17px;
   }
 
   .add-to-bag-btn {
@@ -108,26 +108,26 @@
     margin-top: 20px;
 
     li {
-      list-style-type: disc;
       margin-left: 16px;
       font-size: 18px;
+      list-style-type: disc;
     }
   }
 }
 
 .product-reviews {
     font-size: 18px;
-    border-top: 1px solid rgba(0, 0, 0, 0.226);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.226);
+    border-top: 1px solid rgba(0, 0, 0, .226);
+    border-bottom: 1px solid rgba(0, 0, 0, .226);
     
     .review-header {
       cursor: pointer;
       .title {
+        display: inline-block;
+        width: 75.3%;
         padding: 28px;
         font-size: 20px;
         letter-spacing: 1px;
-        display: inline-block;
-        width: 75.3%;
       }
     
       .arrow {
@@ -135,18 +135,18 @@
         top: -6px;
         display: inline-block;
         box-sizing: border-box;
-        height: 5vw;
         width: 5vw;
-        border-style: solid;
+        height: 5vw;
         border-color: black;
+        border-style: solid;
         border-width: 0px 1px 1px 0px;
         transform: rotate(45deg);
         transition: border-width 250ms ease-in-out;
       }
 
       .arrow:hover {
-        border-bottom-width: 4px;
         border-right-width: 4px;
+        border-bottom-width: 4px;
       }
     }
     
@@ -155,15 +155,15 @@
       padding: 25px;
 
       .review-headline {
-        font-weight: 300;
         margin: 10px 0;
+        font-weight: 300;
       }
 
       .review-date {
         display: inline-block;
-        font-size: 16px;
         margin: 10px;
         color: #929292;
+        font-size: 16px;
       }
     }
 

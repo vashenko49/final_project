@@ -1,4 +1,4 @@
-import { GET_PRODUCT, PRODUCT_ERROR } from '../constants/product';
+import { GET_PRODUCT } from '../constants/product';
 
 const initialState = {
   product: {},
@@ -7,7 +7,7 @@ const initialState = {
   error: {}
 };
 
-export default function (state = initialState, action) {
+export default function(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {

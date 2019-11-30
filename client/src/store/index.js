@@ -20,4 +20,3 @@ export function configureStore(initState) {
 // )
 
 // export default store;
-
