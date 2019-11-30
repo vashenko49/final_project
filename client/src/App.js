@@ -9,6 +9,8 @@ import Login from './components/auth/Login';
 import Registration from './components/auth/Registration';
 import AdminPanel from './components/admin-panel/AdminPanel';
 
+import ProductPageF from './components/page/ProductPageF';
+
 import PrivateRoute from './components/routing/PrivateRoute';
 
 import './App.scss';
@@ -38,6 +40,8 @@ function App() {
             <Route exact path="/main" component={MainPage} />
             <Route exact path="/" component={Registration} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
+            <Route exact path="/" component={Login} />
+            <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
             <PrivateRoute exact path="/subscribe" component={Login} />
           </Switch>

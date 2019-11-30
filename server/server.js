@@ -1,5 +1,5 @@
 const express = require('express');
-const connectDB = require('./config/db');
+const connectDB = require('./common/db');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const path = require('path');
@@ -9,20 +9,18 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 // Body parser middleware
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //connect data base
 getConfig('configs-v1')
   .then(() => {
     // connectDB();
     connectDB(process.env.urlDataBase);
-
-
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {
-  console.error(err);
-});
+    console.error(err);
+  });
 
 
 app.use(bodyParser.json());
@@ -31,8 +29,12 @@ app.use(bodyParser.json());
 app.use('/customers', require('./routes/customers'));
 app.use('/configs', require('./routes/configs'));
 app.use('/filters', require('./routes/filters'));
+app.use('/catalog', require('./routes/catalog'));
 app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
+app.use('/subscriber', require('./routes/subscribers'));
+
+app.use('/cart', require('./routes/cart'));
 app.use('/links', require('./routes/links'));
 app.use('/pages', require('./routes/pages'));
 
