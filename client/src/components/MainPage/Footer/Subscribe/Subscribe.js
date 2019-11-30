@@ -1,8 +1,12 @@
 import React, { Component } from "react";
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as footerSubscribeAction from '../../../../actions/footerSubscribeAction';
+
 import './Subscribe.scss';
 
-export default class Subscribe extends Component {
+class Subscribe extends Component {
   render() {
     return (
       <div>
@@ -13,3 +17,11 @@ export default class Subscribe extends Component {
     )
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    footerSubscribeAction: bindActionCreators(footerSubscribeAction, dispatch)
+  };
+}
+
+export default connect(mapDispatchToProps)(Subscribe);

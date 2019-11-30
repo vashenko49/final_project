@@ -19,5 +19,10 @@
     line-height: 40px;
     text-align: center;
     background-color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      color: blue;
+    }
   }
 }
