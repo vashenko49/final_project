@@ -42,9 +42,5 @@ client/yarn.lock
 client/.stylelintcache
 client/.eslintcache
 
-# dev
-client/src/components/admin-panel
-client/src/components/admin-panel/AdminProductAPI.js
-
 # vs code debug
 .vscode
