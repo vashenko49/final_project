@@ -10,7 +10,6 @@ module.exports = async (toEmail, subject, html)=>{
     }
   });
 
-
   const mailOptions = {
     from: process.env.nodemailer_email,
     to: toEmail,

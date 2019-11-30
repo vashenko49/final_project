@@ -12,6 +12,6 @@ onCancelRate: function({ rating }). Called when mouse moves out from rater.
 
 export default class Rating extends Component {
   render() {
-    return <Rater total={5} rating={3} interactive={false} />;
+    return <Rater total={5} rating={this.props.stars} interactive={false} />;
   }
 }

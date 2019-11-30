@@ -98,6 +98,7 @@ exports.addModelForProduct = async (req, res, next) => {
     await product.save();
     res.status(200).json(product)
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })
@@ -183,6 +184,7 @@ exports.updateProduct = async (req, res, next) => {
     await product.save();
     res.status(200).json(product);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })
@@ -196,7 +198,11 @@ exports.updateModelForProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
+<<<<<<< HEAD
     const {_idProduct, modelNo, filters, modelUrlImg, enabled, quantity, currentPrice, previousPrice} = req.body;
+=======
+    const { _idProduct, modelNo, filter, modelUrlImg, enabled, quantity, currentPrice, previousPrice } = req.body;
+>>>>>>> develop
 
 
     let product = await Product.findById(_idProduct);
@@ -292,7 +298,27 @@ exports.deleteProduct = async (req, res, next) => {
 
 
     //контроль не используемых подфильтров в категории
+<<<<<<< HEAD
     await commonProduct.removeSubFilterFromChildCategoryCheckProduct(filter, product._idChildCategory);
+=======
+    for (let i = 0; i < filter.length; i++) {
+      const { subFilter, filter } = filter[i];
+      const isUseSubFilterInProduct = await Product.find({
+        $or: [
+          { "filters.subFilter": subFilter },
+          { "model.filters.subFilter": subFilter }
+        ]
+      });
+      if (isUseSubFilterInProduct.length <= 0) {
+        await ChildCatalog
+          .update(
+            { _id: mongoose.Types.ObjectId(filter) },
+            { $pull: { "filters.$[].subfilters": subFilter } },
+          )
+      }
+    }
+
+>>>>>>> develop
 
     await product.delete();
     res.status(200).json({ msg: 'Product deleted' })
@@ -413,7 +439,11 @@ exports.searchProducts = async (req, res, next) => {
 
 exports.getProductsFilterParams = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     let {_idChildCatalog, _idSubFilters} = req.query;
+=======
+    let { _idChildCatalog, _idSubFilters } = req.query;
+>>>>>>> develop
     _idSubFilters = _idSubFilters.split(',');
     console.log(_idSubFilters);
     console.log(_idChildCatalog);

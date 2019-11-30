@@ -1,0 +1,179 @@
+.container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 15px 10px 15px;
+
+  .header-info {
+    font-weight: 400;
+
+    font-size: 17px;
+
+    h2 {
+      color: #111;
+      font-weight: 400;
+      font-size: 25px
+    }
+
+    .item-No {
+      color: #6d6d6d;
+      font-weight: 500;
+      font-size: 17px;
+    }
+  }
+  .item-price {
+    margin-top: 6px;
+    font-weight: 400;
+    font-size: 17px;
+  }
+}
+
+.product-photo {
+   img {
+    width: 100%;
+    height: 40%;
+   }
+}
+
+.product-select {
+  .sizes-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 70px 20px 20px 20px;
+
+    .size-guide {
+      color: rgb(141, 141,141);
+      text-decoration: none;
+    }
+  }
+}
+
+.product-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  
+  .light-btn {
+    width: 44%;
+    margin: 10px;
+    padding: 10px 0;
+    color: black;
+    font-weight: 100;
+    font-size: 17px;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    box-shadow: rgb(229, 229, 229) 0px 0px 0px 1px;
+  }
+}
+
+.product-buttons {
+
+  text-align: center;
+
+  button {
+    width: 90%;
+    margin-top: 10px;
+    padding: 15px 0;
+    font-size: 17px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 17px;
+  }
+
+  .add-to-bag-btn {
+    color: white;
+    background-color: #000;
+  }
+
+  .favorite-btn {
+    background-color: #eee;
+  }
+
+}
+
+.product-discription {
+  margin: 45px;
+  
+  .short-description {
+    font-size: 19px;
+    line-height: 1.75;
+  }
+
+  .property-description {
+    margin-top: 20px;
+
+    li {
+      margin-left: 16px;
+      font-size: 18px;
+      list-style-type: disc;
+    }
+  }
+}
+
+.product-reviews {
+    font-size: 18px;
+    border-top: 1px solid rgba(0, 0, 0, .226);
+    border-bottom: 1px solid rgba(0, 0, 0, .226);
+    
+    .review-header {
+      cursor: pointer;
+      .title {
+        display: inline-block;
+        width: 75.3%;
+        padding: 28px;
+        font-size: 20px;
+        letter-spacing: 1px;
+      }
+    
+      .arrow {
+        position: relative;
+        top: -6px;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 5vw;
+        height: 5vw;
+        border-color: black;
+        border-style: solid;
+        border-width: 0px 1px 1px 0px;
+        transform: rotate(45deg);
+        transition: border-width 250ms ease-in-out;
+      }
+
+      .arrow:hover {
+        border-right-width: 4px;
+        border-bottom-width: 4px;
+      }
+    }
+    
+    .review-content {
+      display: none;
+      padding: 25px;
+
+      .review-headline {
+        margin: 10px 0;
+        font-weight: 300;
+      }
+
+      .review-date {
+        display: inline-block;
+        margin: 10px;
+        color: #929292;
+        font-size: 16px;
+      }
+    }
+
+    .review-text {
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .active {
+      display: inline-block;
+    }
+}
