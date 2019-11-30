@@ -2,9 +2,10 @@ import React, { useEffect, Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { getCurrentProduct } from '../../actions/product';
 
+import Rating from '../common/rating/Rating'
+
 import './ProductPage.scss';
 
-// const ProductPageF = (props, match) => {
 const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match }) => {
 
   const { nameProduct, description, itemNo, model, filters, _idChildCategory } = product;
@@ -22,8 +23,8 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
         <div className="product">
           <div className="product-header">
             <div className="header-info">
-              <h3>{_idChildCategory.name}</h3>
               <h2>{nameProduct}</h2>
+              <h3 className="item-No">{itemNo}</h3>
             </div>
             <p className="item-price">${model[0].currentPrice.toFixed(2)}</p>
           </div>
@@ -66,13 +67,20 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
             </ul>
           </div>
           <div className="product-reviews container">
-            <div className="reviews-body">
-              <div className="review-header"
-                onClick={() => setActive(!active)}>
-                <div className="title" type="button">Reviews</div>
-                <div className="arrow"></div>
+            <div className="review-header"
+              onClick={() => setActive(!active)}>
+              <div className="title" type="button">Reviews</div>
+              <div className="arrow"></div>
+            </div>
+            <div className={active ? "review-content container active" : "review-content container"}>
+              <p className="review-headline">Great buy</p>
+              <Rating stars={4} className="review-rating" />
+              <p className="review-date">Marklive - 22 Nov 2019</p>
+              <div>
+                <p className="review-text">
+                  Get a lot of compliments and very comfortable
+                    </p>
               </div>
-              <div className={active ? "review-content container active" : "review-content container"}>LSD</div>
             </div>
           </div>
         </div>
