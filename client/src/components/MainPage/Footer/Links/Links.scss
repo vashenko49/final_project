@@ -1,0 +1,19 @@
+.footer-menu {
+  &-list {
+    padding-left: 0;
+    list-style:none;
+
+    &-header {
+      margin-bottom: 30px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    & li a {
+      color: #DEDEDE;
+      font-size: 14px;
+      text-decoration: none;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.subscribe{
+  &-input {
+    box-sizing: border-box;
+    width: 60%;
+    height: 40px;
+    padding-left: 10px;
+    background-color: transparent;
+    border: 1px solid #666666;
+  }
+
+  &-submit {
+    display: inline-block;
+    width: 30%;
+    height: 40px;
+    margin-left: 5%;
+    color: #33333A;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #fff;
+  }
+}
