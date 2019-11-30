@@ -1,4 +1,4 @@
-const Product =  require ("../models/Product");
+const Product = require("../models/Product");
 
 const rootCatalog = require("../models/RootCatalog");
 const childCatalog = require("../models/ChildCatalog");
@@ -88,13 +88,12 @@ exports.deleteROOTCatalog = async (req, res) => {
     }
 
 
-
     let childCatalogy = await childCatalog.find({parentId: catalog._id});
 
-    if(childCatalogy.length>0){
+    if (childCatalogy.length > 0) {
       return res.status(400).json({
         message: `Root catalog is using a child catalog `,
-        product:childCatalogy
+        product: childCatalogy
       })
     }
 
@@ -235,15 +234,14 @@ exports.deleteChildCatalog = async (req, res) => {
       });
     }
 
-    const product = await Product.find({'_idChildCategory':id});
+    const product = await Product.find({'_idChildCategory': id});
 
-    if(product.length>0){
+    if (product.length > 0) {
       return res.status(400).json({
         message: `Child catalog is using a product `,
-        product:product
+        product: product
       })
     }
-
 
 
     await catalog.delete();
@@ -285,7 +283,7 @@ exports.getActiveChildCategoryForClientAnySubfilter = async (req, res) => {
       .populate('parentId')
       .populate({
         path: 'filters.filter',
-        populate:{
+        populate: {
           path: "_idSubFilters"
         }
       });
@@ -380,4 +378,22 @@ exports.getActiveChildCategoriesWithRootID = async (req, res) => {
       message: 'Server Error!'
     })
   }
+};
+
+
+exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
+  try {
+    let root = JSON.parse(JSON.stringify(await rootCatalog.find({})));
+
+    for (let i = 0; i < root.length; i++) {
+      root[i].childCatalog = await childCatalog.find({"parentId": root[i]._id}).select('-filters.subfilters')
+        .populate('filters.filter');
+    }
+    res.status(200).json(root);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+
 };

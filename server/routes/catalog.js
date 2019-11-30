@@ -22,8 +22,18 @@ const {
   deleteROOTCatalog,
   deleteChildCatalog,
   getActiveChildCategoryForClientSelectSubfilter,
-  getActiveChildCategoryForClientAnySubfilter
+  getActiveChildCategoryForClientAnySubfilter,
+  getHierarchyRootChildCatalogFilter
 } = require("../controllers/catalog");
+
+// @route   GET /catalog/child/any/:id
+// @desc    GET active existing catalog use id child catalog for client (С Ромой обсудили этот роут)
+// @access  Public
+router.get(
+  '/hierarchy',
+  getHierarchyRootChildCatalogFilter
+);
+
 
 // @route   POST /catalog/root
 // @desc    Create new root category
@@ -200,5 +210,6 @@ router.get(
   '/child/any/:id',
   getActiveChildCategoryForClientAnySubfilter
 );
+
 
 module.exports = router;
