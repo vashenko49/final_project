@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { Provider } from 'react-redux';
+
 import { configureStore } from './store';
 
 import MainPage from './components/MainPage/MainPage';
-
 import Login from './components/auth/Login';
 import Registration from './components/auth/Registration';
+import AdminPanel from './components/admin-panel/AdminPanel';
 
 import PrivateRoute from './components/routing/PrivateRoute';
 
@@ -25,6 +26,9 @@ function App() {
               <li>
                 <Link to="/subscribe">Subscribe</Link>
               </li>
+              <li>
+                <Link to="/admin-panel">Admin Panel</Link>
+              </li>
             </ul>
           </nav>
 
@@ -33,6 +37,7 @@ function App() {
           <Switch>
             <Route exact path="/main" component={MainPage} />
             <Route exact path="/" component={Registration} />
+            <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
             <PrivateRoute exact path="/subscribe" component={Login} />
           </Switch>
