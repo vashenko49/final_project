@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+
 class PasswordRecovery extends Component {
   submit = e => {
     e.preventDefault();

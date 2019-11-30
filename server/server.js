@@ -32,6 +32,7 @@ app.use('/filters', require('./routes/filters'));
 app.use('/catalog', require('./routes/catalog'));
 app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
+app.use('/subscriber', require('./routes/subscribers'));
 
 app.use('/cart', require('./routes/cart'));
 
