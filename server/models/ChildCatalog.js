@@ -26,7 +26,6 @@ const CatalogSchema = new Schema(
         subfilters:[
           {
             type: Schema.Types.ObjectID,
-            required:true,
             ref:'subfilters'
           }
         ]
