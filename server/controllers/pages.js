@@ -84,7 +84,7 @@ exports.getPageByCustomId = async (req, res, next) => {
     const page = await Pages.findOne({ customId: req.params.customId })
 
     if (!page) {
-      return res.status(400).json({ msg: `Page with customId ${req.params.id} not found` })
+      return res.status(400).json({ msg: `Page with customId - ${req.params.customId} not found!` })
     }
 
     res.status(200).json(page)

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as footerLinksAction from '../../../actions/footerLinksAction';
+import * as footerLinksAction from '../../actions/footerLinksAction';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -19,8 +19,6 @@ class Footer extends Component {
 
   render() {
     const { links } = this.props;
-
-    console.log(links)
 
     return (
         <div className="footer">

@@ -4,10 +4,15 @@
     list-style:none;
 
     &-header {
-      margin-bottom: 30px;
+      height: 40px;
+      margin-bottom: 10px;
       color: #fff;
       font-weight: 700;
       font-size: 15px;
+    }
+
+    &-item {
+      margin-bottom: 10px;
     }
 
     & li a {
