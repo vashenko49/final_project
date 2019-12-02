@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from './store';
 
-import Login from './components/auth/Login';
+// import Login from './components/auth/Login';
 
-import ProductPageF from './components/page/ProductPageF';
+// import PrivateRoute from './components/routing/PrivateRoute';
 
-import PrivateRoute from './components/routing/PrivateRoute';
+import Cart from './components/cart/Cart'
 
 import './App.scss';
-import PasswordRecovery from './components/auth/PasswordRecovery';
+// import PasswordRecovery from './components/auth/PasswordRecovery';
 
 const store = configureStore();
 
@@ -30,10 +30,10 @@ function App() {
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
           <Switch>
-            <Route exact path="/" component={Login} />
-            <Route exact exect path="/product/:id" component={ProductPageF} />
-            <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
-            <PrivateRoute exact path="/subscribe" component={Login} />
+            <Route exact path="/" component={Cart} />
+            {/* <Route exact exect path="/product/:id" component={ProductPageF} /> */}
+            {/* <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} /> */}
+            {/* <PrivateRoute exact path="/subscribe" component={Login} /> */}
           </Switch>
         </div>
       </Router>
