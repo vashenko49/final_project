@@ -130,7 +130,15 @@ exports.getCommentById = async (req, res) => {
       })
     }
 
+
     const comment = await CommentSchema.findById(commentID);
+
+    if (!comment) {
+      return res.status(400).json({
+        message: `comment with id ${commentID} is not found`
+      })
+    }
+
     res.status(200).json(comment);
   } catch (e) {
     res.status(500).json({
@@ -146,6 +154,13 @@ exports.getCommentsByUserId = async (req, res) => {
     if(!mongoose.Types.ObjectId.isValid(userID)){
       return res.status(400).json({
         message:`ID is not valid ${userID}`
+      })
+    }
+
+    const customer = await CustomerSchema.findById(userID);
+    if(_.isEmpty(customer)){
+      res.status(400).json({
+        message:`Not found a user with ID ${userID}`
       })
     }
 
@@ -165,6 +180,14 @@ exports.getCommentsByProductId = async (req, res) => {
     if(!mongoose.Types.ObjectId.isValid(productID)){
       return res.status(400).json({
         message:`ID is not valid ${productID}`
+      })
+    }
+
+    const product = await ProductSchema.findById(productID);
+
+    if(_.isEmpty(product)){
+      res.status(400).json({
+        message:`Not found a product with ID ${productID}`
       })
     }
 

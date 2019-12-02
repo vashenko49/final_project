@@ -25,7 +25,8 @@ const {
   getActiveChildCategoryForClientAnySubfilter,
   getHierarchyRootChildCatalogFilter,
   createRootChildCatalogAndAddFilterId,
-  updateRootChildCatalogAndAddFilterId
+  updateRootChildCatalogAndAddFilterId,
+  getHierarchyRootChildCatalogFilterByRootCatalogID
 } = require("../controllers/catalog");
 
 // @route   GET /catalog/hierarchy
@@ -34,6 +35,14 @@ const {
 router.get(
   '/hierarchy',
   getHierarchyRootChildCatalogFilter
+);
+
+// @route   GET /catalog/hierarchy/one
+// @desc    GET a hierarchical look
+// @access  Public
+router.get(
+  '/hierarchy/one/:_idRootCatalog',
+  getHierarchyRootChildCatalogFilterByRootCatalogID
 );
 
 // @route   POST /catalog/hierarchy
