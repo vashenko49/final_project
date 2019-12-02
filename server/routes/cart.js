@@ -18,7 +18,7 @@ router.get(
 // @access  Private
 router.post(
     "/",
-    check("id", "Id is required")
+    check("customerId", "Customer id is required")
         .not()
         .isEmpty(),
     check("productId", "Product id is required")

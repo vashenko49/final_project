@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { getCurrentItems } from '../../actions/cart';
+
 import './Cart.scss';
 
 class Item extends Component {
@@ -8,12 +10,19 @@ class Item extends Component {
     super(props);
     this.state = {
       name: 'Nike Air Max Tailwind',
-      price: this.props.price,
+      // price: this.props.price,
       category: 'Men`s Shoe',
       color: 'Black/Metallic Pewter/Metallic',
       size: 9,
-      quantity: 1
+      quantity: 1,
+      getCurrentItems: this.props.getCurrentItems.bind(this),
+      customerId: ''
     };
+  }
+
+  componentDidMount() {
+    debugger;
+    getCurrentItems();
   }
 
   render() {
@@ -38,7 +47,7 @@ class Item extends Component {
               <option value="5">5</option>
               <option value="6">6</option>
               <option value="7">7</option>
-          </select>
+            </select>
           </div>
           <div>
             <p className="about-item">£{this.state.price}</p>
@@ -53,7 +62,7 @@ class Item extends Component {
 }
 
 const mapStateToProps = state => ({
-  // cart: state.cart
-})
+  cart: state.cart
+});
 
-export default connect(mapStateToProps, {  })(Item);
+export default connect(mapStateToProps, { getCurrentItems })(Item);

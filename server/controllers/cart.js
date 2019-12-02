@@ -22,12 +22,20 @@ exports.updateCart = async (req, res, next) => {
     }
 
     try {
-        const customer = await Customer.findOne({ _id: req.body.id });
+        console.log(req.body.customerId)
+        const customer = await Customer.findOne({ _id: req.body.customerId });
         const product = await Product.findOne({ _id: req.body.productId });
-        let cart = await Cart.findOne({ customerId: req.body.id });
+        let cart = await Cart.findOne({ customerId: req.body.customerId });
+
+        console.log("\n\n")
+        console.log(customer)
+        console.log("\n\n")
+        console.log(product)
+        console.log("\n\n")
+        console.log(cart)
 
         if (!customer) {
-            return res.status(404).json({ msg: `Customer with _id ${req.body.id} was not found.` })
+            return res.status(404).json({ msg: `Customer with _id ${req.body.customerId} was not found.` })
         }
 
         if (!product) {
