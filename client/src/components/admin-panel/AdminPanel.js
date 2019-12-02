@@ -86,6 +86,7 @@ class AdminPanel extends Component {
 
         <Box m={1}>
           <Switch>
+            <Route exact path="/admin-panel" component={Products} />
             <Route exact path="/admin-panel/products" component={Products} />
             <Route exact path="/admin-panel/filters" component={Filters} />
             <Route exact path="/admin-panel/filters/new" component={FiltersDetail} />

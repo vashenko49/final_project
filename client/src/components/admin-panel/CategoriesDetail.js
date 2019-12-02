@@ -26,17 +26,17 @@ const styles = theme => ({
 class CategoriesDetail extends Component {
   state = {
     rootCategory: '',
-    childCategory: [{ id: 0, name: '', filters: [] }],
+    childCategory: [{ id: new Date().getTime(), name: '', filters: [] }],
     filtersData: [],
     typeForm: 'create',
     idUpdate: null,
     onSubmitFormDisabled: false,
+    onAddChildCategoryDisabled: false,
     sendDataStatus: 'success',
     sendDataMessage: ''
   };
 
   onChangeValue = (name, val, idChildCategory) => {
-    console.log(val);
     if (name === 'rootCategory') {
       this.setState({ [name]: val });
     } else if (name === 'childCategory') {
@@ -49,11 +49,32 @@ class CategoriesDetail extends Component {
     } else if (name === 'filters') {
       this.setState({
         filters: this.state.childCategory.map(item => {
-          item.filters = val;
+          if (item.id === +idChildCategory.split('-')[0]) {
+            item.filters = val;
+          }
           return item;
         })
       });
     }
+  };
+
+  onAddChildCategory = () => {
+    this.setState({
+      childCategory: [
+        ...this.state.childCategory,
+        { id: new Date().getTime(), name: '', filters: [] }
+      ]
+    });
+  };
+
+  onClickDelete = e => {
+    e.stopPropagation();
+
+    this.setState({
+      childCategory: this.state.childCategory.filter(
+        i => i.id !== +e.currentTarget.getAttribute('datakey')
+      )
+    });
   };
 
   onSubmitForm = async () => {
@@ -101,47 +122,31 @@ class CategoriesDetail extends Component {
       filtersData: data.map(i => ({ id: i._id, serviceName: i.serviceName }))
     });
 
-    // try {
-    //   const resFilters = await AdminFiltersAPI.getFilters();
-
-    //   const preViewResFilters = resFilters.data.map(item => {
-    //     return {
-    //       id: item._id,
-    //       title: item.type,
-    //       serviceName: item.serviceName,
-    //       enabled: true
-    //     };
-    //   });
-
-    //   this.setState({
-    //     dataFilters: preViewResFilters
-    //   });
-    // } catch (err) {
-    //   this.setState({
-    //     sendDataStatus: 'error',
-    //     sendDataMessage: err.response.data.message
-    //   });
-    // }
-
     const { id } = this.props.match.params;
-    if (id) {
-      this.setState({ typeForm: 'update' });
-      try {
-        const { data } = await AdminCategoriesAPI.getCategoriesById(id);
 
-        // this.setState({
-        //   title: { val: data[0].type, error: false },
-        //   serviceName: { val: data[0].serviceName, error: false },
-        //   subFilters: { val: data[0]._idSubFilters.map(i => i.name), error: false },
-        //   idUpdate: data[0]._id,
-        //   enabledFilter: data[0].enabled
-        // });
-      } catch (err) {
-        this.setState({
-          sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
-        });
-      }
+    if (id) {
+      this.setState({ typeForm: 'update', idUpdate: id });
+    }
+
+    try {
+      const data = await AdminCategoriesAPI.getCategoriesById(id);
+
+      this.setState({
+        rootCategory: data.name,
+        childCategory: data.childCatalog.map(i => ({
+          id: i._id,
+          name: i.name,
+          filters: i.filters.map(k => ({
+            id: k.filter._id,
+            serviceName: k.filter.serviceName
+          }))
+        }))
+      });
+    } catch (err) {
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
     }
   }
 
@@ -153,7 +158,8 @@ class CategoriesDetail extends Component {
       filtersData,
       sendDataStatus,
       sendDataMessage,
-      onSubmitFormDisabled
+      onSubmitFormDisabled,
+      onAddChildCategoryDisabled
     } = this.state;
 
     return (
@@ -175,7 +181,9 @@ class CategoriesDetail extends Component {
             filtersData={filtersData}
             onChangeValue={this.onChangeValue}
             onAddChildCategory={this.onAddChildCategory}
+            onAddChildCategoryDisabled={onAddChildCategoryDisabled}
             onSubmitForm={this.onSubmitForm}
+            onClickDelete={this.onClickDelete}
             onSubmitFormDisabled={onSubmitFormDisabled}
           />
           <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />

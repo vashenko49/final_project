@@ -111,13 +111,7 @@ class FiltersDetail extends Component {
             startIcon={<ArrowBackIcon color="action" />}
           >
             <Typography component="span">
-              <Box
-                fontWeight={500}
-                component="span"
-                fontFamily="Monospace"
-                fontSize="h7.fontSize"
-                Filters
-              >
+              <Box fontWeight={500} component="span" fontFamily="Monospace" fontSize="h7.fontSize">
                 Filters
               </Box>
             </Typography>

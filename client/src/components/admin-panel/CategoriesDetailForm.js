@@ -15,6 +15,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import SaveIcon from '@material-ui/icons/Save';
 
@@ -25,6 +27,7 @@ const styles = theme => ({
     padding: theme.spacing(3, 0, 0)
   },
   heading: {
+    padding: theme.spacing(0, 0, 0, 3),
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular
   },
@@ -40,9 +43,11 @@ const CategoriesDetailForm = ({
   childCategory,
   filtersData,
   onChangeValue,
+  onClickDelete,
   onAddChildCategory,
   onSubmitForm,
-  onSubmitFormDisabled
+  onSubmitFormDisabled,
+  onAddChildCategoryDisabled
 }) => (
   <form autoComplete="off" className={classes.form}>
     <FormControl margin="normal">
@@ -71,6 +76,10 @@ const CategoriesDetailForm = ({
             aria-controls="panel2a-content"
             id={item.id}
           >
+            <IconButton aria-label="delete" datakey={item.id} onClick={onClickDelete}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+
             <Typography className={classes.heading}>
               {item.name || 'enter child caterory'}
             </Typography>
@@ -81,26 +90,24 @@ const CategoriesDetailForm = ({
                 error={!item.name}
                 required
                 id="childCategory"
-                inputProps={{ dataKey: item.id }}
+                inputProps={{ datakey: item.id }}
                 label="child category"
                 variant="outlined"
                 value={item.name ? item.name : ''}
                 onChange={e =>
-                  onChangeValue(e.target.id, e.target.value, e.target.getAttribute('dataKey'))
+                  onChangeValue(e.target.id, e.target.value, e.target.getAttribute('datakey'))
                 }
               />
             </FormControl>
 
-            <FormControl fullWidth>
+            <FormControl margin="normal" fullWidth>
               <Autocomplete
                 multiple
-                id="filters"
-                inputProps={{ asd: 'asd' }}
-                freeSolo
+                id={item.id + ''}
                 options={filtersData}
                 getOptionLabel={option => option.serviceName}
-                value={item.filters.map(i => (i.serviceName ? i.serviceName : i))}
-                onChange={(e, newValue) => onChangeValue('filters', newValue)}
+                value={item.filters}
+                onChange={(e, newValue, item) => onChangeValue('filters', newValue, e.target.id)}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
                     <Chip
@@ -127,6 +134,7 @@ const CategoriesDetailForm = ({
         </ExpansionPanel>
       ))}
       <Button
+        disabled={onAddChildCategoryDisabled}
         variant="text"
         color="primary"
         fullWidth={false}
@@ -160,7 +168,9 @@ CategoriesDetailForm.propTypes = {
   childCategory: PropTypes.array.isRequired,
   onChangeValue: PropTypes.func.isRequired,
   onSubmitForm: PropTypes.func.isRequired,
-  onSubmitFormDisabled: PropTypes.bool.isRequired
+  onClickDelete: PropTypes.func.isRequired,
+  onSubmitFormDisabled: PropTypes.bool.isRequired,
+  onAddChildCategoryDisabled: PropTypes.bool.isRequired
 };
 
 CategoriesDetailForm.defaultProps = {
@@ -177,7 +187,9 @@ CategoriesDetailForm.defaultProps = {
   onAddChildCategory: () => {},
   onChangeValue: () => {},
   onSubmitForm: () => {},
-  onSubmitFormDisabled: true
+  onClickDelete: () => {},
+  onSubmitFormDisabled: true,
+  onAddChildCategoryDisabled: true
 };
 
 export default withStyles(styles)(CategoriesDetailForm);
