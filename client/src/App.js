@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { configureStore } from './store';
@@ -7,6 +7,8 @@ import { configureStore } from './store';
 import Login from './components/auth/Login';
 import Registration from './components/auth/Registration';
 import AdminPanel from './components/admin-panel/AdminPanel';
+
+import ProductPageF from './components/page/ProductPageF';
 
 import PrivateRoute from './components/routing/PrivateRoute';
 
@@ -20,7 +22,7 @@ function App() {
     <Provider store={store}>
       <Router>
         <div>
-          <nav>
+          {/* <nav>
             <ul>
               <li>
                 <Link to="/subscribe">Subscribe</Link>
@@ -29,13 +31,14 @@ function App() {
                 <Link to="/admin-panel">Admin Panel</Link>
               </li>
             </ul>
-          </nav>
+          </nav> */}
 
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
           <Switch>
-            <Route exact path="/" component={Registration} />
+            <Route exact path="/" component={Login} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
+            <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
             <PrivateRoute exact path="/subscribe" component={Login} />
           </Switch>

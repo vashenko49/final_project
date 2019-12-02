@@ -57,58 +57,18 @@ export default class Categories extends Component {
       { title: 'Filter', field: 'titleFilter' },
       { title: 'Filter service name', field: 'serviceName' },
       {
-        title: 'Enabled category',
-        field: 'enabledCategory',
+        title: 'Enabled',
+        field: 'enabled',
         disableClick: true,
-        render: rowData => {
-          if (Object.keys(rowData).includes('enabledCategory')) {
-            return (
-              <Switch
-                checked={rowData.enabledCategory}
-                onChange={(e, val) => this.handleEnabled(val, rowData)}
-                value="enabledCategory"
-                color="primary"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-              />
-            );
-          }
-        }
-      },
-      {
-        title: 'Enabled sub category',
-        field: 'enabledSubCategory',
-        disableClick: true,
-        render: rowData => {
-          if (Object.keys(rowData).includes('enabledSubCategory')) {
-            return (
-              <Switch
-                checked={rowData.enabledSubCategory}
-                onChange={(e, rowData) => this.handleEnabled(e, rowData._id)}
-                value="enabledSubCategory"
-                color="primary"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-              />
-            );
-          }
-        }
-      },
-      {
-        title: 'Enabled filter',
-        field: 'enabledFilter',
-        disableClick: true,
-        render: rowData => {
-          if (Object.keys(rowData).includes('enabledFilter')) {
-            return (
-              <Switch
-                checked={rowData.enabledFilter}
-                onChange={(e, rowData) => this.handleEnabled(e, rowData._id)}
-                value="enabledFilter"
-                color="primary"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-              />
-            );
-          }
-        }
+        render: rowData => (
+          <Switch
+            checked={rowData.enabled}
+            onChange={(e, val) => this.handleEnabled(val, rowData)}
+            value="enabled"
+            color="primary"
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />
+        )
       }
     ],
     data: [],
@@ -117,7 +77,7 @@ export default class Categories extends Component {
     sendDataMessage: ''
   };
 
-  async componentDidMount() {
+  getData = async () => {
     try {
       const { data } = await AdminCategoriesAPI.getCategories();
 
@@ -127,7 +87,7 @@ export default class Categories extends Component {
         preViewRes.push({
           id: item._id,
           titleCategory: item.name,
-          enabledCategory: item.enabled
+          enabled: item.enabled
         });
 
         item.subCategories.forEach(subCategory => {
@@ -135,7 +95,7 @@ export default class Categories extends Component {
             id: subCategory._id,
             titleSubCategory: subCategory.name,
             parentId: subCategory.parentId,
-            enabledSubCategory: subCategory.enabled
+            enabled: subCategory.enabled
           });
 
           subCategory.filters.forEach(filter => {
@@ -144,7 +104,7 @@ export default class Categories extends Component {
               titleFilter: filter.type,
               serviceName: filter.serviceName,
               parentId: subCategory._id,
-              enabledFilter: filter.enabled
+              enabled: filter.enabled
             });
           });
         });
@@ -159,6 +119,10 @@ export default class Categories extends Component {
         sendDataMessage: err.response.data.message
       });
     }
+  };
+
+  componentDidMount() {
+    this.getData();
   }
 
   onSelectDelete = (event, delData) => {
@@ -213,52 +177,19 @@ export default class Categories extends Component {
     this.setState({ clickId: id });
   };
 
-  onRefreshData = async () => {
-    try {
-      const { data } = await AdminCategoriesAPI.getCategories();
-
-      const preViewRes = [];
-
-      data.forEach(item => {
-        preViewRes.push({
-          id: item._id,
-          titleCategory: item.name,
-          enabledCategory: item.enabled
-        });
-
-        item.subCategories.forEach(subCategory => {
-          preViewRes.push({
-            id: subCategory._id,
-            titleSubCategory: subCategory.name,
-            parentId: subCategory.parentId,
-            enabledSubCategory: subCategory.enabled
-          });
-
-          subCategory.filters.forEach(filter => {
-            preViewRes.push({
-              id: filter._id,
-              titleFilter: filter.type,
-              serviceName: filter.serviceName,
-              parentId: subCategory._id,
-              enabledFilter: filter.enabled
-            });
-          });
-        });
-      });
-
-      this.setState({
-        data: preViewRes
-      });
-    } catch (err) {
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
-      });
-    }
+  onRefreshData = () => {
+    this.getData();
   };
 
   handleEnabled = async (val, id) => {
-    console.log('handleEnabled', val, id);
+    this.setState({
+      data: this.state.data.map(i => {
+        if (id.id === i.id) {
+          i.enabled = val;
+        }
+        return i;
+      })
+    });
   };
 
   render() {

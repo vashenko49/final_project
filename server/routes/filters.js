@@ -17,7 +17,9 @@ const {
   getOneSubFilter,
   searchInSubFilter,
   searchInFilter,
-  deleteSubFilter
+  deleteSubFilter,
+  removeManySubFilters,
+  removeManyFilters
 } = require("../controllers/filters");
 
 // @route POST /filters
@@ -77,16 +79,23 @@ router.delete(
 );
 
 
+// @route   DELETE /filters/main/many
+// @desc    Delete many filter
+// @access  Private
+router.put(
+  "/main/many",
+  check('_idFiltersForDeletion','_idFiltersForDeletion is require'),
+  removeManyFilters
+);
+
+
 //----------------------------------------- subfilter
 
 // @route POST /subfilters
 // @desc Create new subfilter
 // @access Private
 router.post(
-  "/sub/",[
-    check('_idFilter', 'Give me id filter')
-      .not()
-      .isEmpty(),
+  "/sub",[
     check('name', 'Name is required')
       .not()
       .isEmpty(),
@@ -97,7 +106,7 @@ router.post(
 // @desc Update subfilter
 // @access Private
 router.put(
-  "/sub/",[
+  "/sub",[
     check('_idSubFilter', 'id SubFilter is required')
       .not()
       .isEmpty(),
@@ -137,5 +146,15 @@ router.delete(
   "/sub/:_idSubfilter",
   deleteSubFilter
 );
+
+// @route   DELETE /filters/sub/many
+// @desc    Delete many filter
+// @access  Private
+router.put(
+  "/sub/many",
+  check('_idSubFiltersForDeletion','_idSubFiltersForDeletion is require'),
+  removeManySubFilters
+);
+
 
 module.exports = router;

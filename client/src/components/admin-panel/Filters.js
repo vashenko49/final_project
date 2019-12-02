@@ -57,11 +57,12 @@ export default class Filters extends Component {
       {
         title: 'Enabled',
         field: 'enabled',
+        disableClick: true,
         render: rowData => (
           <Switch
             checked={rowData.enabled}
-            onChange={(e, rowData) => this.handleEnabled(e, rowData._id)}
-            value="checkedB"
+            onChange={(e, val) => this.handleEnabled(val, rowData)}
+            value="enabled"
             color="primary"
             inputProps={{ 'aria-label': 'primary checkbox' }}
           />
@@ -85,14 +86,15 @@ export default class Filters extends Component {
           id: item._id,
           title: item.type,
           serviceName: item.serviceName,
-          enabled: true
+          enabled: item.enabled
         });
 
         item._idSubFilters.forEach(sub => {
           preViewRes.push({
             id: sub._id,
             title: sub.name,
-            parentId: item._id
+            parentId: item._id,
+            enabled: sub.enabled
           });
         });
       });
@@ -162,7 +164,8 @@ export default class Filters extends Component {
           preViewRes.push({
             id: sub._id,
             title: sub.name,
-            parentId: item._id
+            parentId: item._id,
+            enabled: sub.enabled
           });
         });
       });
@@ -180,8 +183,15 @@ export default class Filters extends Component {
     }
   };
 
-  handleEnabled = async (e, id) => {
-    console.log('handleEnabled');
+  handleEnabled = async (val, id) => {
+    this.setState({
+      data: this.state.data.map(i => {
+        if (id.id === i.id) {
+          i.enabled = val;
+        }
+        return i;
+      })
+    });
   };
 
   render() {

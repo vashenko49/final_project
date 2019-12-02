@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import AdminFiltersAPI from '../../services/AdminFiltersAPI';
@@ -18,7 +18,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
-
   root: {
     padding: theme.spacing(2)
   }
