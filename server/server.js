@@ -8,6 +8,8 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
+
+
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -33,6 +35,7 @@ app.use('/catalog', require('./routes/catalog'));
 app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
 app.use('/subscriber', require('./routes/subscribers'));
+app.use('/comment', require('./routes/comment'));
 
 app.use('/cart', require('./routes/cart'));
 
