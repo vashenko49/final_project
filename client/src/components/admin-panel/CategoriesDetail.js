@@ -25,19 +25,35 @@ const styles = theme => ({
 
 class CategoriesDetail extends Component {
   state = {
-    rootCategory: { val: '', error: false },
-    childCategory: { val: '', error: false },
-    checkFilters: { val: [], error: false },
-    dataFilters: [],
+    rootCategory: '',
+    childCategory: [{ id: 0, name: '', filters: [] }],
+    filtersData: [],
     typeForm: 'create',
     idUpdate: null,
-    enabledCategories: true,
+    onSubmitFormDisabled: false,
     sendDataStatus: 'success',
     sendDataMessage: ''
   };
 
-  onChangeValue = (name, val) => {
-    this.setState({ [name]: { val, error: !val.length } });
+  onChangeValue = (name, val, idChildCategory) => {
+    console.log(val);
+    if (name === 'rootCategory') {
+      this.setState({ [name]: val });
+    } else if (name === 'childCategory') {
+      this.setState({
+        filters: this.state.childCategory.map(item => {
+          if (item.id === +idChildCategory) item.name = val;
+          return item;
+        })
+      });
+    } else if (name === 'filters') {
+      this.setState({
+        filters: this.state.childCategory.map(item => {
+          item.filters = val;
+          return item;
+        })
+      });
+    }
   };
 
   onSubmitForm = async () => {
@@ -80,6 +96,11 @@ class CategoriesDetail extends Component {
   };
 
   async componentDidMount() {
+    const { data } = await AdminFiltersAPI.getFilters();
+    this.setState({
+      filtersData: data.map(i => ({ id: i._id, serviceName: i.serviceName }))
+    });
+
     // try {
     //   const resFilters = await AdminFiltersAPI.getFilters();
 
@@ -129,13 +150,11 @@ class CategoriesDetail extends Component {
     const {
       rootCategory,
       childCategory,
-      dataFilters,
-      checkFilters,
+      filtersData,
       sendDataStatus,
-      sendDataMessage
+      sendDataMessage,
+      onSubmitFormDisabled
     } = this.state;
-
-    console.log(this.state);
 
     return (
       <Container maxWidth="md">
@@ -151,18 +170,13 @@ class CategoriesDetail extends Component {
             </Typography>
           </Button>
           <CategoriesDetailForm
-            rootCategory={rootCategory.val}
-            rootCategoryError={rootCategory.error}
-            childCategory={childCategory.val}
-            childCategoryError={childCategory.error}
-            dataFilters={dataFilters}
-            checkFilters={checkFilters.val}
-            checkFiltersError={checkFilters.error}
+            rootCategory={rootCategory}
+            childCategory={childCategory}
+            filtersData={filtersData}
             onChangeValue={this.onChangeValue}
+            onAddChildCategory={this.onAddChildCategory}
             onSubmitForm={this.onSubmitForm}
-            onSubmitFormDisabled={
-              !(rootCategory.val.length && childCategory.val.length && checkFilters.val.length)
-            }
+            onSubmitFormDisabled={onSubmitFormDisabled}
           />
           <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
         </Paper>

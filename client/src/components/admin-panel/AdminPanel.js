@@ -41,52 +41,50 @@ class AdminPanel extends Component {
 
     return (
       <Router>
-        <Box>
-          <AppBar position="fixed">
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleOpenMenu}
-                edge="start"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap>
-                Administrative Panel
-              </Typography>
-            </Toolbar>
-          </AppBar>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={this.handleOpenMenu}
+              edge="start"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              Administrative Panel
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-          <Drawer variant="temporary" anchor="left" open={isOpenMenu} onClose={this.handleOpenMenu}>
-            <div>
-              <IconButton onClick={this.handleOpenMenu}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </div>
-            <Divider />
-            <List>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/products">Products</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/categories">Categories</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/filters">Filters</StyledLink>
-                </ListItemText>
-              </ListItem>
-            </List>
-            <Divider />
-          </Drawer>
-        </Box>
+        <Drawer variant="temporary" anchor="left" open={isOpenMenu} onClose={this.handleOpenMenu}>
+          <div>
+            <IconButton onClick={this.handleOpenMenu}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            <ListItem button onClick={this.handleOpenMenu}>
+              <ListItemText>
+                <StyledLink to="/admin-panel/products">Products</StyledLink>
+              </ListItemText>
+            </ListItem>
+            <ListItem button onClick={this.handleOpenMenu}>
+              <ListItemText>
+                <StyledLink to="/admin-panel/categories">Categories</StyledLink>
+              </ListItemText>
+            </ListItem>
+            <ListItem button onClick={this.handleOpenMenu}>
+              <ListItemText>
+                <StyledLink to="/admin-panel/filters">Filters</StyledLink>
+              </ListItemText>
+            </ListItem>
+          </List>
+          <Divider />
+        </Drawer>
 
-        <Box p={1}>
+        <Box m={1}>
           <Switch>
             <Route exact path="/admin-panel/products" component={Products} />
             <Route exact path="/admin-panel/filters" component={Filters} />

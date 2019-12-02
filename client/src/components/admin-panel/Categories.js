@@ -90,21 +90,21 @@ export default class Categories extends Component {
           enabled: item.enabled
         });
 
-        item.subCategories.forEach(subCategory => {
+        item.childCatalog.forEach(childCatalog => {
           preViewRes.push({
-            id: subCategory._id,
-            titleSubCategory: subCategory.name,
-            parentId: subCategory.parentId,
-            enabled: subCategory.enabled
+            id: childCatalog._id,
+            titleSubCategory: childCatalog.name,
+            parentId: childCatalog.parentId,
+            enabled: childCatalog.enabled
           });
 
-          subCategory.filters.forEach(filter => {
+          childCatalog.filters.forEach(filter => {
             preViewRes.push({
-              id: filter._id,
-              titleFilter: filter.type,
-              serviceName: filter.serviceName,
-              parentId: subCategory._id,
-              enabled: filter.enabled
+              id: filter.filter._id,
+              titleFilter: filter.filter.type,
+              serviceName: filter.filter.serviceName,
+              parentId: childCatalog._id,
+              enabled: filter.filter.enabled
             });
           });
         });
