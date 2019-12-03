@@ -8,17 +8,18 @@ import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import Chip from '@material-ui/core/Chip';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import IconButton from '@material-ui/core/IconButton';
+
+import DeleteIcon from '@material-ui/icons/Delete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-
 import SaveIcon from '@material-ui/icons/Save';
+
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const styles = theme => ({
   form: {
@@ -27,7 +28,8 @@ const styles = theme => ({
     padding: theme.spacing(3, 0, 0)
   },
   heading: {
-    padding: theme.spacing(0, 0, 0, 3),
+    margin: 'auto 0',
+    padding: theme.spacing(0, 0, 0, 2),
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular
   },
@@ -47,7 +49,7 @@ const CategoriesDetailForm = ({
   onAddChildCategory,
   onSubmitForm,
   onSubmitFormDisabled,
-  onAddChildCategoryDisabled
+  hasOnClickDelete
 }) => (
   <form autoComplete="off" className={classes.form}>
     <FormControl margin="normal">
@@ -76,12 +78,14 @@ const CategoriesDetailForm = ({
             aria-controls="panel2a-content"
             id={item.id}
           >
-            <IconButton aria-label="delete" datakey={item.id} onClick={onClickDelete}>
-              <DeleteIcon fontSize="small" />
-            </IconButton>
+            {hasOnClickDelete ? (
+              <IconButton aria-label="delete" datakey={item.id} onClick={onClickDelete}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            ) : null}
 
             <Typography className={classes.heading}>
-              {item.name || 'enter child caterory'}
+              {item.name || 'enter child caterory...'}
             </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.childCtaegory}>
@@ -106,8 +110,10 @@ const CategoriesDetailForm = ({
                 id={item.id + ''}
                 options={filtersData}
                 getOptionLabel={option => option.serviceName}
-                value={item.filters}
-                onChange={(e, newValue, item) => onChangeValue('filters', newValue, e.target.id)}
+                defaultValue={item.filters}
+                onChange={(e, newValue) =>
+                  onChangeValue('filters', newValue, e.target.id.split('-')[0])
+                }
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
                     <Chip
@@ -134,10 +140,8 @@ const CategoriesDetailForm = ({
         </ExpansionPanel>
       ))}
       <Button
-        disabled={onAddChildCategoryDisabled}
         variant="text"
         color="primary"
-        fullWidth={false}
         size="small"
         onClick={onAddChildCategory}
         startIcon={<AddIcon />}
@@ -170,7 +174,7 @@ CategoriesDetailForm.propTypes = {
   onSubmitForm: PropTypes.func.isRequired,
   onClickDelete: PropTypes.func.isRequired,
   onSubmitFormDisabled: PropTypes.bool.isRequired,
-  onAddChildCategoryDisabled: PropTypes.bool.isRequired
+  onClickDeleteDisabled: PropTypes.bool.isRequired
 };
 
 CategoriesDetailForm.defaultProps = {
@@ -189,7 +193,7 @@ CategoriesDetailForm.defaultProps = {
   onSubmitForm: () => {},
   onClickDelete: () => {},
   onSubmitFormDisabled: true,
-  onAddChildCategoryDisabled: true
+  onClickDeleteDisabled: true
 };
 
 export default withStyles(styles)(CategoriesDetailForm);

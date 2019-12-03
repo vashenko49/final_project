@@ -26,32 +26,37 @@ const styles = theme => ({
 class CategoriesDetail extends Component {
   state = {
     rootCategory: '',
-    childCategory: [{ id: new Date().getTime(), name: '', filters: [] }],
+    childCategory: [],
     filtersData: [],
     typeForm: 'create',
     idUpdate: null,
-    onSubmitFormDisabled: false,
-    onAddChildCategoryDisabled: false,
     sendDataStatus: 'success',
     sendDataMessage: ''
   };
 
+  newObjChildCategory = () => ({
+    id: new Date().getTime().toString(),
+    idOwner: '',
+    name: '',
+    filters: []
+  });
+
   onChangeValue = (name, val, idChildCategory) => {
+    const { childCategory } = this.state;
+
     if (name === 'rootCategory') {
       this.setState({ [name]: val });
     } else if (name === 'childCategory') {
       this.setState({
-        filters: this.state.childCategory.map(item => {
-          if (item.id === +idChildCategory) item.name = val;
+        filters: childCategory.map(item => {
+          if (item.id === idChildCategory) item.name = val;
           return item;
         })
       });
     } else if (name === 'filters') {
       this.setState({
-        filters: this.state.childCategory.map(item => {
-          if (item.id === +idChildCategory.split('-')[0]) {
-            item.filters = val;
-          }
+        filters: childCategory.map(item => {
+          if (item.id === idChildCategory) item.filters = val;
           return item;
         })
       });
@@ -60,10 +65,7 @@ class CategoriesDetail extends Component {
 
   onAddChildCategory = () => {
     this.setState({
-      childCategory: [
-        ...this.state.childCategory,
-        { id: new Date().getTime(), name: '', filters: [] }
-      ]
+      childCategory: [...this.state.childCategory, this.newObjChildCategory()]
     });
   };
 
@@ -72,48 +74,46 @@ class CategoriesDetail extends Component {
 
     this.setState({
       childCategory: this.state.childCategory.filter(
-        i => i.id !== +e.currentTarget.getAttribute('datakey')
+        i => i.id !== e.currentTarget.getAttribute('datakey')
       )
     });
   };
 
   onSubmitForm = async () => {
-    // const {
-    //   typeForm,
-    //   rootCategory,
-    //   childCategory,
-    //   checkFilters,
-    //   idUpdate,
-    //   enabledCategories
-    // } = this.state;
-    // const sendData = {
-    //   title: title.val,
-    //   serviceName: serviceName.val,
-    //   subFilters: subFilters.val
-    // };
-    // try {
-    //   if (typeForm === 'create') {
-    //     await AdminFiltersAPI.addFilters(sendData);
-    //     this.setState({
-    //       sendDataStatus: 'success',
-    //       sendDataMessage: `${title.val} filter has been created!`
-    //     });
-    //   }
-    //   if (typeForm === 'update') {
-    //     sendData.idUpdate = idUpdate;
-    //     sendData.enabledFilter = enabledFilter;
-    //     await AdminFiltersAPI.updateFilters(sendData);
-    //     this.setState({
-    //       sendDataStatus: 'success',
-    //       sendDataMessage: `${title.val} filter has been update!`
-    //     });
-    //   }
-    // } catch (err) {
-    //   this.setState({
-    //     sendDataStatus: 'error',
-    //     sendDataMessage: err.response.data.message
-    //   });
-    // }
+    const { rootCategory, childCategory, idUpdate, typeForm } = this.state;
+
+    const sendData = {
+      nameRootCatalog: rootCategory,
+      childCatalogs: childCategory.map(child => {
+        const childData = {
+          nameChildCatalog: child.name,
+          filters: child.filters.map(filter => filter.id)
+        };
+        if (child.idOwner) childData._id = child.idOwner;
+
+        return childData;
+      })
+    };
+
+    try {
+      if (typeForm === 'create') {
+        await AdminCategoriesAPI.addCategories(sendData);
+      }
+      if (typeForm === 'update') {
+        sendData._id = idUpdate;
+        await AdminCategoriesAPI.updateCategories(sendData);
+      }
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `${rootCategory} category has been ${typeForm}!`
+      });
+    } catch (err) {
+      this.setState({
+        sendDataStatus: 'error'
+        // sendDataMessage: err.response.data.message
+      });
+    }
   };
 
   async componentDidMount() {
@@ -123,30 +123,33 @@ class CategoriesDetail extends Component {
     });
 
     const { id } = this.props.match.params;
-
     if (id) {
       this.setState({ typeForm: 'update', idUpdate: id });
-    }
 
-    try {
-      const data = await AdminCategoriesAPI.getCategoriesById(id);
+      try {
+        const { data } = await AdminCategoriesAPI.getCategoriesById(id);
+        console.log(data);
 
-      this.setState({
-        rootCategory: data.name,
-        childCategory: data.childCatalog.map(i => ({
-          id: i._id,
-          name: i.name,
-          filters: i.filters.map(k => ({
-            id: k.filter._id,
-            serviceName: k.filter.serviceName
+        this.setState({
+          rootCategory: data.name,
+          childCategory: data.childCatalog.map(i => ({
+            idOwner: i._id,
+            id: i._id,
+            name: i.name,
+            filters: i.filters.map(k => ({
+              id: k.filter._id,
+              serviceName: k.filter.serviceName
+            }))
           }))
-        }))
-      });
-    } catch (err) {
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
-      });
+        });
+      } catch (err) {
+        this.setState({
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
+        });
+      }
+    } else {
+      this.setState({ childCategory: [this.newObjChildCategory()] });
     }
   }
 
@@ -157,9 +160,7 @@ class CategoriesDetail extends Component {
       childCategory,
       filtersData,
       sendDataStatus,
-      sendDataMessage,
-      onSubmitFormDisabled,
-      onAddChildCategoryDisabled
+      sendDataMessage
     } = this.state;
 
     return (
@@ -181,10 +182,12 @@ class CategoriesDetail extends Component {
             filtersData={filtersData}
             onChangeValue={this.onChangeValue}
             onAddChildCategory={this.onAddChildCategory}
-            onAddChildCategoryDisabled={onAddChildCategoryDisabled}
-            onSubmitForm={this.onSubmitForm}
             onClickDelete={this.onClickDelete}
-            onSubmitFormDisabled={onSubmitFormDisabled}
+            hasOnClickDelete={!!(childCategory.length > 1)}
+            onSubmitForm={this.onSubmitForm}
+            onSubmitFormDisabled={
+              !!(childCategory.find(i => !i.name || !i.filters.length) || !rootCategory)
+            }
           />
           <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
         </Paper>
