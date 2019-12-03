@@ -11,7 +11,7 @@ export default class AdminCategoriesAPI {
     return axios.get(`${this.apiHost}/catalog/hierarchy/one/${id}`);
   }
 
-  static addCategories(data) {
+  static createCategories(data) {
     console.log('addCategories', data);
 
     return new Promise((resolve, reject) => {

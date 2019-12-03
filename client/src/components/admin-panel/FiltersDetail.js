@@ -49,7 +49,7 @@ class FiltersDetail extends Component {
 
     try {
       if (typeForm === 'create') {
-        await AdminFiltersAPI.addFilters(sendData);
+        await AdminFiltersAPI.createFilters(sendData);
 
         this.setState({
           sendDataStatus: 'success',

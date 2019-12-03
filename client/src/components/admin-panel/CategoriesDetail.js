@@ -25,6 +25,7 @@ const styles = theme => ({
 
 class CategoriesDetail extends Component {
   state = {
+    rootCategoryError: false,
     rootCategory: '',
     childCategory: [],
     filtersData: [],
@@ -38,25 +39,33 @@ class CategoriesDetail extends Component {
     id: new Date().getTime().toString(),
     idOwner: '',
     name: '',
+    childCategoryError: false,
+    filtersError: false,
     filters: []
   });
 
   onChangeValue = (name, val, idChildCategory) => {
     const { childCategory } = this.state;
+    const error = !val;
+
+    console.log('ID', name, val, idChildCategory);
 
     if (name === 'rootCategory') {
-      this.setState({ [name]: val });
+      this.setState({ rootCategory: val, rootCategoryError: error });
     } else if (name === 'childCategory') {
       this.setState({
-        filters: childCategory.map(item => {
+        childCategory: childCategory.map(item => {
           if (item.id === idChildCategory) item.name = val;
+          item.childCategoryError = error;
           return item;
         })
       });
     } else if (name === 'filters') {
       this.setState({
-        filters: childCategory.map(item => {
+        childCategory: childCategory.map(item => {
           if (item.id === idChildCategory) item.filters = val;
+          item.filtersError = error;
+          console.log(item);
           return item;
         })
       });
@@ -97,7 +106,7 @@ class CategoriesDetail extends Component {
 
     try {
       if (typeForm === 'create') {
-        await AdminCategoriesAPI.addCategories(sendData);
+        await AdminCategoriesAPI.createCategories(sendData);
       }
       if (typeForm === 'update') {
         sendData._id = idUpdate;
@@ -128,13 +137,14 @@ class CategoriesDetail extends Component {
 
       try {
         const { data } = await AdminCategoriesAPI.getCategoriesById(id);
-        console.log(data);
 
         this.setState({
           rootCategory: data.name,
           childCategory: data.childCatalog.map(i => ({
             idOwner: i._id,
             id: i._id,
+            childCategoryError: false,
+            filtersError: false,
             name: i.name,
             filters: i.filters.map(k => ({
               id: k.filter._id,
@@ -157,11 +167,14 @@ class CategoriesDetail extends Component {
     const { classes } = this.props;
     const {
       rootCategory,
+      rootCategoryError,
       childCategory,
       filtersData,
       sendDataStatus,
       sendDataMessage
     } = this.state;
+
+    console.log(this.state);
 
     return (
       <Container maxWidth="md">
@@ -178,6 +191,7 @@ class CategoriesDetail extends Component {
           </Button>
           <CategoriesDetailForm
             rootCategory={rootCategory}
+            rootCategoryError={rootCategoryError}
             childCategory={childCategory}
             filtersData={filtersData}
             onChangeValue={this.onChangeValue}

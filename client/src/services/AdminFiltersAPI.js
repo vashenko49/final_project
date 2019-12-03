@@ -11,7 +11,7 @@ export default class AdminFiltersAPI {
     return axios.get(`${this.apiHost}/filters/main/one/${id}`);
   }
 
-  static addFilters(data) {
+  static createFilters(data) {
     const sendData = {
       type: data.title,
       serviceName: data.serviceName,

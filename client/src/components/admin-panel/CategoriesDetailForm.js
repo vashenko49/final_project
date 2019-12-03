@@ -42,6 +42,7 @@ const styles = theme => ({
 const CategoriesDetailForm = ({
   classes,
   rootCategory,
+  rootCategoryError,
   childCategory,
   filtersData,
   onChangeValue,
@@ -54,7 +55,7 @@ const CategoriesDetailForm = ({
   <form autoComplete="off" className={classes.form}>
     <FormControl margin="normal">
       <TextField
-        error={!rootCategory}
+        error={rootCategoryError}
         required
         id="rootCategory"
         label="Main category"
@@ -91,15 +92,15 @@ const CategoriesDetailForm = ({
           <ExpansionPanelDetails className={classes.childCtaegory}>
             <FormControl margin="normal" fullWidth>
               <TextField
-                error={!item.name}
+                error={item.childCategoryError}
                 required
                 id="childCategory"
                 inputProps={{ datakey: item.id }}
                 label="child category"
                 variant="outlined"
                 value={item.name ? item.name : ''}
-                onChange={e =>
-                  onChangeValue(e.target.id, e.target.value, e.target.getAttribute('datakey'))
+                onChange={(e, a) =>
+                  onChangeValue(e.target.id, e.target.value, e.target.getAttribute('datakey'), a)
                 }
               />
             </FormControl>
@@ -117,6 +118,7 @@ const CategoriesDetailForm = ({
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
                     <Chip
+                      onDelete={() => console.log('onClose')}
                       variant="outlined"
                       label={option.serviceName}
                       {...getTagProps({ index })}
@@ -126,7 +128,7 @@ const CategoriesDetailForm = ({
                 renderInput={params => (
                   <TextField
                     required
-                    error={!item.filters.length}
+                    error={item.filtersError}
                     {...params}
                     variant="outlined"
                     label="Filters"
@@ -174,7 +176,8 @@ CategoriesDetailForm.propTypes = {
   onSubmitForm: PropTypes.func.isRequired,
   onClickDelete: PropTypes.func.isRequired,
   onSubmitFormDisabled: PropTypes.bool.isRequired,
-  onClickDeleteDisabled: PropTypes.bool.isRequired
+  onClickDeleteDisabled: PropTypes.bool.isRequired,
+  rootCategoryError: PropTypes.bool.isRequired
 };
 
 CategoriesDetailForm.defaultProps = {
@@ -193,7 +196,8 @@ CategoriesDetailForm.defaultProps = {
   onSubmitForm: () => {},
   onClickDelete: () => {},
   onSubmitFormDisabled: true,
-  onClickDeleteDisabled: true
+  onClickDeleteDisabled: true,
+  rootCategoryError: false
 };
 
 export default withStyles(styles)(CategoriesDetailForm);
