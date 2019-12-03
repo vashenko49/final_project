@@ -8,6 +8,7 @@ const commonCatalog = require('../common/commonCatalog');
 const _ = require('lodash');
 
 const {validationResult} = require('express-validator');
+const mongoose = require('mongoose');
 
 exports.addROOTCatalog = async (req, res) => {
   try {
@@ -163,6 +164,8 @@ exports.getROOTCategory = async (req, res) => {
     })
   }
 };
+
+
 
 
 ///////////////////////////////////////////////////////////////////
@@ -381,7 +384,6 @@ exports.getActiveChildCategoriesWithRootID = async (req, res) => {
   }
 };
 
-
 exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
   try {
     let root = JSON.parse(JSON.stringify(await rootCatalog.find({})));
@@ -399,6 +401,36 @@ exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
 
 };
 
+exports.getHierarchyRootChildCatalogFilterByRootCatalogID = async (req, res) => {
+  try {
+    const {_idRootCatalog} = req.params;
+    if(!mongoose.Types.ObjectId.isValid(_idRootCatalog)){
+      return res.status(400).json({
+        message:`ID is not valid ${_idRootCatalog}`
+      })
+    }
+
+    let root = await rootCatalog.findById(_idRootCatalog);
+
+    if (!root) {
+      return res.status(400).json({
+        message: `RootCatalog with id ${root} is not found`
+      })
+    }
+
+    root = JSON.parse(JSON.stringify(root));
+
+    root.childCatalog = await childCatalog.find({"parentId": root._id}).select('-filters.subfilters')
+        .populate('filters.filter');
+
+    res.status(200).json(root);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+
+};
 
 exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
   try {
@@ -442,7 +474,6 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
     })
   }
 };
-
 
 exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
   try {

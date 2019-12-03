@@ -90,7 +90,7 @@ router.get('/searchheader/:searchheader',
 // @route   GET /products/filter
 // @desc    Search products
 // @access  Public
-router.get('/filter',
+router.post('/filter',
   getProductsFilterParams
 );
 

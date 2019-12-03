@@ -410,15 +410,26 @@ exports.searchProducts = async (req, res, next) => {
   }
 };
 
-
 exports.getProductsFilterParams = async (req, res, next) => {
   try {
-    let {_idChildCatalog, _idSubFilters} = req.query;
-    _idSubFilters = _idSubFilters.split(',');
-    console.log(_idSubFilters);
-    console.log(_idChildCatalog);
-    res.status(200).send('sdsdsdf')
+    let {subfilters} = req.body;
 
+    subfilters = subfilters.map(element=>{
+      return mongoose.Types.ObjectId(element);
+    });
+
+    const Products = await Product.find({
+      $and:[
+        {
+          "filters.subFilter":{$in:subfilters}
+        },
+        {
+          "model.filters.subFilter":{$in:subfilters}
+        }
+      ]
+    });
+
+    res.status(200).json(Products);
   } catch (e) {
     res.status(500).json({
       message: 'Server Error!'

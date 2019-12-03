@@ -8,6 +8,9 @@ export default {
     },
     github: {
       clientID: 'a9d3b6300fd90b5d527d'
+    },
+    cloudinary: {
+      cloudName: 'dxge5r7h2'
     }
   }
 };
