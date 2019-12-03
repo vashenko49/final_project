@@ -30,19 +30,17 @@ class ImageCarousel extends Component {
     const { products } = this.props;
 
     return (
-      <div style={{ marginTop: '50px', color: '#494949' }}>
-        <Carousel
-          className="image-carousel"
-          autoPlay={this.state.autoPlay}
-          timer={this.state.timer}
-          animation={this.state.animation}
-          indicators={this.state.indicators}
-        >
-          {products.map((item, index) => {
-            return <ImageCarouselItem item={item} key={index} />;
-          })}
-        </Carousel>
-      </div>
+      <Carousel
+        className="image-carousel"
+        autoPlay={this.state.autoPlay}
+        timer={this.state.timer}
+        animation={this.state.animation}
+        indicators={this.state.indicators}
+      >
+        {products.map((item, index) => {
+          return <ImageCarouselItem item={item} key={index} />;
+        })}
+      </Carousel>
     );
   }
 }

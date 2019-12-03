@@ -6,6 +6,7 @@ import { configureStore } from './store';
 import Login from './components/auth/Login';
 
 import ProductPageF from './components/page/ProductPageF';
+import MainPage from './components/page/MainPage';
 
 import PrivateRoute from './components/routing/PrivateRoute';
 
@@ -31,6 +32,7 @@ function App() {
             renders the first one that matches the current URL. */}
           <Switch>
             <Route exact path="/" component={Login} />
+            <Route exact exect path="/main-page" component={MainPage} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
             <PrivateRoute exact path="/subscribe" component={Login} />
