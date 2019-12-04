@@ -3,17 +3,26 @@ import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as footerLinkPageAction from '../../actions/footerLinkPageAction';
+import parse from 'html-react-parser';
+
+import * as footerLinksAction from '../../actions/footerLinksAction';
 
 import './FooterLinkPage.scss'
 
 class FooterLinkPage extends Component {
 
-  async componentDidMount() {
-    let url = window.location.href.split('/');
-    let customId = url[url.length - 1];
+  constructor (props){
+    super(props);
+  }
 
-    await this.props.footerLinkPageAction.getFooterLinkPageByCustomId(customId);
+  async componentDidMount() {
+    await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId);
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevProps.match.params.customId !== this.props.match.params.customId) {
+      await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId);
+    }
   }
 
   render() {
@@ -29,7 +38,7 @@ class FooterLinkPage extends Component {
 
     return (
       <div className="footer-link-page">
-        {content}
+        {parse(`${content}`)}
       </div>
     )
   }
@@ -37,14 +46,14 @@ class FooterLinkPage extends Component {
 
 function mapStateToProps(state) {
   return {
-    article: state.footerLinkPage.article,
-    error: state.footerLinkPage.error
+    article: state.footerLinks.articles.article,
+    error: state.footerLinks.articles.error
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    footerLinkPageAction: bindActionCreators(footerLinkPageAction, dispatch)
+    footerLinksAction: bindActionCreators(footerLinksAction, dispatch)
   };
 }
 
