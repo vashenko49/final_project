@@ -31,6 +31,7 @@ class CategoriesDetail extends Component {
     filtersData: [],
     typeForm: 'create',
     idUpdate: null,
+    isOpenSnack: false,
     sendDataStatus: 'success',
     sendDataMessage: ''
   };
@@ -46,9 +47,7 @@ class CategoriesDetail extends Component {
 
   onChangeValue = (name, val, idChildCategory) => {
     const { childCategory } = this.state;
-    const error = !val;
-
-    console.log('ID', name, val, idChildCategory);
+    const error = !val.length;
 
     if (name === 'rootCategory') {
       this.setState({ rootCategory: val, rootCategoryError: error });
@@ -65,7 +64,6 @@ class CategoriesDetail extends Component {
         childCategory: childCategory.map(item => {
           if (item.id === idChildCategory) item.filters = val;
           item.filtersError = error;
-          console.log(item);
           return item;
         })
       });
@@ -154,6 +152,7 @@ class CategoriesDetail extends Component {
         });
       } catch (err) {
         this.setState({
+          isOpenSnack: true,
           sendDataStatus: 'error',
           sendDataMessage: err.response.data.message
         });
@@ -173,8 +172,6 @@ class CategoriesDetail extends Component {
       sendDataStatus,
       sendDataMessage
     } = this.state;
-
-    console.log(this.state);
 
     return (
       <Container maxWidth="md">
@@ -213,7 +210,5 @@ class CategoriesDetail extends Component {
 CategoriesDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
-
-CategoriesDetail.defaultProps = {};
 
 export default withStyles(styles)(CategoriesDetail);

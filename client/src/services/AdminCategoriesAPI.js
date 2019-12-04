@@ -29,11 +29,20 @@ export default class AdminCategoriesAPI {
     // return axios.put(`${this.apiHost}/catalog/hierarchy`, sendData);
   }
 
-  static deleteCategories(id) {
+  static deleteRootCategory(id) {
     return axios.delete(`${this.apiHost}/catalog/root/${id}`);
   }
 
-  static deleteChildCategories(id) {
+  static deleteSubCategory(id) {
     return axios.delete(`${this.apiHost}/catalog/child/${id}`);
+  }
+
+  static deleteFilter(id) {
+    console.log('deleteFilter', id);
+
+    return new Promise((resolve, reject) => {
+      resolve(id);
+    });
+    // return axios.delete(`${this.apiHost}/catalog/child/${id}`);
   }
 }

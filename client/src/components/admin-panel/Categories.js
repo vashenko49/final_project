@@ -1,6 +1,5 @@
 import React, { Component, forwardRef } from 'react';
 import { Redirect } from 'react-router';
-// import PropTypes from 'prop-types';
 
 import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
 import SnackBars from '../common/admin-panel/SnackBars';
@@ -109,7 +108,6 @@ export default class Categories extends Component {
           });
         });
       });
-
       this.setState({
         data: preViewRes
       });
@@ -126,32 +124,41 @@ export default class Categories extends Component {
   }
 
   onSelectDelete = (event, delData) => {
-    // try {
-    //   delData.forEach(async item => {
-    //     if (item.parentId) {
-    //       await AdminFiltersAPI.deleteSubFilters(item.id);
-    //       this.setState({
-    //         sendDataStatus: 'success',
-    //         sendDataMessage: `${item.title} sub filter has been remove!`
-    //       });
-    //     } else {
-    //       await AdminFiltersAPI.deleteFilters(item.id);
-    //       this.setState({
-    //         sendDataStatus: 'success',
-    //         sendDataMessage: `${item.title} filter has been remove!`
-    //       });
-    //       this.setState(prevState => {
-    //         const data = prevState.data.filter(i => !delData.includes(i));
-    //         return { ...prevState, data };
-    //       });
-    //     }
-    //   });
-    // } catch (err) {
-    //   this.setState({
-    //     sendDataStatus: 'error',
-    //     sendDataMessage: err.response.data.message
-    //   });
-    // }
+    try {
+      delData.forEach(async item => {
+        let nameItem = Object.keys(item);
+
+        if (nameItem.includes('titleCategory')) {
+          await AdminCategoriesAPI.deleteRootCategory(item.id);
+          this.setState({
+            sendDataStatus: 'success',
+            sendDataMessage: `${item.titleCategory} has been remove!`
+          });
+        } else if (nameItem.includes('titleSubCategory')) {
+          await AdminCategoriesAPI.deleteSubCategory(item.id);
+          this.setState({
+            sendDataStatus: 'success',
+            sendDataMessage: `${item.titleSubCategory} filter has been remove!`
+          });
+        } else if (nameItem.includes('titleFilter')) {
+          await AdminCategoriesAPI.deleteFilter(item.id);
+          this.setState({
+            sendDataStatus: 'success',
+            sendDataMessage: `${item.titleFilter} filter has been remove!`
+          });
+        }
+      });
+
+      this.setState(prevState => {
+        const data = prevState.data.filter(i => !delData.includes(i));
+        return { ...prevState, data };
+      });
+    } catch (err) {
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
+    }
   };
 
   onRowClick = (evt, selectedRow) => {
@@ -205,7 +212,17 @@ export default class Categories extends Component {
           parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
           options={{
             selection: true,
-            actionsColumnIndex: -1
+            exportButton: true,
+            actionsColumnIdex: -1,
+            rowStyle: rowData => ({
+              backgroundColor: rowData.enabled ? '#FFF' : '#EEEF'
+            }),
+            headerStyle: {
+              backgroundColor: '#455a64',
+              color: '#FFF',
+              position: 'sticky',
+              top: 0
+            }
           }}
           actions={[
             {
@@ -233,7 +250,3 @@ export default class Categories extends Component {
     );
   }
 }
-
-Categories.propTypes = {};
-
-Categories.defaultProps = {};

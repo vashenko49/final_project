@@ -1,6 +1,5 @@
 import React, { Component, forwardRef } from 'react';
 import { Redirect } from 'react-router';
-// import PropTypes from 'prop-types';
 
 import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
 import SnackBars from '../common/admin-panel/SnackBars';
@@ -207,7 +206,15 @@ export default class Filters extends Component {
           parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
           options={{
             selection: true,
-            actionsColumnIndex: -1
+            exportButton: true,
+            actionsColumnIndex: -1,
+            rowStyle: rowData => ({
+              backgroundColor: rowData.enabled ? '#FFF' : '#EEEF'
+            }),
+            headerStyle: {
+              backgroundColor: '#455a64',
+              color: '#FFF'
+            }
           }}
           actions={[
             {
@@ -235,7 +242,3 @@ export default class Filters extends Component {
     );
   }
 }
-
-Filters.propTypes = {};
-
-Filters.defaultProps = {};

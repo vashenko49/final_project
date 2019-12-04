@@ -61,7 +61,7 @@ const CategoriesDetailForm = ({
         label="Main category"
         variant="outlined"
         value={rootCategory}
-        onChange={e => onChangeValue(e.currentTarget.id, e.currentTarget.value)}
+        onChange={e => onChangeValue('rootCategory', e.target.value)}
       />
     </FormControl>
 
@@ -95,31 +95,28 @@ const CategoriesDetailForm = ({
                 error={item.childCategoryError}
                 required
                 id="childCategory"
-                inputProps={{ datakey: item.id }}
                 label="child category"
                 variant="outlined"
                 value={item.name ? item.name : ''}
-                onChange={(e, a) =>
-                  onChangeValue(e.target.id, e.target.value, e.target.getAttribute('datakey'), a)
-                }
+                onChange={e => onChangeValue('childCategory', e.target.value, item.id)}
               />
             </FormControl>
 
             <FormControl margin="normal" fullWidth>
               <Autocomplete
                 multiple
-                id={item.id + ''}
+                id="filters"
                 options={filtersData}
                 getOptionLabel={option => option.serviceName}
-                defaultValue={item.filters}
-                onChange={(e, newValue) =>
-                  onChangeValue('filters', newValue, e.target.id.split('-')[0])
-                }
+                defaultValue={filtersData.filter(i => item.filters.map(i => i.id).includes(i.id))}
+                disableCloseOnSelect
+                filterSelectedOptions
+                onChange={(e, val) => onChangeValue('filters', val, item.id)}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
                     <Chip
-                      onDelete={() => console.log('onClose')}
                       variant="outlined"
+                      datakey={item.id}
                       label={option.serviceName}
                       {...getTagProps({ index })}
                     />
@@ -172,23 +169,30 @@ CategoriesDetailForm.propTypes = {
   classes: PropTypes.object.isRequired,
   rootCategory: PropTypes.string.isRequired,
   childCategory: PropTypes.array.isRequired,
+  filtersData: PropTypes.array.isRequired,
   onChangeValue: PropTypes.func.isRequired,
   onSubmitForm: PropTypes.func.isRequired,
   onClickDelete: PropTypes.func.isRequired,
+  onAddChildCategory: PropTypes.func.isRequired,
   onSubmitFormDisabled: PropTypes.bool.isRequired,
   onClickDeleteDisabled: PropTypes.bool.isRequired,
-  rootCategoryError: PropTypes.bool.isRequired
+  rootCategoryError: PropTypes.bool.isRequired,
+  hasOnClickDelete: PropTypes.bool.isRequired
 };
 
 CategoriesDetailForm.defaultProps = {
   classes: {},
   rootCategory: '',
+  rootCategoryError: false,
   filtersData: [],
   childCategory: [
     {
-      id: 0,
+      id: new Date().getTime().toString(),
+      idOwner: '',
       name: '',
-      filters: [{ id: 0, serviceName: '' }]
+      childCategoryError: false,
+      filtersError: false,
+      filters: []
     }
   ],
   onAddChildCategory: () => {},
@@ -197,7 +201,7 @@ CategoriesDetailForm.defaultProps = {
   onClickDelete: () => {},
   onSubmitFormDisabled: true,
   onClickDeleteDisabled: true,
-  rootCategoryError: false
+  hasOnClickDelete: false
 };
 
 export default withStyles(styles)(CategoriesDetailForm);

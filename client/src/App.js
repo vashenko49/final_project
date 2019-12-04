@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { configureStore } from './store';
 
 import Login from './components/auth/Login';
-import Registration from './components/auth/Registration';
+// import Registration from './components/auth/Registration';
 import AdminPanel from './components/admin-panel/AdminPanel';
 
 import ProductPageF from './components/page/ProductPageF';
