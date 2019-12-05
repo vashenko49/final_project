@@ -1,0 +1,51 @@
+.Carousel {
+  overflow: hidden;
+}
+
+.image-carousel {
+  .image-carousel-item {
+    box-shadow: 0 6px 6px -3px rgba(0, 0, 0, .2),
+    0 10px 14px 1px rgba(0, 0, 0, .14),
+    0 4px 18px 3px rgba(0, 0, 0, .12),
+    inset 0 1000px 0 0 rgba(0, 0, 0, .3);
+  }
+}
+
+.caption {
+  padding-top: 6%;
+  padding-left: 50%;
+
+  .caption__text {
+    color: #fff;
+    font-size: 60px;
+    font-family: sans-serif;
+  }
+
+  .caption__btn {
+    color: #fff;
+    font-size: 12px;
+    border-bottom: 1px solid #fff;
+  }
+}
+
+.ButtonWrapper {
+
+  .Button {
+    margin: 0;
+    padding: 0;
+    opacity: 1 !important;
+    }
+
+  .Button.Next {
+      border-radius: 100% 0 0 100% / 50% 0 0 50%;
+    }
+
+  .Button.Prev {
+      border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+    }
+
+  .MuiSvgIcon-root {
+    width: .5em;
+    font-size: 6rem;
+  }
+}

@@ -1,12 +1,14 @@
-const Product =  require ("../models/Product");
+const Product = require("../models/Product");
 
 const rootCatalog = require("../models/RootCatalog");
 const childCatalog = require("../models/ChildCatalog");
 const subFilterModel = require('../models/SubFilter');
+const commonCatalog = require('../common/commonCatalog');
 
 const _ = require('lodash');
 
 const {validationResult} = require('express-validator');
+const mongoose = require('mongoose');
 
 exports.addROOTCatalog = async (req, res) => {
   try {
@@ -88,13 +90,12 @@ exports.deleteROOTCatalog = async (req, res) => {
     }
 
 
-
     let childCatalogy = await childCatalog.find({parentId: catalog._id});
 
-    if(childCatalogy.length>0){
+    if (childCatalogy.length > 0) {
       return res.status(400).json({
         message: `Root catalog is using a child catalog `,
-        product:childCatalogy
+        product: childCatalogy
       })
     }
 
@@ -163,6 +164,8 @@ exports.getROOTCategory = async (req, res) => {
     })
   }
 };
+
+
 
 
 ///////////////////////////////////////////////////////////////////
@@ -235,15 +238,14 @@ exports.deleteChildCatalog = async (req, res) => {
       });
     }
 
-    const product = await Product.find({'_idChildCategory':id});
+    const product = await Product.find({'_idChildCategory': id});
 
-    if(product.length>0){
+    if (product.length > 0) {
       return res.status(400).json({
         message: `Child catalog is using a product `,
-        product:product
+        product: product
       })
     }
-
 
 
     await catalog.delete();
@@ -285,7 +287,7 @@ exports.getActiveChildCategoryForClientAnySubfilter = async (req, res) => {
       .populate('parentId')
       .populate({
         path: 'filters.filter',
-        populate:{
+        populate: {
           path: "_idSubFilters"
         }
       });
@@ -376,6 +378,186 @@ exports.getActiveChildCategoriesWithRootID = async (req, res) => {
     });
     res.status(200).json(catalog);
   } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
+  try {
+    let root = JSON.parse(JSON.stringify(await rootCatalog.find({})));
+
+    for (let i = 0; i < root.length; i++) {
+      root[i].childCatalog = await childCatalog.find({"parentId": root[i]._id}).select('-filters.subfilters')
+        .populate('filters.filter');
+    }
+    res.status(200).json(root);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+
+};
+
+exports.getHierarchyRootChildCatalogFilterByRootCatalogID = async (req, res) => {
+  try {
+    const {_idRootCatalog} = req.params;
+    if(!mongoose.Types.ObjectId.isValid(_idRootCatalog)){
+      return res.status(400).json({
+        message:`ID is not valid ${_idRootCatalog}`
+      })
+    }
+
+    let root = await rootCatalog.findById(_idRootCatalog);
+
+    if (!root) {
+      return res.status(400).json({
+        message: `RootCatalog with id ${root} is not found`
+      })
+    }
+
+    root = JSON.parse(JSON.stringify(root));
+
+    root.childCatalog = await childCatalog.find({"parentId": root._id}).select('-filters.subfilters')
+        .populate('filters.filter');
+
+    res.status(200).json(root);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+
+};
+
+exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
+    const {nameRootCatalog, nameChildCatalog, filters} = req.body;
+
+    let catalog = await rootCatalog.findOne({name: nameRootCatalog});
+
+    if (catalog) {
+      return res.status(400).json({
+        message: `Root catalog ${catalog.name} already exists`
+      })
+    }
+
+
+    let newRootCatalog = new rootCatalog({
+      name: nameRootCatalog
+    });
+
+    newRootCatalog = await newRootCatalog.save();
+
+    let newChildCatalog = new childCatalog({
+      name: nameChildCatalog,
+      parentId: newRootCatalog._id,
+      filters: await commonCatalog.checkFilter(filters)
+    });
+
+    newChildCatalog = await newChildCatalog.save();
+
+    res.status(200).json({
+      newRootCatalog,
+      newChildCatalog
+    })
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
+
+    let response = {};
+    let {nameRootCatalog, nameChildCatalog, filters, _idRootCatalog, _idChildCatalog} = req.body;
+
+    if (_.isString(_idRootCatalog) && _.isString(nameRootCatalog)) {
+      let rootcatalog = await rootCatalog.findById(_idRootCatalog);
+      if (!rootcatalog) {
+        return res.status(400).json({
+          message: `Catalog with id "${_idRootCatalog}" is not found.`
+        });
+      }
+      rootcatalog.name = nameRootCatalog;
+
+      await rootcatalog.save();
+      response['rootcatalog'] = rootcatalog;
+    }
+
+    if (_.isString(_idChildCatalog)) {
+      let childcatalog = await childCatalog.findById(_idChildCatalog);
+
+      if (!childcatalog) {
+        return res.status(400).json({
+          message: `Catalog with id "${_idChildCatalog}" is not found.`
+        });
+      }
+
+      if (_.isString(nameChildCatalog)) {
+        childcatalog.name = nameChildCatalog;
+      }
+
+      if (_.isArray(filters)) {
+
+
+        filters = filters.map(elemen => {
+          return {
+            filter: elemen
+          }
+        });
+
+        await Promise.all(childcatalog.filters.map(async element => {
+          if (element) {
+            const {filter: filterProd} = element;
+            let productUse = await Product.findOne({
+              $and: [{"_idChildCategory": _idChildCatalog}, {
+                $or: [{"filters.filter": filterProd}, {"model.filters.filter": filterProd}]
+              }]
+            });
+            if (productUse) {
+              filters.push({
+                filter: filterProd
+              })
+            }
+          }
+        }));
+
+
+        filters = _.map(
+          _.uniq(
+            _.map(filters, function (obj) {
+              return JSON.stringify(obj);
+            })
+          ), function (obj) {
+            return JSON.parse(obj);
+          }
+        );
+
+        childcatalog.filters = filters;
+
+
+      }
+      await childcatalog.save();
+      response['childcatalog'] = childcatalog;
+    }
+
+    res.status(200).json(response);
+  } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })

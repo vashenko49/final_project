@@ -22,8 +22,56 @@ const {
   deleteROOTCatalog,
   deleteChildCatalog,
   getActiveChildCategoryForClientSelectSubfilter,
-  getActiveChildCategoryForClientAnySubfilter
+  getActiveChildCategoryForClientAnySubfilter,
+  getHierarchyRootChildCatalogFilter,
+  createRootChildCatalogAndAddFilterId,
+  updateRootChildCatalogAndAddFilterId,
+  getHierarchyRootChildCatalogFilterByRootCatalogID
 } = require("../controllers/catalog");
+
+// @route   GET /catalog/hierarchy
+// @desc    GET a hierarchical look
+// @access  Public
+router.get(
+  '/hierarchy',
+  getHierarchyRootChildCatalogFilter
+);
+
+// @route   GET /catalog/hierarchy/one
+// @desc    GET a hierarchical look
+// @access  Public
+router.get(
+  '/hierarchy/one/:_idRootCatalog',
+  getHierarchyRootChildCatalogFilterByRootCatalogID
+);
+
+// @route   POST /catalog/hierarchy
+// @desc    create root, child filters and add filter at the same time
+// @access  Public
+router.post(
+  '/hierarchy',[
+    check('nameRootCatalog','nameRootCatalog is require')
+      .not()
+      .isEmpty(),
+    check('nameChildCatalog','nameChildCatalog is require')
+      .not()
+      .isEmpty(),
+    check('filters','filters id require')
+      .isArray()
+  ],
+  createRootChildCatalogAndAddFilterId
+);
+
+// @route   PUT /catalog/hierarchy
+// @desc    edit root, child filters and add filter at the same time
+// @access  Public
+router.put(
+  '/hierarchy',
+  updateRootChildCatalogAndAddFilterId
+);
+
+
+
 
 // @route   POST /catalog/root
 // @desc    Create new root category
@@ -200,5 +248,6 @@ router.get(
   '/child/any/:id',
   getActiveChildCategoryForClientAnySubfilter
 );
+
 
 module.exports = router;

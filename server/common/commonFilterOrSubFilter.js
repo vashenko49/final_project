@@ -3,13 +3,16 @@ const _ = require('lodash');
 const ChildCatalog = require('../models/ChildCatalog');
 const Product = require('../models/Product');
 const Filter = require("../models/Filter");
-
+const mongoose = require('mongoose');
 
 exports.sortingSubFilter = (filter)=>{
   return Promise.all(
     filter._idSubFilters.map(async element => {
-      if (!_.isUndefined(element._idSubFilter)) {
+      if (mongoose.Types.ObjectId.isValid(element._idSubFilter)) {
         const subfilter = await SubFilter.findById(element._idSubFilter);
+        if (!subfilter){
+          throw `not found sub filter with id ${element._idSubFilter}`
+        }
         if (subfilter) {
           return element._idSubFilter;
         }

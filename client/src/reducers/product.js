@@ -1,4 +1,4 @@
-import { GET_PRODUCT } from '../constants/product';
+import { GET_PRODUCT, GET_PRODUCTS } from '../constants/product';
 
 const initialState = {
   product: {},
@@ -15,6 +15,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         product: payload,
+        loading: false
+      };
+    case GET_PRODUCTS:
+      return {
+        ...state,
+        products: payload,
         loading: false
       };
     default:

@@ -65,4 +65,4 @@ CustomerSchema.methods.comparePassword = function(candidatePassword, cb) {
   });
 };
 
-module.exports = Customer = mongoose.model("customer", CustomerSchema);
+module.exports = Customer = mongoose.model("customer", CustomerSchema, 'customer');
