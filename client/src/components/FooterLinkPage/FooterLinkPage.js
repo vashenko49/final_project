@@ -11,10 +11,6 @@ import './FooterLinkPage.scss'
 
 class FooterLinkPage extends Component {
 
-  constructor (props){
-    super(props);
-  }
-
   async componentDidMount() {
     await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId);
   }
