@@ -9,10 +9,9 @@ export const getCurrentItems = id => async dispatch => {
       'Content-Type': 'application/json'
     }
   };
-  const body = JSON.stringify({ id });
 
   try {
-    const res = await axios.get(`/cart`, body, config);
+    const res = await axios.get(`/cart/${id}`, config);
 
     dispatch({
       type: GET_ITEMS,

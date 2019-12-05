@@ -30,7 +30,7 @@ function App() {
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
           <Switch>
-            <Route exact path="/" component={Cart} />
+            <Route exact path="/cart" component={Cart} />
             {/* <Route exact exect path="/product/:id" component={ProductPageF} /> */}
             {/* <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} /> */}
             {/* <PrivateRoute exact path="/subscribe" component={Login} /> */}

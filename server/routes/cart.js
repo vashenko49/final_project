@@ -10,7 +10,7 @@ const { getCart, updateCart, updateQuantity, deleteProductFromCart } = require("
 // @desc    Get customer cart
 // @access  Private
 router.get(
-    "/",
+    "/:id",
     getCart);
 
 // @route   POST /cart
