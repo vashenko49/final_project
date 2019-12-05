@@ -10,7 +10,7 @@ const CustomerModel = require('../models/Customer');
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
   try {
-    
+
 
     const {firstName, lastName, login, email, password, telephone, gender} = req.body;
 
@@ -90,6 +90,30 @@ exports.confirmCustomer = async (req, res) => {
 
 };
 
+//check login or email in base
+exports.checkLoginOrEmail = async (req, res) => {
+  try {
+    const {type, data} = req.body;
+
+    if( !type || !data){
+      res.status(200).json({status: false});
+    }
+    let config = type === 'login' ? {"login": data} : {"email": data};
+
+    console.log(config);
+
+    const customer = await CustomerModel.findOne(config);
+
+    if (customer) {
+      console.log('--> false');
+    }
+      console.log('--> true');
+    res.status(200).json({status: true});
+
+  } catch (e) {
+
+  }
+};
 //controller for creating customer through social network
 exports.createCustomerSocialNetwork = async (req, res) => {
 

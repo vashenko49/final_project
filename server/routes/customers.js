@@ -13,7 +13,8 @@ const {
   confirmCustomer,
   forgotPassword,
   updatePasswordAfterConfirm,
-  confirmForgotCustomer
+  confirmForgotCustomer,
+  checkLoginOrEmail
 } = require("../controllers/customers");
 
 // @route   POST /customer
@@ -27,6 +28,11 @@ router.post("/", createCustomer);
 // @access  Public
 router.get('/confirm/:emailtoken', confirmCustomer);
 
+
+// @route   POST /customer/check
+// @desc    confirm Customer
+// @access  Public
+router.post('/check', checkLoginOrEmail);
 
 // @route   POST /customer/login
 // @desc    Login Customer / Returning JWT Token
