@@ -5,7 +5,6 @@ import { ValidatorComponent } from 'react-form-validator-core';
 import PhoneInput from 'material-ui-phone-number';
 
 export default class TextValidator extends ValidatorComponent {
-
   render() {
     /* eslint-disable no-unused-vars */
     const {
@@ -22,7 +21,7 @@ export default class TextValidator extends ValidatorComponent {
     return (
       <PhoneInput
         {...rest}
-        id='PhoneUser'
+        id="PhoneUser"
         error={!isValid || error}
         helperText={(!isValid && this.getErrorMessage()) || helperText}
       />

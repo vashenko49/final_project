@@ -5,14 +5,17 @@ const customerid = require('order-id')(process.env.usersIdSecret);
 
 const sendEmail = require('../common/sendEmail');
 const CustomerModel = require('../models/Customer');
-
+const {validationResult} = require('express-validator');
 
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
 
-
-    const {firstName, lastName, login, email, password, telephone, gender} = req.body;
+    const {firstName, lastName, login, email, password, gender} = req.body;
 
     let Customer = await CustomerModel.findOne({
       $or: [{email: email}, {login: login}]
@@ -38,7 +41,6 @@ exports.createCustomer = async (req, res) => {
       lastName,
       login,
       gender,
-      telephone,
       customerNo: customerid.generate(),
       socialmedia: [4],
       isAdmin: false,
@@ -66,6 +68,7 @@ exports.createCustomer = async (req, res) => {
 
 
   } catch (e) {
+    console.log(e);
     res.status(400).json({
       message: e.message
     })
@@ -100,18 +103,17 @@ exports.checkLoginOrEmail = async (req, res) => {
     }
     let config = type === 'login' ? {"login": data} : {"email": data};
 
-    console.log(config);
-
     const customer = await CustomerModel.findOne(config);
 
     if (customer) {
-      console.log('--> false');
+      res.status(200).json({status: false});
     }
-      console.log('--> true');
     res.status(200).json({status: true});
 
   } catch (e) {
-
+    return res.status(500).json({
+      message: `Server error ${e.message}`
+    })
   }
 };
 //controller for creating customer through social network
@@ -172,12 +174,16 @@ exports.createCustomerSocialNetwork = async (req, res) => {
 // Controller for customer login
 exports.loginCustomer = async (req, res) => {
   try {
-    const {loginOrEmail, password} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+    const {email, password} = req.body;
 
 
     // Find customer by email
     CustomerModel.findOne({
-      $or: [{email: loginOrEmail}, {login: loginOrEmail}]
+      $or: [{email: email}, {login: email}]
     })
       .then(customer => {
         // Check for customer

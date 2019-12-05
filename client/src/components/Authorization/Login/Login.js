@@ -1,15 +1,14 @@
-import React, {Component} from 'react';
-import {RemoveRedEye, VisibilityOff} from '@material-ui/icons';
+import React, { Component } from 'react';
+import { RemoveRedEye, VisibilityOff } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
-import InputAdornment from "@material-ui/core/InputAdornment";
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Typography from '@material-ui/core/Typography';
-import Box from "@material-ui/core/Box";
+import Box from '@material-ui/core/Box';
 
-
-import './Login.scss'
+import './Login.scss';
 
 class Login extends Component {
   constructor(props) {
@@ -18,7 +17,7 @@ class Login extends Component {
     this.state = {
       formData: {
         email: '',
-        password: '',
+        password: ''
       },
       passwordIsMasked: true
     };
@@ -28,30 +27,33 @@ class Login extends Component {
     this.togglePasswordMask = this.togglePasswordMask.bind(this);
   }
 
-  handleChange = (event) => {
-    const {formData} = this.state;
+  handleChange = event => {
+    const { formData } = this.state;
     formData[event.target.name] = event.target.value;
-    this.setState({formData});
+    this.setState({ formData });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault();
-    console.log(event);
+    const { login } = this.props;
+    const { formData } = this.state;
+    login(formData);
   };
 
   togglePasswordMask = () => {
     if (this.state.formData.password)
       this.setState(prevState => ({
-        passwordIsMasked: !prevState.passwordIsMasked,
+        passwordIsMasked: !prevState.passwordIsMasked
       }));
   };
 
   render() {
-    const {formData, passwordIsMasked} = this.state;
+    const { formData, passwordIsMasked } = this.state;
+    const { switchToRegistration } = this.props;
     return (
       <div>
         <ValidatorForm
-          ref='form'
+          ref="form"
           onSubmit={this.handleSubmit}
           onError={errors => console.log(errors)}
         >
@@ -79,24 +81,18 @@ class Login extends Component {
             errorMessages={['This field is required']}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end"
-                                onClick={this.togglePasswordMask}
-                                className='password-eyes'
+                <InputAdornment
+                  position="end"
+                  onClick={this.togglePasswordMask}
+                  className="password-eyes"
                 >
-                  {passwordIsMasked ? <RemoveRedEye/> : <VisibilityOff/>}
+                  {passwordIsMasked ? <RemoveRedEye /> : <VisibilityOff />}
                 </InputAdornment>
-              ),
+              )
             }}
           />
-          <Box
-            mt={1}
-          >
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-            >
+          <Box mt={2} mb={2}>
+            <Button type="submit" fullWidth variant="contained" color="primary">
               Log In
             </Button>
           </Box>
@@ -107,7 +103,7 @@ class Login extends Component {
               </Link>
             </Grid>
             <Grid item>
-              <Typography className='other-account' variant="body2">
+              <Typography onClick={switchToRegistration} className="other-account" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Typography>
             </Grid>

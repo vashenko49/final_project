@@ -10,7 +10,6 @@ import './font/Varta/Varta-font.css';
 import './font/Proxima_Nova/Proxima_Nova-font.css';
 import './font/Roboto/Roboto-font.css';
 
-
 import './App.scss';
 import setAuthToken from './utils/setAuthToken';
 import Authorization from './components/Authorization/Authorization';
