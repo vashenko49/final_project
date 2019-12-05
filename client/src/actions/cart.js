@@ -1,18 +1,12 @@
-import axios from 'axios';
+import CartAPI from '../services/CartAPI';
 
 import { GET_ITEMS, ITEMS_ERROR } from '../constants/cart';
 
 // Get items
 export const getCurrentItems = id => async dispatch => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
   try {
-    const res = await axios.get(`/cart/${id}`, config);
-
+    const res = await CartAPI.getCustomerCart(id);
+    console.log(res);
     dispatch({
       type: GET_ITEMS,
       payload: res.data
