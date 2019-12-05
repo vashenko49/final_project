@@ -1,9 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
+
 import { configureStore } from './store';
 
 import Login from './components/auth/Login';
+// import Registration from './components/auth/Registration';
+import AdminPanel from './components/admin-panel/AdminPanel';
 
 import ProductPageF from './components/page/ProductPageF';
 import MainPage from './components/page/MainPage';
@@ -25,6 +28,9 @@ function App() {
               <li>
                 <Link to="/subscribe">Subscribe</Link>
               </li>
+              <li>
+                <Link to="/admin-panel">Admin Panel</Link>
+              </li>
             </ul>
           </nav> */}
 
@@ -32,6 +38,7 @@ function App() {
             renders the first one that matches the current URL. */}
           <Switch>
             <Route exact path="/" component={Login} />
+            <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/main-page" component={MainPage} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />

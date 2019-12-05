@@ -1,24 +1,24 @@
 import * as PRODUCTS from '../constants/adminProducts';
 
-import AdminProductAPI from '../services/AdminProductAPI';
+import AdminProductsAPI from '../services/AdminProductsAPI';
 
 export function getProducts() {
   return dispatch => {
     dispatch({
-      type: PRODUCTS.GET_API_REQUEST
+      type: PRODUCTS.GET_API_PRODUCTS_REQUEST
     });
 
-    AdminProductAPI.getProducts()
+    AdminProductsAPI.getProducts()
       .then(res => {
         return dispatch({
-          type: PRODUCTS.GET_API_SUCCEEDED,
+          type: PRODUCTS.GET_API_PRODUCTS_SUCCEEDED,
           payload: res
         });
       })
 
       .catch(err => {
         return dispatch({
-          type: PRODUCTS.GET_API_FAILED,
+          type: PRODUCTS.GET_API_PRODUCTS_FAILED,
           payload: err
         });
       });
