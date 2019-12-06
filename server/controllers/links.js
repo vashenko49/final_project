@@ -1,6 +1,5 @@
 const Links = require("../models/Links");
 
-const queryCreator = require("../common/queryCreator");
 const _ = require("lodash");
 
 const { validationResult } = require('express-validator');

@@ -1,6 +1,5 @@
 const Pages = require("../models/Pages");
 
-const queryCreator = require("../common/queryCreator");
 const _ = require("lodash");
 
 const { validationResult } = require('express-validator');
