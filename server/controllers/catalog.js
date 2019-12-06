@@ -79,6 +79,42 @@ exports.updateROOTCatalog = async (req, res) => {
   }
 };
 
+exports.activateOrDeactivateROOTCatalog = async (req, res) => {
+  try {
+    const {_idRootCatalog, status} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idRootCatalog)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idRootCatalog}`
+      })
+    }
+
+    let rootcatalog = await rootCatalog.findById(_idRootCatalog);
+
+    if (!rootcatalog) {
+      return res.status(400).json({
+        message: `Root catalog with id ${rootcatalog} is not found`
+      })
+    }
+
+    rootcatalog.enabled = status;
+
+    rootcatalog = await rootcatalog.save();
+
+    res.status(200).json(rootcatalog);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
 exports.deleteROOTCatalog = async (req, res) => {
   try {
     const {_idrootcatalog} = req.params;
@@ -166,8 +202,6 @@ exports.getROOTCategory = async (req, res) => {
 };
 
 
-
-
 ///////////////////////////////////////////////////////////////////
 exports.addChildCatalog = async (req, res) => {
   try {
@@ -227,6 +261,43 @@ exports.updateChildCatalog = async (req, res) => {
     })
   }
 };
+
+exports.activateOrDeactivateChildCatalog = async (req, res) => {
+  try {
+    const {_idChildCatalog, status} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idChildCatalog)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idChildCatalog}`
+      })
+    }
+
+    let childcatalog = await childCatalog.findById(_idChildCatalog);
+
+    if (!childcatalog) {
+      return res.status(400).json({
+        message: `Child catalog with id ${childcatalog} is not found`
+      })
+    }
+
+    childcatalog.enabled = status;
+
+    childcatalog = await childcatalog.save();
+
+    res.status(200).json(childcatalog);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
 
 exports.deleteChildCatalog = async (req, res) => {
   try {
@@ -404,9 +475,9 @@ exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
 exports.getHierarchyRootChildCatalogFilterByRootCatalogID = async (req, res) => {
   try {
     const {_idRootCatalog} = req.params;
-    if(!mongoose.Types.ObjectId.isValid(_idRootCatalog)){
+    if (!mongoose.Types.ObjectId.isValid(_idRootCatalog)) {
       return res.status(400).json({
-        message:`ID is not valid ${_idRootCatalog}`
+        message: `ID is not valid ${_idRootCatalog}`
       })
     }
 
@@ -421,7 +492,7 @@ exports.getHierarchyRootChildCatalogFilterByRootCatalogID = async (req, res) => 
     root = JSON.parse(JSON.stringify(root));
 
     root.childCatalog = await childCatalog.find({"parentId": root._id}).select('-filters.subfilters')
-        .populate('filters.filter');
+      .populate('filters.filter');
 
     res.status(200).json(root);
   } catch (e) {

@@ -436,3 +436,79 @@ exports.getProductsFilterParams = async (req, res, next) => {
     });
   }
 };
+
+exports.activateOrDeactivateProduct = async (req, res) => {
+  try {
+    const {_idProduct, status} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idProduct)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idProduct}`
+      })
+    }
+
+    let product = await Product.findById(_idProduct);
+
+    if (!product) {
+      return res.status(400).json({
+        message: `Filter with id ${product} is not found`
+      })
+    }
+
+    product.enabled = status;
+
+    product = await product.save();
+
+    res.status(200).json(product);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.activateOrDeactivateProductModel = async (req, res) => {
+  try {
+    const {_idProduct, status, modelNo} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idProduct)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idProduct}`
+      })
+    }
+
+    let product = await Product.findById(_idProduct);
+
+    if (!product) {
+      return res.status(400).json({
+        message: `Filter with id ${product} is not found`
+      })
+    }
+
+    product.model.forEach((element, index)=>{
+      if(element.modelNo === modelNo){
+        product.model[index].enabled = status;
+      }
+    });
+
+    product = await product.save();
+
+    res.status(200).json(product);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};

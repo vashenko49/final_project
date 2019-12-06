@@ -19,7 +19,8 @@ const {
   searchInFilter,
   deleteSubFilter,
   removeManySubFilters,
-  removeManyFilters
+  removeManyFilters,
+  activateOrDeactivateFilter
 } = require("../controllers/filters");
 
 // @route POST /filters
@@ -45,6 +46,23 @@ router.put(
       .not()
       .isEmpty()],
   updateFilter);
+
+// @route   PUT /filters/main/activateordeactivate
+// @desc    activate or deactivate existing main filter
+// @access  Private
+router.put(
+  '/main/activateordeactivate',
+  [
+    check('_idFilter', '_idFilter')
+      .not()
+      .isEmpty(),
+    check('status','status is require')
+      .isBoolean()
+  ],
+  activateOrDeactivateFilter
+);
+
+
 
 // @route GET /filters/all
 // @desc Get all filters
