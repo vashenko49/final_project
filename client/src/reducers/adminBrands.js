@@ -1,4 +1,4 @@
-import * as PRODUCTS from '../constants/adminProducts';
+import * as BRANDS from '../constants/adminBrands';
 
 const initState = {
   data: [],
@@ -11,7 +11,7 @@ const initState = {
 
 export default function(state = initState, action) {
   switch (action.type) {
-    case PRODUCTS.GET_API_PRODUCTS_REQUEST:
+    case BRANDS.GET_API_BRANDS_REQUEST:
       return {
         ...state,
         ...{
@@ -19,7 +19,7 @@ export default function(state = initState, action) {
         }
       };
 
-    case PRODUCTS.GET_API_PRODUCTS_SUCCEEDED:
+    case BRANDS.GET_API_BRANDS_SUCCEEDED:
       return {
         ...state,
         ...{
@@ -28,7 +28,7 @@ export default function(state = initState, action) {
         }
       };
 
-    case PRODUCTS.GET_API_PRODUCTS_FAILED:
+    case BRANDS.GET_API_BRANDS_FAILED:
       return {
         ...state,
         ...{

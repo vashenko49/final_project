@@ -1,7 +1,7 @@
-import * as PRODUCTS from '../constants/adminProducts';
+import * as FOOTERSUBSCRIBE from '../constants/footerSubscribe';
 
 const initState = {
-  data: [],
+  email: '',
   loading: false,
   error: {
     status: false,
@@ -11,7 +11,7 @@ const initState = {
 
 export default function(state = initState, action) {
   switch (action.type) {
-    case PRODUCTS.GET_API_PRODUCTS_REQUEST:
+    case FOOTERSUBSCRIBE.ADD_API_REQUEST:
       return {
         ...state,
         ...{
@@ -19,16 +19,20 @@ export default function(state = initState, action) {
         }
       };
 
-    case PRODUCTS.GET_API_PRODUCTS_SUCCEEDED:
+    case FOOTERSUBSCRIBE.ADD_API_SUCCEEDED:
       return {
         ...state,
         ...{
-          data: action.payload,
-          loading: false
+          email: action.payload,
+          loading: false,
+          error: {
+            status: false,
+            msg: ''
+          }
         }
       };
 
-    case PRODUCTS.GET_API_PRODUCTS_FAILED:
+    case FOOTERSUBSCRIBE.ADD_API_FAILED:
       return {
         ...state,
         ...{
@@ -38,6 +42,12 @@ export default function(state = initState, action) {
             msg: action.payload
           }
         }
+      };
+
+    case FOOTERSUBSCRIBE.SAVE_EMAIL:
+      return {
+        ...state,
+        email: action.payload
       };
 
     default:

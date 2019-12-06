@@ -17,7 +17,7 @@ exports.addSubsriber = async (req, res, next) => {
     const sub = await Subscribers.findOne({ email });
 
     if (sub) {
-      return res.status(409).json({ msg: `This is email already registreed!` })
+      return res.status(409).json({ msg: `This email is already registered!` })
     }
 
     const newSub = new Subscribers({ email });
