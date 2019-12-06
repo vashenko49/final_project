@@ -19,17 +19,17 @@ const initialState = {
     gender: '',
     avatarUrl: '',
     dateRegistration: ''
-  },
+  }
 };
 
-export default function (state = initialState, action) {
-  const {type, payload} = action;
+export default function(state = initialState, action) {
+  const { type, payload } = action;
 
   switch (type) {
     case AUTHORIZATION.LOG_IN_API_REQUEST:
       return {
         ...state,
-        loading: true,
+        loading: false,
         error: ''
       };
     case AUTHORIZATION.LOG_IN_API_GET_TOKEN_SUCCEEDED:
@@ -43,8 +43,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAuthorization: true,
+        loading: true,
         isAdmin: payload.isAdmin,
         enabled: payload.enabled,
+        error: '',
+        jwt: payload.token,
         personalInfo: {
           customerNo: payload.customerNo,
           firstName: payload.firstName,
@@ -61,9 +64,11 @@ export default function (state = initialState, action) {
     case AUTHORIZATION.LOG_IN_API_FAILED:
       return {
         ...state,
-        loading: false,
-        error: "Failed to log in."
+        loading: true,
+        error: 'Failed to log in.'
       };
+    case AUTHORIZATION.LOG_OUT:
+      return initialState;
     default:
       return state;
   }

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import GitHubLogin from 'react-github-login';
@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
 import './ThroughSocialNetwork.scss';
-import * as AuthorizationActions from "../../../actions/authorizationAction";
+import * as AuthorizationActions from '../../../actions/authorizationAction';
 import SocialID from '../../../config/idSocialNetworks';
 import TypeLogIn from '../../../services/AuthorizationAPI';
 
@@ -19,7 +19,6 @@ class ThroughSocialNetwork extends Component {
     this.responseFacebook = this.responseFacebook.bind(this);
     this.responseGitHub = this.responseGitHub.bind(this);
   }
-
 
   responseGoogle = res => {
     const { loginInSystem } = this.props;
@@ -36,7 +35,7 @@ class ThroughSocialNetwork extends Component {
   };
 
   render() {
-    const {failSocial} = this.props;
+    const { failSocial } = this.props;
     return (
       <Grid container direction="column" justify="center" alignItems="center">
         <Box m={3}>
@@ -84,7 +83,7 @@ class ThroughSocialNetwork extends Component {
 }
 
 function mapStateToProps(state) {
-  return {authorization: state.authorization};
+  return { authorization: state.authorization };
 }
 
 function mapDispatchToProps(dispatch) {

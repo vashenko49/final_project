@@ -1,6 +1,4 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-/* eslint-enable */
 import { ValidatorComponent } from 'react-form-validator-core';
 import PhoneInput from 'material-ui-phone-number';
 

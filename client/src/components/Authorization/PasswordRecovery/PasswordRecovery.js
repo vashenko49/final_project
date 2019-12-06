@@ -1,35 +1,176 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { RemoveRedEye, VisibilityOff } from '@material-ui/icons';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
+
+import AuthorizationAPI from '../../../services/AuthorizationAPI';
+import Grid from '@material-ui/core/Grid';
+import '../Authorization.scss';
+import Typography from '@material-ui/core/Typography';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#33333A'
+    },
+    secondary: {
+      main: '#fafafa'
+    }
+  }
+});
 
 class PasswordRecovery extends Component {
-  submit = e => {
-    e.preventDefault();
-    let pas1 = document.getElementById('pas1');
-    let pas2 = document.getElementById('pas2');
-    let config = {
-      headers: {
-        Authorization: `Bearer ${decodeURI(this.props.match.params.token)}`
-      }
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      formData: {
+        password: '',
+        repeatPassword: ''
+      },
+      passwordIsMasked: true,
+      repeatPasswordIsMasked: true,
+      send: false,
+      response: ''
     };
-    if (pas1.value === pas2.value) {
-      axios
-        .put('http://localhost:5000/customers/forgotpassword', { password: pas1.value }, config)
-        .then(value => {
-          console.log(value);
-        });
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.togglePasswordMask = this.togglePasswordMask.bind(this);
+    this.toggleRepeatPasswordMask = this.toggleRepeatPasswordMask.bind(this);
+  }
+
+  handleSubmit = event => {
+    event.preventDefault();
+
+    this.setState(prevState => ({
+      send: !prevState.send
+    }));
+
+    const token = this.props.match.params.token;
+    const { formData } = this.state;
+    AuthorizationAPI.recoveryPassword(formData.password, token)
+      .then(res => {
+        this.setState({ response: res.data.message });
+      })
+      .catch(err => {
+        this.setState({ response: err.response.data.message });
+      });
+  };
+
+  handleChange = event => {
+    const { formData, send } = this.state;
+    formData[event.target.name] = event.target.value;
+    this.setState({ formData });
+    if (send === true) {
+      this.setState(prevState => ({
+        send: !prevState.send,
+        response: ''
+      }));
     }
   };
 
-  // тестовый вариант нужно переделать
+  togglePasswordMask = event => {
+    this.setState(prevState => ({
+      passwordIsMasked: !prevState.passwordIsMasked
+    }));
+  };
+  toggleRepeatPasswordMask = event => {
+    this.setState(prevState => ({
+      repeatPasswordIsMasked: !prevState.repeatPasswordIsMasked
+    }));
+  };
+
+  componentDidMount() {
+    ValidatorForm.addValidationRule('isPasswordMatch', value => {
+      const { formData } = this.state;
+      return value === formData.password;
+    });
+  }
+
+  componentWillUnmount() {
+    ValidatorForm.removeValidationRule('isPasswordMatch');
+  }
+
   render() {
+    const { formData, passwordIsMasked, repeatPasswordIsMasked, response, send } = this.state;
+    const { handleSubmit, togglePasswordMask, handleChange, toggleRepeatPasswordMask } = this;
     return (
-      <div>
-        <form onSubmit={this.submit}>
-          <input id="pas1" type="text" required />
-          <input id="pas2" type="text" required />
-          <input type="submit" required />
-        </form>
-      </div>
+      <MuiThemeProvider theme={theme}>
+        <Grid container direction={'column'} justify={'flex-start'} alignItems="stretch">
+          <Grid>
+            <h2 className="title-login-singup">Reset Password</h2>
+          </Grid>
+          <Box p={3}>
+            <ValidatorForm
+              ref="form"
+              onSubmit={handleSubmit}
+              onError={errors => console.log(errors)}
+            >
+              {response && (
+                <Grid item xs>
+                  <Typography align={'center'} variant="body2">
+                    {response}
+                  </Typography>
+                </Grid>
+              )}
+              <TextValidator
+                type={passwordIsMasked ? 'password' : 'text'}
+                margin="normal"
+                label="Password"
+                onChange={handleChange}
+                name="password"
+                fullWidth
+                variant="outlined"
+                value={formData.password}
+                validators={['required']}
+                errorMessages={['This field is required']}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      onClick={togglePasswordMask}
+                      className="password-eyes"
+                    >
+                      {passwordIsMasked ? <RemoveRedEye /> : <VisibilityOff />}
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <TextValidator
+                type={repeatPasswordIsMasked ? 'password' : 'text'}
+                margin="normal"
+                label="Repeat password"
+                onChange={handleChange}
+                name="repeatPassword"
+                fullWidth
+                variant="outlined"
+                validators={['isPasswordMatch', 'required']}
+                errorMessages={['Password mismatch', 'This field is required']}
+                value={formData.repeatPassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment
+                      position="end"
+                      onClick={toggleRepeatPasswordMask}
+                      className="password-eyes"
+                    >
+                      {repeatPasswordIsMasked ? <RemoveRedEye /> : <VisibilityOff />}
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <Box mt={1}>
+                <Button disabled={send} type="submit" fullWidth variant="contained" color="primary">
+                  Restore
+                </Button>
+              </Box>
+            </ValidatorForm>
+          </Box>
+        </Grid>
+      </MuiThemeProvider>
     );
   }
 }

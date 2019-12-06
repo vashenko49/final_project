@@ -3,7 +3,7 @@ import reducers from '../reducers';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import * as Authorization from "../actions/authorizationAction";
+import * as Authorization from '../actions/authorizationAction';
 
 export function configureStore(initState) {
   const logger = createLogger();
@@ -11,7 +11,7 @@ export function configureStore(initState) {
 
   const token = localStorage.getItem('Authorization');
   if (token) {
-    store.dispatch(Authorization.firstStart(token));
+    store.dispatch(Authorization.AuthorizationThroughLocalStorage(token));
   }
 
   return store;

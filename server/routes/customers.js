@@ -128,6 +128,7 @@ router.put(
 // @access  Private
 router.post(
   "/forgotpassword",
+  check('loginOrEmail', 'loginOrEmail is require'),
   forgotPassword
 );
 

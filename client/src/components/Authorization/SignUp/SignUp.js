@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { RemoveRedEye, VisibilityOff } from '@material-ui/icons';
@@ -9,7 +9,7 @@ import Box from '@material-ui/core/Box';
 import axios from 'axios';
 
 import SelectValidatorElemen from './SelectValidatorElemen';
-import * as AuthorizationActions from "../../../actions/authorizationAction";
+import * as AuthorizationActions from '../../../actions/authorizationAction';
 import TypeLogIn from '../../../services/AuthorizationAPI';
 
 class SignUp extends Component {
@@ -27,9 +27,7 @@ class SignUp extends Component {
         repeatPassword: ''
       },
       passwordIsMasked: true,
-      repeatPasswordIsMasked: true,
-      indexTimeoutLogin: 0,
-      indexTimeoutEmail: 0
+      repeatPasswordIsMasked: true
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -226,4 +224,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
-

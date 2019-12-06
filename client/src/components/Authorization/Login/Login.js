@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { RemoveRedEye, VisibilityOff } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -53,7 +52,7 @@ class Login extends Component {
 
   render() {
     const { formData, passwordIsMasked } = this.state;
-    const { switchToRegistration } = this.props;
+    const { switchToRegistration, toggleForgotPassword } = this.props;
     return (
       <div>
         <ValidatorForm
@@ -102,9 +101,9 @@ class Login extends Component {
           </Box>
           <Grid container>
             <Grid item xs>
-              <Link href="/reset" variant="body2">
-                Forgot password?
-              </Link>
+              <Typography onClick={toggleForgotPassword} className="other-account" variant="body2">
+                {'Forgot password?'}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography onClick={switchToRegistration} className="other-account" variant="body2">

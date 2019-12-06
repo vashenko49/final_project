@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export default class AuthorizationAPI {
-
   static responseGoogle = response => {
     return axios
       .post('/customers/google', {
@@ -35,13 +34,26 @@ export default class AuthorizationAPI {
     return axios.post('/customers', userData).then(value => value.data);
   };
 
-  static getCustomerUsingToken = (token)=>{
+  static getCustomerUsingToken = token => {
     const options = {
       headers: {
-        'Authorization': token,
-      },
+        Authorization: token
+      }
     };
-    return axios.get('/customers', options)
-      .then(res=>res.data);
-  }
+    return axios.get('/customers', options).then(res => res.data);
+  };
+
+  static forgotPassword = loginOrEmail => {
+    return axios.post('/customers/forgotpassword', { loginOrEmail: loginOrEmail });
+  };
+
+  static recoveryPassword = (password, token) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${decodeURI(token)}`
+      }
+    };
+
+    return axios.put('/customers/forgotpassword', { password: password }, config);
+  };
 }

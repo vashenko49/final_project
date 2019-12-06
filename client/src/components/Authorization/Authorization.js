@@ -15,6 +15,7 @@ import ThroughSocialNetwork from './ThroughSocialNetwork/ThroughSocialNetwork';
 import SignUp from './SignUp/SignUp';
 
 import './Authorization.scss';
+import ForgotPassword from './ForgotPassword/ForgotPassword';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,13 +51,15 @@ class Authorization extends Component {
     this.state = {
       isLogIn: true,
       value: 0,
-      tabs: ['Log in', 'Sing Up', 'Social Network']
+      tabs: ['Log in', 'Sing Up', 'Social Network'],
+      isForgotPassword: false
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.a11yProps = this.a11yProps.bind(this);
     this.switchToRegistration = this.switchToRegistration.bind(this);
     this.failSocial = this.failSocial.bind(this);
+    this.toggleForgotPassword = this.toggleForgotPassword.bind(this);
   }
 
   handleChange = (event, newValue) => {
@@ -77,39 +80,57 @@ class Authorization extends Component {
     console.log(response);
   };
 
+  toggleForgotPassword = () => {
+    this.setState(prevState => ({
+      isForgotPassword: !prevState.isForgotPassword
+    }));
+  };
+
   render() {
-    const { value, tabs } = this.state;
+    const { value, tabs, isForgotPassword } = this.state;
+    const { toggleForgotPassword, a11yProps, switchToRegistration } = this;
     return (
       <MuiThemeProvider theme={theme}>
         <Grid container direction={'column'} justify={'flex-start'} alignItems="stretch">
           <Grid>
-            <h2 className="title-login-singup">{tabs[value]}</h2>
+            <h2 className="title-login-singup">
+              {!isForgotPassword ? tabs[value] : 'Reset Password'}
+            </h2>
           </Grid>
-          <Grid className="appbar">
-            <AppBar position="static" color="default">
-              <Tabs
-                value={value}
-                onChange={this.handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-                className="tabs"
-              >
-                <Tab className="tab" label={tabs[0]} {...this.a11yProps(0)} />
-                <Tab className="tab" label={tabs[1]} {...this.a11yProps(1)} />
-                <Tab className="tab" label={tabs[2]} {...this.a11yProps(2)} />
-              </Tabs>
-            </AppBar>
-            <TabPanel value={value} index={0}>
-              <Login switchToRegistration={this.switchToRegistration} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <SignUp />
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              <ThroughSocialNetwork />
-            </TabPanel>
-          </Grid>
+          {!isForgotPassword ? (
+            <Grid className="appbar">
+              <AppBar position="static" color="default">
+                <Tabs
+                  value={value}
+                  onChange={this.handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  centered
+                  className="tabs"
+                >
+                  <Tab className="tab" label={tabs[0]} {...a11yProps(0)} />
+                  <Tab className="tab" label={tabs[1]} {...a11yProps(1)} />
+                  <Tab className="tab" label={tabs[2]} {...a11yProps(2)} />
+                </Tabs>
+              </AppBar>
+              <TabPanel value={value} index={0}>
+                <Login
+                  switchToRegistration={switchToRegistration}
+                  toggleForgotPassword={toggleForgotPassword}
+                />
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                <SignUp />
+              </TabPanel>
+              <TabPanel value={value} index={2}>
+                <ThroughSocialNetwork />
+              </TabPanel>
+            </Grid>
+          ) : (
+            <Box p={3}>
+              <ForgotPassword toggleForgotPassword={toggleForgotPassword} />
+            </Box>
+          )}
         </Grid>
       </MuiThemeProvider>
     );
