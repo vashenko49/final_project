@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { RemoveRedEye, VisibilityOff } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import axios from 'axios';
-import InputPhone from './InputPhone';
 
 import SelectValidatorElemen from './SelectValidatorElemen';
+import * as AuthorizationActions from "../../../actions/authorizationAction";
+import TypeLogIn from '../../../services/AuthorizationAPI';
 
 class SignUp extends Component {
   constructor(props) {
@@ -72,10 +75,9 @@ class SignUp extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const { registration } = this.props;
+    const { loginInSystem } = this.props;
     const { formData } = this.state;
-    delete formData.repeatPassword;
-    registration(formData);
+    loginInSystem(formData, TypeLogIn.registration);
   };
 
   togglePasswordMask = event => {
@@ -213,4 +215,15 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+function mapStateToProps(state) {
+  return { authorization: state.authorization };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    loginInSystem: bindActionCreators(AuthorizationActions.loginInSystem, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+

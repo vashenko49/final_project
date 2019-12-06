@@ -7,8 +7,12 @@ import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import './Login.scss';
+import * as AuthorizationActions from '../../../actions/authorizationAction';
+import TypeLogIn from '../../../services/AuthorizationAPI';
 
 class Login extends Component {
   constructor(props) {
@@ -35,9 +39,9 @@ class Login extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    const { login } = this.props;
+    const { loginInSystem } = this.props;
     const { formData } = this.state;
-    login(formData);
+    loginInSystem(formData, TypeLogIn.login);
   };
 
   togglePasswordMask = () => {
@@ -114,4 +118,14 @@ class Login extends Component {
   }
 }
 
-export default Login;
+function mapStateToProps(state) {
+  return { authorization: state.authorization };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    loginInSystem: bindActionCreators(AuthorizationActions.loginInSystem, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

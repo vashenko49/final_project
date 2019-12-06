@@ -64,9 +64,26 @@ exports.createCustomer = async (req, res) => {
 
     await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
 
-    res.status(200).json(Customer);
 
+    const payload = {
+      _id: Customer._id,
+      firstName: Customer.firstName,
+      lastName: Customer.lastName,
+      isAdmin: Customer.isAdmin
+    }; // Create JWT Payload
 
+    // Sign Token
+    jwt.sign(
+      {data: payload},
+      process.env.JWT_SECRET,
+      {expiresIn: 36000},
+      (err, token) => {
+        return res.json({
+          success: true,
+          token: "Bearer " + token
+        });
+      }
+    );
   } catch (e) {
     console.log(e);
     res.status(400).json({
@@ -98,20 +115,21 @@ exports.checkLoginOrEmail = async (req, res) => {
   try {
     const {type, data} = req.body;
 
-    if( !type || !data){
-      res.status(200).json({status: false});
+    if (!type || !data) {
+      return  res.status(200).json({status: false});
     }
     let config = type === 'login' ? {"login": data} : {"email": data};
 
     const customer = await CustomerModel.findOne(config);
 
     if (customer) {
-      res.status(200).json({status: false});
+      return  res.status(200).json({status: false});
     }
-    res.status(200).json({status: true});
+
+    return  res.status(200).json({status: true});
 
   } catch (e) {
-    return res.status(500).json({
+    return  res.status(500).json({
       message: `Server error ${e.message}`
     })
   }
@@ -203,7 +221,7 @@ exports.loginCustomer = async (req, res) => {
           if (isMatch) {
             // Customer Matched
             const payload = {
-              _id: customer.id,
+              _id: customer._id,
               firstName: customer.firstName,
               lastName: customer.lastName,
               isAdmin: customer.isAdmin

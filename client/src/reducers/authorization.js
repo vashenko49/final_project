@@ -1,9 +1,4 @@
-import {
-  GET_DATA_THROUGH_JWT_CLIENT_FAILED,
-  GET_DATA_THROUGH_JWT_CLIENT_REQUEST,
-  GET_DATA_THROUGH_JWT_CLIENT_SUCCEEDED,
-  GET_DATA_THROUGH_JWT_CLIENT_SUCCEEDED_BUT_ENABLED
-} from '../constants/authorization';
+import * as AUTHORIZATION from '../constants/authorization';
 
 const initialState = {
   loading: true,
@@ -11,6 +6,7 @@ const initialState = {
   isAdmin: false,
   enabled: false,
   jwt: '',
+  error: '',
   personalInfo: {
     _id: '',
     customerNo: '',
@@ -24,21 +20,31 @@ const initialState = {
     avatarUrl: '',
     dateRegistration: ''
   },
-  error: {}
 };
 
-export default function(state = initialState, action) {
-  const { type, payload } = action;
+export default function (state = initialState, action) {
+  const {type, payload} = action;
 
   switch (type) {
-    case GET_DATA_THROUGH_JWT_CLIENT_SUCCEEDED:
+    case AUTHORIZATION.LOG_IN_API_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: ''
+      };
+    case AUTHORIZATION.LOG_IN_API_GET_TOKEN_SUCCEEDED:
       return {
         ...state,
         loading: false,
+        jwt: payload,
+        error: ''
+      };
+    case AUTHORIZATION.LOG_IN_API_SUCCEEDED:
+      return {
+        ...state,
         isAuthorization: true,
-        isAdmin: false,
-        enabled: true,
-        jwt: payload.jwt,
+        isAdmin: payload.isAdmin,
+        enabled: payload.enabled,
         personalInfo: {
           customerNo: payload.customerNo,
           firstName: payload.firstName,
@@ -49,8 +55,14 @@ export default function(state = initialState, action) {
           birthday: payload.birthday,
           gender: payload.gender,
           avatarUrl: payload.avatarUrl,
-          dateRegistration: payload.dateRegistration
+          dateRegistration: payload.date
         }
+      };
+    case AUTHORIZATION.LOG_IN_API_FAILED:
+      return {
+        ...state,
+        loading: false,
+        error: "Failed to log in."
       };
     default:
       return state;

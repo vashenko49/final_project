@@ -1,30 +1,47 @@
 import axios from 'axios';
 
 export default class AuthorizationAPI {
-  static registration({ firstName, lastName, login, email, password, telephone, gender }) {
-    return axios
-      .post('/customer', {
-        firstName,
-        lastName,
-        login,
-        email,
-        password,
-        telephone,
-        gender
-      })
-      .then(res => {
-        return res.data;
-      });
-  }
 
-  static loginInSystem({ loginOrEmail, password }) {
+  static responseGoogle = response => {
     return axios
-      .post('/customers/login', {
-        loginOrEmail: loginOrEmail,
-        password: password
+      .post('/customers/google', {
+        access_token: response.accessToken
       })
-      .then(res => {
-        return res.data;
-      });
+      .then(value => value.data);
+  };
+
+  static responseFacebook = response => {
+    return axios
+      .post('/customers/facebook', {
+        access_token: response.accessToken,
+        client_id: response.id
+      })
+      .then(value => value.data);
+  };
+
+  static responseGitHub = response => {
+    return axios
+      .post('/customers/github', {
+        code: response.code
+      })
+      .then(value => value.data);
+  };
+
+  static login = userData => {
+    return axios.post('/customers/login', userData).then(value => value.data);
+  };
+
+  static registration = userData => {
+    return axios.post('/customers', userData).then(value => value.data);
+  };
+
+  static getCustomerUsingToken = (token)=>{
+    const options = {
+      headers: {
+        'Authorization': token,
+      },
+    };
+    return axios.get('/customers', options)
+      .then(res=>res.data);
   }
 }
