@@ -1,198 +1,75 @@
 export default class AdminProductAPI {
+  static dataGetProducts = [
+    {
+      _id: '5de02cf4a326f13f8c61f814',
+      itemNo: '9207-503473-0048',
+      enabled: true,
+      nameProduct: 'Court Air Zoom Vapor X',
+      description:
+        'With Nike Zoom Air and a Dynamic Fit system, the NikeCourt Air Zoom Vapor X provides ultimate control on hard courts. The Dynamic Fit system wraps your foot from the bottom of the arch up to the laces for a glove-like fit. A Zoom Air unit in the heel offers low-profile, resilient cushioning from swing to swing.',
+      htmlPage: '<div>Bla bla bla</div',
+      productUrlImg: ['jomwedding/34acdbe0-fb2b-11e9-befb-033496442550'],
+      filtersImg: [
+        {
+          filter: {
+            _id: '5de027f4e8a23045f0c15580',
+            type: 'Color',
+            serviceName: 'color-something-catalog'
+          },
+          subFilter: {
+            _id: '5de56ac85ac80a23483fece4',
+            name: 'Black'
+          },
+          img: 'jomwedding/34acdbe0-fb2b-11e9-befb-033496442550',
+          enabled: true
+        }
+      ],
+      childCategory: {
+        _id: '5de02b89e8a23045f0c1559c',
+        name: "Men's Flywire Tennis Shoes"
+      },
+      filters: [
+        {
+          filter: {
+            _id: '5de02aece8a23045f0c1559b',
+            type: 'Brand',
+            serviceName: 'Brand-something-catalog'
+          },
+          subFilter: {
+            _id: '5de02a12e8a23045f0c1558c',
+            name: 'Nike Air'
+          },
+          enabled: true
+        }
+      ],
+      model: [
+        {
+          enabled: false,
+          modelNo: '9207-502385-9450',
+          filters: [
+            {
+              filter: {
+                _id: '5de027f4e8a23045f0c15580',
+                type: 'Color',
+                serviceName: 'color-something-catalog'
+              },
+              subFilter: {
+                _id: '5de56ac85ac80a23483fece4',
+                name: 'Black'
+              },
+              enabled: true
+            }
+          ],
+          quantity: 56,
+          currentPrice: 160
+        }
+      ]
+    }
+  ];
+
   static getProducts() {
     return new Promise((resolve, reject) => {
-      resolve([
-        {
-          id: 1,
-          title: 'Nike Varsity Complete Trainer',
-          categories: 'Men’s Training Shoe',
-          price: '89.85',
-          subProduct: [
-            {
-              color: '#592788',
-              img:
-                'https://i.ibb.co/pWV7ZQ5/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#7A0000',
-              img:
-                'https://i.ibb.co/Pw06Wcf/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-1.png'
-            },
-            {
-              color: '#000000',
-              img:
-                'https://i.ibb.co/7NQJXnt/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            },
-            {
-              color: 'red',
-              img:
-                'https://i.ibb.co/FwLrx74/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-3.png'
-            },
-            {
-              color: '#008ECE',
-              img:
-                'https://i.ibb.co/X2zB9W8/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#808080',
-              img:
-                'https://i.ibb.co/NFLP7H4/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            }
-          ]
-        },
-        {
-          id: 2,
-          title: 'Nike Varsity Complete Trainer',
-          categories: 'Men’s Training Shoe',
-          price: '89.85',
-          subProduct: [
-            {
-              color: '#592788',
-              img:
-                'https://i.ibb.co/pWV7ZQ5/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#7A0000',
-              img:
-                'https://i.ibb.co/Pw06Wcf/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-1.png'
-            },
-            {
-              color: '#000000',
-              img:
-                'https://i.ibb.co/7NQJXnt/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            },
-            {
-              color: 'red',
-              img:
-                'https://i.ibb.co/FwLrx74/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-3.png'
-            },
-            {
-              color: '#008ECE',
-              img:
-                'https://i.ibb.co/X2zB9W8/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#808080',
-              img:
-                'https://i.ibb.co/NFLP7H4/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            }
-          ]
-        },
-        {
-          id: 3,
-          title: 'Nike Varsity Complete Trainer',
-          categories: 'Men’s Training Shoe',
-          price: '89.85',
-          subProduct: [
-            {
-              color: '#592788',
-              img:
-                'https://i.ibb.co/pWV7ZQ5/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#7A0000',
-              img:
-                'https://i.ibb.co/Pw06Wcf/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-1.png'
-            },
-            {
-              color: '#000000',
-              img:
-                'https://i.ibb.co/7NQJXnt/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            },
-            {
-              color: 'red',
-              img:
-                'https://i.ibb.co/FwLrx74/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-3.png'
-            },
-            {
-              color: '#008ECE',
-              img:
-                'https://i.ibb.co/X2zB9W8/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#808080',
-              img:
-                'https://i.ibb.co/NFLP7H4/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            }
-          ]
-        },
-        {
-          id: 4,
-          title: 'Nike Varsity Complete Trainer',
-          categories: 'Men’s Training Shoe',
-          price: '89.85',
-          subProduct: [
-            {
-              color: '#592788',
-              img:
-                'https://i.ibb.co/pWV7ZQ5/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#7A0000',
-              img:
-                'https://i.ibb.co/Pw06Wcf/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-1.png'
-            },
-            {
-              color: '#000000',
-              img:
-                'https://i.ibb.co/7NQJXnt/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            },
-            {
-              color: 'red',
-              img:
-                'https://i.ibb.co/FwLrx74/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-3.png'
-            },
-            {
-              color: '#008ECE',
-              img:
-                'https://i.ibb.co/X2zB9W8/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#808080',
-              img:
-                'https://i.ibb.co/NFLP7H4/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            }
-          ]
-        },
-        {
-          id: 5,
-          title: 'Nike Varsity Complete Trainer',
-          categories: 'Men’s Training Shoe',
-          price: '89.85',
-          subProduct: [
-            {
-              color: '#592788',
-              img:
-                'https://i.ibb.co/pWV7ZQ5/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#7A0000',
-              img:
-                'https://i.ibb.co/Pw06Wcf/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-1.png'
-            },
-            {
-              color: '#000000',
-              img:
-                'https://i.ibb.co/7NQJXnt/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            },
-            {
-              color: 'red',
-              img:
-                'https://i.ibb.co/FwLrx74/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-3.png'
-            },
-            {
-              color: '#008ECE',
-              img:
-                'https://i.ibb.co/X2zB9W8/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1.png'
-            },
-            {
-              color: '#808080',
-              img:
-                'https://i.ibb.co/NFLP7H4/air-max-bella-tr-2-icon-clash-womens-training-shoe-D3rf-VN-1-2.png'
-            }
-          ]
-        }
-      ]);
+      resolve(this.dataGetProducts);
     });
   }
 }
