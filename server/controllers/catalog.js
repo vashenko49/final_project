@@ -580,7 +580,7 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
 
     newRootCatalog = await newRootCatalog.save();
 
-    let AllNewFilter = [];
+    let AllNewChildCatalog = [];
 
     for (let i = 0; i < newchildCatalogs.length; i++) {
 
@@ -593,13 +593,13 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
       });
 
       newChildCatalog = await newChildCatalog.save();
-      AllNewFilter.push(newChildCatalog)
+      AllNewChildCatalog.push(newChildCatalog)
     }
 
 
     res.status(200).json({
       newRootCatalog,
-      AllNewFilter
+      AllNewChildCatalog
     })
 
   } catch (e) {
