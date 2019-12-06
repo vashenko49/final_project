@@ -111,7 +111,7 @@ exports.updateProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const { _idProduct, warning, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory } = req.body;
+    const { _idProduct, warning,htmlPage,filterImg,isBigImg, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory } = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -176,8 +176,11 @@ exports.updateProduct = async (req, res, next) => {
     product.description = description ? description : product.description;
     product.productUrlImg = _.isArray(productUrlImg) ? productUrlImg : product.productUrlImg;
     product.nameProduct = _.isString(nameProduct) ? nameProduct : product.nameProduct;
+    product.htmlPage = _.isString(htmlPage) ? htmlPage : product.htmlPage;
     product._idChildCategory = _.isString(_idChildCategory) ? _idChildCategory : product._idChildCategory;
     product.warning = _.isArray(warning) ? warning : product.warning;
+    product.filterImg = _.isArray(filterImg) ? filterImg : product.filterImg;
+    product.isBigImg = _.isBoolean(isBigImg) ? isBigImg : product.isBigImg;
 
 
     await product.save();

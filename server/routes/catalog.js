@@ -28,7 +28,8 @@ const {
   updateRootChildCatalogAndAddFilterId,
   getHierarchyRootChildCatalogFilterByRootCatalogID,
   activateOrDeactivateROOTCatalog,
-  activateOrDeactivateChildCatalog
+  activateOrDeactivateChildCatalog,
+  deleteChildCatalogFilter
 } = require("../controllers/catalog");
 
 // @route   GET /catalog/hierarchy
@@ -55,10 +56,7 @@ router.post(
     check('nameRootCatalog', 'nameRootCatalog is require')
       .not()
       .isEmpty(),
-    check('nameChildCatalog', 'nameChildCatalog is require')
-      .not()
-      .isEmpty(),
-    check('filters', 'filters id require')
+    check('newchildCatalogs', 'childCatalog id require')
       .isArray()
   ],
   createRootChildCatalogAndAddFilterId
@@ -213,6 +211,11 @@ router.put(
 router.delete(
   "/child/:id",
   deleteChildCatalog
+);
+
+router.delete(
+  '/child/filter/:_idChildCatalog/:_idFilter',
+  deleteChildCatalogFilter
 );
 
 // @route   GET /catalog/child/private

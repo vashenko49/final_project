@@ -298,7 +298,6 @@ exports.activateOrDeactivateChildCatalog = async (req, res) => {
   }
 };
 
-
 exports.deleteChildCatalog = async (req, res) => {
   try {
     const {id} = req.params;
@@ -325,6 +324,61 @@ exports.deleteChildCatalog = async (req, res) => {
       message: `Child catalog witn id "${id}" is successfully deleted from DB.`,
       deletedCategoryInfo: catalog
     })
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.deleteChildCatalogFilter = async (req, res) => {
+  try {
+    const {_idChildCatalog, _idFilter} = req.params;
+
+
+    if (!mongoose.Types.ObjectId.isValid(_idChildCatalog)) {
+      return res.status(400).json({
+        message: `ID is not valid`
+      })
+    }
+
+    let childcatalog = await childCatalog.findById(_idChildCatalog);
+    if (!childcatalog) {
+      return res.status(400).json({
+        message: `Child catalog with id ${childcatalog} is not found`
+      })
+    }
+
+
+    for (let i = 0; i < childcatalog.filters.length; i++) {
+      if (childcatalog.filters[i].filter.toString() === _idFilter) {
+        const product = await Product.find({
+          $and: [
+            {
+              _idChildCategory: mongoose.Types.ObjectId(_idChildCatalog)
+            },
+            {
+              $or: [
+                {
+                  'filters.filter': mongoose.Types.ObjectId(_idFilter)
+                }, {
+                  'model.filters.filter': mongoose.Types.ObjectId(_idFilter)
+                }
+              ]
+            }
+          ]
+        });
+
+        if (product.length <= 0) {
+          childcatalog.filters.splice(i, 1);
+        }
+      }
+    }
+
+    childcatalog = await childcatalog.save();
+
+    res.status(200).json(childcatalog);
 
   } catch (e) {
     res.status(500).json({
@@ -509,7 +563,7 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()});
     }
-    const {nameRootCatalog, nameChildCatalog, filters} = req.body;
+    const {nameRootCatalog, newchildCatalogs} = req.body;
 
     let catalog = await rootCatalog.findOne({name: nameRootCatalog});
 
@@ -526,17 +580,26 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
 
     newRootCatalog = await newRootCatalog.save();
 
-    let newChildCatalog = new childCatalog({
-      name: nameChildCatalog,
-      parentId: newRootCatalog._id,
-      filters: await commonCatalog.checkFilter(filters)
-    });
+    let AllNewFilter = [];
 
-    newChildCatalog = await newChildCatalog.save();
+    for (let i = 0; i < newchildCatalogs.length; i++) {
+
+      const {nameChildCatalog, filters} = newchildCatalogs[i];
+
+      let newChildCatalog = new childCatalog({
+        name: nameChildCatalog,
+        parentId: newRootCatalog._id,
+        filters: await commonCatalog.checkFilter(filters)
+      });
+
+      newChildCatalog = await newChildCatalog.save();
+      AllNewFilter.push(newChildCatalog)
+    }
+
 
     res.status(200).json({
       newRootCatalog,
-      newChildCatalog
+      AllNewFilter
     })
 
   } catch (e) {
@@ -554,7 +617,8 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
     }
 
     let response = {};
-    let {nameRootCatalog, nameChildCatalog, filters, _idRootCatalog, _idChildCatalog} = req.body;
+    response.childcatalog = [];
+    let {nameRootCatalog, editChildCatalogs, _idRootCatalog} = req.body;
 
     if (_.isString(_idRootCatalog) && _.isString(nameRootCatalog)) {
       let rootcatalog = await rootCatalog.findById(_idRootCatalog);
@@ -569,61 +633,60 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
       response['rootcatalog'] = rootcatalog;
     }
 
-    if (_.isString(_idChildCatalog)) {
-      let childcatalog = await childCatalog.findById(_idChildCatalog);
+    if (_.isArray(editChildCatalogs)) {
+      for (let i = 0; i < editChildCatalogs.length; i++) {
+        let {_idChildCatalog, filters, nameChildCatalog} = editChildCatalogs[i];
 
-      if (!childcatalog) {
-        return res.status(400).json({
-          message: `Catalog with id "${_idChildCatalog}" is not found.`
-        });
-      }
+        if (_.isString(_idChildCatalog)) {
+          let childcatalog = await childCatalog.findById(_idChildCatalog);
 
-      if (_.isString(nameChildCatalog)) {
-        childcatalog.name = nameChildCatalog;
-      }
-
-      if (_.isArray(filters)) {
-
-
-        filters = filters.map(elemen => {
-          return {
-            filter: elemen
-          }
-        });
-
-        await Promise.all(childcatalog.filters.map(async element => {
-          if (element) {
-            const {filter: filterProd} = element;
-            let productUse = await Product.findOne({
-              $and: [{"_idChildCategory": _idChildCatalog}, {
-                $or: [{"filters.filter": filterProd}, {"model.filters.filter": filterProd}]
-              }]
+          if (!childcatalog) {
+            return res.status(400).json({
+              message: `Catalog with id "${_idChildCatalog}" is not found.`
             });
-            if (productUse) {
-              filters.push({
-                filter: filterProd
-              })
-            }
           }
-        }));
-
-
-        filters = _.map(
-          _.uniq(
-            _.map(filters, function (obj) {
-              return JSON.stringify(obj);
-            })
-          ), function (obj) {
-            return JSON.parse(obj);
+          if (_.isString(nameChildCatalog)) {
+            childcatalog.name = nameChildCatalog;
           }
-        );
+          if (_.isArray(filters)) {
 
-        childcatalog.filters = filters;
+            filters = filters.map(elemen => {
+              return {
+                filter: elemen
+              }
+            });
 
+            await Promise.all(childcatalog.filters.map(async element => {
+              if (element) {
+                const {filter: filterProd} = element;
+                let productUse = await Product.findOne({
+                  $and: [{"_idChildCategory": _idChildCatalog}, {
+                    $or: [{"filters.filter": filterProd}, {"model.filters.filter": filterProd}]
+                  }]
+                });
+                if (productUse) {
+                  filters.push({
+                    filter: filterProd
+                  })
+                }
+              }
+            }));
 
+            filters = _.map(
+              _.uniq(
+                _.map(filters, function (obj) {
+                  return JSON.stringify(obj);
+                })
+              ), function (obj) {
+                return JSON.parse(obj);
+              }
+            );
+            childcatalog.filters = filters;
+          }
+          await childcatalog.save();
+          response['childcatalog'].push(childcatalog);
+        }
       }
-      await childcatalog.save();
-      response['childcatalog'] = childcatalog;
     }
 
     res.status(200).json(response);

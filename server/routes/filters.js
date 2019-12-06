@@ -48,7 +48,7 @@ router.put(
   updateFilter);
 
 // @route   PUT /filters/main/activateordeactivate
-// @desc    activate or deactivate existing main filter
+// @desc    activate or deactivate existing model
 // @access  Private
 router.put(
   '/main/activateordeactivate',
