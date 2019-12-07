@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -20,25 +20,23 @@ class Footer extends Component {
     const { links } = this.props;
 
     return (
-        <div className="footer">
-          <Grid container>
-            <Grid
-              container
-              item
-              xs={12}
-              sm={6}
-              justify="space-around"
-            >
-              {links.data.map(item => (
-                <Grid item xs={12} sm={3} key={item._id}>
-                  <Links link={item} />
-                </Grid>
-              ))}
-            </Grid>
-            <Grid item xs={12} sm={6}><Subscribe/></Grid>
-            <Grid item xs={12}><p className="footer-copyright">© Copyright 2019</p></Grid>
+      <div className="footer">
+        <Grid container>
+          <Grid container item xs={12} sm={6} justify="space-around">
+            {links.data.map(item => (
+              <Grid item xs={12} sm={3} key={item._id}>
+                <Links link={item} />
+              </Grid>
+            ))}
           </Grid>
-        </div>
+          <Grid item xs={12} sm={6}>
+            <Subscribe />
+          </Grid>
+          <Grid item xs={12}>
+            <p className="footer-copyright">© Copyright 2019</p>
+          </Grid>
+        </Grid>
+      </div>
     );
   }
 }

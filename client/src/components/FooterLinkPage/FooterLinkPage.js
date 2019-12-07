@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -7,17 +7,20 @@ import parse from 'html-react-parser';
 
 import * as footerLinksAction from '../../actions/footerLinksAction';
 
-import './FooterLinkPage.scss'
+import './FooterLinkPage.scss';
 
 class FooterLinkPage extends Component {
-
   async componentDidMount() {
-    await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId);
+    await this.props.footerLinksAction.getFooterLinkPageByCustomId(
+      this.props.match.params.customId
+    );
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevProps.match.params.customId !== this.props.match.params.customId) {
-      await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId);
+      await this.props.footerLinksAction.getFooterLinkPageByCustomId(
+        this.props.match.params.customId
+      );
     }
   }
 
@@ -26,17 +29,13 @@ class FooterLinkPage extends Component {
 
     let content = null;
 
-    if(error.status === true) {
-      content = error.msg
+    if (error.status === true) {
+      content = error.msg;
     } else {
-      content = article.htmlContent
+      content = article.htmlContent;
     }
 
-    return (
-      <div className="footer-link-page">
-        {parse(`${content}`)}
-      </div>
-    )
+    return <div className="footer-link-page">{parse(`${content}`)}</div>;
   }
 }
 

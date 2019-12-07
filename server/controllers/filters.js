@@ -137,6 +137,42 @@ exports.updateFilter = async (req, res) => {
   }
 };
 
+exports.activateOrDeactivateFilter = async (req, res) => {
+  try {
+    const {_idFilter, status} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idFilter)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idFilter}`
+      })
+    }
+
+    let filter = await Filter.findById(_idFilter);
+
+    if (!filter) {
+      return res.status(400).json({
+        message: `Filter with id ${filter} is not found`
+      })
+    }
+
+    filter.enabled = status;
+
+    filter = await filter.save();
+
+    res.status(200).json(filter);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
 exports.deleteFilter = async (req, res) => {
   try {
 
