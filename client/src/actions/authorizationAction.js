@@ -31,6 +31,7 @@ export function loginInSystem(userData, callback) {
           });
       })
       .catch(() => {
+        localStorage.removeItem('Authorization');
         return dispatch({
           type: AUTHORIZATION.LOG_IN_API_FAILED
         });
@@ -40,6 +41,7 @@ export function loginInSystem(userData, callback) {
 
 export function failSocial() {
   return dispatch => {
+    localStorage.removeItem('Authorization');
     dispatch({
       type: AUTHORIZATION.LOG_IN_API_FAILED
     });
@@ -59,6 +61,7 @@ export function AuthorizationThroughLocalStorage(token) {
         });
       })
       .catch(() => {
+        localStorage.removeItem('Authorization');
         return dispatch({
           type: AUTHORIZATION.LOG_IN_API_FAILED
         });
