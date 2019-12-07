@@ -22,6 +22,19 @@ export default class AdminProductAPI {
           },
           img: 'jomwedding/34acdbe0-fb2b-11e9-befb-033496442550',
           enabled: true
+        },
+        {
+          filter: {
+            _id: '5de027f4e8a23045f0c155801',
+            type: 'Color',
+            serviceName: 'color-something-catalog'
+          },
+          subFilter: {
+            _id: '5de56ac85ac80a23483fece41',
+            name: 'Black'
+          },
+          img: 'jomwedding/34acdbe0-fb2b-11e9-befb-033496442550',
+          enabled: true
         }
       ],
       childCategory: {
@@ -40,11 +53,23 @@ export default class AdminProductAPI {
             name: 'Nike Air'
           },
           enabled: true
+        },
+        {
+          filter: {
+            _id: '5de02aece8a23045f0c1559b1',
+            type: 'Brand',
+            serviceName: 'Brand-something-catalog'
+          },
+          subFilter: {
+            _id: '5de02a12e8a23045f0c1558c1',
+            name: 'Nike Air'
+          },
+          enabled: true
         }
       ],
       model: [
         {
-          enabled: false,
+          enabled: true,
           modelNo: '9207-502385-9450',
           filters: [
             {
@@ -55,6 +80,26 @@ export default class AdminProductAPI {
               },
               subFilter: {
                 _id: '5de56ac85ac80a23483fece4',
+                name: 'Black'
+              },
+              enabled: true
+            }
+          ],
+          quantity: 56,
+          currentPrice: 160
+        },
+        {
+          enabled: true,
+          modelNo: '9207-502385-9451',
+          filters: [
+            {
+              filter: {
+                _id: '5de027f4e8a23045f0c155801',
+                type: 'Color',
+                serviceName: 'color-something-catalog'
+              },
+              subFilter: {
+                _id: '5de56ac85ac80a23483fece41',
                 name: 'Black'
               },
               enabled: true

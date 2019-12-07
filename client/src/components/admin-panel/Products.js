@@ -55,16 +55,17 @@ export default class Products extends Component {
       {
         title: 'Image',
         field: 'imgProduct',
-        render: rowData => (
-          <Image
-            cloudName="dxge5r7h2"
-            publicId={rowData.imgProduct}
-            dpr="auto"
-            responsive="true"
-            width="auto"
-            crop="scale"
-          />
-        )
+        render: rowData =>
+          rowData.imgProduct ? (
+            <Image
+              cloudName="dxge5r7h2"
+              publicId={rowData.imgProduct}
+              dpr="auto"
+              responsive={true}
+              width="auto"
+              crop="scale"
+            />
+          ) : null
       },
       { title: 'Name', field: 'nameProduct' },
       { title: 'Number', field: 'numberProduct' },
@@ -73,7 +74,21 @@ export default class Products extends Component {
       { title: 'Summ Quantity', field: 'quantityProduct' },
       { title: 'Filter for image', field: 'filterImg' },
       { title: 'Sub filter for image', field: 'subFilterImg' },
-      { title: 'Image for filter', field: 'imgFilter' },
+      {
+        title: 'Image for filter',
+        field: 'imgFilter',
+        render: rowData =>
+          rowData.imgFilter ? (
+            <Image
+              cloudName="dxge5r7h2"
+              publicId={rowData.imgFilter}
+              dpr="auto"
+              responsive={true}
+              width="auto"
+              crop="scale"
+            />
+          ) : null
+      },
       { title: 'Common filter', field: 'commonFilter' },
       { title: 'Common sub filter', field: 'commonSubFilter' },
       { title: 'Model number', field: 'modelNumber' },
@@ -85,15 +100,16 @@ export default class Products extends Component {
         title: 'Enabled',
         field: 'enabled',
         disableClick: true,
-        render: rowData => (
-          <Switch
-            checked={rowData.enabled}
-            onChange={(e, val) => this.handleEnabled(val, rowData)}
-            value="enabled"
-            color="primary"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        )
+        render: rowData =>
+          rowData.enabled !== undefined ? (
+            <Switch
+              checked={rowData.enabled}
+              onChange={(e, val) => this.handleEnabled(val, rowData)}
+              value="enabled"
+              color="primary"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          ) : null
       }
     ],
     data: [],
@@ -125,10 +141,17 @@ export default class Products extends Component {
         });
 
         // info filter for img
+        const idFilterImg = product._id + 1;
+        preViewRes.push({
+          id: idFilterImg,
+          parentId: product._id,
+          nameProduct: 'Filters Image'
+        });
+
         product.filtersImg.forEach(filtersImg => {
           preViewRes.push({
             id: filtersImg.filter._id,
-            parentId: product._id,
+            parentId: idFilterImg,
             filterImg: filtersImg.filter.serviceName,
             subFilterImg: filtersImg.subFilter.name,
             imgFilter: filtersImg.img,
@@ -137,10 +160,17 @@ export default class Products extends Component {
         });
 
         // info common filter product
+        const idComminFllter = product._id + 2;
+        preViewRes.push({
+          id: idComminFllter,
+          parentId: product._id,
+          nameProduct: 'Common filter'
+        });
+
         product.filters.forEach(filter => {
           preViewRes.push({
             id: filter.filter._id,
-            parentId: product._id,
+            parentId: idComminFllter,
             commonFilter: filter.filter.serviceName,
             commonSubFilter: filter.subFilter.name,
             enabled: filter.enabled
@@ -148,10 +178,17 @@ export default class Products extends Component {
         });
 
         // info modal products
+        const idModel = product._id + 3;
+        preViewRes.push({
+          id: idModel,
+          parentId: product._id,
+          nameProduct: 'Modal products'
+        });
+
         product.model.forEach(model => {
           preViewRes.push({
             id: model.modelNo,
-            parentId: product._id,
+            parentId: idModel,
             modelNumber: model.modelNo,
             modelQuantity: model.quantity,
             modelPrice: model.currentPrice,
@@ -170,7 +207,7 @@ export default class Products extends Component {
           });
         });
       });
-      console.log(preViewRes);
+
       this.setState({
         data: preViewRes
       });
@@ -248,14 +285,14 @@ export default class Products extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    // this.setState({
-    //   data: this.state.data.map(i => {
-    //     if (id.id === i.id) {
-    //       i.enabled = val;
-    //     }
-    //     return i;
-    //   })
-    // });
+    this.setState({
+      data: this.state.data.map(i => {
+        if (id.id === i.id) {
+          i.enabled = val;
+        }
+        return i;
+      })
+    });
   };
 
   render() {
