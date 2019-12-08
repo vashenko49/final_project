@@ -44,12 +44,12 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
           </div>
           {/* need to iterate */}
           <div className="product-sizes container">
-            <button className="light-btn">US 40</button>
-            <button className="light-btn">US 40.5</button>
-            <button className="light-btn">US 41</button>
-            <button className="light-btn">US 41.5</button>
-            <button className="light-btn">US 42</button>
-            <button className="light-btn">US 42.5</button>
+            {filters.map(v => {
+              if(v.filter.type === "Sizes"){
+                return <button className="light-btn">US {v.subFilter.name}</button>
+              }
+              return []
+            })}
           </div>
           <div className="product-buttons container">
             <button className="add-to-bag-btn">Add to bag</button>

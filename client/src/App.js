@@ -8,6 +8,7 @@ import { configureStore } from './store';
 // import PrivateRoute from './components/routing/PrivateRoute';
 
 import Cart from './components/cart/Cart';
+import Page from './components/page/ProductPageF'
 
 import './App.scss';
 // import PasswordRecovery from './components/auth/PasswordRecovery';
@@ -31,6 +32,7 @@ function App() {
             renders the first one that matches the current URL. */}
           <Switch>
             <Route exact path="/cart" component={Cart} />
+            <Route exact path="/product/:id" component={Page} />
             {/* <Route exact exect path="/product/:id" component={ProductPageF} /> */}
             {/* <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} /> */}
             {/* <PrivateRoute exact path="/subscribe" component={Login} /> */}

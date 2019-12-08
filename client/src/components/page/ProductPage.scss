@@ -4,7 +4,9 @@
 }
 
 .product-header {
+
   display: flex;
+  grid-area: header;
   justify-content: space-between;
   padding: 20px 15px 10px 15px;
 
@@ -33,6 +35,8 @@
 }
 
 .product-photo {
+  grid-area: photo;
+
    img {
     width: 100%;
     height: 40%;
@@ -40,6 +44,8 @@
 }
 
 .product-select {
+  grid-area: select;
+
   .sizes-info {
     display: flex;
     justify-content: space-between;
@@ -53,8 +59,10 @@
 }
 
 .product-sizes {
+
   display: flex;
   flex-wrap: wrap;
+  grid-area: sizes;
   padding: 10px 20px;
   
   .light-btn {
@@ -72,7 +80,7 @@
 }
 
 .product-buttons {
-
+  grid-area: buttons;
   text-align: center;
 
   button {
@@ -97,6 +105,7 @@
 }
 
 .product-discription {
+  grid-area: discription;
   margin: 45px;
   
   .short-description {
@@ -116,6 +125,7 @@
 }
 
 .product-reviews {
+    grid-area: reviews;
     font-size: 18px;
     border-top: 1px solid rgba(0, 0, 0, .226);
     border-bottom: 1px solid rgba(0, 0, 0, .226);
@@ -176,4 +186,24 @@
     .active {
       display: inline-block;
     }
+}
+
+@media screen and (min-width: 1000px) {
+  
+  .product {
+    display: grid;
+    grid-template-areas: 
+      "photo photo header header"
+      "photo photo discription discription"
+      "photo photo select select"
+      "photo photo sizes sizes"
+      "photo photo buttons buttons"
+      "reviews reviews reviews reviews";
+    grid-template-rows: repeat(1fr, 6);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  .property-description {
+    margin: 0;
+  }
 }
