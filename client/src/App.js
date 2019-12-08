@@ -8,7 +8,7 @@ import { configureStore } from './store';
 // import PrivateRoute from './components/routing/PrivateRoute';
 
 import Cart from './components/cart/Cart';
-import Page from './components/page/ProductPageF'
+import Page from './components/page/ProductPageF';
 
 import './App.scss';
 // import PasswordRecovery from './components/auth/PasswordRecovery';

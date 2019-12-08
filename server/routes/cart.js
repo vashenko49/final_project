@@ -17,10 +17,7 @@ router.get(
 // @desc    Add one product to cart
 // @access  Private
 router.post(
-    "/",
-    check("customerId", "Customer id is required")
-        .not()
-        .isEmpty(),
+    "/:id",
     check("productId", "Product id is required")
         .not()
         .isEmpty(),

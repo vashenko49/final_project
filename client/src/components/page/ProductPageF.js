@@ -2,18 +2,62 @@ import React, { useEffect, Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { getCurrentProduct } from '../../actions/product';
 
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+
 import Rating from '../common/rating/Rating';
 
 import './ProductPage.scss';
 
+const useStyles = makeStyles(theme => ({
+  paper: {
+    position: 'absolute',
+    top: 13 + '%',
+    left: 33 + '%',
+    width: 32 + '%',
+    backgroundColor: theme.palette.background.paper,
+    // border: '.6px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  }
+}));
+
 const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match }) => {
-  const { nameProduct, description, itemNo, model, filters } = product;
+  const {
+    nameProduct,
+    description,
+    itemNo,
+    model,
+    filters,
+    productUrlImg,
+    _idChildCategory
+  } = product;
 
   useEffect(() => {
     getCurrentProduct(match.params.id);
   }, [getCurrentProduct, match.params.id]);
 
   const [active, setActive] = useState(false);
+
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const amount = [];
+
+  for (let i = 1; i < 10; i++) {
+    amount.push(<option value={i}>{i}</option>);
+  }
 
   return (
     <Fragment>
@@ -29,10 +73,7 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
             <p className="item-price">${model[0].currentPrice.toFixed(2)}</p>
           </div>
           <div className="product-photo">
-            <img
-              src="https://c.static-nike.com/a/images/t_PDP_1280_v1/f_auto,b_rgb:f5f5f5/jasoksaru5oyf7g4nszw/shox-r4-older-shoe-0zblqw.jpg"
-              alt="sneaker not found"
-            ></img>
+            <img src={productUrlImg[0]} alt="sneaker not found"></img>
           </div>
           <div className="product-select">
             <div className="sizes-info">
@@ -42,19 +83,58 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
               </a>
             </div>
           </div>
-          {/* need to iterate */}
           <div className="product-sizes container">
             {filters.map(v => {
-              if(v.filter.type === "Sizes"){
-                return <button className="light-btn">US {v.subFilter.name}</button>
+              if (v.filter.type === 'Sizes') {
+                return <button className="light-btn">US {v.subFilter.name}</button>;
               }
-              return []
+              return [];
             })}
           </div>
           <div className="product-buttons container">
-            <button className="add-to-bag-btn">Add to bag</button>
-            <button className="favorite-btn">Favourite</button>
+            <button className="black-btn" onClick={handleOpen}>
+              Add to bag
+            </button>
+            <button className="grey-btn">Favourite</button>
           </div>
+
+          <div>
+            <Modal
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+              open={open}
+              onClose={handleClose}
+            >
+              <div className={classes.paper}>
+                <h3 className="checkout-title">Added to Bag</h3> {/* TODO */}
+                <div className="checkout-content">
+                  <img src={productUrlImg[0]} alt="sneaker not found"></img>
+                  <div className="checkout-info">
+                    <h5>{nameProduct}</h5>
+                    <p>{_idChildCategory.name}</p>
+                    <p className="checkout-field">
+                      Price: <span>${89}</span>
+                    </p>
+                    <p className="checkout-field">
+                      Color: <span>{'vimous'}</span>
+                    </p>
+                    <p className="checkout-field">
+                      Size: <span>{37.5}</span>
+                    </p>
+                    <label htmlFor="quantity">Quantity</label>
+                    <select name="quantity">{amount}</select>
+                  </div>
+                </div>
+                <div className="product-buttons container">
+                  <button className="grey-btn" onClick={handleOpen}>
+                    View bag
+                  </button>
+                  <button className="black-btn">Checkout</button>
+                </div>
+              </div>
+            </Modal>
+          </div>
+
           {/* <div className="product-photos">
             <img></img>
           </div> */}

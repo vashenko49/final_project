@@ -6,7 +6,11 @@ const { validationResult } = require("express-validator");
 
 exports.getCart = async (req, res, next) => {
     try {
-        const cart = await Cart.findOne({ customerId: req.params.id }).populate("products.product")
+        const cart = await Cart.findOne({ customerId: req.params.id })
+            .populate("products.product")
+            // .populate("products.product._idChildCategory")
+            .populate("_idChildCategory")
+
         res.status(200).json(cart)
     } catch (err) {
         return res.status(500).json({ msg: `Error happened on server: "${err}"` })
@@ -22,12 +26,12 @@ exports.updateCart = async (req, res, next) => {
     }
 
     try {
-        const customer = await Customer.findOne({ _id: req.body.customerId });
+        const customer = await Customer.findOne({ _id: req.params.id });
         const product = await Product.findOne({ _id: req.body.productId });
-        let cart = await Cart.findOne({ customerId: req.body.customerId });
+        let cart = await Cart.findOne({ customerId: req.params.id });
 
         if (!customer) {
-            return res.status(404).json({ msg: `Customer with _id ${req.body.customerId} was not found.` })
+            return res.status(404).json({ msg: `Customer with _id ${req.params.id} was not found.` })
         }
 
         if (!product) {
