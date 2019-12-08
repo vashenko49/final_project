@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
@@ -22,7 +22,7 @@ class Links extends Component {
           {this.props.link.links.map(item => <li key={item._id} className="footer-menu-list-item"><Link linkgroupid={this.props.link._id} onClick={this.onClick.bind(this)} to={item.url}>{item.description}</Link ></li>)}
         </ul>
       </div>
-    )
+    );
   }
 }
 

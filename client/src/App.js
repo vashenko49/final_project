@@ -1,12 +1,8 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { configureStore } from './store';
-
-import Login from './components/auth/Login';
-
-import Registration from './components/auth/Registration';
 import AdminPanel from './components/admin-panel/AdminPanel';
 import FooterLinkPage from './components/FooterLinkPage/FooterLinkPage';
 import Footer from './components/Footer/Footer';
@@ -14,48 +10,37 @@ import Footer from './components/Footer/Footer';
 import ProductPageF from './components/page/ProductPageF';
 import MainPage from './components/page/MainPage';
 
-import PrivateRoute from './components/routing/PrivateRoute';
+import './font/Varta/Varta-font.css';
+import './font/Proxima_Nova/Proxima_Nova-font.css';
+import './font/Roboto/Roboto-font.css';
 
 import './App.scss';
-import PasswordRecovery from './components/auth/PasswordRecovery';
+import Authorization from './components/Authorization/Authorization';
+import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
 
 const store = configureStore();
 
-function App() {
-  return (
-    <Provider store={store}>
-      <Router>
-        <div>
-
-          {/* <nav>
-            <ul>
-              <li>
-                <Link to="/subscribe">Subscribe</Link>
-              </li>
-              <li>
-                <Link to="/admin-panel">Admin Panel</Link>
-              </li>
-            </ul>
-          </nav> */}
-
-          {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+class App extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <Router>
+          <li>
+            <Link to="/admin-panel">Admin Panel</Link>
+          </li>
           <Switch>
-
-            <Route exact path="/registration" component={Registration} />
-            <Route exact path="/links/content/:customId" component={FooterLinkPage} />
-            <Route exact path="/" component={Login} />
+            <Route exact path="/authorization" component={Authorization} />
+            <Route exact path="/pages/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/main-page" component={MainPage} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
-            <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
-            <PrivateRoute exact path="/subscribe" component={Login} />
+            <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
-          <Footer/>
-        </div>
-      </Router>
-    </Provider>
-  );
+          <Footer />
+        </Router>
+      </Provider>
+    );
+  }
 }
 
 export default App;

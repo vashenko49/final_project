@@ -21,64 +21,64 @@ router.post(
     check('customId', 'Name configuration is require')
       .not()
       .isEmpty(),
-    check('develop.domen.domenServer', 'Develop domain server is require')
+    check('development.domen.domenServer', 'Develop domain server is require')
       .not()
       .isEmpty(),
-    check('develop.domen.domenClient', 'Develop domain client is require')
+    check('development.domen.domenClient', 'Develop domain client is require')
       .not()
       .isEmpty(),
-    check('develop.database.uri', 'Develop uri data base is require')
+    check('development.database.uri', 'Develop uri data base is require')
       .not()
       .isEmpty(),
-    check('develop.nodemailer.email', 'Develop nodemailer email is require')
+    check('development.nodemailer.email', 'Develop nodemailer email is require')
       .not()
       .isEmpty(),
-    check('develop.nodemailer.password', 'Develop nodemailer password is require')
+    check('development.nodemailer.password', 'Develop nodemailer password is require')
       .not()
       .isEmpty(),
-    check('develop.nodemailer.service', "Develop nodemailer servise is require")
+    check('development.nodemailer.service', "Develop nodemailer servise is require")
       .not()
       .isEmpty(),
-    check('develop.cloudinary.cloudName', 'Develop cloudinary cloudName is require')
+    check('development.cloudinary.cloudName', 'Develop cloudinary cloudName is require')
       .not()
       .isEmpty(),
-    check('develop.cloudinary.apiKey', 'Develop cloudinary apiKey is require')
+    check('development.cloudinary.apiKey', 'Develop cloudinary apiKey is require')
       .not()
       .isEmpty(),
-    check('develop.cloudinary.apiSecret', 'Develop cloudinary apiSecret is require')
+    check('development.cloudinary.apiSecret', 'Develop cloudinary apiSecret is require')
       .not()
       .isEmpty(),
-    check('develop.auth.JWT_SECRET', 'Develop JWT_SECRET is require')
+    check('development.auth.JWT_SECRET', 'Develop JWT_SECRET is require')
       .not()
       .isEmpty(),
-    check('develop.auth.JWT_EMAIL_SECRET', 'Develop JWT_EMAIL_SECRET is require')
+    check('development.auth.JWT_EMAIL_SECRET', 'Develop JWT_EMAIL_SECRET is require')
       .not()
       .isEmpty(),
-    check('develop.auth.JWT_FORGOT_PASSWORD', 'Develop JWT_FORGOT_PASSWORD is require')
+    check('development.auth.JWT_FORGOT_PASSWORD', 'Develop JWT_FORGOT_PASSWORD is require')
       .not()
       .isEmpty(),
-    check('develop.auth.usersIdSecret', 'Develop usersIdSecret is require')
+    check('development.auth.usersIdSecret', 'Develop usersIdSecret is require')
       .not()
       .isEmpty(),
-    check('develop.auth.orderIdSecret', 'Develop orderIdSecret is require')
+    check('development.auth.orderIdSecret', 'Develop orderIdSecret is require')
       .not()
       .isEmpty(),
-    check('develop.auth.oauth.google.clientID', 'Develop google clientID is require')
+    check('development.auth.oauth.google.clientID', 'Develop google clientID is require')
       .not()
       .isEmpty(),
-    check('develop.auth.oauth.google.clientSecret', 'Develop google clientSecret is require')
+    check('development.auth.oauth.google.clientSecret', 'Develop google clientSecret is require')
       .not()
       .isEmpty(),
-    check('develop.auth.oauth.facebook.clientID', 'Develop facebook clientID is require')
+    check('development.auth.oauth.facebook.clientID', 'Develop facebook clientID is require')
       .not()
       .isEmpty(),
-    check('develop.auth.oauth.facebook.clientSecret', 'Develop facebook clientSecret is require')
+    check('development.auth.oauth.facebook.clientSecret', 'Develop facebook clientSecret is require')
       .not()
       .isEmpty(),
-    check('develop.auth.oauth.github.clientID', 'Develop github clientID is require')
+    check('development.auth.oauth.github.clientID', 'Develop github clientID is require')
       .not()
       .isEmpty(),
-    check('develop.auth.oauth.github.clientSecret', 'Develop github clientSecret is require')
+    check('development.auth.oauth.github.clientSecret', 'Develop github clientSecret is require')
       .not()
       .isEmpty(),
     check('production.domen.domenServer', 'Production domain server is require')

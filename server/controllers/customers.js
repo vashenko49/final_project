@@ -5,14 +5,17 @@ const customerid = require('order-id')(process.env.usersIdSecret);
 
 const sendEmail = require('../common/sendEmail');
 const CustomerModel = require('../models/Customer');
-
+const {validationResult} = require('express-validator');
 
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
   try {
-    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
 
-    const {firstName, lastName, login, email, password, telephone, gender} = req.body;
+    const {firstName, lastName, login, email, password, gender} = req.body;
 
     let Customer = await CustomerModel.findOne({
       $or: [{email: email}, {login: login}]
@@ -38,7 +41,6 @@ exports.createCustomer = async (req, res) => {
       lastName,
       login,
       gender,
-      telephone,
       customerNo: customerid.generate(),
       socialmedia: [4],
       isAdmin: false,
@@ -62,10 +64,28 @@ exports.createCustomer = async (req, res) => {
 
     await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
 
-    res.status(200).json(Customer);
 
+    const payload = {
+      _id: Customer._id,
+      firstName: Customer.firstName,
+      lastName: Customer.lastName,
+      isAdmin: Customer.isAdmin
+    }; // Create JWT Payload
 
+    // Sign Token
+    jwt.sign(
+      {data: payload},
+      process.env.JWT_SECRET,
+      {expiresIn: 36000},
+      (err, token) => {
+        return res.json({
+          success: true,
+          token: "Bearer " + token
+        });
+      }
+    );
   } catch (e) {
+    console.log(e);
     res.status(400).json({
       message: e.message
     })
@@ -88,6 +108,31 @@ exports.confirmCustomer = async (req, res) => {
   }
 
 
+};
+
+//check login or email in base
+exports.checkLoginOrEmail = async (req, res) => {
+  try {
+    const {type, data} = req.body;
+
+    if (!type || !data) {
+      return  res.status(200).json({status: false});
+    }
+    let config = type === 'login' ? {"login": data} : {"email": data};
+
+    const customer = await CustomerModel.findOne(config);
+
+    if (customer) {
+      return  res.status(200).json({status: false});
+    }
+
+    return  res.status(200).json({status: true});
+
+  } catch (e) {
+    return  res.status(500).json({
+      message: `Server error ${e.message}`
+    })
+  }
 };
 
 //controller for creating customer through social network
@@ -148,12 +193,16 @@ exports.createCustomerSocialNetwork = async (req, res) => {
 // Controller for customer login
 exports.loginCustomer = async (req, res) => {
   try {
-    const {loginOrEmail, password} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+    const {email, password} = req.body;
 
 
     // Find customer by email
     CustomerModel.findOne({
-      $or: [{email: loginOrEmail}, {login: loginOrEmail}]
+      $or: [{email: email}, {login: email}]
     })
       .then(customer => {
         // Check for customer
@@ -173,7 +222,7 @@ exports.loginCustomer = async (req, res) => {
           if (isMatch) {
             // Customer Matched
             const payload = {
-              _id: customer.id,
+              _id: customer._id,
               firstName: customer.firstName,
               lastName: customer.lastName,
               isAdmin: customer.isAdmin
@@ -323,7 +372,10 @@ exports.updatePassword = (req, res) => {
 // controller for sending tokens to the user’s mail to change the password
 exports.forgotPassword = async (req, res) => {
   try {
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
     const {loginOrEmail} = req.body;
 
     let customer = await CustomerModel.findOne({
@@ -332,7 +384,7 @@ exports.forgotPassword = async (req, res) => {
 
     if (!customer) {
       return res.status(400).json({
-        message: `user no found by ${loginOrEmail}`
+        message: `User by ${loginOrEmail} not found`
       })
     }
 
@@ -342,16 +394,16 @@ exports.forgotPassword = async (req, res) => {
         expiresIn: 1800
       });
 
-    let url = `${process.env.domen}/customers/forgotpassword/${encodeURI(tokenChangePassword)}`;
+    let url = `${process.env.domen_client}/passwordrecovery/${encodeURI(tokenChangePassword)}`;
 
     await sendEmail(customer.email, `Hi ${customer.firstName}! Change password`, `<a href=${url}>Confirm</a>`);
 
     return res.status(200).json({
-      message: "Email sent"
+      message: "Email sent, check email"
     });
   } catch (e) {
     return res.status(400).json({
-      message: `Error happened on server: "${e}" `
+      message: `Oops, something went wrong" `
     });
   }
 
@@ -405,18 +457,17 @@ exports.updatePasswordAfterConfirm = async (req, res) => {
         .then(customer => {
           res.json({
             message: "Password successfully changed",
-            customer: customer
           });
         })
         .catch(err =>
           res.status(400).json({
-            message: `Error happened on server: "${err}" `
+            message: `Oops, something went wrong" `
           })
         );
 
     } catch (e) {
       res.status(400).json({
-        message: `Error happened on server: "${e}" `
+        message: `Oops, something went wrong `
       })
     }
   });

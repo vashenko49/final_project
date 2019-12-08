@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -7,10 +7,9 @@ import parse from 'html-react-parser';
 
 import * as footerLinksAction from '../../actions/footerLinksAction';
 
-import './FooterLinkPage.scss'
+import './FooterLinkPage.scss';
 
 class FooterLinkPage extends Component {
-
   async componentDidMount() {
     await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId, this.props.id);
   }
@@ -27,9 +26,9 @@ class FooterLinkPage extends Component {
     let content = null;
 
     if(error.status === true) {
-      content = error.msg
+      content = error.msg;
     } else {
-      content = article
+      content = article;
     }
 
     return (
