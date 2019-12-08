@@ -39,7 +39,6 @@ app.use('/comment', require('./routes/comment'));
 
 app.use('/cart', require('./routes/cart'));
 app.use('/links', require('./routes/links'));
-app.use('/pages', require('./routes/pages'));
 
 
 app.use(express.static('../client/build'));

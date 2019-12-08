@@ -10,7 +10,7 @@ const initState = {
     }
   },
   articles: {
-    article: {},
+    article: '',
     loading: false,
     error: {
       status: false,

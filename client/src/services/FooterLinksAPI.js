@@ -5,7 +5,7 @@ export default class FooterLinksAPI {
     return axios.get('http://localhost:5000/links');
   }
 
-  static async getFooterLinkPageByCustomId(customId) {
-    return await axios.get(`http://localhost:5000/pages/${customId}`);
+  static async getFooterLinkPageByCustomId(customId, linkGroupId) {
+    return await axios.get(`http://localhost:5000/links/content/${customId}?_id=${linkGroupId}`);
   }
 }

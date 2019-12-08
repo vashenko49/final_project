@@ -12,12 +12,12 @@ import './FooterLinkPage.scss'
 class FooterLinkPage extends Component {
 
   async componentDidMount() {
-    await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId);
+    await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId, this.props.id);
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevProps.match.params.customId !== this.props.match.params.customId) {
-      await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId);
+      await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId, this.props.id);
     }
   }
 
@@ -29,7 +29,7 @@ class FooterLinkPage extends Component {
     if(error.status === true) {
       content = error.msg
     } else {
-      content = article.htmlContent
+      content = article
     }
 
     return (
@@ -43,8 +43,9 @@ class FooterLinkPage extends Component {
 function mapStateToProps(state) {
   return {
     article: state.footerLinks.articles.article,
-    error: state.footerLinks.articles.error
-  };
+    error: state.footerLinks.articles.error,
+    id: state.footerLinksId.id
+  }
 }
 
 function mapDispatchToProps(dispatch) {

@@ -19,10 +19,12 @@
   "dependencies": {
     "@material-ui/core": "~4.5.1",
     "@material-ui/icons": "^4.5.1",
+    "auto-bind": "^3.0.0",
     "axios": "^0.19.0",
     "html-react-parser": "^0.10.0",
     "material-table": "^1.54.1",
     "materialize-css": "^1.0.0-rc.2",
+    "prop-types": "^15.7.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-facebook-login": "^4.1.1",

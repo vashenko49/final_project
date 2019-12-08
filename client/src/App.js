@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { configureStore } from './store';
@@ -43,7 +43,7 @@ function App() {
           <Switch>
 
             <Route exact path="/registration" component={Registration} />
-            <Route exact path="/pages/:customId" component={FooterLinkPage} />
+            <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/" component={Login} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/main-page" component={MainPage} />

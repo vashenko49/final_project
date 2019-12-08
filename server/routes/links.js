@@ -8,12 +8,14 @@ const {
   addLink,
   updateLink,
   getLinks,
+  deleteLinksGroup,
   deleteLink,
-  getLinkById
+  getLinkById,
+  getLinkByCustomId
 } = require("../controllers/links");
 
 // @route   POST /links
-// @desc    Create new link
+// @desc    Create new links group
 // @access  Private
 router.post(
   "/",
@@ -27,15 +29,23 @@ router.post(
 );
 
 // @route   GET /links/:id
-// @desc    Get link by id
+// @desc    Get links group by id
 // @access  Public
 router.get(
   "/:id",
   getLinkById
 );
 
+// @route   GET /links/content/:customId
+// @desc    Get link content by customId
+// @access  Public
+router.get(
+  "/content/:customId",
+  getLinkByCustomId
+);
+
 // @route   PUT /links/:id
-// @desc    Update existing link
+// @desc    Update existing links group
 // @access  Private
 router.put(
   "/:id",
@@ -49,13 +59,18 @@ router.put(
 );
 
 // @route   GET /links
-// @desc    GET existing links
+// @desc    GET existing links groups
 // @access  Public
 router.get("/", getLinks);
 
 // @route   DELETE /links/:id
-// @desc    Delete link
+// @desc    Delete links group
 // @access  Private
-router.delete("/:id", deleteLink);
+router.delete("/:id", deleteLinksGroup);
+
+// @route   DELETE /links/delete/:id
+// @desc    Delete single link in group
+// @access  Private
+router.put("/delete/:id", deleteLink);
 
 module.exports = router;
