@@ -24,6 +24,10 @@ const LinksSchema = new Schema(
         type: String,
         required: true
       },
+      url: {
+        type: String,
+        required: true
+      },
       htmlContent: {
         type: String,
         required: true
