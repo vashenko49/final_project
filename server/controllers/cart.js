@@ -6,7 +6,40 @@ const { validationResult } = require("express-validator");
 
 exports.getCart = async (req, res, next) => {
   try {
-    const cart = await Cart.findOne({ customerId: req.params.id }).populate("products.product");
+    const cart = await Cart.findOne({ customerId: req.params.id })
+      .populate({
+        path: "products.product",
+        populate: {
+          path: "_idChildCategory",
+          select: "-filters"
+        }
+      })
+      .populate({
+        path: "products.product",
+        populate: {
+          path: "filters.filter",
+          select: "enabled type serviceName"
+        }
+      })
+      .populate({
+        path: "products.product",
+        populate: {
+          path: "filters.subFilter"
+        }
+      })
+      .populate({
+        path: "products.product",
+        populate: {
+          path: "model.filters.filter",
+          select: "enabled type serviceName"
+        }
+      })
+      .populate({
+        path: "products.product",
+        populate: {
+          path: "model.filters.subFilter"
+        }
+      });
 
     res.status(200).json(cart);
   } catch (err) {
