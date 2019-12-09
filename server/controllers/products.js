@@ -1,6 +1,9 @@
+const customCloudinaryInstrument = require("../common/customCloudinaryInstrument");
+
 const _ = require('lodash');
-const { validationResult } = require('express-validator');
+const {validationResult} = require('express-validator');
 const mongoose = require('mongoose');
+
 
 const commonProduct = require('../common/commonProduct ');
 const Product = require("../models/Product");
@@ -11,10 +14,28 @@ exports.addProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    console.log(req.file);
+    let {_idChildCategory, nameProduct, filterImg} = req.body;
+    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(nameProduct)}`;
+
+
+    let productUrlImg = [];
+
+    if (_.isArray(req.files.productUrlImg) && req.files.productUrlImg.length > 0) {
+      productUrlImg = await customCloudinaryInstrument.uploadArrayImgToCloudinary(req.files.productUrlImg, folder);
+    }
+
+
+    filterImg = await Promise.all(filterImg.map(async (element, index) => {
+      if (_.isArray(req.files.filterImg[index].urlImg) && req.files.filterImg[index].urlImg.length > 0) {
+        element.urlImg = await customCloudinaryInstrument.uploadArrayImgToCloudinary(req.files.filterImg[index].urlImg, folder);
+      }
+      return element;
+    }));
+
+
     let product = _.cloneDeepWith(req.body, (value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
         return value;
@@ -41,14 +62,19 @@ exports.addProduct = async (req, res, next) => {
 
 
     //добавляем в каталог ранее не используемые под фильтры
-    //commonProduct.addNewSubFilterToCategory(filter, childCatalog);
-    //await childCatalog.save();
+    commonProduct.addNewSubFilterToCategory(filter, childCatalog);
+    await childCatalog.save();
+
+    product.productUrlImg = productUrlImg;
+    product.filterImg = filterImg;
 
     let newProduct = new Product(product);
-    //await newProduct.save();
+    await newProduct.save();
+
 
     res.status(200).json(newProduct);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })
@@ -59,7 +85,7 @@ exports.addModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
     let model = _.cloneDeepWith(req.body, (value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
@@ -109,10 +135,10 @@ exports.updateProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const { _idProduct, warning,htmlPage,filterImg,isBigImg, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory } = req.body;
+    const {_idProduct, warning, htmlPage, filterImg, isBigImg, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory} = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -197,7 +223,7 @@ exports.updateModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
     const {_idProduct, modelNo, filters, modelUrlImg, enabled, quantity, currentPrice, previousPrice} = req.body;
@@ -264,7 +290,7 @@ exports.updateModelForProduct = async (req, res, next) => {
 
 exports.deleteProduct = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -280,8 +306,8 @@ exports.deleteProduct = async (req, res, next) => {
     });
 
     filter = filter.map(element => {
-      const { filter, subFilter } = element;
-      return { filter, subFilter };
+      const {filter, subFilter} = element;
+      return {filter, subFilter};
     });
 
     filter = _.map(
@@ -299,7 +325,7 @@ exports.deleteProduct = async (req, res, next) => {
     await commonProduct.removeSubFilterFromChildCategoryCheckProduct(filter, product._idChildCategory);
 
     await product.delete();
-    res.status(200).json({ msg: 'Product deleted' })
+    res.status(200).json({msg: 'Product deleted'})
   } catch (err) {
     res.status(500).json({
       message: `Error happened on server: "${err}" `
@@ -309,7 +335,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.deleteModelProduct = async (req, res) => {
   try {
-    const { id, modelno } = req.params;
+    const {id, modelno} = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -346,7 +372,7 @@ exports.deleteModelProduct = async (req, res) => {
     await commonProduct.removeSubFilterFromChildCategoryCheckProduct(filter, product._idChildCategory);
 
     await product.save();
-    res.status(200).json({ msg: 'Product\'s model deleted' })
+    res.status(200).json({msg: 'Product\'s model deleted'})
   } catch (err) {
     res.status(500).json({
       message: `Error happened on server: "${err}" `
@@ -372,7 +398,7 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProductById = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     let product = await Product.findById(id)
       .populate('_idChildCategory')
       .populate('filters.filter')
@@ -397,8 +423,8 @@ exports.getProductById = async (req, res, next) => {
 
 exports.searchProductsHeader = async (req, res, next) => {
   try {
-    const { searchheader } = req.params;
-    const products = await Product.find({ "nameProduct": { $regex: decodeURI(searchheader) } }).limit(5);
+    const {searchheader} = req.params;
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}}).limit(5);
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -409,8 +435,8 @@ exports.searchProductsHeader = async (req, res, next) => {
 
 exports.searchProducts = async (req, res, next) => {
   try {
-    const { search } = req.params;
-    const products = await Product.find({ "nameProduct": { $regex: decodeURI(search) } });
+    const {search} = req.params;
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}});
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -423,17 +449,17 @@ exports.getProductsFilterParams = async (req, res, next) => {
   try {
     let {subfilters} = req.body;
 
-    subfilters = subfilters.map(element=>{
+    subfilters = subfilters.map(element => {
       return mongoose.Types.ObjectId(element);
     });
 
     const Products = await Product.find({
-      $and:[
+      $and: [
         {
-          "filters.subFilter":{$in:subfilters}
+          "filters.subFilter": {$in: subfilters}
         },
         {
-          "model.filters.subFilter":{$in:subfilters}
+          "model.filters.subFilter": {$in: subfilters}
         }
       ]
     });
@@ -504,8 +530,8 @@ exports.activateOrDeactivateProductModel = async (req, res) => {
       })
     }
 
-    product.model.forEach((element, index)=>{
-      if(element.modelNo === modelNo){
+    product.model.forEach((element, index) => {
+      if (element.modelNo === modelNo) {
         product.model[index].enabled = status;
       }
     });

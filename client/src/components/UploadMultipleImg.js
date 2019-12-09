@@ -1,35 +1,37 @@
 import React, { Component } from 'react';
 import { ValidatorForm } from 'react-material-ui-form-validator';
-import TypeLogIn from '../services/AuthorizationAPI';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import objectToFormData from 'object-to-formdata';
+import axios from 'axios';
 
 // файл для экспериментов потом удалим
 class UploadMultipleImg extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filterImgFile: {},
       formData: {
-        nameProduct: '',
+        productUrlImg: [],
+        nameProduct: '1234 test 2 productUrlImg and filterImg  ',
         _idChildCategory: '5de02b89e8a23045f0c1559c',
-        description: '',
+        description: '1234',
         filters: [
           {
             filter: '5de027f4e8a23045f0c15580',
             subFilter: '5de0296de8a23045f0c15583'
           }
         ],
-        htmlPage: '',
-        productUrlImg: [],
+        htmlPage: '1234',
         filterImg: [
           {
             _idFilter: '5de02aece8a23045f0c1559b',
-            _idSubFilters: '5de02a12e8a23045f0c1558c'
+            _idSubFilters: '5de02a12e8a23045f0c1558c',
+            urlImg: []
           },
           {
             _idFilter: '5de02aece8a23045f0c1559b',
-            _idSubFilters: '5de02aece8a23045f0c15593'
+            _idSubFilters: '5de02aece8a23045f0c15593',
+            urlImg: []
           }
         ],
         model: [
@@ -73,32 +75,44 @@ class UploadMultipleImg extends Component {
 
   handleChangeProductUrlImg = event => {
     console.log(event.target.files);
-    const { formData } = this.state;
+    let { formData } = this.state;
     formData.productUrlImg = event.target.files;
     this.setState({ formData });
-    console.log(this.state.formData.userAvatar);
+    console.log(this.state.formData);
   };
   handleChangeFilterImg = event => {
-    const { filterImgFile } = this.state;
+    const { formData } = this.state;
     console.dir(event.target);
-    filterImgFile[`${event.target.dataset.index}`] = event.target.files;
-    this.setState({ filterImgFile });
-    console.log(this.state.filterImgFile);
+
+    let _idSubfilter = event.target.dataset.index;
+
+    formData.filterImg = formData.filterImg.map(element => {
+      if (element._idSubFilters === _idSubfilter) {
+        element.urlImg = event.target.files;
+      }
+      return element;
+    });
+    this.setState({ formData });
+    console.log(this.state.formData);
   };
   handleSubmit = event => {
     event.preventDefault();
-    const { loginInSystem } = this.props;
     const { formData } = this.state;
-    let form = new FormData();
-    form.append('firstName', formData.firstName);
-    form.append('lastName', formData.lastName);
-    form.append('login', formData.login);
-    form.append('email', formData.email);
-    form.append('gender', formData.gender);
-    form.append('password', formData.password);
-    form.append('userAvatar', formData.userAvatar);
+    const options = {
+      indices: true,
+      nullsAsUndefineds: true
+    };
 
-    loginInSystem(form, TypeLogIn.registration);
+    const formdata = objectToFormData(formData, options);
+
+    axios
+      .post('/products', formdata)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -121,8 +135,9 @@ class UploadMultipleImg extends Component {
           />
         </Box>
         <Box>
+          {/* {data-index храню id subfilter что бы отслеживать куда ложить файлы} */}
           <input
-            data-index={'5de02aece8a23045f0c1559b'}
+            data-index={'5de02aece8a23045f0c15593'}
             multiple
             onChange={this.handleChangeFilterImg}
             name="userAvatar"
