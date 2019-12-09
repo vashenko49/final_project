@@ -19,7 +19,17 @@ class Links extends Component {
       <div className="footer-menu">
         <ul className="footer-menu-list">
           <li className="footer-menu-list-header">{this.props.link.title}</li>
-          {this.props.link.links.map(item => <li key={item._id} className="footer-menu-list-item"><Link linkgroupid={this.props.link._id} onClick={this.onClick.bind(this)} to={item.url}>{item.description}</Link ></li>)}
+          {this.props.link.links.map(item => (
+            <li key={item._id} className="footer-menu-list-item">
+              <Link
+                linkgroupid={this.props.link._id}
+                onClick={this.onClick.bind(this)}
+                to={item.url}
+              >
+                {item.description}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     );

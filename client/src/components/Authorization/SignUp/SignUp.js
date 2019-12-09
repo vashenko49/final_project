@@ -24,13 +24,15 @@ class SignUp extends Component {
         email: '',
         gender: '',
         password: '',
-        repeatPassword: ''
+        repeatPassword: '',
+        userAvatar: null
       },
       passwordIsMasked: true,
       repeatPasswordIsMasked: true
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleChangeImg = this.handleChangeImg.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.togglePasswordMask = this.togglePasswordMask.bind(this);
     this.toggleRepeatPasswordMask = this.toggleRepeatPasswordMask.bind(this);
@@ -70,12 +72,28 @@ class SignUp extends Component {
     formData[event.target.name] = event.target.value;
     this.setState({ formData });
   };
+  handleChangeImg = event => {
+    console.log(event.target.files[0]);
+    const { formData } = this.state;
+    formData[event.target.name] = event.target.files[0];
+    this.setState({ formData });
+    console.log(this.state.formData.userAvatar);
+  };
 
   handleSubmit = event => {
     event.preventDefault();
     const { loginInSystem } = this.props;
     const { formData } = this.state;
-    loginInSystem(formData, TypeLogIn.registration);
+    let form = new FormData();
+    form.append('firstName', formData.firstName);
+    form.append('lastName', formData.lastName);
+    form.append('login', formData.login);
+    form.append('email', formData.email);
+    form.append('gender', formData.gender);
+    form.append('password', formData.password);
+    form.append('userAvatar', formData.userAvatar);
+
+    loginInSystem(form, TypeLogIn.registration);
   };
 
   togglePasswordMask = event => {
@@ -156,6 +174,9 @@ class SignUp extends Component {
             validators={['required']}
             errorMessages={['This field is required']}
           />
+        </Box>
+        <Box>
+          <input multiple onChange={this.handleChangeImg} name="userAvatar" type="file" />
         </Box>
         <TextValidator
           type={passwordIsMasked ? 'password' : 'text'}

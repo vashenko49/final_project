@@ -14,6 +14,7 @@ exports.addProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
+    console.log(req.file);
     let product = _.cloneDeepWith(req.body, (value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
         return value;
@@ -40,11 +41,11 @@ exports.addProduct = async (req, res, next) => {
 
 
     //добавляем в каталог ранее не используемые под фильтры
-    commonProduct.addNewSubFilterToCategory(filter, childCatalog);
-    await childCatalog.save();
+    //commonProduct.addNewSubFilterToCategory(filter, childCatalog);
+    //await childCatalog.save();
 
     let newProduct = new Product(product);
-    await newProduct.save();
+    //await newProduct.save();
 
     res.status(200).json(newProduct);
   } catch (e) {
@@ -355,7 +356,12 @@ exports.deleteModelProduct = async (req, res) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    let products = await Product.find();
+    let products = await Product.find()
+      .populate('_idChildCategory')
+      .populate('filters.filter')
+      .populate('filters.subFilter')
+      .populate('model.filters.filter')
+      .populate('model.filters.subFilter');
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({

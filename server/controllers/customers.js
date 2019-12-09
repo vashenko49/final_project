@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const customerid = require('order-id')(process.env.usersIdSecret);
-
+const cloudinary = require('cloudinary').v2;
 
 const sendEmail = require('../common/sendEmail');
 const CustomerModel = require('../models/Customer');
@@ -14,6 +14,9 @@ exports.createCustomer = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({errors: errors.array()});
     }
+
+    const values = Object.values(req.files);
+    const userAvatar = values.length>0 ? await cloudinary.uploader.upload(values[0].path, {folder: "final-project/userAvatar"}):null;
 
     const {firstName, lastName, login, email, password, gender} = req.body;
 
@@ -41,6 +44,7 @@ exports.createCustomer = async (req, res) => {
       lastName,
       login,
       gender,
+      avatarUrl: userAvatar?userAvatar.public_id:'',
       customerNo: customerid.generate(),
       socialmedia: [4],
       isAdmin: false,
@@ -85,7 +89,6 @@ exports.createCustomer = async (req, res) => {
       }
     );
   } catch (e) {
-    console.log(e);
     res.status(400).json({
       message: e.message
     })
@@ -116,20 +119,20 @@ exports.checkLoginOrEmail = async (req, res) => {
     const {type, data} = req.body;
 
     if (!type || !data) {
-      return  res.status(200).json({status: false});
+      return res.status(200).json({status: false});
     }
     let config = type === 'login' ? {"login": data} : {"email": data};
 
     const customer = await CustomerModel.findOne(config);
 
     if (customer) {
-      return  res.status(200).json({status: false});
+      return res.status(200).json({status: false});
     }
 
-    return  res.status(200).json({status: true});
+    return res.status(200).json({status: true});
 
   } catch (e) {
-    return  res.status(500).json({
+    return res.status(500).json({
       message: `Server error ${e.message}`
     })
   }
@@ -161,11 +164,13 @@ exports.createCustomerSocialNetwork = async (req, res) => {
     } else {
       console.log('новый пользователь ---->');
       //регестрируем пользователя
-      const Customer = new CustomerModel({
+      const userImg = await cloudinary.uploader.upload(customer.avatarUrl, {folder: "final-project/userAvatar"});
+
+      Customer = new CustomerModel({
         email: customer.email,
         firstName: customer.firstName,
         lastName: customer.lastName,
-        avatarUrl: customer.avatarUrl,
+        avatarUrl: userImg.public_id,
         customerNo: customerid.generate(),
         socialmedia: [customer.typeSocial],
         isAdmin: false,
@@ -184,6 +189,7 @@ exports.createCustomerSocialNetwork = async (req, res) => {
     });
 
   } catch (e) {
+    console.log(e);
     return res.status(400).json({message: e.message});
   }
 
@@ -328,6 +334,7 @@ exports.updatePassword = (req, res) => {
       let oldPassword = req.body.password;
       let newPassword = req.body.newPassword;
       let passwordValid;
+
       if (customer.password) {
         passwordValid = await bcrypt.compare(oldPassword, customer.password);
         if (!passwordValid) {
@@ -341,7 +348,7 @@ exports.updatePassword = (req, res) => {
       newPassword = await bcrypt.hash(newPassword, salt);
 
       CustomerModel.findOneAndUpdate(
-        {_id: req.user.id},
+        {_id: req.user._id},
         {
           $set: {
             password: newPassword

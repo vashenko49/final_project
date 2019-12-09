@@ -56,9 +56,9 @@ const ProductSchema = new Schema(
           require: true,
           ref: 'subfilters'
         },
-        urlImg:{
+        urlImg:[{
           type:String
-        }
+        }]
       }
     ],
     htmlPage:{
