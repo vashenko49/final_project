@@ -35,7 +35,6 @@ const ProductSchema = new Schema(
           ref: 'filters'
         },
         subFilter: {
-
           type: Schema.Types.ObjectID,
           ref: 'subfilters'
         }
@@ -46,6 +45,29 @@ const ProductSchema = new Schema(
         type: String
       }
     ],
+    filterImg:[
+      {
+        _idFilter:{
+          type: Schema.Types.ObjectID,
+          ref: 'filters'
+        },
+        _idSubFilters:{
+          type: Schema.Types.ObjectID,
+          require: true,
+          ref: 'subfilters'
+        },
+        urlImg:{
+          type:String
+        }
+      }
+    ],
+    htmlPage:{
+      type:String,
+    },
+    isBigImg:{
+      type:Boolean,
+      default:false
+    },
     model: [
       {
         warning: [{
@@ -62,11 +84,6 @@ const ProductSchema = new Schema(
               type: Schema.Types.ObjectID,
               ref: 'subfilters'
             }
-          }
-        ],
-        modelUrlImg: [
-          {
-            type: String
           }
         ],
         quantity: {

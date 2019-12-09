@@ -11,7 +11,7 @@ app.use(cors());
 
 
 // Body parser middleware
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
 //connect data base
 getConfig('configs-v1')
@@ -21,8 +21,8 @@ getConfig('configs-v1')
     app.use(passport.initialize());
     require("./config/passport")(passport);
   }).catch(err => {
-    console.error(err);
-  });
+  console.error(err);
+});
 
 
 app.use(bodyParser.json());
@@ -36,8 +36,8 @@ app.use('/products', require('./routes/products'));
 app.use('/wishlist', require('./routes/wishlist'));
 app.use('/subscriber', require('./routes/subscribers'));
 app.use('/comment', require('./routes/comment'));
-
 app.use('/cart', require('./routes/cart'));
+app.use('/links', require('./routes/links'));
 
 
 app.use(express.static('../client/build'));
