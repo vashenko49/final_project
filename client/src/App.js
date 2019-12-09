@@ -8,6 +8,7 @@ import FooterLinkPage from './components/FooterLinkPage/FooterLinkPage';
 import Footer from './components/Footer/Footer';
 
 import ProductPageF from './components/page/ProductPageF';
+import Cart from './components/cart/Cart';
 import MainPage from './components/page/MainPage';
 
 import './font/Varta/Varta-font.css';
@@ -25,14 +26,15 @@ class App extends Component {
     return (
       <Provider store={store}>
         <Router>
-          <li>
+          {/* <li>
             <Link to="/admin-panel">Admin Panel</Link>
-          </li>
+          </li> */}
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/main-page" component={MainPage} />
+            <Route exact exect path="/cart" component={Cart} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
