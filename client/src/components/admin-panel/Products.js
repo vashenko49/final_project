@@ -60,10 +60,10 @@ export default class Products extends Component {
             <Image
               cloudName="dxge5r7h2"
               publicId={rowData.imgProduct}
-              dpr="auto"
-              responsive={true}
-              width="auto"
-              crop="scale"
+              width="150px"
+              // dpr="auto"
+              // responsive={true}
+              // crop="scale"
             />
           ) : null
       },
@@ -71,31 +71,7 @@ export default class Products extends Component {
       { title: 'Number', field: 'numberProduct' },
       { title: 'Category', field: 'categoryProduct' },
       { title: 'Min Price', field: 'priceProduct' },
-      { title: 'Summ Quantity', field: 'quantityProduct' },
-      { title: 'Filter for image', field: 'filterImg' },
-      { title: 'Sub filter for image', field: 'subFilterImg' },
-      {
-        title: 'Image for filter',
-        field: 'imgFilter',
-        render: rowData =>
-          rowData.imgFilter ? (
-            <Image
-              cloudName="dxge5r7h2"
-              publicId={rowData.imgFilter}
-              dpr="auto"
-              responsive={true}
-              width="auto"
-              crop="scale"
-            />
-          ) : null
-      },
-      { title: 'Common filter', field: 'commonFilter' },
-      { title: 'Common sub filter', field: 'commonSubFilter' },
-      { title: 'Model number', field: 'modelNumber' },
-      { title: 'Model filter', field: 'modelFilter' },
-      { title: 'Model sub filter', field: 'modelSubFilter' },
-      { title: 'Model quantity', field: 'modelQuantity' },
-      { title: 'Model price', field: 'modelPrice' },
+      { title: 'Sum Quantity', field: 'quantityProduct' },
       {
         title: 'Enabled',
         field: 'enabled',
@@ -120,101 +96,29 @@ export default class Products extends Component {
 
   getData = async () => {
     try {
-      const data = await AdminProductsAPI.getProducts();
+      const { data } = await AdminProductsAPI.getProducts();
 
-      const preViewRes = [];
-
-      // info products
-      data.forEach(product => {
-        preViewRes.push({
-          id: product._id,
-          imgProduct: product.productUrlImg[0],
-          nameProduct: product.nameProduct,
-          numberProduct: product.itemNo,
-          categoryProduct: product.childCategory.name,
-          priceProduct: Math.min(...product.model.map(i => i.currentPrice)),
-          quantityProduct:
-            product.model.length > 1
-              ? product.model.reduce((prev, curr) => prev.quantity + curr.quantity)
-              : product.model[0].quantity,
-          enabled: product.enabled
-        });
-
-        // info filter for img
-        const idFilterImg = product._id + 1;
-        preViewRes.push({
-          id: idFilterImg,
-          parentId: product._id,
-          nameProduct: 'Filters Image'
-        });
-
-        product.filtersImg.forEach(filtersImg => {
-          preViewRes.push({
-            id: filtersImg.filter._id,
-            parentId: idFilterImg,
-            filterImg: filtersImg.filter.serviceName,
-            subFilterImg: filtersImg.subFilter.name,
-            imgFilter: filtersImg.img,
-            enabled: filtersImg.enabled
-          });
-        });
-
-        // info common filter product
-        const idComminFllter = product._id + 2;
-        preViewRes.push({
-          id: idComminFllter,
-          parentId: product._id,
-          nameProduct: 'Common filter'
-        });
-
-        product.filters.forEach(filter => {
-          preViewRes.push({
-            id: filter.filter._id,
-            parentId: idComminFllter,
-            commonFilter: filter.filter.serviceName,
-            commonSubFilter: filter.subFilter.name,
-            enabled: filter.enabled
-          });
-        });
-
-        // info modal products
-        const idModel = product._id + 3;
-        preViewRes.push({
-          id: idModel,
-          parentId: product._id,
-          nameProduct: 'Modal products'
-        });
-
-        product.model.forEach(model => {
-          preViewRes.push({
-            id: model.modelNo,
-            parentId: idModel,
-            modelNumber: model.modelNo,
-            modelQuantity: model.quantity,
-            modelPrice: model.currentPrice,
-            enabled: model.enabled
-          });
-
-          // info modal filter products
-          model.filters.forEach(modelFilter => {
-            preViewRes.push({
-              id: modelFilter.filter._id,
-              parentId: model.modelNo,
-              modelFilter: modelFilter.filter.serviceName,
-              modelSubFilter: modelFilter.subFilter.name,
-              enabled: modelFilter.enabled
-            });
-          });
-        });
-      });
+      const preViewRes = data.map(product => ({
+        id: product._id,
+        imgProduct: product.productUrlImg[0],
+        nameProduct: product.nameProduct,
+        numberProduct: product.itemNo,
+        categoryProduct: product.childCategory.name,
+        priceProduct: Math.min(...product.model.map(i => i.currentPrice)),
+        quantityProduct:
+          product.model.length > 1
+            ? product.model.reduce((prev, curr) => prev.quantity + curr.quantity)
+            : product.model[0].quantity,
+        enabled: product.enabled
+      }));
 
       this.setState({
         data: preViewRes
       });
     } catch (err) {
       this.setState({
-        sendDataStatus: 'error'
-        // sendDataMessage: err.response.data.message
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
       });
     }
   };
@@ -224,60 +128,30 @@ export default class Products extends Component {
   }
 
   onSelectDelete = (event, delData) => {
-    // try {
-    //   delData.forEach(async item => {
-    //     let nameItem = Object.keys(item);
-    //     if (nameItem.includes('titleCategory')) {
-    //       await AdminProductsAPI.deleteRootCategory(item.id);
-    //       this.setState({
-    //         sendDataStatus: 'success',
-    //         sendDataMessage: `${item.titleCategory} has been remove!`
-    //       });
-    //     } else if (nameItem.includes('titleSubCategory')) {
-    //       await AdminProductsAPI.deleteSubCategory(item.id);
-    //       this.setState({
-    //         sendDataStatus: 'success',
-    //         sendDataMessage: `${item.titleSubCategory} filter has been remove!`
-    //       });
-    //     } else if (nameItem.includes('titleFilter')) {
-    //       await AdminProductsAPI.deleteFilter(item.id);
-    //       this.setState({
-    //         sendDataStatus: 'success',
-    //         sendDataMessage: `${item.titleFilter} filter has been remove!`
-    //       });
-    //     }
-    //   });
-    //   this.setState(prevState => {
-    //     const data = prevState.data.filter(i => !delData.includes(i));
-    //     return { ...prevState, data };
-    //   });
-    // } catch (err) {
-    //   this.setState({
-    //     sendDataStatus: 'error',
-    //     sendDataMessage: err.response.data.message
-    //   });
-    // }
+    try {
+      delData.forEach(async i => {
+        await AdminProductsAPI.deleteProducts(i.id);
+      });
+
+      this.setState(prevState => {
+        const data = prevState.data.filter(i => !delData.includes(i));
+        return {
+          ...prevState,
+          data,
+          sendDataStatus: 'success',
+          sendDataMessage: `${delData.map(i => i.nameProduct).toString()} has been remove!`
+        };
+      });
+    } catch (err) {
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
+    }
   };
 
   onRowClick = (evt, selectedRow) => {
-    // let id = '';
-    // if (selectedRow.parentId) {
-    //   this.state.data.forEach(i => {
-    //     if (i.parentId) {
-    //       this.state.data.forEach(k => {
-    //         if (k.parentId) {
-    //         } else {
-    //           id = k.id;
-    //         }
-    //       });
-    //     } else {
-    //       id = i.id;
-    //     }
-    //   });
-    // } else {
-    //   id = selectedRow.id;
-    // }
-    // this.setState({ clickId: id });
+    this.setState({ clickId: selectedRow.id });
   };
 
   onRefreshData = () => {
@@ -305,11 +179,10 @@ export default class Products extends Component {
           title="Products"
           columns={columns}
           data={data}
-          parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
           options={{
             selection: true,
             exportButton: true,
-            actionsColumnIdex: -1,
+
             rowStyle: rowData => ({
               backgroundColor: rowData.enabled ? '#FFF' : '#EEEF'
             }),

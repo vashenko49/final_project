@@ -2,37 +2,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import AdminFiltersAPI from '../../services/AdminFiltersAPI';
+import AdminProductsAPI from '../../services/AdminProductsAPI';
 
-import FiltersDetailForm from './FiltersDetailForm';
 import SnackBars from '../common/admin-panel/SnackBars';
+import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { withStyles } from '@material-ui/core/styles';
-import AdminProductAPI from '../../services/AdminProductsAPI';
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`
+  };
+}
 
 const styles = theme => ({
   root: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2, 0)
   }
 });
 
-class FiltersDetail extends Component {
+class ProductsDetail extends Component {
   state = {
-    title: { val: '', error: false },
-    serviceName: { val: '', error: false },
-    subFilters: { val: [], error: false },
+    tabValue: 0,
     typeForm: 'create',
     idUpdate: null,
-    enabledFilter: true,
     sendDataStatus: 'success',
     sendDataMessage: ''
+  };
+
+  onChangeTabValue = (e, newValue) => {
+    this.setState({ tabValue: newValue });
   };
 
   onChangeValue = (name, val) => {
@@ -82,19 +93,19 @@ class FiltersDetail extends Component {
       this.setState({ typeForm: 'update' });
 
       try {
-        const res = await AdminProductAPI.getProductsById(id);
+        const { data } = await AdminProductsAPI.getProductsById(id);
 
         this.setState({
-          title: { val: res.data.type, error: false },
-          serviceName: { val: res.data.serviceName, error: false },
-          subFilters: { val: res.data._idSubFilters.map(i => i.name), error: false },
-          idUpdate: res.data._id,
-          enabledFilter: res.data.enabled
+          // title: { val: res.data.type, error: false },
+          // serviceName: { val: res.data.serviceName, error: false },
+          // subFilters: { val: res.data._idSubFilters.map(i => i.name), error: false },
+          // idUpdate: res.data._id,
+          // enabledFilter: res.data.enabled
         });
       } catch (err) {
         this.setState({
-          sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataStatus: 'error'
+          // sendDataMessage: err.response.data.message
         });
       }
     }
@@ -102,7 +113,7 @@ class FiltersDetail extends Component {
 
   render() {
     const { classes } = this.props;
-    const { title, serviceName, subFilters, sendDataStatus, sendDataMessage } = this.state;
+    const { sendDataStatus, sendDataMessage } = this.state;
 
     return (
       <Container maxWidth="md">
@@ -113,23 +124,37 @@ class FiltersDetail extends Component {
           >
             <Typography component="span">
               <Box fontWeight={500} component="span" fontFamily="Monospace" fontSize="h7.fontSize">
-                Filters
+                Products
               </Box>
             </Typography>
           </Button>
-          <FiltersDetailForm
-            title={title.val}
-            titleError={title.error}
-            serviceName={serviceName.val}
-            serviceNameError={serviceName.error}
-            subFilters={subFilters.val}
-            subFiltersError={subFilters.error}
-            onChangeValue={this.onChangeValue}
-            onSubmitForm={this.onSubmitForm}
-            onSubmitFormDisabled={
-              !(title.val.length && serviceName.val.length && subFilters.val.length)
-            }
-          />
+
+          <Tabs
+            value={this.state.tabValue}
+            onChange={this.onChangeTabValue}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            centered
+          >
+            <Tab label="Basic Info" {...a11yProps(0)} />
+            <Tab label="Main Images" {...a11yProps(0)} />
+            <Tab label="Image for filters" {...a11yProps(1)} />
+            <Tab label="Models" {...a11yProps(2)} />
+          </Tabs>
+
+          <Box p={3}>
+            {this.state.tabValue === 0 ? (
+              <ProductsDetailBasicInfo />
+            ) : this.state.tabValue === 1 ? (
+              'ONE'
+            ) : this.state.tabValue === 2 ? (
+              'TWO'
+            ) : this.state.tabValue === 3 ? (
+              'THREE'
+            ) : null}
+          </Box>
+
           <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
         </Paper>
       </Container>
@@ -137,10 +162,10 @@ class FiltersDetail extends Component {
   }
 }
 
-FiltersDetail.propTypes = {
+ProductsDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-FiltersDetail.defaultProps = {};
+ProductsDetail.defaultProps = {};
 
-export default withStyles(styles)(FiltersDetail);
+export default withStyles(styles)(ProductsDetail);
