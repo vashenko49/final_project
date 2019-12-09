@@ -355,7 +355,12 @@ exports.deleteModelProduct = async (req, res) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    let products = await Product.find();
+    let products = await Product.find()
+      .populate('_idChildCategory')
+      .populate('filters.filter')
+      .populate('filters.subFilter')
+      .populate('model.filters.filter')
+      .populate('model.filters.subFilter');
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
