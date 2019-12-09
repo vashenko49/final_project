@@ -111,7 +111,7 @@ exports.updateProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const { _idProduct, warning, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory } = req.body;
+    const { _idProduct, warning,htmlPage,filterImg,isBigImg, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory } = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -176,8 +176,11 @@ exports.updateProduct = async (req, res, next) => {
     product.description = description ? description : product.description;
     product.productUrlImg = _.isArray(productUrlImg) ? productUrlImg : product.productUrlImg;
     product.nameProduct = _.isString(nameProduct) ? nameProduct : product.nameProduct;
+    product.htmlPage = _.isString(htmlPage) ? htmlPage : product.htmlPage;
     product._idChildCategory = _.isString(_idChildCategory) ? _idChildCategory : product._idChildCategory;
     product.warning = _.isArray(warning) ? warning : product.warning;
+    product.filterImg = _.isArray(filterImg) ? filterImg : product.filterImg;
+    product.isBigImg = _.isBoolean(isBigImg) ? isBigImg : product.isBigImg;
 
 
     await product.save();
@@ -410,18 +413,105 @@ exports.searchProducts = async (req, res, next) => {
   }
 };
 
-
 exports.getProductsFilterParams = async (req, res, next) => {
   try {
-    let {_idChildCatalog, _idSubFilters} = req.query;
-    _idSubFilters = _idSubFilters.split(',');
-    console.log(_idSubFilters);
-    console.log(_idChildCatalog);
-    res.status(200).send('sdsdsdf')
+    let {subfilters} = req.body;
 
+    subfilters = subfilters.map(element=>{
+      return mongoose.Types.ObjectId(element);
+    });
+
+    const Products = await Product.find({
+      $and:[
+        {
+          "filters.subFilter":{$in:subfilters}
+        },
+        {
+          "model.filters.subFilter":{$in:subfilters}
+        }
+      ]
+    });
+
+    res.status(200).json(Products);
   } catch (e) {
     res.status(500).json({
       message: 'Server Error!'
     });
+  }
+};
+
+exports.activateOrDeactivateProduct = async (req, res) => {
+  try {
+    const {_idProduct, status} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idProduct)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idProduct}`
+      })
+    }
+
+    let product = await Product.findById(_idProduct);
+
+    if (!product) {
+      return res.status(400).json({
+        message: `Filter with id ${product} is not found`
+      })
+    }
+
+    product.enabled = status;
+
+    product = await product.save();
+
+    res.status(200).json(product);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
+  }
+};
+
+exports.activateOrDeactivateProductModel = async (req, res) => {
+  try {
+    const {_idProduct, status, modelNo} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idProduct)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idProduct}`
+      })
+    }
+
+    let product = await Product.findById(_idProduct);
+
+    if (!product) {
+      return res.status(400).json({
+        message: `Filter with id ${product} is not found`
+      })
+    }
+
+    product.model.forEach((element, index)=>{
+      if(element.modelNo === modelNo){
+        product.model[index].enabled = status;
+      }
+    });
+
+    product = await product.save();
+
+    res.status(200).json(product);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
+    })
   }
 };

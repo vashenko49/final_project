@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const {check} = require('express-validator');
 
 //Import controllers
 const {
@@ -13,13 +14,36 @@ const {
   confirmCustomer,
   forgotPassword,
   updatePasswordAfterConfirm,
-  confirmForgotCustomer
+  confirmForgotCustomer,
+  checkLoginOrEmail
 } = require("../controllers/customers");
 
 // @route   POST /customer
 // @desc    Register customer
 // @access  Public
-router.post("/", createCustomer);
+router.post(
+  "/",
+  [
+    check('firstName','firstName is require')
+      .not()
+      .isEmpty(),
+    check('lastName','lastName is require')
+      .not()
+      .isEmpty(),
+    check('login','login is require')
+      .not()
+      .isEmpty(),
+    check('email','email is require')
+      .not()
+      .isEmpty(),
+    check('password','password is require')
+      .not()
+      .isEmpty(),
+    check('gender','gender is require')
+      .not()
+      .isEmpty(),
+  ],
+  createCustomer);
 
 
 // @route   POST /customer/confirm
@@ -28,10 +52,24 @@ router.post("/", createCustomer);
 router.get('/confirm/:emailtoken', confirmCustomer);
 
 
+// @route   POST /customer/check
+// @desc    confirm Customer
+// @access  Public
+router.post('/check', checkLoginOrEmail);
+
 // @route   POST /customer/login
 // @desc    Login Customer / Returning JWT Token
 // @access  Public
-router.post("/login", loginCustomer);
+router.post("/login",
+  [
+    check('email','email is require')
+      .not()
+      .isEmpty(),
+    check('password','password is require')
+      .not()
+      .isEmpty(),
+  ],
+  loginCustomer);
 
 // @route   POST /customer/google
 // @desc    Login Customer or SignUp / Returning JWT Token
@@ -49,6 +87,7 @@ router.post("/facebook",
   passport.authenticate('facebook-local', {session: false}),
   createCustomerSocialNetwork
 );
+
 
 // @route   POST /customer/github
 // @desc    Login Customer or signUp / Returning JWT Token
@@ -90,6 +129,7 @@ router.put(
 // @access  Private
 router.post(
   "/forgotpassword",
+  check('loginOrEmail', 'loginOrEmail is require'),
   forgotPassword
 );
 

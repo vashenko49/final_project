@@ -15,7 +15,9 @@ const {
   getProductById,
   getProductsFilterParams,
   searchProductsHeader,
-  searchProducts
+  searchProducts,
+  activateOrDeactivateProduct,
+  activateOrDeactivateProductModel
 } = require("../controllers/products");
 
 // @route   POST /products
@@ -65,6 +67,22 @@ router.put(
   updateProduct
 );
 
+// @route   PUT /products/activateordeactivate
+// @desc    activate or deactivate existing product
+// @access  Private
+router.put(
+  '/activateordeactivate',
+  [
+    check('_idProduct', '_idProduct is require')
+      .not()
+      .isEmpty(),
+    check('status','status is require')
+      .isBoolean()
+  ],
+  activateOrDeactivateProduct
+);
+
+
 // @route   PUT /products/model
 // @desc    Update existing product
 // @access  Private
@@ -80,6 +98,25 @@ router.put(
   updateModelForProduct
 );
 
+
+// @route   PUT /products/model/activateordeactivate
+// @desc    activate or deactivate existing product
+// @access  Private
+router.put(
+  '/model/activateordeactivate',
+  [
+    check('_idProduct', '_idProduct is require')
+      .not()
+      .isEmpty(),
+    check('modelNo','modelNo is require')
+      .not()
+      .isEmpty(),
+    check('status','status is require')
+      .isBoolean()
+  ],
+  activateOrDeactivateProductModel
+);
+
 // @route   GET /products/searchheader/:searchheader
 // @desc    search for header. give 5 products
 // @access  Public
@@ -90,7 +127,7 @@ router.get('/searchheader/:searchheader',
 // @route   GET /products/filter
 // @desc    Search products
 // @access  Public
-router.get('/filter',
+router.post('/filter',
   getProductsFilterParams
 );
 

@@ -11,7 +11,7 @@ const initState = {
 
 export default function(state = initState, action) {
   switch (action.type) {
-    case PRODUCTS.GET_API_REQUEST:
+    case PRODUCTS.GET_API_PRODUCTS_REQUEST:
       return {
         ...state,
         ...{
@@ -19,7 +19,7 @@ export default function(state = initState, action) {
         }
       };
 
-    case PRODUCTS.GET_API_SUCCEEDED:
+    case PRODUCTS.GET_API_PRODUCTS_SUCCEEDED:
       return {
         ...state,
         ...{
@@ -28,7 +28,7 @@ export default function(state = initState, action) {
         }
       };
 
-    case PRODUCTS.GET_API_FAILED:
+    case PRODUCTS.GET_API_PRODUCTS_FAILED:
       return {
         ...state,
         ...{

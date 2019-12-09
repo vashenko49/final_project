@@ -31,13 +31,15 @@ exports.createFilter = async (req, res) => {
       })
     }
 
+
     if (filter._idSubFilters) {
       filter._idSubFilters = await commonFilterOrSubFilter.sortingSubFilter(filter);
     }
 
+
     let newFilter = new Filter(filter);
 
-    await newFilter.save();
+    //await newFilter.save();
     res.status(200).json(newFilter);
 
   } catch (err) {
@@ -114,7 +116,7 @@ exports.updateFilter = async (req, res) => {
 
     if (!filter) {
       return res.status(400).json({
-        message: `Filter with id ${req.params.id} is not found`
+        message: `Filter with id ${newDataFilter._id} is not found`
       })
     }
 
@@ -131,6 +133,42 @@ exports.updateFilter = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: `Error happened on server: ${err}`
+    })
+  }
+};
+
+exports.activateOrDeactivateFilter = async (req, res) => {
+  try {
+    const {_idFilter, status} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idFilter)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idFilter}`
+      })
+    }
+
+    let filter = await Filter.findById(_idFilter);
+
+    if (!filter) {
+      return res.status(400).json({
+        message: `Filter with id ${filter} is not found`
+      })
+    }
+
+    filter.enabled = status;
+
+    filter = await filter.save();
+
+    res.status(200).json(filter);
+
+
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
     })
   }
 };
@@ -210,6 +248,10 @@ exports.removeManyFilters = async (req, res) => {
 };
 
 
+
+
+
+/////////////////////////////
 exports.createSubFilter = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -342,7 +384,7 @@ exports.deleteSubFilter = async (req, res) => {
       return res.status(400).json(validate);
     }
 
-    //await subFilter.delete();
+    await subFilter.delete();
     res.status(200).json({msg: 'SubFilter deleted'})
   } catch (err) {
     res.status(500).json({

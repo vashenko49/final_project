@@ -25,7 +25,11 @@ const {
   getActiveChildCategoryForClientAnySubfilter,
   getHierarchyRootChildCatalogFilter,
   createRootChildCatalogAndAddFilterId,
-  updateRootChildCatalogAndAddFilterId
+  updateRootChildCatalogAndAddFilterId,
+  getHierarchyRootChildCatalogFilterByRootCatalogID,
+  activateOrDeactivateROOTCatalog,
+  activateOrDeactivateChildCatalog,
+  deleteChildCatalogFilter
 } = require("../controllers/catalog");
 
 // @route   GET /catalog/hierarchy
@@ -36,18 +40,23 @@ router.get(
   getHierarchyRootChildCatalogFilter
 );
 
+// @route   GET /catalog/hierarchy/one
+// @desc    GET a hierarchical look
+// @access  Public
+router.get(
+  '/hierarchy/one/:_idRootCatalog',
+  getHierarchyRootChildCatalogFilterByRootCatalogID
+);
+
 // @route   POST /catalog/hierarchy
 // @desc    create root, child filters and add filter at the same time
 // @access  Public
 router.post(
-  '/hierarchy',[
-    check('nameRootCatalog','nameRootCatalog is require')
+  '/hierarchy', [
+    check('nameRootCatalog', 'nameRootCatalog is require')
       .not()
       .isEmpty(),
-    check('nameChildCatalog','nameChildCatalog is require')
-      .not()
-      .isEmpty(),
-    check('filters','filters id require')
+    check('newchildCatalogs', 'childCatalog id require')
       .isArray()
   ],
   createRootChildCatalogAndAddFilterId
@@ -62,8 +71,6 @@ router.put(
 );
 
 
-
-
 // @route   POST /catalog/root
 // @desc    Create new root category
 // @access  Private
@@ -74,6 +81,21 @@ router.post(
       .isEmpty()
   ],
   addROOTCatalog
+);
+
+// @route   PUT /catalog/root/activateordeactivate
+// @desc    activate or deactivate existing root category
+// @access  Private
+router.put(
+  '/root/activateordeactivate',
+  [
+    check('_idRootCatalog', '_idRootCatalog')
+      .not()
+      .isEmpty(),
+    check('status','status is require')
+      .isBoolean()
+  ],
+  activateOrDeactivateROOTCatalog
 );
 
 // @route   PUT /catalog/root
@@ -167,12 +189,33 @@ router.put(
   updateChildCatalog
 );
 
+// @route   PUT /catalog/child/activateordeactivate
+// @desc    activate or deactivate existing child category
+// @access  Private
+router.put(
+  '/child/activateordeactivate',
+  [
+    check('_idChildCatalog', '_idChildCatalog')
+      .not()
+      .isEmpty(),
+    check('status','status is require')
+      .isBoolean()
+  ],
+  activateOrDeactivateChildCatalog
+);
+
+
 // @route   DELETE /catalog/root/:id
 // @desc    Delete existing category
 // @access  Private
 router.delete(
   "/child/:id",
   deleteChildCatalog
+);
+
+router.delete(
+  '/child/filter/:_idChildCatalog/:_idFilter',
+  deleteChildCatalogFilter
 );
 
 // @route   GET /catalog/child/private

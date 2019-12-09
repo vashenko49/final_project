@@ -1,0 +1,30 @@
+@font-face {
+  font-family: 'Varta Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Varta Regular'), url('Varta-Regular.woff') format('woff');
+}
+
+
+@font-face {
+  font-family: 'Varta Light';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Varta Light'), url('Varta-Light.woff') format('woff');
+}
+
+
+@font-face {
+  font-family: 'Varta SemiBold';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Varta SemiBold'), url('Varta-SemiBold.woff') format('woff');
+}
+
+
+@font-face {
+  font-family: 'Varta Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Varta Bold'), url('Varta-Bold.woff') format('woff');
+}
