@@ -24,14 +24,14 @@ export function getFooterLinks() {
   };
 }
 
-export function getFooterLinkPageByCustomId(customId) {
+export function getFooterLinkPageByCustomId(customId, linkGroupId) {
   return async dispatch => {
     dispatch({
       type: FOOTERLINKS.GET_CUSTOMID_API_REQUEST
     });
 
     try {
-      const res = await FooterLinksAPI.getFooterLinkPageByCustomId(customId);
+      const res = await FooterLinksAPI.getFooterLinkPageByCustomId(customId, linkGroupId);
 
       dispatch({
         type: FOOTERLINKS.GET_CUSTOMID_API_SUCCEEDED,

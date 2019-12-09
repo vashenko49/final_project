@@ -11,16 +11,12 @@ import './FooterLinkPage.scss';
 
 class FooterLinkPage extends Component {
   async componentDidMount() {
-    await this.props.footerLinksAction.getFooterLinkPageByCustomId(
-      this.props.match.params.customId
-    );
+    await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId, this.props.id);
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevProps.match.params.customId !== this.props.match.params.customId) {
-      await this.props.footerLinksAction.getFooterLinkPageByCustomId(
-        this.props.match.params.customId
-      );
+      await this.props.footerLinksAction.getFooterLinkPageByCustomId(this.props.match.params.customId, this.props.id);
     }
   }
 
@@ -29,21 +25,26 @@ class FooterLinkPage extends Component {
 
     let content = null;
 
-    if (error.status === true) {
+    if(error.status === true) {
       content = error.msg;
     } else {
-      content = article.htmlContent;
+      content = article;
     }
 
-    return <div className="footer-link-page">{parse(`${content}`)}</div>;
+    return (
+      <div className="footer-link-page">
+        {parse(`${content}`)}
+      </div>
+    )
   }
 }
 
 function mapStateToProps(state) {
   return {
     article: state.footerLinks.articles.article,
-    error: state.footerLinks.articles.error
-  };
+    error: state.footerLinks.articles.error,
+    id: state.footerLinksId.id
+  }
 }
 
 function mapDispatchToProps(dispatch) {
