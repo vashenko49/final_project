@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -16,7 +16,7 @@ const styles = theme => ({
   }
 });
 
-const ProductsDetailBasicInfo = classes => {
+const ProductsDetailBasicInfo = ({ classes, dataCategories, onChangeValue, category }) => {
   return (
     <form autoComplete="off" className={classes.form}>
       <FormControl margin="normal" fullWidth>
@@ -48,9 +48,26 @@ const ProductsDetailBasicInfo = classes => {
       <FormControl margin="normal" fullWidth>
         <Autocomplete
           id="categories"
-          options={[1, 2, 3]}
-          getOptionLabel={option => option}
+          options={dataCategories}
+          value={category}
+          groupBy={option => option.parent.name}
+          getOptionLabel={option => option.name}
+          onChange={(e, val) => onChangeValue('category', val)}
+          renderInput={params => (
+            <TextField {...params} variant="outlined" label="Categories" fullWidth />
+          )}
+        />
+      </FormControl>
+
+      <FormControl margin="normal" fullWidth>
+        <Autocomplete
+          multiple
+          id="filters"
+          options={[1, 2, 3, 4, 5]}
+          // getOptionLabel={option => option.serviceName}
           // defaultValue={filtersData.filter(i => item.filters.map(i => i.id).includes(i.id))}
+          disableCloseOnSelect
+          filterSelectedOptions
           // onChange={(e, val) => onChangeValue('filters', val, item.id)}
           renderTags={(value, getTagProps) =>
             value.map((option, index) => (
@@ -68,8 +85,8 @@ const ProductsDetailBasicInfo = classes => {
               // error={item.filtersError}
               {...params}
               variant="outlined"
-              label="Categories"
-              placeholder="Choose category"
+              label="Filters"
+              placeholder="Choose filter"
               fullWidth
             />
           )}

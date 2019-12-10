@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import AdminFiltersAPI from '../../services/AdminFiltersAPI';
-import AdminProductsAPI from '../../services/AdminProductsAPI';
+import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
+// import AdminProductsAPI from '../../services/AdminProductsAPI';
 
 import SnackBars from '../common/admin-panel/SnackBars';
 import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
@@ -35,6 +35,8 @@ const styles = theme => ({
 
 class ProductsDetail extends Component {
   state = {
+    dataCategories: [],
+    category: null,
     tabValue: 0,
     typeForm: 'create',
     idUpdate: null,
@@ -47,7 +49,7 @@ class ProductsDetail extends Component {
   };
 
   onChangeValue = (name, val) => {
-    this.setState({ [name]: { val, error: !val.length } });
+    this.setState({ [name]: val });
   };
 
   onSubmitForm = async () => {
@@ -86,14 +88,31 @@ class ProductsDetail extends Component {
     }
   };
 
+  async getCategories() {
+    const { data } = await AdminCategoriesAPI.getCategories();
+
+    const newData = [];
+
+    data.forEach(main => {
+      main.childCatalog.forEach(sub => {
+        sub.parent = main;
+        newData.push(sub);
+      });
+    });
+    // this.setState({ categories: [].concat(...data.map(i => i.childCatalog), ...data) });
+    this.setState({ dataCategories: newData });
+  }
+
   async componentDidMount() {
     const { id } = this.props.match.params;
+
+    this.getCategories();
 
     if (id) {
       this.setState({ typeForm: 'update' });
 
       try {
-        const { data } = await AdminProductsAPI.getProductsById(id);
+        // const { data } = await AdminProductsAPI.getProductsById(id);
 
         this.setState({
           // title: { val: res.data.type, error: false },
@@ -113,7 +132,7 @@ class ProductsDetail extends Component {
 
   render() {
     const { classes } = this.props;
-    const { sendDataStatus, sendDataMessage } = this.state;
+    const { sendDataStatus, sendDataMessage, dataCategories, category } = this.state;
 
     return (
       <Container maxWidth="md">
@@ -145,7 +164,11 @@ class ProductsDetail extends Component {
 
           <Box p={3}>
             {this.state.tabValue === 0 ? (
-              <ProductsDetailBasicInfo />
+              <ProductsDetailBasicInfo
+                onChangeValue={this.onChangeValue}
+                dataCategories={dataCategories}
+                category={category}
+              />
             ) : this.state.tabValue === 1 ? (
               'ONE'
             ) : this.state.tabValue === 2 ? (

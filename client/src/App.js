@@ -33,7 +33,7 @@ class App extends Component {
             <Route exact path="/product/:id" component={ProductPageF} />
             <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
-          {/* <Footer /> */}
+          <Footer />
         </Router>
       </Provider>
     );
