@@ -17,7 +17,8 @@ import './font/Roboto/Roboto-font.css';
 import './App.scss';
 import Authorization from './components/Authorization/Authorization';
 import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
-import UploadMultipleImg from './components/UploadMultipleImg';
+import Upda from './components/Example/UpdateProduct';
+import CreateProducts from './components/Example/CreateProducts';
 
 const store = configureStore();
 
@@ -31,7 +32,7 @@ class App extends Component {
           </li>
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
-            <Route exact path="/testLoadFile" component={UploadMultipleImg} />
+            <Route exact path="/testLoadFile" component={Upda} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/main-page" component={MainPage} />
