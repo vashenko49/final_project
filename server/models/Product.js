@@ -6,11 +6,11 @@ const ProductSchema = new Schema(
   {
     itemNo: {
       type: String,
-      default: uuid.generate()
+      required: true
     },
     nameProduct: {
       type: String,
-      required: true
+
     },
     warning: [{
       type: String

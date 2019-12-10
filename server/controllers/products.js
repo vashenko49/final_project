@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const commonProduct = require('../common/commonProduct ');
 const Product = require("../models/Product");
 const ChildCatalog = require('../models/ChildCatalog');
-
+const uuid = require('order-id')(process.env.orderIdSecret);
 
 exports.addProduct = async (req, res, next) => {
   try {
@@ -17,23 +17,31 @@ exports.addProduct = async (req, res, next) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    let {_idChildCategory, nameProduct, filterImg} = req.body;
-    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(nameProduct)}`;
+    let itemNo = uuid.generate();
+    let {_idChildCategory} = req.body;
+    let {productUrlImg, filterImg} = req.files;
+    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(itemNo)}`;
 
 
-    let productUrlImg = [];
-
-    if (_.isArray(req.files.productUrlImg) && req.files.productUrlImg.length > 0) {
-      productUrlImg = await customCloudinaryInstrument.uploadArrayImgToCloudinary(req.files.productUrlImg, folder);
+    if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
+      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(productUrlImg, folder);
+      urlProductOnCloudinary.forEach(element => {
+        _.set(req.body, element.field, element.url);
+      })
     }
 
-
-    filterImg = await Promise.all(filterImg.map(async (element, index) => {
-      if (_.isArray(req.files.filterImg[index].urlImg) && req.files.filterImg[index].urlImg.length > 0) {
-        element.urlImg = await customCloudinaryInstrument.uploadArrayImgToCloudinary(req.files.filterImg[index].urlImg, folder);
+    if (_.isArray(filterImg) && filterImg.length > 0) {
+      for (let i = 0; i < filterImg.length; i++) {
+        if (_.isArray(filterImg[i].urlImg) && filterImg[i].urlImg.length > 0) {
+          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(filterImg[i].urlImg, folder);
+          urlProductOnCloudinary.forEach(element => {
+            if (element.field) {
+              _.set(req.body, element.field, element.url);
+            }
+          })
+        }
       }
-      return element;
-    }));
+    }
 
 
     let product = _.cloneDeepWith(req.body, (value => {
@@ -65,8 +73,7 @@ exports.addProduct = async (req, res, next) => {
     commonProduct.addNewSubFilterToCategory(filter, childCatalog);
     await childCatalog.save();
 
-    product.productUrlImg = productUrlImg;
-    product.filterImg = filterImg;
+    product.itemNo = itemNo;
 
     let newProduct = new Product(product);
     await newProduct.save();
@@ -138,7 +145,7 @@ exports.updateProduct = async (req, res, next) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {_idProduct, warning, htmlPage, filterImg, isBigImg, enabled, model, filters, description, productUrlImg, nameProduct, _idChildCategory} = req.body;
+    const {_idProduct, warning, htmlPage, isBigImg, enabled, model, filters, description, nameProduct, _idChildCategory} = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -147,6 +154,46 @@ exports.updateProduct = async (req, res, next) => {
         message: "Product not found"
       })
     }
+
+    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(product.itemNo)}`;
+    let {productUrlImg, filterImg} = req.files;
+
+
+    if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
+      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(productUrlImg, folder);
+      urlProductOnCloudinary.forEach(element => {
+        _.set(req.body, element.field, element.url);
+      })
+    }
+
+    if (_.isArray(filterImg) && filterImg.length > 0) {
+      for (let i = 0; i < filterImg.length; i++) {
+        if (_.isArray(filterImg[i].urlImg) && filterImg[i].urlImg.length > 0) {
+          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(filterImg[i].urlImg, folder);
+          urlProductOnCloudinary.forEach(element => {
+            if (element.field) {
+              _.set(req.body, element.field, element.url);
+            }
+          })
+        }
+      }
+    }
+
+
+    let oldImgProduct = product.productUrlImg.filter(commonProduct.comparerImg(req.body.productUrlImg));
+
+    product.filterImg.forEach(oldElement => {
+      req.body.filterImg.forEach(newElement => {
+        if (oldElement._idSubFilters.toString() === newElement._idSubFilters.toString()) {
+          oldImgProduct.push(...oldElement.urlImg.filter(commonProduct.comparerImg(newElement.urlImg)))
+        }
+      });
+    });
+
+
+    //удаляем старые фотки, которые не используем
+    await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(oldImgProduct);
+
 
     if (_.isArray(filters) || _.isArray(model)) {
 
@@ -182,6 +229,7 @@ exports.updateProduct = async (req, res, next) => {
       });
 
       let onlyNewFilter = newFilter.filter(commonProduct.comparer(oldFilter));
+
       let onlyOldFilter = oldFilter.filter(commonProduct.comparer(newFilter));
 
       let childCatalog = await ChildCatalog.findById(product._idChildCategory);
@@ -194,25 +242,27 @@ exports.updateProduct = async (req, res, next) => {
 
       await product.save();
       await childCatalog.save();
+
       //контроль не используемых подфильтров в категории при удалении
       await commonProduct.removeSubFilterFromChildCategoryCheckProduct(onlyOldFilter, product._idChildCategory);
     }
 
 
     product.enabled = _.isBoolean(enabled) ? enabled : product.enabled;
-    product.description = description ? description : product.description;
-    product.productUrlImg = _.isArray(productUrlImg) ? productUrlImg : product.productUrlImg;
+    product.description = _.isString(description) ? description : product.description;
     product.nameProduct = _.isString(nameProduct) ? nameProduct : product.nameProduct;
     product.htmlPage = _.isString(htmlPage) ? htmlPage : product.htmlPage;
     product._idChildCategory = _.isString(_idChildCategory) ? _idChildCategory : product._idChildCategory;
     product.warning = _.isArray(warning) ? warning : product.warning;
-    product.filterImg = _.isArray(filterImg) ? filterImg : product.filterImg;
+    product.productUrlImg = _.isArray(req.body.productUrlImg) ? req.body.productUrlImg : product.productUrlImg;
+    product.filterImg = _.isArray(req.body.filterImg) ? req.body.filterImg : product.filterImg;
     product.isBigImg = _.isBoolean(isBigImg) ? isBigImg : product.isBigImg;
 
 
     await product.save();
     res.status(200).json(product);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })
@@ -324,6 +374,12 @@ exports.deleteProduct = async (req, res, next) => {
     //контроль не используемых подфильтров в категории
     await commonProduct.removeSubFilterFromChildCategoryCheckProduct(filter, product._idChildCategory);
 
+    //удаляем фотки товара
+    await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(product.productUrlImg);
+    for (let i = 0; i < product.filterImg.length; i++) {
+      await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(product.filterImg[i].urlImg);
+    }
+
     await product.delete();
     res.status(200).json({msg: 'Product deleted'})
   } catch (err) {
@@ -383,11 +439,27 @@ exports.deleteModelProduct = async (req, res) => {
 exports.getProducts = async (req, res, next) => {
   try {
     let products = await Product.find()
-      .populate('_idChildCategory')
-      .populate('filters.filter')
-      .populate('filters.subFilter')
-      .populate('model.filters.filter')
-      .populate('model.filters.subFilter');
+      .populate({
+        path: '_idChildCategory',
+        select: '-filters',
+        populate: {
+          path: 'parentId'
+        }
+      })
+      .populate({
+        path: 'filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'filters.subFilter',
+      })
+      .populate({
+        path: 'model.filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'model.filters.subFilter',
+      });
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -400,11 +472,27 @@ exports.getProductById = async (req, res, next) => {
   try {
     const {id} = req.params;
     let product = await Product.findById(id)
-      .populate('_idChildCategory')
-      .populate('filters.filter')
-      .populate('filters.subFilter')
-      .populate('model.filters.filter')
-      .populate('model.filters.subFilter');
+      .populate({
+        path: '_idChildCategory',
+        select: '-filters',
+        populate: {
+          path: 'parentId'
+        }
+      })
+      .populate({
+        path: 'filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'filters.subFilter',
+      })
+      .populate({
+        path: 'model.filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'model.filters.subFilter',
+      });
 
 
     if (!product) {
@@ -424,7 +512,29 @@ exports.getProductById = async (req, res, next) => {
 exports.searchProductsHeader = async (req, res, next) => {
   try {
     const {searchheader} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}}).limit(5);
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}})
+      .limit(5)
+      .populate({
+        path: '_idChildCategory',
+        select: '-filters',
+        populate: {
+          path: 'parentId'
+        }
+      })
+      .populate({
+        path: 'filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'filters.subFilter',
+      })
+      .populate({
+        path: 'model.filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'model.filters.subFilter',
+      });
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -436,7 +546,28 @@ exports.searchProductsHeader = async (req, res, next) => {
 exports.searchProducts = async (req, res, next) => {
   try {
     const {search} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}});
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}})
+      .populate({
+        path: '_idChildCategory',
+        select: '-filters',
+        populate: {
+          path: 'parentId'
+        }
+      })
+      .populate({
+        path: 'filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'filters.subFilter',
+      })
+      .populate({
+        path: 'model.filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'model.filters.subFilter',
+      });
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -462,7 +593,28 @@ exports.getProductsFilterParams = async (req, res, next) => {
           "model.filters.subFilter": {$in: subfilters}
         }
       ]
-    });
+    })
+      .populate({
+        path: '_idChildCategory',
+        select: '-filters',
+        populate: {
+          path: 'parentId'
+        }
+      })
+      .populate({
+        path: 'filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'filters.subFilter',
+      })
+      .populate({
+        path: 'model.filters.filter',
+        select: 'enabled _id type serviceName'
+      })
+      .populate({
+        path: 'model.filters.subFilter',
+      });
 
     res.status(200).json(Products);
   } catch (e) {
