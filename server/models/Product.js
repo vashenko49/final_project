@@ -10,6 +10,7 @@ const ProductSchema = new Schema(
     },
     nameProduct: {
       type: String,
+      required: true
 
     },
     warning: [{

@@ -176,7 +176,19 @@ class SignUp extends Component {
           />
         </Box>
         <Box>
-          <input multiple onChange={this.handleChangeImg} name="userAvatar" type="file" />
+          <input
+            multiple
+            className="upload-avatar"
+            onChange={this.handleChangeImg}
+            id="raised-button-file"
+            name="userAvatar"
+            type="file"
+          />
+          <label htmlFor="raised-button-file">
+            <Button variant="contained" color="primary" component="span">
+              Upload your avatar
+            </Button>
+          </label>
         </Box>
         <TextValidator
           type={passwordIsMasked ? 'password' : 'text'}
