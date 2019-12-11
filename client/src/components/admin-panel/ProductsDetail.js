@@ -55,17 +55,26 @@ class ProductsDetail extends Component {
   };
 
   onChangeValue = (name, val) => {
-    this.setState({ [name]: val });
-
     if (name === 'category') {
       this.setFiltersByCategory(val ? val.filters : []);
     }
 
     if (name === 'images') {
-      this.setState({
-        images: [...this.state.images, ...val]
-      });
+      return this.setState(
+        {
+          images: [...this.state.images, ...val.files]
+        },
+        () => (val.value = '') // remove file in input file for add duplicate file after remove
+      );
     }
+
+    this.setState({ [name]: val }); // default
+  };
+
+  onDeleteImg = img => {
+    this.setState({
+      images: this.state.images.filter(i => img !== i)
+    });
   };
 
   onSubmitForm = async () => {
@@ -204,7 +213,11 @@ class ProductsDetail extends Component {
                 description={description}
               />
             ) : this.state.tabValue === 1 ? (
-              <ProductsDetailMainImages onChangeValue={this.onChangeValue} images={images} />
+              <ProductsDetailMainImages
+                onChangeValue={this.onChangeValue}
+                images={images}
+                onDeleteImg={this.onDeleteImg}
+              />
             ) : this.state.tabValue === 2 ? (
               'TWO'
             ) : this.state.tabValue === 3 ? (

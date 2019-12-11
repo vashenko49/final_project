@@ -52,7 +52,7 @@ const styles = theme => ({
   }
 });
 
-const ProductsDetailMainImages = ({ classes, onChangeValue, images }) => {
+const ProductsDetailMainImages = ({ classes, onChangeValue, images, onDeleteImg }) => {
   console.log(images);
   return (
     <form autoComplete="off" className={classes.form}>
@@ -62,7 +62,7 @@ const ProductsDetailMainImages = ({ classes, onChangeValue, images }) => {
         multiple
         type="file"
         className={classes.input}
-        onChange={e => onChangeValue('images', e.currentTarget.files)}
+        onChange={e => onChangeValue('images', e.target)}
       />
       <label htmlFor="images">
         <Button
@@ -77,7 +77,11 @@ const ProductsDetailMainImages = ({ classes, onChangeValue, images }) => {
 
       {images.map((i, index) => (
         <Card className={classes.card} key={index}>
-          <IconButton aria-label="delete" className={classes.btnDelete}>
+          <IconButton
+            aria-label="delete"
+            className={classes.btnDelete}
+            onClick={() => onDeleteImg(i)}
+          >
             <DeleteIcon fontSize="small" />
           </IconButton>
           <CardMedia component="img" className={classes.media} image={URL.createObjectURL(i)} />
