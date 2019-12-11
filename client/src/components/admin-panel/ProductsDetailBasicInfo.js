@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -16,32 +16,41 @@ const styles = theme => ({
   }
 });
 
-const ProductsDetailBasicInfo = ({ classes, dataCategories, onChangeValue, category }) => {
+const ProductsDetailBasicInfo = ({
+  classes,
+  nameProduct,
+  description,
+  dataCategories,
+  onChangeValue,
+  category,
+  dataFilters,
+  mainFilters
+}) => {
   return (
     <form autoComplete="off" className={classes.form}>
       <FormControl margin="normal" fullWidth>
         <TextField
-          // error={titleError}
+          error={!nameProduct}
           required
-          id="name"
+          id="nameProduct"
           label="Name"
           variant="outlined"
-          // value={title}
-          // onChange={e => onChangeValue(e.currentTarget.id, e.currentTarget.value)}
+          value={nameProduct}
+          onChange={e => onChangeValue('nameProduct', e.currentTarget.value)}
         />
       </FormControl>
 
       <FormControl margin="normal" fullWidth>
         <TextField
-          // error={titleError}
+          error={!description}
           required
           multiline
           rows="5"
           id="description"
           label="Description"
           variant="outlined"
-          // value={title}
-          // onChange={e => onChangeValue(e.currentTarget.id, e.currentTarget.value)}
+          value={description}
+          onChange={e => onChangeValue('description', e.currentTarget.value)}
         />
       </FormControl>
 
@@ -49,12 +58,19 @@ const ProductsDetailBasicInfo = ({ classes, dataCategories, onChangeValue, categ
         <Autocomplete
           id="categories"
           options={dataCategories}
-          value={category}
+          defaultValue={category}
           groupBy={option => option.parent.name}
           getOptionLabel={option => option.name}
           onChange={(e, val) => onChangeValue('category', val)}
           renderInput={params => (
-            <TextField {...params} variant="outlined" label="Categories" fullWidth />
+            <TextField
+              {...params}
+              error={!category}
+              variant="outlined"
+              label="Categories"
+              placeholder="Choose category"
+              fullWidth
+            />
           )}
         />
       </FormControl>
@@ -62,19 +78,21 @@ const ProductsDetailBasicInfo = ({ classes, dataCategories, onChangeValue, categ
       <FormControl margin="normal" fullWidth>
         <Autocomplete
           multiple
-          id="filters"
-          options={[1, 2, 3, 4, 5]}
-          // getOptionLabel={option => option.serviceName}
-          // defaultValue={filtersData.filter(i => item.filters.map(i => i.id).includes(i.id))}
-          disableCloseOnSelect
+          id="mainFilters"
+          options={dataFilters}
+          getOptionLabel={option => option.filter.serviceName}
+          defaultValue={mainFilters}
+          // getOptionDisabled={option =>
+          //   !!(mainFilters && mainFilters.find(i => i._id === option._id))
+          // }
           filterSelectedOptions
-          // onChange={(e, val) => onChangeValue('filters', val, item.id)}
+          disableCloseOnSelect
+          onChange={(e, val) => onChangeValue('mainFilters', val)}
           renderTags={(value, getTagProps) =>
             value.map((option, index) => (
               <Chip
                 variant="outlined"
-                // datakey={item.id}
-                // label={option.serviceName}
+                label={option.filter.serviceName}
                 {...getTagProps({ index })}
               />
             ))
@@ -82,7 +100,7 @@ const ProductsDetailBasicInfo = ({ classes, dataCategories, onChangeValue, categ
           renderInput={params => (
             <TextField
               required
-              // error={item.filtersError}
+              error={!mainFilters.length}
               {...params}
               variant="outlined"
               label="Filters"
@@ -94,6 +112,26 @@ const ProductsDetailBasicInfo = ({ classes, dataCategories, onChangeValue, categ
       </FormControl>
     </form>
   );
+};
+
+ProductsDetailBasicInfo.propTypes = {
+  classes: PropTypes.object.isRequired,
+  nameProduct: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  dataCategories: PropTypes.array.isRequired,
+  onChangeValue: PropTypes.func.isRequired,
+  dataFilters: PropTypes.array.isRequired,
+  mainFilters: PropTypes.array.isRequired
+};
+
+ProductsDetailBasicInfo.defaultProps = {
+  classes: {},
+  nameProduct: '',
+  description: '',
+  dataCategories: [],
+  onChangeValue: () => {},
+  dataFilters: [],
+  mainFilters: []
 };
 
 export default withStyles(styles)(ProductsDetailBasicInfo);

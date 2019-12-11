@@ -7,6 +7,7 @@ import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
 
 import SnackBars from '../common/admin-panel/SnackBars';
 import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
+import ProductsDetailMainImages from './ProductsDetailMainImages';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -35,8 +36,13 @@ const styles = theme => ({
 
 class ProductsDetail extends Component {
   state = {
+    nameProduct: '',
+    description: '',
     dataCategories: [],
+    dataFilters: [],
     category: null,
+    mainFilters: [],
+    images: [],
     tabValue: 0,
     typeForm: 'create',
     idUpdate: null,
@@ -50,6 +56,16 @@ class ProductsDetail extends Component {
 
   onChangeValue = (name, val) => {
     this.setState({ [name]: val });
+
+    if (name === 'category') {
+      this.setFiltersByCategory(val ? val.filters : []);
+    }
+
+    if (name === 'images') {
+      this.setState({
+        images: [...this.state.images, ...val]
+      });
+    }
   };
 
   onSubmitForm = async () => {
@@ -88,7 +104,7 @@ class ProductsDetail extends Component {
     }
   };
 
-  async getCategories() {
+  getCategories = async () => {
     const { data } = await AdminCategoriesAPI.getCategories();
 
     const newData = [];
@@ -101,7 +117,11 @@ class ProductsDetail extends Component {
     });
     // this.setState({ categories: [].concat(...data.map(i => i.childCatalog), ...data) });
     this.setState({ dataCategories: newData });
-  }
+  };
+
+  setFiltersByCategory = async filters => {
+    this.setState({ dataFilters: filters, mainFilters: [] });
+  };
 
   async componentDidMount() {
     const { id } = this.props.match.params;
@@ -132,7 +152,17 @@ class ProductsDetail extends Component {
 
   render() {
     const { classes } = this.props;
-    const { sendDataStatus, sendDataMessage, dataCategories, category } = this.state;
+    const {
+      nameProduct,
+      description,
+      sendDataStatus,
+      sendDataMessage,
+      dataCategories,
+      category,
+      dataFilters,
+      mainFilters,
+      images
+    } = this.state;
 
     return (
       <Container maxWidth="md">
@@ -168,9 +198,13 @@ class ProductsDetail extends Component {
                 onChangeValue={this.onChangeValue}
                 dataCategories={dataCategories}
                 category={category}
+                dataFilters={dataFilters}
+                mainFilters={mainFilters}
+                nameProduct={nameProduct}
+                description={description}
               />
             ) : this.state.tabValue === 1 ? (
-              'ONE'
+              <ProductsDetailMainImages onChangeValue={this.onChangeValue} images={images} />
             ) : this.state.tabValue === 2 ? (
               'TWO'
             ) : this.state.tabValue === 3 ? (
