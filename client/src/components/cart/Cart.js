@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { getCurrentItems } from '../../actions/cart';
 
+
 import Item from './Item';
 import Bag from './Bag';
 
@@ -12,20 +13,24 @@ class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      _id: '5de5592bf82b736ff4eb3c08'
+      _id: '5de5592bf82b736ff4eb3c08',
     };
-    this.getCurrentItems = this.props.getCurrentItems.bind(this);
   }
 
   componentDidMount() {
+    debugger
     this.props.getCurrentItems(this.state._id);
   }
 
   render() {
     return (
       <Fragment>
-        <Bag cartInfo={this.props.cart} />
-        <Item cartInfo={this.props.cart} />
+        <Bag 
+          user={this.state._id} 
+          cartInfo={this.props.cart} />
+        <Item 
+          customerId={this.state._id} 
+          cartInfo={this.props.cart}/>
       </Fragment>
     );
   }
@@ -37,7 +42,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    getCurrentItems: bindActionCreators(getCurrentItems, dispatch)
+    getCurrentItems: bindActionCreators(getCurrentItems, dispatch),
   };
 };
 

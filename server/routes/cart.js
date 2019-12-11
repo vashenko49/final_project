@@ -4,16 +4,16 @@ const passport = require("passport");
 
 const { check } = require('express-validator');
 
-const { getCart, updateCart, updateQuantity, deleteProductFromCart } = require("../controllers/cart")
+const { getCart, addNewProduct, updateQuantity, deleteProductFromCart } = require("../controllers/cart")
 
-// @route   GET /cart
+// @route   GET /cart/:id
 // @desc    Get customer cart
 // @access  Private
 router.get(
     "/:id",
     getCart);
 
-// @route   POST /cart
+// @route   POST /cart/:id
 // @desc    Add one product to cart
 // @access  Private
 router.post(
@@ -25,16 +25,13 @@ router.post(
         .not()
         .isEmpty()
         .isInt({ gt: 0 }),
-    updateCart);
+        addNewProduct);
 
-// @route   PUT /cart
+// @route   PUT /cart/:id
 // @desc    Change quantity of product
 // @access  Private
 router.put(
-    "/",
-    check("id", "Id is required")
-        .not()
-        .isEmpty(),
+    "/:id",
     check("productId", "Product id is required")
         .not()
         .isEmpty(),
@@ -44,14 +41,11 @@ router.put(
         .isInt({ gt: 0 }),
     updateQuantity);
 
-// @route   DELETE /cart
+// @route   DELETE /cart/:id
 // @desc    Delete one product from cart
 // @access  Private
 router.delete(
-    "/",
-    check("id", "Id is required")
-        .not()
-        .isEmpty(),
+    "/:id",
     check("productId", "Quantity is required and must be greater then 0")
         .not()
         .isEmpty()

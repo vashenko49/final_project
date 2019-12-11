@@ -51,7 +51,7 @@ class ProductsItem extends Component {
     const { id, title, categories, price, subProduct } = this.props.product;
     const { img, checked } = this.state;
     const { classes } = this.props;
-
+    debugger
     return (
       <Card data-id={id}>
         <Box display="flex" style={{ backgroundColor: '#F5F5F5', padding: '22px 0 25px 20px' }}>
@@ -63,15 +63,15 @@ class ProductsItem extends Component {
               )}
               key={color}
             >
-              <Avatar
-                style={{
-                  backgroundColor: color,
-                  width: 15,
-                  height: 15,
-                  cursor: 'pointer'
-                }}
-                onClick={e => this.handleColor(color, e)}
-              ></Avatar>
+            <Avatar
+              style={{
+                backgroundColor: color,
+                width: 15,
+                height: 15,
+                cursor: 'pointer'
+              }}
+              onClick={e => this.handleColor(color, e)}
+            ></Avatar>
             </Avatar>
           ))}
         </Box>

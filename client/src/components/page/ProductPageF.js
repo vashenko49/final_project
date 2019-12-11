@@ -1,6 +1,8 @@
 import React, { useEffect, Fragment, useState } from 'react';
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { getCurrentProduct } from '../../actions/product';
+import { getCurrentItems ,addNewProduct } from '../../actions/cart'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
@@ -9,12 +11,13 @@ import Rating from '../common/rating/Rating';
 
 import './ProductPage.scss';
 
+
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
     top: 13 + '%',
     left: 33 + '%',
-    width: 32 + '%',
+    width: 39 + '%',
     backgroundColor: theme.palette.background.paper,
     // border: '.6px solid #000',
     boxShadow: theme.shadows[5],
@@ -27,6 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match }) => {
   const {
+    _id,
     nameProduct,
     description,
     itemNo,
@@ -38,7 +42,8 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
 
   useEffect(() => {
     getCurrentProduct(match.params.id);
-  }, [getCurrentProduct, match.params.id]);
+    // eslint-disable-next-line
+  }, [getCurrentProduct]);
 
   const [active, setActive] = useState(false);
 
@@ -126,10 +131,12 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
                   </div>
                 </div>
                 <div className="product-buttons container">
-                  <button className="grey-btn" onClick={handleOpen}>
+                  <Link to={`/cart/5de5592bf82b736ff4eb3c08`}> {/* TODO */}
+                    <button className="grey-btn" onClick={() => getCurrentItems()}>
                     View bag
-                  </button>
-                  <button className="black-btn">Checkout</button>
+                    </button>
+                  </Link>
+                  <button className="black-btn" onClick={() => addNewProduct(match.params.id, _id, 1)}>Checkout</button> {/*UPDATE THEN REDIRECT*/}
                 </div>
               </div>
             </Modal>
@@ -183,4 +190,4 @@ const mapStateToProps = state => ({
   product: state.product
 });
 
-export default connect(mapStateToProps, { getCurrentProduct })(ProductPageF);
+export default connect(mapStateToProps, { getCurrentProduct, getCurrentItems ,addNewProduct})(ProductPageF);

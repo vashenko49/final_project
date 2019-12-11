@@ -3,13 +3,9 @@ import React, { Component, Fragment } from 'react';
 import './Cart.scss';
 
 export default class Bag extends Component {
-  constructor() {
-    super();
-  }
 
   render() {
     const { items, loading } = this.props.cartInfo;
-
     return (
       <Fragment>
         {loading ? (
@@ -23,7 +19,6 @@ export default class Bag extends Component {
                 <span className="price">
                   $
                   {items.products.reduce((acc, curr) => {
-                    debugger;
                     return acc.product.model[0].currentPrice + curr.product.model[0].currentPrice;
                   })}
                 </span>

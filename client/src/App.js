@@ -9,6 +9,7 @@ import Footer from './components/Footer/Footer';
 
 import ProductPageF from './components/page/ProductPageF';
 import Cart from './components/cart/Cart';
+import Carousel from './components/page/Carousel';
 import MainPage from './components/page/MainPage';
 
 import './font/Varta/Varta-font.css';
@@ -34,11 +35,12 @@ class App extends Component {
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/main-page" component={MainPage} />
-            <Route exact exect path="/cart" component={Cart} />
+            <Route exact exect path="/cart/:id" component={Cart} />
+            <Route exact exect path="/c" component={Carousel} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
-          <Footer />
+          {/* <Footer /> */}
         </Router>
       </Provider>
     );

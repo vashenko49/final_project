@@ -47,7 +47,7 @@ exports.getCart = async (req, res, next) => {
   }
 };
 
-exports.updateCart = async (req, res, next) => {
+exports.addNewProduct = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -99,12 +99,12 @@ exports.updateQuantity = async (req, res, next) => {
   }
 
   try {
-    const customer = await Customer.findOne({ _id: req.body.id });
+    const customer = await Customer.findOne({ _id: req.params.id });
     const product = await Product.findOne({ _id: req.body.productId });
-    let cart = await Cart.findOne({ customerId: req.body.id });
-
+    let cart = await Cart.findOne({ customerId: req.params.id });
+    debugger
     if (!customer) {
-      return res.status(404).json({ msg: `Customer with _id ${req.body.id} was not found.` });
+      return res.status(404).json({ msg: `Customer with _id ${req.params.id} was not found.` });
     }
 
     if (!product) {

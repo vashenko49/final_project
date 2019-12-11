@@ -208,6 +208,10 @@
   }
 }
 
+.slick-slide img {
+  width: 138px;
+}
+
 @media screen and (min-width: 1000px) {
   .product {
     display: grid;
@@ -220,6 +224,11 @@
       'reviews reviews reviews reviews';
     grid-template-rows: repeat(1fr, 6);
     grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    .product-reviews .review-header .arrow {
+      width: 1vw;
+      height: 1vw;
+    }
   }
 
   .property-description {
