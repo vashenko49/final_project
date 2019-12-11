@@ -18,6 +18,8 @@ const {
   checkLoginOrEmail
 } = require("../controllers/customers");
 
+
+
 // @route   POST /customer
 // @desc    Register customer
 // @access  Public
