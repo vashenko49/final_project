@@ -18,12 +18,14 @@ exports.addShippingMethod = async (req, res) => {
     if (imageUrl && _.isObject(imageUrl)) {
       data.imageUrl = (await cloudinary.uploader.upload(imageUrl.path, {folder: folder})).public_id;
     }
-    data.address = data.address.map(element => {
-      return {
-        customId: new mongoose.Types.ObjectId(),
-        location: element
-      }
-    });
+    if (_.isArray(data.address)) {
+      data.address = data.address.map(element => {
+        return {
+          customId: new mongoose.Types.ObjectId(),
+          location: element
+        }
+      });
+    }
 
     let shippingMethod = new ShippingMethod(data);
     shippingMethod = await shippingMethod.save();
@@ -45,23 +47,34 @@ exports.updateShippingMethod = async (req, res) => {
     const data = _.cloneDeep(req.body);
     const folder = 'final-project/shippingmethods';
 
-    if (imageUrl && _.isObject(imageUrl)) {
-      data.imageUrl = (await cloudinary.uploader.upload(imageUrl.path, {folder: folder})).public_id;
-    }
-    data.address = data.address.map(element => {
-      return {
-        customId: new mongoose.Types.ObjectId(),
-        location: element
-      }
-    });
-
     const {idShippingMethod} = data;
     if (!mongoose.Types.ObjectId.isValid(idShippingMethod)) {
       return res.status(400).json({
         message: `ID is not valid ${idShippingMethod}`
       })
     }
-    let shippingMethod = await ShippingMethod.findByIdAndUpdate(idShippingMethod, {$set: data});
+
+    const isShippingMethod = await ShippingMethod.findById(idShippingMethod);
+    if (!isShippingMethod) {
+      return res.status(400).json({
+        message: `Shipping Method with an id "${idShippingMethod}" is not found.`
+      });
+    }
+
+    if (imageUrl && _.isObject(imageUrl)) {
+      data.imageUrl = (await cloudinary.uploader.upload(imageUrl.path, {folder: folder})).public_id;
+    }
+
+    if (_.isArray(data.address)) {
+      data.address = data.address.map(element => {
+        return {
+          customId: new mongoose.Types.ObjectId(),
+          location: element
+        }
+      });
+    }
+
+    let shippingMethod = await ShippingMethod.findByIdAndUpdate(idShippingMethod, {$set: data}, {new: true});
     shippingMethod = await shippingMethod.save();
     res.status(200).json(shippingMethod);
 
@@ -72,7 +85,7 @@ exports.updateShippingMethod = async (req, res) => {
   }
 };
 
-exports.activateOrDeactivateShippingMethod = async (req, res)=>{
+exports.activateOrDeactivateShippingMethod = async (req, res) => {
   try {
     const {idShippingMethod, status} = req.body;
     const errors = validationResult(req);
@@ -99,7 +112,7 @@ exports.activateOrDeactivateShippingMethod = async (req, res)=>{
     shippingMethod = await shippingMethod.save();
 
     res.status(200).json(shippingMethod);
-  }catch (e) {
+  } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`
     })
@@ -123,7 +136,7 @@ exports.deleteShippingMethod = async (req, res) => {
     const info = await shippingMethod.delete();
 
     res.status(200).json({
-      message: `Category with an id "${idShippingMethod}" is successfully deleted from DB.`,
+      message: `Shipping Method with an id "${idShippingMethod}" is successfully deleted from DB.`,
       deletedShippingMethodInfo: info
     })
   } catch (e) {
@@ -145,7 +158,7 @@ exports.getShippingMethods = async (req, res) => {
 };
 exports.getActiveShippingMethods = async (req, res) => {
   try {
-    const shippingMethods = await ShippingMethod.find({enabled:true});
+    const shippingMethods = await ShippingMethod.find({enabled: true});
     res.status(200).json(shippingMethods);
   } catch (e) {
     res.status(400).json({

@@ -23,6 +23,8 @@ router.post(
       .isEmpty(),
     check('default','default is require')
       .isBoolean(),
+    check('enabled','enabled is require')
+      .isBoolean(),
     check('costValue','costValue is require')
       .not()
       .isEmpty(),

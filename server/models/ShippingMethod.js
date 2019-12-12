@@ -17,6 +17,7 @@ const ShippingMethodSchema = new Schema(
     },
     enabled: {
       type: Boolean,
+      required: true,
       default: false
     },
     imageUrl: {

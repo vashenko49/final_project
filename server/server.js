@@ -46,6 +46,7 @@ app.use('/comment', require('./routes/comment'));
 app.use('/cart', require('./routes/cart'));
 app.use('/links', require('./routes/links'));
 app.use('/shippingmethods', require('./routes/shippingMethod'));
+app.use('/paymentmethods', require('./routes/paymentMethods'));
 
 
 app.use(express.static('../client/build'));
