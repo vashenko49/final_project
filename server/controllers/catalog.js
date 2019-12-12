@@ -514,8 +514,12 @@ exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
     let root = JSON.parse(JSON.stringify(await rootCatalog.find({})));
 
     for (let i = 0; i < root.length; i++) {
-      root[i].childCatalog = await childCatalog.find({"parentId": root[i]._id}).select('-filters.subfilters')
-        .populate('filters.filter');
+      root[i].childCatalog = await childCatalog.find({"parentId": root[i]._id})
+        .select('-filters.subfilters')
+        .populate({
+          path:'filters.filter',
+          populate: '_idSubFilters'
+        })
     }
     res.status(200).json(root);
   } catch (e) {

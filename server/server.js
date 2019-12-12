@@ -45,6 +45,10 @@ app.use('/subscriber', require('./routes/subscribers'));
 app.use('/comment', require('./routes/comment'));
 app.use('/cart', require('./routes/cart'));
 app.use('/links', require('./routes/links'));
+app.use('/shippingmethods', require('./routes/shippingMethod'));
+app.use('/paymentmethods', require('./routes/paymentMethods'));
+app.use('/deliveryaddresses', require('./routes/deliveryAddresses'));
+app.use('/slider', require('./routes/slides'));
 
 
 app.use(express.static('../client/build'));

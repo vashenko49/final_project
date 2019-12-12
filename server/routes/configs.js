@@ -10,7 +10,8 @@ const {
   deleteConfig,
   getConfigs,
   getConfigById,
-  useSpecifiedConfiguration
+  useSpecifiedConfiguration,
+  getConfigForClient
 } = require("../controllers/Configs");
 
 // @route   POST /configs
@@ -163,7 +164,7 @@ router.delete(
 
 // @route   GET /configs
 // @desc    GET existing configs
-// @access  Public
+// @access  Private
 router.get(
   "/",
   getConfigs
@@ -171,16 +172,24 @@ router.get(
 
 // @route   GET /configs/:customId
 // @desc    GET existing configs
-// @access  Public
+// @access  Private
 router.get(
   "/:customId",
   getConfigById
 );
 
 
+// @route   GET /configs/client
+// @desc    GET existing configs
+// @access  public
+router.get(
+  "/use/client",
+  getConfigForClient
+);
+
 // @route   GET /configs/use/:customId
 // @desc    use specified configuration
-// @access  Public
+// @access  Private
 router.get(
   "/use/:customId",
   useSpecifiedConfiguration

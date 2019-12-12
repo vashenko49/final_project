@@ -4,7 +4,7 @@ const passport = require("passport");
 
 const { check } = require('express-validator');
 
-const { getCart, updateCart, updateQuantity, deleteProductFromCart } = require("../controllers/cart")
+const { getCart, updateCart, updateQuantity, deleteProductFromCart } = require("../controllers/cart");
 
 // @route   GET /cart
 // @desc    Get customer cart
