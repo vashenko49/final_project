@@ -8,6 +8,7 @@ import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
 import SnackBars from '../common/admin-panel/SnackBars';
 import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
 import ProductsDetailMainImages from './ProductsDetailMainImages';
+import ProductsDetailFiltersImage from './ProductsDetailFiltersImage';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -43,6 +44,7 @@ class ProductsDetail extends Component {
     category: null,
     mainFilters: [],
     images: [],
+    filtersImage: [{ id: new Date().getTime(), image: '', subFilter: '' }],
     tabValue: 0,
     typeForm: 'create',
     idUpdate: null,
@@ -54,7 +56,7 @@ class ProductsDetail extends Component {
     this.setState({ tabValue: newValue });
   };
 
-  onChangeValue = (name, val) => {
+  onChangeValue = (name, val, cardId) => {
     if (name === 'category') {
       this.setFiltersByCategory(val ? val.filters : []);
     }
@@ -68,12 +70,41 @@ class ProductsDetail extends Component {
       );
     }
 
+    if (name === 'filtersImage') {
+      return this.setState(
+        {
+          filtersImage: this.state.filtersImage.map(card => {
+            if (card.id == cardId) {
+              return { ...card, image: val.files[0] };
+            }
+          })
+        },
+        () => (val.value = '') // remove file in input file for add duplicate file after remove);
+      );
+    }
+
+    if (name === 'filtersImageSubFilter') {
+      return this.setState({
+        filtersImage: this.state.filtersImage.map(card => {
+          if (card.id == cardId) {
+            return { ...card, subFilter: val };
+          }
+        })
+      });
+    }
+
     this.setState({ [name]: val }); // default
   };
 
   onDeleteImg = img => {
     this.setState({
       images: this.state.images.filter(i => img !== i)
+    });
+  };
+
+  onDeleteFiltersImage = cardId => {
+    this.setState({
+      filtersImage: this.state.filtersImage.filter(card => card.id != cardId)
     });
   };
 
@@ -170,6 +201,7 @@ class ProductsDetail extends Component {
       category,
       dataFilters,
       mainFilters,
+      filtersImage,
       images
     } = this.state;
 
@@ -219,7 +251,12 @@ class ProductsDetail extends Component {
                 onDeleteImg={this.onDeleteImg}
               />
             ) : this.state.tabValue === 2 ? (
-              'TWO'
+              <ProductsDetailFiltersImage
+                dataFilters={dataFilters}
+                filtersImage={filtersImage}
+                onChangeValue={this.onChangeValue}
+                onDeleteFiltersImage={this.onDeleteFiltersImage}
+              />
             ) : this.state.tabValue === 3 ? (
               'THREE'
             ) : null}
