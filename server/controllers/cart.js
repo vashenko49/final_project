@@ -11,7 +11,7 @@ exports.getCart = async (req, res, next) => {
     } catch (err) {
         return res.status(500).json({ msg: `Error happened on server: "${err}"` })
     }
-}
+};
 
 exports.updateCart = async (req, res, next) => {
 

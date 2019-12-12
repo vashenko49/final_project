@@ -7,6 +7,10 @@ const ShippingMethodSchema = new Schema(
       type: String,
       required: true
     },
+    isDeliveryAddress:{
+      type: Boolean,
+      default: false
+    },
     description: {
       type: String
     },
@@ -31,12 +35,8 @@ const ShippingMethodSchema = new Schema(
     },
     address:[
       {
-        customId:{
-          type:String
-        },
-        location:{
-          type:String
-        }
+        type: Schema.Types.ObjectId,
+        ref:'deliveryaddresses'
       }
     ],
     currency: {

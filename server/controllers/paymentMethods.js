@@ -124,7 +124,7 @@ exports.deletePaymentMethod =  async (req, res) => {
 
     res.status(200).json({
       message: `Payment Method with an id "${idPaymentMethod}" is successfully deleted from DB.`,
-      deletedShippingMethodInfo: info
+      deletedPaymentMethodInfo: info
     })
   } catch (e) {
     res.status(400).json({
