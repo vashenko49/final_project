@@ -53,6 +53,11 @@ exports.updateShippingMethod = async (req, res) => {
       });
     }
 
+
+    if(isShippingMethod.imageUrl){
+      await cloudinary.uploader.destroy(isShippingMethod.imageUrl);
+    }
+
     if (imageUrl && _.isObject(imageUrl)) {
       data.imageUrl = (await cloudinary.uploader.upload(imageUrl.path, {folder: folder})).public_id;
     }
@@ -71,6 +76,7 @@ exports.updateShippingMethod = async (req, res) => {
 
 exports.activateOrDeactivateShippingMethod = async (req, res) => {
   try {
+
     const {idShippingMethod, status} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -117,6 +123,11 @@ exports.deleteShippingMethod = async (req, res) => {
         message: `Shipping Method with an id "${idShippingMethod}" is not found.`
       });
     }
+
+    if(shippingMethod.imageUrl){
+      await cloudinary.uploader.destroy(shippingMethod.imageUrl);
+    }
+
     const info = await shippingMethod.delete();
 
     res.status(200).json({

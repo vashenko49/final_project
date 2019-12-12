@@ -55,6 +55,10 @@ exports.updatePaymentMethod = async (req, res) => {
       });
     }
 
+    if(isPaymentMethod.imageUrl){
+      await cloudinary.uploader.destroy(isPaymentMethod.imageUrl);
+    }
+
     if (imageUrl && _.isObject(imageUrl)) {
       data.imageUrl = (await cloudinary.uploader.upload(imageUrl.path, {folder: folder})).public_id;
     }
@@ -120,6 +124,11 @@ exports.deletePaymentMethod =  async (req, res) => {
         message: `Payment Method with an id "${idPaymentMethod}" is not found.`
       });
     }
+
+    if(paymentMethod.imageUrl){
+      await cloudinary.uploader.destroy(paymentMethod.imageUrl);
+    }
+
     const info = await paymentMethod.delete();
 
     res.status(200).json({
