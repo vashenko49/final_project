@@ -32,7 +32,7 @@ class App extends Component {
           </li>
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
-            <Route exact path="/testLoadFile" component={Upda} />
+            <Route exact path="/testLoadFile" component={CreateProducts} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/main-page" component={MainPage} />

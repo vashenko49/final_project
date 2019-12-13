@@ -1,14 +1,13 @@
-import product from "../../client/src/reducers/product";
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const uuid = require('order-id')(process.env.orderIdSecret);
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
 const OrderSchema = new Schema(
   {
     orderNo: {
       type: String,
-      default: uuid.generate()
+      default: (rand()).toString()
     },
     customerId: {
       type: Schema.Types.ObjectId,
@@ -16,60 +15,54 @@ const OrderSchema = new Schema(
     },
     products: [
       {
-        productId:{
+        productId: {
           type: Schema.Types.ObjectId,
-          ref:'products',
+          ref: 'products',
           required: true
         },
-        modelNo:{
+        modelNo: {
           type: String,
           required: true
         },
-        currentPrice:{
+        currentPrice: {
           type: Number,
           required: true
         }
       }
     ],
     delivery: {
-      idShippingMethod:{
+      idShippingMethod: {
         type: Schema.Types.ObjectId,
         ref: 'shipping-methods',
         required: true
       },
-      isExpressDelivery:{
-        type: Boolean,
-        required: true
+      storeAddress: {
+        type: Schema.Types.ObjectId,
+        ref: 'deliveryaddresses'
       },
-      address:{
-        type:Schema.Types.ObjectId,
-        ref:'deliveryaddresses'
-      },
-      expressDeliveryAddress:{
-        country:{
-          type:String,
+      address: {
+        country: {
+          type: String,
           require: true
         },
-        city:{
-          type:String,
-          require:true
-        },
-        postal:{
-          type:String,
+        city: {
+          type: String,
           require: true
         },
-        address:{
-          type:String,
+        postal: {
+          type: String,
           require: true
+        },
+        street: {
+          type: String,
+          require: true
+        },
+        houseNumber:{
+          type: String,
+          require: true
+
         }
       }
-    },
-    shipping: {
-      type: Schema.Types.Mixed
-    },
-    paymentInfo: {
-      type: Schema.Types.ObjectId,
-      ref: 'payment-methods'
     },
     totalSum: {
       type: Number,
@@ -94,8 +87,7 @@ const OrderSchema = new Schema(
       type: Date,
       default: Date.now
     }
-  },
-  { strict: false }
+  }
 );
 
 module.exports = Order = mongoose.model("orders", OrderSchema, "orders");

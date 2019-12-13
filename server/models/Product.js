@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const uuid = require('order-id')(process.env.orderIdSecret);
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
 const ProductSchema = new Schema(
   {
@@ -104,7 +105,7 @@ const ProductSchema = new Schema(
         },
         modelNo: {
           type: String,
-          default: uuid.generate()
+          required: true
         }
       }
     ]
