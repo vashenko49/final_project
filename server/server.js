@@ -49,6 +49,7 @@ app.use('/shippingmethods', require('./routes/shippingMethod'));
 app.use('/paymentmethods', require('./routes/paymentMethods'));
 app.use('/deliveryaddresses', require('./routes/deliveryAddresses'));
 app.use('/slider', require('./routes/slides'));
+app.use('/partners', require('./routes/partner'));
 
 
 app.use(express.static('../client/build'));
