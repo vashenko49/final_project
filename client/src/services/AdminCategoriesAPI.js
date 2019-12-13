@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default class AdminCategoriesAPI {
-  static apiHost = 'https://5000-f1d638f2-52f2-40ef-b477-c73308c7e1c1.ws-eu01.gitpod.io';
+  static apiHost = 'http://localhost:5000';
 
   static getCategories() {
     return axios.get(`${this.apiHost}/catalog/hierarchy`);

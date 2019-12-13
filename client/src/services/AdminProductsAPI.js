@@ -1,4 +1,4 @@
-// import axios from 'axios';
+import axios from 'axios';
 
 export default class AdminProductAPI {
   static dataGetProducts = {
@@ -226,7 +226,7 @@ export default class AdminProductAPI {
     ]
   };
 
-  static apiHost = 'https://5000-f1d638f2-52f2-40ef-b477-c73308c7e1c1.ws-eu01.gitpod.io';
+  static apiHost = 'http://localhost:5000';
 
   static getProducts() {
     return new Promise((resolve, reject) => resolve(this.dataGetProducts));
@@ -245,5 +245,9 @@ export default class AdminProductAPI {
       resolve({ data: this.dataGetProducts.data.filter(i => i._id === id) })
     );
     // return axios.get(`${this.apiHost}/products/${id}`);
+  }
+
+  static createProducts(data) {
+    return axios.post(`${this.apiHost}/products`, data);
   }
 }

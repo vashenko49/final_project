@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import AdminFiltersAPI from '../../services/AdminFiltersAPI';
 import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
-// import AdminProductsAPI from '../../services/AdminProductsAPI';
+import AdminProductsAPI from '../../services/AdminProductsAPI';
 
 import SnackBars from '../common/admin-panel/SnackBars';
 import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
 import ProductsDetailMainImages from './ProductsDetailMainImages';
-import ProductsDetailFiltersImage from './ProductsDetailFiltersImage';
+import ProductsDetailModels from './ProductsDetailModels';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -21,6 +20,7 @@ import Tab from '@material-ui/core/Tab';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { withStyles } from '@material-ui/core/styles';
+import SaveIcon from '@material-ui/icons/Save';
 
 function a11yProps(index) {
   return {
@@ -43,8 +43,15 @@ class ProductsDetail extends Component {
     dataFilters: [],
     category: null,
     mainFilters: [],
-    images: [],
-    filtersImage: [{ id: new Date().getTime(), image: '', subFilter: '' }],
+    filtersImage: [],
+    models: [
+      {
+        id: new Date().getTime(),
+        subFilters: [],
+        quantity: '',
+        price: ''
+      }
+    ],
     tabValue: 0,
     typeForm: 'create',
     idUpdate: null,
@@ -56,84 +63,113 @@ class ProductsDetail extends Component {
     this.setState({ tabValue: newValue });
   };
 
-  onChangeValue = (name, val, cardId) => {
+  onChangeValueModels = (name, val, id) => {
+    this.setState({
+      models: this.state.models.map(i => (i.id === id ? { ...i, [name]: val } : i))
+    });
+  };
+
+  onChangeValue = (name, val, id) => {
     if (name === 'category') {
       this.setFiltersByCategory(val ? val.filters : []);
     }
 
-    if (name === 'images') {
+    if (name === 'filtersImage') {
+      const newArrImages = [];
+
+      for (let i = 0; i < val.files.length; i++) {
+        newArrImages.push({
+          id: (~~(Math.random() * 1e8 * val.files[i].lastModified)).toString(16),
+          image: val.files[i],
+          subFilter: ''
+        });
+      }
+
       return this.setState(
         {
-          images: [...this.state.images, ...val.files]
+          filtersImage: [...this.state.filtersImage, ...newArrImages]
+        },
+        () => (val.value = '') // remove file in input file for add duplicate file after remove)
+      );
+    }
+
+    if (name === 'filtersImageReload') {
+      return this.setState(
+        {
+          filtersImage: this.state.filtersImage.map(card =>
+            card.id === id ? { ...card, image: val.files[0] } : card
+          )
         },
         () => (val.value = '') // remove file in input file for add duplicate file after remove
       );
     }
 
-    if (name === 'filtersImage') {
-      return this.setState(
-        {
-          filtersImage: this.state.filtersImage.map(card => {
-            if (card.id == cardId) {
-              return { ...card, image: val.files[0] };
-            }
-          })
-        },
-        () => (val.value = '') // remove file in input file for add duplicate file after remove);
-      );
-    }
-
     if (name === 'filtersImageSubFilter') {
       return this.setState({
-        filtersImage: this.state.filtersImage.map(card => {
-          if (card.id == cardId) {
-            return { ...card, subFilter: val };
-          }
-        })
+        filtersImage: this.state.filtersImage.map(card =>
+          card.id === id ? { ...card, subFilter: val } : card
+        )
       });
     }
 
     this.setState({ [name]: val }); // default
   };
 
-  onDeleteImg = img => {
+  onDeleteCardImg = cardId => {
     this.setState({
-      images: this.state.images.filter(i => img !== i)
-    });
-  };
-
-  onDeleteFiltersImage = cardId => {
-    this.setState({
-      filtersImage: this.state.filtersImage.filter(card => card.id != cardId)
+      filtersImage: this.state.filtersImage.filter(card => cardId !== card.id)
     });
   };
 
   onSubmitForm = async () => {
-    const { typeForm, title, serviceName, subFilters, idUpdate, enabledFilter } = this.state;
+    const {
+      nameProduct,
+      description,
+      category,
+      mainFilters,
+      filtersImage,
+      models,
+      typeForm
+    } = this.state;
 
     const sendData = {
-      title: title.val,
-      serviceName: serviceName.val,
-      subFilters: subFilters.val
+      nameProduct,
+      description,
+      _idChildCategory: category._id,
+      filters: mainFilters.map(i => ({ filter: i.parentId, subFilter: i._id })),
+      filterImg: filtersImage.map(i => ({
+        _idFilter: i.subFilter.parentId,
+        _idSubFilters: i.subFilter._id,
+        urlImg: i.image
+      })),
+      model: models.map(i => ({
+        quantity: i.quantity,
+        currentPrice: i.price,
+        filters: i.subFilters.map(subFilter => ({
+          filter: subFilter.parentId,
+          subFilter: subFilter._id
+        }))
+      }))
     };
 
+    console.log(sendData);
     try {
       if (typeForm === 'create') {
-        await AdminFiltersAPI.createFilters(sendData);
+        await AdminProductsAPI.createProducts(sendData);
 
         this.setState({
           sendDataStatus: 'success',
-          sendDataMessage: `${title.val} filter has been created!`
+          sendDataMessage: `${sendData.nameProduct} product has been created!`
         });
       }
       if (typeForm === 'update') {
-        sendData.idUpdate = idUpdate;
-        sendData.enabledFilter = enabledFilter;
-        await AdminFiltersAPI.updateFilters(sendData);
+        // sendData.idUpdate = idUpdate;
+        // sendData.enabledFilter = enabledFilter;
+        // await AdminFiltersAPI.updateFilters(sendData);
 
         this.setState({
-          sendDataStatus: 'success',
-          sendDataMessage: `${title.val} filter has been update!`
+          sendDataStatus: 'success'
+          // sendDataMessage: `${title.val} filter has been update!`
         });
       }
     } catch (err) {
@@ -159,8 +195,51 @@ class ProductsDetail extends Component {
     this.setState({ dataCategories: newData });
   };
 
-  setFiltersByCategory = async filters => {
-    this.setState({ dataFilters: filters, mainFilters: [] });
+  setFiltersByCategory = filters => {
+    const newDataFilters = [];
+
+    filters.forEach(filter => {
+      filter.filter._idSubFilters.forEach(subFilter => {
+        newDataFilters.push({
+          parentId: filter.filter._id,
+          parentType: filter.filter.type,
+          parentServiceName: filter.filter.serviceName,
+          ...subFilter
+        });
+      });
+    });
+
+    this.setState({
+      dataFilters: newDataFilters,
+      mainFilters: [],
+      filtersImage: this.state.filtersImage.map(i => ({
+        ...i,
+        ...{ subFilter: '' }
+      })),
+      models: this.state.models.map(i => ({
+        ...i,
+        ...{ subFilters: [] }
+      }))
+    });
+  };
+
+  createNewModel = () => ({
+    id: new Date().getTime(),
+    subFilters: [],
+    quantity: '',
+    price: ''
+  });
+
+  onAddNewModel = () => {
+    this.setState({
+      models: [...this.state.models, this.createNewModel()]
+    });
+  };
+
+  onClickDeleteModel = id => {
+    this.setState({
+      models: this.state.models.filter(i => i.id !== id)
+    });
   };
 
   async componentDidMount() {
@@ -202,9 +281,9 @@ class ProductsDetail extends Component {
       dataFilters,
       mainFilters,
       filtersImage,
-      images
+      models
     } = this.state;
-
+    console.log(this.state);
     return (
       <Container maxWidth="md">
         <Paper className={classes.root}>
@@ -228,8 +307,7 @@ class ProductsDetail extends Component {
             centered
           >
             <Tab label="Basic Info" {...a11yProps(0)} />
-            <Tab label="Main Images" {...a11yProps(0)} />
-            <Tab label="Image for filters" {...a11yProps(1)} />
+            <Tab label="Main Images" {...a11yProps(1)} />
             <Tab label="Models" {...a11yProps(2)} />
           </Tabs>
 
@@ -247,19 +325,31 @@ class ProductsDetail extends Component {
             ) : this.state.tabValue === 1 ? (
               <ProductsDetailMainImages
                 onChangeValue={this.onChangeValue}
-                images={images}
-                onDeleteImg={this.onDeleteImg}
+                filtersImage={filtersImage}
+                onDeleteCardImg={this.onDeleteCardImg}
+                dataFilters={dataFilters}
               />
             ) : this.state.tabValue === 2 ? (
-              <ProductsDetailFiltersImage
+              <ProductsDetailModels
+                models={models}
                 dataFilters={dataFilters}
-                filtersImage={filtersImage}
-                onChangeValue={this.onChangeValue}
-                onDeleteFiltersImage={this.onDeleteFiltersImage}
+                onChangeValue={this.onChangeValueModels}
+                onClickDeleteModel={this.onClickDeleteModel}
+                onAddNewModel={this.onAddNewModel}
               />
-            ) : this.state.tabValue === 3 ? (
-              'THREE'
             ) : null}
+          </Box>
+
+          <Box align="right" pr={3}>
+            <Button
+              // disabled={onSubmitFormDisabled}
+              onClick={this.onSubmitForm}
+              variant="contained"
+              color="primary"
+              startIcon={<SaveIcon />}
+            >
+              Save
+            </Button>
           </Box>
 
           <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
@@ -273,6 +363,8 @@ ProductsDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-ProductsDetail.defaultProps = {};
+ProductsDetail.defaultProps = {
+  classes: {}
+};
 
 export default withStyles(styles)(ProductsDetail);

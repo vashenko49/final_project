@@ -80,8 +80,9 @@ const ProductsDetailBasicInfo = ({
           multiple
           id="mainFilters"
           options={dataFilters}
-          getOptionLabel={option => option.filter.serviceName}
-          defaultValue={mainFilters}
+          groupBy={option => option.parentServiceName}
+          getOptionLabel={option => option.name}
+          value={mainFilters}
           // getOptionDisabled={option =>
           //   !!(mainFilters && mainFilters.find(i => i._id === option._id))
           // }
@@ -90,11 +91,7 @@ const ProductsDetailBasicInfo = ({
           onChange={(e, val) => onChangeValue('mainFilters', val)}
           renderTags={(value, getTagProps) =>
             value.map((option, index) => (
-              <Chip
-                variant="outlined"
-                label={option.filter.serviceName}
-                {...getTagProps({ index })}
-              />
+              <Chip variant="outlined" label={option.name} {...getTagProps({ index })} />
             ))
           }
           renderInput={params => (
@@ -103,8 +100,8 @@ const ProductsDetailBasicInfo = ({
               error={!mainFilters.length}
               {...params}
               variant="outlined"
-              label="Filters"
-              placeholder="Choose filter"
+              label="Sub filters"
+              placeholder="Choose..."
               fullWidth
             />
           )}
