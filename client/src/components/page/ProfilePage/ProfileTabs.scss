@@ -1,0 +1,47 @@
+.profile-tabs {
+  height: 900px;
+
+  .profile-tabs-bar {
+    margin-bottom: 40px;
+    color: #33333A;
+    background-color: transparent;
+  }
+
+  .MuiTabs-indicator {
+    background-color: #33333a;
+  }
+
+  .MuiBox-root {
+    padding: 0;
+  }
+
+  .profile-field-label {
+    color: #505050;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .profile-field {
+    width: 335px;
+    margin: 5px 0 20px;
+  }
+
+  .MuiInputBase-input {
+    padding: 20px 10px;
+  }
+
+  .save-btn {
+    display: block;
+    width: 220px;
+    height: 50px;
+    margin-top: 10px;
+    color: #fff;
+    background: #33333a;
+    border-radius: 2px;
+  }
+
+  .disabled {
+    color: #A4A4A4;
+    background: #F5F5F5;
+  }
+}
