@@ -67,7 +67,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getRootCategories: bindActionCreators(headerAction.getRootCategories, dispatch),
-    getChildCategories: bindActionCreators(headerAction.getChildCategory, dispatch)
+    getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch)
   };
 }
 

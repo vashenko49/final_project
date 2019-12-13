@@ -27,7 +27,6 @@ export default class NavBarItem extends Component {
           aria-owns={this.state.open ? 'simple-menu' : null}
           aria-haspopup="true"
           onClick={this.handleClick}
-          // onMouseOver={this.handleClick}
         >
           {item.name}
           <ExpandMoreIcon />

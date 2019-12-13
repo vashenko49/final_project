@@ -25,7 +25,7 @@ export function getRootCategories() {
   };
 }
 
-export function getChildCategory() {
+export function getChildCategories() {
   return dispatch => {
     dispatch({
       type: HEADER.GET_API_CHILD_CATEGORIES_REQUEST
