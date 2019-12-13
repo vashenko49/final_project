@@ -6,6 +6,7 @@ import { configureStore } from './store';
 import AdminPanel from './components/admin-panel/AdminPanel';
 import FooterLinkPage from './components/FooterLinkPage/FooterLinkPage';
 import Footer from './components/Footer/Footer';
+import Header from './components/Header/Header';
 
 import ProductPageF from './components/page/ProductPageF';
 import MainPage from './components/page/MainPage';
@@ -27,6 +28,7 @@ class App extends Component {
     return (
       <Provider store={store}>
         <Router>
+          <Header />
           <li>
             <Link to="/admin-panel">Admin Panel</Link>
           </li>

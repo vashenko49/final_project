@@ -44,7 +44,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onFooterLinkClick: bindActionCreators(footerLinksIdAction, dispatch)
+    onFooterLinkClick: bindActionCreators(footerLinksIdAction.onFooterLinkClick, dispatch)
   };
 }
 
