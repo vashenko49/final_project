@@ -36,8 +36,6 @@ exports.addConfig = (req, res) => {
 
 };
 
-
-
 exports.useSpecifiedConfiguration = (req, res, next) => {
   ConfigSchema.findOne({ customId: req.params.customId })
     .then(config => {
@@ -139,4 +137,23 @@ exports.getConfigById = (req, res, next) => {
         message: `Error happened on server: "${err}" `
       })
     );
+};
+
+exports.getConfigForClient = async (req, res)=>{
+  try {
+
+    const data = {
+      cloudinary_cloud_name:process.env.cloudinary_cloud_name,
+      google_clientID:process.env.google_clientID,
+      facebook_clientID:process.env.facebook_clientID,
+      github_clientID:process.env.github_clientID,
+    };
+
+    res.status(200).send(data)
+
+  } catch (e) {
+    res.status(400).json({
+      message: `Server error ${e.message}`
+    })
+  }
 };

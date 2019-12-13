@@ -17,6 +17,7 @@ import './font/Roboto/Roboto-font.css';
 import './App.scss';
 import Authorization from './components/Authorization/Authorization';
 import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
+import UpdateProduct from './components/Example/UpdateProduct';
 
 const store = configureStore();
 
@@ -27,6 +28,7 @@ class App extends Component {
         <Router>
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
+            <Route exact path="/testLoadFile" component={UpdateProduct} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact path="/main-page" component={MainPage} />
