@@ -439,13 +439,6 @@ exports.deleteModelProduct = async (req, res) => {
 exports.getProducts = async (req, res, next) => {
   try {
     let products = await Product.find()
-<<<<<<< HEAD
-      .populate('_idChildCategory')
-      .populate('filters.filter')
-      .populate('filters.subFilter')
-      .populate('model.filters.filter')
-      .populate('model.filters.subFilter');
-=======
       .populate({
         path: '_idChildCategory',
         select: '-filters',
@@ -467,7 +460,7 @@ exports.getProducts = async (req, res, next) => {
       .populate({
         path: 'model.filters.subFilter',
       });
->>>>>>> 19ff01e45165b0ac298add96da90e17ff946601d
+
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
