@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { configureStore } from './store';
@@ -29,15 +29,12 @@ class App extends Component {
       <Provider store={store}>
         <Router>
           <Header />
-          <li>
-            <Link to="/admin-panel">Admin Panel</Link>
-          </li>
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
             <Route exact path="/testLoadFile" component={Upda} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
-            <Route exact exect path="/main-page" component={MainPage} />
+            <Route exact exect path="/" component={MainPage} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
