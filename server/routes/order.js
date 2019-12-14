@@ -16,13 +16,28 @@ const {
 // @route   POST /orders
 // @desc    Place Order
 // @access  Private
-router.post("/", placeOrder);
+router.post("/",
+  [
+    check('delivery', 'delivery is require')
+      .notEmpty(),
+    check('email', 'email is require')
+      .isEmail(),
+    check('mobile', 'mobile is require')
+      .not()
+      .isEmpty()
+  ],
+  placeOrder);
 
 // @route   PUT /orders/:id
 // @desc    Update order
 // @access  Private
 router.put(
-  "/:id",
+  "/",
+  [
+    check('idOrder', 'idOrder is require')
+      .not()
+      .isEmpty()
+  ],
   updateOrder
 );
 

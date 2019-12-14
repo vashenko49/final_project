@@ -9,7 +9,7 @@ const OrderSchema = new Schema(
       type: String,
       default: (rand()).toString()
     },
-    customerId: {
+    idCustomer: {
       type: Schema.Types.ObjectId,
       ref: "customers"
     },
@@ -22,6 +22,10 @@ const OrderSchema = new Schema(
         },
         modelNo: {
           type: String,
+          required: true
+        },
+        quantity: {
+          type: Number,
           required: true
         },
         currentPrice: {
