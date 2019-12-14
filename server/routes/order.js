@@ -9,8 +9,8 @@ const {
   updateOrder,
   cancelOrder,
   deleteOrder,
-  getOrders,
-  getOrder
+  getOrdersByCustomer,
+  getOrderById
 } = require("../controllers/orders");
 
 // @route   POST /orders
@@ -45,7 +45,12 @@ router.put(
 // @desc    Cancel order
 // @access  Private
 router.put(
-  "/cancel/:id",
+  "/cancel",
+  [
+    check('idOrder', 'idOrder is require')
+      .not()
+      .isEmpty()
+  ],
   cancelOrder
 );
 
@@ -53,21 +58,21 @@ router.put(
 // @desc    Delete order
 // @access  Private
 router.delete(
-  "/:id",
+  "/:idOrder",
   deleteOrder
 );
 
 // @route   GET /orders
 // @desc    Get all orders
 // @access  Private
-router.get("/", getOrders);
+router.get("/customer/:idCustomer", getOrdersByCustomer);
 
-// @route   GET /orders/:orderNo
+// @route   GET /orders/:idOrder
 // @desc    Get one order by orderNo
 // @access  Private
 router.get(
-  "/:orderNo",
-  getOrder
+  "/:idOrder",
+  getOrderById
 );
 
 module.exports = router;

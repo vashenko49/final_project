@@ -134,16 +134,55 @@ exports.updateOrder = async (req, res) => {
 
 exports.cancelOrder = async (req, res) => {
   try {
+    let {idOrder} = req.body;
+    if (!mongoose.Types.ObjectId.isValid(idOrder)) {
+      return res.status(400).json({
+        message: `ID Order is not valid ${idOrder}`
+      })
+    }
 
+    let isOrder = await Orders.findById(idOrder);
+
+    if (!isOrder) {
+      return res.status(400).json({
+        message: "Orders not found"
+      })
+    }
+
+    isOrder.canceled = true;
+    isOrder = await isOrder.save();
+
+    res.status(200).json(isOrder);
   } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`
     })
   }
 };
+
+
 exports.deleteOrder = async (req, res) => {
   try {
+    const {idOrder} = req.params;
+    if (!mongoose.Types.ObjectId.isValid(idOrder)) {
+      return res.status(400).json({
+        message: `ID is not valid ${idOrder}`
+      })
+    }
+    const oldOrder = await Orders.findById(idOrder);
+    if (!oldOrder) {
+      return res.status(400).json({
+        message: `Orders with an id "${idOrder}" is not found.`
+      });
+    }
 
+
+    const info = await oldOrder.delete();
+
+    res.status(200).json({
+      message: `Orders with an id "${idOrder}" is successfully deleted from DB.`,
+      deletedOrderInfo: info
+    })
   } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`
@@ -151,9 +190,41 @@ exports.deleteOrder = async (req, res) => {
   }
 };
 
-exports.getOrders = async (req, res) => {
+exports.getOrdersByCustomer = async (req, res) => {
   try {
+    const {idCustomer} = req.params;
+    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
+      return res.status(400).json({
+        message: `ID Customer is not valid ${idCustomer}`
+      })
+    }
 
+    const customer = await Customer.findById(idCustomer);
+    if (!customer) {
+      return res.status(400).json({
+        message: "Customer not found"
+      })
+    }
+
+    const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
+      .populate('idCustomer')
+      .populate({path: 'delivery.idShippingMethod', select: '-address'})
+      .populate('delivery.storeAddress')
+      .populate('products.productId')
+    ));
+
+    orders.forEach((element, index) => {
+      orders[index].products = element.products.map(element => {
+        let indexModel = _.findIndex(element.productId.model, function (o) {
+          return o.modelNo == element.modelNo;
+        });
+        element.modelNo = element.productId.model[indexModel];
+        return element;
+      });
+    });
+
+
+    res.status(200).json(orders);
   } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`
@@ -161,9 +232,37 @@ exports.getOrders = async (req, res) => {
   }
 };
 
-exports.getOrder = async (req, res) => {
+exports.getOrderById = async (req, res) => {
   try {
+    const {idOrder} = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(idOrder)) {
+      return res.status(400).json({
+        message: `ID is not valid ${idOrder}`
+      })
+    }
+    let order = JSON.parse(JSON.stringify(await Orders.findById(idOrder)
+      .populate('idCustomer')
+      .populate({path: 'delivery.idShippingMethod', select: '-address'})
+      .populate('delivery.storeAddress')
+      .populate('products.productId')
+    ));
+
+    if (!order) {
+      return res.status(400).json({
+        message: `Orders with an id "${idOrder}" is not found.`
+      });
+    }
+
+    order.products = order.products.map(element => {
+      let indexModel = _.findIndex(element.productId.model, function (o) {
+        return o.modelNo == element.modelNo;
+      });
+      element.modelNo = element.productId.model[indexModel];
+      return element;
+    });
+
+    res.status(200).json(order);
   } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`
