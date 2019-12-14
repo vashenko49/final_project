@@ -8,14 +8,20 @@ const initialState = {
 
 export default function(state = initialState, action) {
   const { type, payload } = action;
-  console.log(payload);
   switch (type) {
+    // debugger;
+    // return {
+    //   ...state,
+    //   items: state.products,
+    //   loading: false
+    // };
+    case UPDATE_ITEM:
     case GET_ITEMS:
     case ADD_ITEMS:
-    case UPDATE_ITEM:
+      debugger;
       return {
         ...state,
-        items: payload,
+        items: payload.products,
         loading: false
       };
     case ITEMS_ERROR:

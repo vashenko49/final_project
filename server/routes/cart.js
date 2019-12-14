@@ -1,22 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const {check} = require('express-validator');
+const { check } = require("express-validator");
 
 //Import controllers
-const {
-  updateCart,
-  updateProductFromCart,
-  cleanCart,
-  getCart
-} = require("../controllers/cart");
-
+const { updateCart, updateProductFromCart, cleanCart, getCart } = require("../controllers/cart");
 
 // @route   PUT /cart
 // @desc    Update cart when adding / deleting products in cart
 // @access  Private
-router.put("/",
+router.put(
+  "/",
   [
-    check("idCustomer",'idCustomer is require')
+    check("idCustomer", "idCustomer is require")
       .not()
       .isEmpty(),
     check("products.*.idProduct", "idProduct is require")
@@ -27,10 +22,10 @@ router.put("/",
       .isEmpty(),
     check("products.*.quantity", "cartQuantity is require")
       .isNumeric()
-      .isInt({ min: 0 }),
+      .isInt({ min: 0 })
   ],
-  updateCart);
-
+  updateCart
+);
 
 // @route   PUT /cart/:productId
 // @desc    Edit one product to cart
@@ -38,7 +33,7 @@ router.put("/",
 router.put(
   "/product",
   [
-    check("idCustomer",'idCustomer is require')
+    check("idCustomer", "idCustomer is require")
       .not()
       .isEmpty(),
     check("idProduct", "idProduct is require")
@@ -49,17 +44,15 @@ router.put(
       .isEmpty(),
     check("quantity", "cartQuantity is require")
       .isNumeric()
-      .isInt({ min: 0 }),
+      .isInt({ min: 0 })
   ],
   updateProductFromCart
 );
 
-
 // @route   DELETE /cart/:idCustomer
 // @desc    clean cart
 // @access  Private
-router.delete("/:idCustomer",  cleanCart);
-
+router.delete("/:idCustomer", cleanCart);
 
 // @route   GET /cart
 // @desc    Get cart for customer

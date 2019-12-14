@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import Slider from "react-slick";
+import React, { Component } from 'react';
+import Slider from 'react-slick';
 
-import "slick-carousel/slick/slick.css"; 
-import "slick-carousel/slick/slick-theme.css";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
-import logo1 from './../../assets/1.png'
+import logo1 from './../../assets/1.png';
 
 export default class Responsive extends Component {
   render() {
@@ -43,18 +43,20 @@ export default class Responsive extends Component {
       ]
     };
 
-    const photos = []
+    const photos = [];
 
-    for(let i = 0; i < 12; i++) {
-      photos.push(<div><img src={logo1} /></div>)
+    for (let i = 0; i < 12; i++) {
+      photos.push(
+        <div>
+          <img src={logo1} />
+        </div>
+      );
     }
 
     return (
       <div>
         <h2> Responsive </h2>
-        <Slider {...settings}>
-          {photos}
-        </Slider>
+        <Slider {...settings}>{photos}</Slider>
       </div>
     );
   }

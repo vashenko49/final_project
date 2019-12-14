@@ -1,16 +1,16 @@
 import React, { useEffect, Fragment, useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCurrentProduct } from '../../actions/product';
-import { getCurrentItems ,addNewProduct } from '../../actions/cart'
+import { getCurrentItems, addNewProduct } from '../../actions/cart';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 
+import Carousel from './Carousel';
 import Rating from '../common/rating/Rating';
 
 import './ProductPage.scss';
-
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -28,7 +28,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match }) => {
+const ProductPageF = ({
+  getCurrentProduct,
+  getCurrentItems,
+  addNewProduct,
+  product: { product, loading },
+  match
+}) => {
+  const [customerId, setId] = useState('5de5592bf82b736ff4eb3c08');
+
   const {
     _id,
     nameProduct,
@@ -52,6 +60,7 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
 
   const handleOpen = () => {
     setOpen(true);
+    addNewProduct('5de5592bf82b736ff4eb3c08', _id, 1);
   };
 
   const handleClose = () => {
@@ -80,6 +89,19 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
           <div className="product-photo">
             <img src={productUrlImg[0]} alt="sneaker not found"></img>
           </div>
+          <div className="product-colors container">
+            {filters.map(v => {
+              if (v.filter.type === 'Color') {
+                return (
+                  <div
+                    className="product-select-color"
+                    style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
+                  />
+                );
+              }
+              return [];
+            })}
+          </div>
           <div className="product-select">
             <div className="sizes-info">
               <p>Select Size</p>
@@ -98,6 +120,8 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
           </div>
           <div className="product-buttons container">
             <button className="black-btn" onClick={handleOpen}>
+              {' '}
+              {/* parallel make request to add new product */}
               Add to bag
             </button>
             <button className="grey-btn">Favourite</button>
@@ -131,36 +155,34 @@ const ProductPageF = ({ getCurrentProduct, product: { product, loading }, match 
                   </div>
                 </div>
                 <div className="product-buttons container">
-                  <Link to={`/cart/5de5592bf82b736ff4eb3c08`}> {/* TODO */}
-                    <button className="grey-btn" onClick={() => getCurrentItems()}>
-                    View bag
+                  <Link to={`/cart/${customerId}`}>
+                    {/* TODO */}
+                    <button
+                      className="grey-btn"
+                      onClick={getCurrentItems('5de5592bf82b736ff4eb3c08')}
+                    >
+                      View bag
                     </button>
                   </Link>
-                  <button className="black-btn" onClick={() => addNewProduct(match.params.id, _id, 1)}>Checkout</button> {/*UPDATE THEN REDIRECT*/}
+                  <button
+                    className="black-btn"
+                    onClick={getCurrentItems('5de5592bf82b736ff4eb3c08')}
+                  >
+                    Checkout
+                  </button>{' '}
+                  {/* UPDATE THEN REDIRECT */}
                 </div>
               </div>
             </Modal>
           </div>
 
-          {/* <div className="product-photos">
-            <img></img>
-          </div> */}
+          <div className="product-photos">{/* <Carousel /> */}</div>
           <div className="product-discription container">
             <p className="short-description">{description}</p>
-            <ul className="property-description">
-              <li>
-                Shown:{' '}
-                {filters
-                  .map(v => {
-                    if (v.filter.type === 'Color') {
-                      return v.subFilter.name;
-                    }
-                    return [];
-                  })
-                  .join()}
-              </li>
+            {/* <ul className="property-description">
+              <li>Shown: {''}</li>
               <li>Style: {itemNo}</li>
-            </ul>
+            </ul> */}
           </div>
           <div className="product-reviews container">
             <div className="review-header" onClick={() => setActive(!active)}>
@@ -190,4 +212,10 @@ const mapStateToProps = state => ({
   product: state.product
 });
 
-export default connect(mapStateToProps, { getCurrentProduct, getCurrentItems ,addNewProduct})(ProductPageF);
+const mapDispatchToProps = {
+  getCurrentProduct,
+  getCurrentItems,
+  addNewProduct
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPageF);

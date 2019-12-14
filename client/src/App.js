@@ -52,7 +52,7 @@ class App extends Component {
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
-          {/* <Footer /> */}
+          <Footer />
         </Router>
       </Provider>
     );

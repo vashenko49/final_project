@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from 'react';
 
+import { connect } from 'react-redux';
+
 import './Cart.scss';
 
-export default class Bag extends Component {
-
+class Bag extends Component {
   render() {
-    const { items, loading } = this.props.cartInfo;
+    debugger;
+    const { items, loading } = this.props.cart;
     return (
       <Fragment>
         {loading ? (
@@ -15,12 +17,12 @@ export default class Bag extends Component {
             <h2>BAG</h2>
             <div>
               <p className="about-item">
-                {items.products.length} items |{' '}
+                {items.length} items |{' '}
                 <span className="price">
                   $
-                  {items.products.reduce((acc, curr) => {
+                  {/* {items.reduce((acc, curr) => {
                     return acc.product.model[0].currentPrice + curr.product.model[0].currentPrice;
-                  })}
+                  })} */}
                 </span>
               </p>
             </div>
@@ -30,3 +32,11 @@ export default class Bag extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    cart: state.cart
+  };
+}
+
+export default connect(mapStateToProps)(Bag);

@@ -116,7 +116,6 @@
     }
 
     .checkout-info {
-
       display: flex;
       flex-direction: column;
       width: 47%;
@@ -208,6 +207,21 @@
   }
 }
 
+.product-colors {
+
+  display: flex;
+  grid-area: colors;
+  align-items: center;
+  justify-content: center;
+
+  .product-select-color {
+    width: 27px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
 .slick-slide img {
   width: 138px;
 }
@@ -218,6 +232,7 @@
     grid-template-areas:
       'photo photo header header'
       'photo photo discription discription'
+      'photo photo colors colors'
       'photo photo select select'
       'photo photo sizes sizes'
       'photo photo buttons buttons'
