@@ -8,9 +8,11 @@ export default class NavBar extends React.Component {
 
     return (
       <div>
-        {rootCategories.filter((item => item.enabled === true)).map((item, index) => (
-          <NavBarItem item={item} key={index} children={childCategories} />
-        ))}
+        {rootCategories
+          .filter(item => item.enabled === true)
+          .map((item, index) => (
+            <NavBarItem item={item} key={index} children={childCategories} />
+          ))}
       </div>
     );
   }

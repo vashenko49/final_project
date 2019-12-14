@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 export default class NavBarItem extends Component {
   state = {
     anchorEl: null,
-    open: false,
+    open: false
   };
 
   handleClick = event => {
@@ -40,13 +40,15 @@ export default class NavBarItem extends Component {
             top: '40px'
           }}
         >
-          {
-            children.filter((item => item.enabled === true))
-              .map((child, index) => item._id === child.parentId
-                ? <MenuItem key={index} onClick={this.handleRequestClose}>{child.name}</MenuItem>
-                : null
-            )
-          }
+          {children
+            .filter(item => item.enabled === true)
+            .map((child, index) =>
+              item._id === child.parentId ? (
+                <MenuItem key={index} onClick={this.handleRequestClose}>
+                  {child.name}
+                </MenuItem>
+              ) : null
+            )}
         </Menu>
       </div>
     );
