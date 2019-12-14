@@ -5,7 +5,7 @@ const passport = require('passport');
 const path = require('path');
 const getConfig = require('./config/GetConfig');
 const cors = require('cors');
-const formData = require('express-form-data')
+const formData = require('express-form-data');
 const cloudinary = require('cloudinary').v2;
 
 const app = express();
@@ -49,6 +49,11 @@ app.use('/shippingmethods', require('./routes/shippingMethod'));
 app.use('/paymentmethods', require('./routes/paymentMethods'));
 app.use('/deliveryaddresses', require('./routes/deliveryAddresses'));
 app.use('/slider', require('./routes/slides'));
+app.use('/partners', require('./routes/partner'));
+app.use('/orders', require('./routes/order'));
+
+
+
 
 
 app.use(express.static('../client/build'));

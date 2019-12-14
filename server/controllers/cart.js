@@ -1,136 +1,241 @@
 const Cart = require("../models/Cart");
-const Product = require("../models/Product");
-const Customer = require("../models/Customer");
+const Product = require('../models/Product');
+const Customer = require('../models/Customer');
+const _ = require("lodash");
+const {validationResult} = require('express-validator');
+const mongoose = require('mongoose');
 
-const { validationResult } = require("express-validator");
 
-exports.getCart = async (req, res, next) => {
-    try {
-        const cart = await Cart.findOne({ customerId: req.body.id }).populate("products.product")
-        res.status(200).json(cart)
-    } catch (err) {
-        return res.status(500).json({ msg: `Error happened on server: "${err}"` })
+exports.updateCart = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
     }
+
+    const {idCustomer, products} = req.body;
+    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
+      return res.status(400).json({
+        message: `ID Customer is not valid ${idCustomer}`
+      })
+    }
+
+
+    const customer = await Customer.findById(idCustomer);
+    if (!customer) {
+      return res.status(400).json({
+        message: "Customer not found"
+      })
+    }
+
+    for (let i = 0; i < products.length; i++) {
+      const {idProduct, modelNo} = products[i];
+      if (!mongoose.Types.ObjectId.isValid(idProduct)) {
+        return res.status(400).json({
+          message: `idProduct is not valid ${idProduct}`
+        })
+      }
+      const isModel = await Product.findOne({
+        $and: [
+          {"_id": idProduct},
+          {"model.modelNo": modelNo}
+        ]
+      });
+
+      if (!isModel) {
+        return res.status(400).json({
+          message: `modelNo is not valid ${idProduct}`
+        })
+      }
+    }
+
+
+    let isCart = await Cart.findOne({"customerId": idCustomer});
+    if (!isCart) {
+      isCart = await (new Cart({
+        customerId: idCustomer,
+        products: products
+      })).save();
+    } else {
+      isCart.products = products;
+      isCart = await isCart.save();
+    }
+
+    res.status(200).json(isCart);
+  } catch (e) {
+    res.status(400).json({
+      message: `Server error ${e.message}`
+    })
+  }
 };
 
-exports.updateCart = async (req, res, next) => {
-
+exports.updateProductFromCart = async (req, res) => {
+  try {
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+      return res.status(422).json({errors: errors.array()});
     }
 
-    try {
-        const customer = await Customer.findOne({ _id: req.body.id });
-        const product = await Product.findOne({ _id: req.body.productId });
-        let cart = await Cart.findOne({ customerId: req.body.id });
+    const {idCustomer, idProduct, modelNo, quantity} = req.body;
 
-        if (!customer) {
-            return res.status(404).json({ msg: `Customer with _id ${req.body.id} was not found.` })
-        }
-
-        if (!product) {
-            return res.status(404).json({ msg: `Product with _id ${req.params.productId} was not found.` })
-        }
-
-        if (!cart) {
-            cart = new Cart();
-            cart.customerId = customer._id;
-        }
-
-        const foundProduct = cart.products.map(e => e.product._id.toString())
-
-        const productExist = foundProduct.indexOf(req.body.productId);
-
-        if (productExist >= 0) {
-            return res.status(409).json({ msg: `Product with _id ${req.body.productId} already exist!` })
-        }
-
-        cart.products.push({ product, cartQuantity: req.body.quantity });
-
-        await cart.save();
-        res.status(200).json({ cart });
-
-    } catch (err) {
-        return res.status(500).json({ msg: `Error happened on server: "${err}"` });
-    }
-}
-
-exports.updateQuantity = async (req, res, next) => {
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
+      return res.status(400).json({
+        message: `ID Customer is not valid ${idCustomer}`
+      })
     }
 
-    try {
-
-        const customer = await Customer.findOne({ _id: req.body.id });
-        const product = await Product.findOne({ _id: req.body.productId });
-        let cart = await Cart.findOne({ customerId: req.body.id });
-
-        if (!customer) {
-            return res.status(404).json({ msg: `Customer with _id ${req.body.id} was not found.` })
-        }
-
-        if (!product) {
-            return res.status(404).json({ msg: `Product with _id ${req.params.productId} was not found.` });
-        }
-
-        const foundProduct = cart.products.map(v => v.product._id.toString());
-
-        const updatedIndex = foundProduct.indexOf(req.body.productId);
-
-        let updatedCart = cart.products[updatedIndex];
-
-        updatedCart.cartQuantity = req.body.quantity;
-
-        await cart.save();
-        res.status(200).json({ cart });
-
-    } catch (err) {
-        return res.status(500).json({ msg: `Error happened on server: "${err}"` });
-    }
-}
-
-exports.deleteProductFromCart = async (req, res, next) => {
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+    const customer = await Customer.findById(idCustomer);
+    if (!customer) {
+      return res.status(400).json({
+        message: "Customer not found"
+      })
     }
 
-    try {
-        const customer = await Customer.findOne({ _id: req.body.id });
-        const product = await Product.findOne({ _id: req.body.productId });
-        let cart = await Cart.findOne({ customerId: req.body.id });
-
-        if (!customer) {
-            return res.status(404).json({ msg: `Customer with _id ${req.body.id} was not found.` });
-        }
-
-        if (!product) {
-            return res.status(404).json({ msg: `Product with _id ${req.params.productId} was not found.` });
-        }
-
-        if (!cart) {
-            cart = new Cart();
-            cart.customerId = customer._id;
-        }
-
-        const foundProduct = cart.products.map(v => v.product._id.toString());
-        console.log(foundProduct)
-        const removeIndex = foundProduct.indexOf(req.body.productId);
-
-        cart.products.splice(removeIndex, 1);
-
-        await cart.save();
-        res.status(200).json({ cart });
-
-    } catch (error) {
-        return res.status(500).json({ msg: `Error happened on server: "${err}"` });
+    if (!mongoose.Types.ObjectId.isValid(idProduct)) {
+      return res.status(400).json({
+        message: `idProduct is not valid ${idProduct}`
+      })
     }
-}
+
+    const isModel = await Product.findOne({
+      $and: [
+        {"_id": idProduct},
+        {"model.modelNo": modelNo}
+      ]
+    });
+
+    if (!isModel) {
+      res.status(400).json({
+        message: `product id ${idProduct} with model ${modelNo} is not model`
+      })
+    }
+
+    let isCart = await Cart.findOne({"customerId": idCustomer});
+
+    if (!isCart) {
+      isCart = await (new Cart({
+        customerId: idCustomer,
+        products: [{
+          idProduct: idProduct,
+          modelNo: modelNo,
+          quantity: quantity
+        }]
+      })).save();
+    } else {
+      let indexProd = _.findIndex(isCart.products,function (o) {
+        //documentation recommend use ==
+        return (o.idProduct == idProduct && o.modelNo == modelNo)
+      });
+
+
+      if(indexProd=>0){
+        isCart.products[indexProd].quantity= quantity;
+      }else {
+        isCart.products.push({
+          idProduct: idProduct,
+          modelNo: modelNo,
+          quantity: quantity
+        })
+      }
+      isCart = await isCart.save();
+    }
+
+    res.status(200).json(isCart);
+  } catch (e) {
+    res.status(400).json({
+      message: `Server error ${e.message}`
+    })
+  }
+};
+
+
+exports.cleanCart = async (req, res) => {
+  try {
+    const {idCustomer} = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
+      return res.status(400).json({
+        message: `ID Customer is not valid ${idCustomer}`
+      })
+    }
+
+    const customer = await Customer.findById(idCustomer);
+    if (!customer) {
+      return res.status(400).json({
+        message: "Customer not found"
+      })
+    }
+
+
+    let cart = await Cart.findOne({"customerId": idCustomer});
+    if (!cart) {
+      return res.status(400).json({
+        message: "Cart not found"
+      })
+    }
+
+    cart.products = [];
+    await cart.save();
+
+    res.status(200).json({
+      message: `Cart successfully emptied`,
+      cart:cart
+    })
+
+  } catch (e) {
+    res.status(400).json({
+      message: `Server error ${e.message}`
+    })
+  }
+};
+
+exports.getCart = async (req, res) => {
+  try {
+    const {idCustomer} = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
+      return res.status(400).json({
+        message: `ID Customer is not valid ${idCustomer}`
+      })
+    }
+
+    const customer = await Customer.findById(idCustomer);
+    if (!customer) {
+      return res.status(400).json({
+        message: "Customer not found"
+      })
+    }
+
+
+    let cart  = JSON.parse(JSON.stringify(await Cart.findOne({"customerId": idCustomer})
+      .populate('customerId')
+      .populate('products.idProduct')));
+    if (!cart) {
+      return res.status(400).json({
+        message: "Cart not found"
+      })
+    }
+
+    if(!cart){
+      cart = await (new Cart({
+        customerId: idCustomer,
+        products:[]
+      })).save();
+    }
+
+
+    cart.products.forEach(((element, indexProd)=>{
+      let index = _.findIndex(element.idProduct.model,function (o) {
+        return o.modelNo == element.modelNo;
+      });
+     cart.products[indexProd].modelNo = _.clone(cart.products[indexProd].idProduct.model[index]);
+    }));
+
+    res.status(200).json(cart);
+
+  } catch (e) {
+    res.status(400).json({
+      message: `Server error ${e.message}`
+    })
+  }
+};

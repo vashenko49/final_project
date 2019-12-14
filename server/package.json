@@ -31,7 +31,6 @@
     "materialize-css": "^1.0.0-rc.2",
     "mongoose": "^5.7.5",
     "nodemailer": "^6.3.1",
-    "order-id": "^1.1.0",
     "passport": "^0.4.0",
     "passport-custom": "^1.1.0",
     "passport-jwt": "^4.0.0",

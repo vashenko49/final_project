@@ -8,7 +8,8 @@ const mongoose = require('mongoose');
 const commonProduct = require('../common/commonProduct ');
 const Product = require("../models/Product");
 const ChildCatalog = require('../models/ChildCatalog');
-const uuid = require('order-id')(process.env.orderIdSecret);
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
 exports.addProduct = async (req, res, next) => {
   try {
@@ -17,7 +18,7 @@ exports.addProduct = async (req, res, next) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    let itemNo = uuid.generate();
+    let itemNo = (rand()).toString();
     let {_idChildCategory} = req.body;
     let {productUrlImg, filterImg} = req.files;
     const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(itemNo)}`;
@@ -51,6 +52,12 @@ exports.addProduct = async (req, res, next) => {
     }));
 
 
+    product.model = product.model.map(element => {
+      element.modelNo = rand();
+      return element;
+    });
+
+
     let filter = product.filters;
     product.model.forEach(element => {
       filter = _.concat(filter, element.filters);
@@ -74,6 +81,7 @@ exports.addProduct = async (req, res, next) => {
     await childCatalog.save();
 
     product.itemNo = itemNo;
+
 
     let newProduct = new Product(product);
     await newProduct.save();
@@ -127,6 +135,7 @@ exports.addModelForProduct = async (req, res, next) => {
 
 
     model = _.omit(model, '_idProduct');
+    model.modelNo = rand();
 
     product.model.push(model);
     await product.save();
@@ -145,7 +154,8 @@ exports.updateProduct = async (req, res, next) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {_idProduct, warning, htmlPage, isBigImg, enabled, model, filters, description, nameProduct, _idChildCategory} = req.body;
+    const {_idProduct, warning, htmlPage, isBigImg, enabled, filters, description, nameProduct, _idChildCategory} = req.body;
+    let {model} = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -178,21 +188,25 @@ exports.updateProduct = async (req, res, next) => {
         }
       }
     }
+    let oldImgProduct = [];
+    if (_.isArray(req.body.productUrlImg) && req.body.productUrlImg.length > 0) {
+      oldImgProduct = product.productUrlImg.filter(commonProduct.comparerImg(req.body.productUrlImg));
 
 
-    let oldImgProduct = product.productUrlImg.filter(commonProduct.comparerImg(req.body.productUrlImg));
-
-    product.filterImg.forEach(oldElement => {
-      req.body.filterImg.forEach(newElement => {
-        if (oldElement._idSubFilters.toString() === newElement._idSubFilters.toString()) {
-          oldImgProduct.push(...oldElement.urlImg.filter(commonProduct.comparerImg(newElement.urlImg)))
-        }
+      product.filterImg.forEach(oldElement => {
+        req.body.filterImg.forEach(newElement => {
+          if (oldElement._idSubFilters.toString() === newElement._idSubFilters.toString()) {
+            oldImgProduct.push(...oldElement.urlImg.filter(commonProduct.comparerImg(newElement.urlImg)))
+          }
+        });
       });
-    });
 
 
-    //удаляем старые фотки, которые не используем
-    await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(oldImgProduct);
+      //удаляем старые фотки, которые не используем
+      if (_.isArray(oldImgProduct) && oldImgProduct.length > 0) {
+        await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(oldImgProduct);
+      }
+    }
 
 
     if (_.isArray(filters) || _.isArray(model)) {
@@ -236,6 +250,16 @@ exports.updateProduct = async (req, res, next) => {
 
       //добавляем в каталог ранее не используемые под фильтры
       commonProduct.addNewSubFilterToCategory(onlyNewFilter, childCatalog);
+
+      if (_.isArray) {
+        model = model.map(element => {
+          if (!element.modelNo) {
+            element.modelNo = (rand()).toString();
+          }
+          return element;
+        });
+      }
+
 
       product.model = _.isArray(model) ? model : product.model;
       product.filters = _.isArray(filters) ? filters : product.filters;

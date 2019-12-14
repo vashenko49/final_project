@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
@@ -9,11 +9,11 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as headerAction from '../../actions/headerAction'
+import * as headerAction from '../../actions/headerAction';
 
 import './Header.scss';
-import NavBar from "./NavBar/NavBar";
-import {Link} from "react-router-dom";
+import NavBar from './NavBar/NavBar';
+import { Link } from 'react-router-dom';
 
 class Header extends Component {
   componentDidMount() {
@@ -26,7 +26,9 @@ class Header extends Component {
 
     return (
       <header className="header">
-        <Link to="/" className="header-logo">CROSSY</Link>
+        <Link to="/" className="header-logo">
+          CROSSY
+        </Link>
         <NavBar
           className="header-navbar"
           rootCategories={rootCategories}
