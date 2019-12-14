@@ -12,31 +12,31 @@ class CreateProducts extends Component {
     this.state = {
       formData: {
         productUrlImg: [],
-        nameProduct: 'Court Air Zoom Vapor X',
+        nameProduct: 'New Balance Fresh Foam 1080v10',
         _idChildCategory: '5de02b89e8a23045f0c1559c',
         description:
-          'With Nike Zoom Air and a Dynamic Fit system, the NikeCourt Air Zoom Vapor X provides ultimate control on hard courts. The Dynamic Fit system wraps your foot from the bottom of the arch up to the laces for a glove-like fit. A Zoom Air unit in the heel offers low-profile, resilient cushioning from swing to swing.The full-length TPU foot frame wraps up the outside of your foot for added stability on every turn and swing. The full-length TPU foot frame wraps up the outside of your foot for added stability on every turn and swing.The full-length TPU foot frame wraps up the outside of your foot for added stability on every turn and swing. The full-length TPU foot frame wraps up the outside of your foot for added stability on every turn and swing. The full-length TPU foot frame wraps up the outside of your foot for added stability on every turn and swing.',
+          'The Fresh Foam 1080v10 is our premium expression of runner’s data, supreme comfort, and cutting-edge design. The new Fresh Foam X midsole delivers enhanced softness and a more energetic rebound than its predecessor. Experience 360 degrees of comfort with a soft fitting knit upper and Ultra Heel in a stylish new look. ',
         filters: [
           {
-            filter: '5de027f4e8a23045f0c15580',
-            subFilter: '5de0296de8a23045f0c15583'
+            filter: '5de02aece8a23045f0c1559b',
+            subFilter: '5de02aece8a23045f0c15593'
           }
         ],
         htmlPage: '<div>gogo ogo oggfdjgouifhgiufd </div>',
         filterImg: [
           {
-            _idFilter: '5de02aece8a23045f0c1559b',
-            _idSubFilters: '5de02a12e8a23045f0c1558c',
+            _idFilter: '5de575a65ac80a23483fece7',
+            _idSubFilters: '5de575945ac80a23483fece6',
             urlImg: []
           },
           {
-            _idFilter: '5de02aece8a23045f0c1559b',
-            _idSubFilters: '5de02aece8a23045f0c15593',
+            _idFilter: '5de575a65ac80a23483fece7',
+            _idSubFilters: '5de7697d535af507733c22b0',
             urlImg: []
           },
           {
-            _idFilter: '5de02aece8a23045f0c1559b',
-            _idSubFilters: '5de02aece8a23045f0c15599',
+            _idFilter: '5de575a65ac80a23483fece7',
+            _idSubFilters: '5df507faa4660f32442a0f41',
             urlImg: []
           }
         ],
@@ -46,28 +46,40 @@ class CreateProducts extends Component {
             currentPrice: 160,
             filters: [
               {
-                filter: '5de02aece8a23045f0c1559b',
-                subFilter: '5de02a12e8a23045f0c1558c'
+                filter: '5de027f4e8a23045f0c15580',
+                subFilter: '5de0296ce8a23045f0c15581'
+              },
+              {
+                filter: '5de575a65ac80a23483fece7',
+                subFilter: '5de575945ac80a23483fece6'
               }
             ]
           },
           {
-            quantity: 53,
-            currentPrice: 260,
+            quantity: 51,
+            currentPrice: 460,
             filters: [
               {
-                filter: '5de02aece8a23045f0c1559b',
-                subFilter: '5de02aece8a23045f0c15593'
+                filter: '5de027f4e8a23045f0c15580',
+                subFilter: '5de0296de8a23045f0c15585'
+              },
+              {
+                filter: '5de575a65ac80a23483fece7',
+                subFilter: '5de7697d535af507733c22b0'
               }
             ]
           },
           {
-            quantity: 53,
-            currentPrice: 260,
+            quantity: 23,
+            currentPrice: 1260,
             filters: [
               {
-                filter: '5de02aece8a23045f0c1559b',
-                subFilter: '5de02aece8a23045f0c15599'
+                filter: '5de027f4e8a23045f0c15580',
+                subFilter: '5de0296ce8a23045f0c15582'
+              },
+              {
+                filter: '5de575a65ac80a23483fece7',
+                subFilter: '5df507faa4660f32442a0f41'
               }
             ]
           }
@@ -139,7 +151,7 @@ class CreateProducts extends Component {
         </Box>
         <Box>
           <input
-            data-index={'5de02a12e8a23045f0c1558c'}
+            data-index={'5de575945ac80a23483fece6'}
             multiple
             onChange={this.handleChangeFilterImg}
             name="userAvatar"
@@ -149,7 +161,7 @@ class CreateProducts extends Component {
         <Box>
           {/* {data-index храню id subfilter что бы отслеживать куда ложить файлы} */}
           <input
-            data-index={'5de02aece8a23045f0c15593'}
+            data-index={'5de7697d535af507733c22b0'}
             multiple
             onChange={this.handleChangeFilterImg}
             name="userAvatar"
@@ -159,7 +171,7 @@ class CreateProducts extends Component {
         <Box>
           {/* {data-index храню id subfilter что бы отслеживать куда ложить файлы} */}
           <input
-            data-index={'5de02aece8a23045f0c15599'}
+            data-index={'5df507faa4660f32442a0f41'}
             multiple
             onChange={this.handleChangeFilterImg}
             name="userAvatar"

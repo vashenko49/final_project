@@ -281,6 +281,38 @@ exports.createSubFilter = async (req, res) => {
   }
 };
 
+exports.createManySubFilter = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
+
+    let {names} = req.body;
+
+    if(_.isArray(names)&&names.length>0){
+      names = await Promise.all(names.map(async element=>{
+        let subFilter = await SubFilter.findOne({name: element});
+
+        if(subFilter){
+          return subFilter;
+        }else {
+
+          return  await (new SubFilter({name: element})).save();
+        }
+      }));
+    }
+
+    res.status(200).json(names);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Server Error!!'
+    })
+  }
+};
+
 exports.updateSubFilter = async (req, res) => {
   try {
     const errors = validationResult(req);
