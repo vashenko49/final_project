@@ -1,55 +1,69 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
+const {check} = require('express-validator');
 
-const { check } = require('express-validator');
+//Import controllers
+const {
+  updateCart,
+  updateProductFromCart,
+  cleanCart,
+  getCart
+} = require("../controllers/cart");
 
-const { getCart, addNewProduct, updateQuantity, deleteProductFromCart } = require("../controllers/cart")
 
-// @route   GET /cart/:id
-// @desc    Get customer cart
+// @route   PUT /cart
+// @desc    Update cart when adding / deleting products in cart
 // @access  Private
-router.get(
-    "/:id",
-    getCart);
+router.put("/",
+  [
+    check("idCustomer",'idCustomer is require')
+      .not()
+      .isEmpty(),
+    check("products.*.idProduct", "idProduct is require")
+      .not()
+      .isEmpty(),
+    check("products.*.modelNo", "modelNo is require")
+      .not()
+      .isEmpty(),
+    check("products.*.quantity", "cartQuantity is require")
+      .isNumeric()
+      .isInt({ min: 0 }),
+  ],
+  updateCart);
 
-// @route   POST /cart/:id
-// @desc    Add one product to cart
-// @access  Private
-router.post(
-    "/:id",
-    check("productId", "Product id is required")
-        .not()
-        .isEmpty(),
-    check("quantity", "Quantity is required and must be greater then 0")
-        .not()
-        .isEmpty()
-        .isInt({ gt: 0 }),
-        addNewProduct);
 
-// @route   PUT /cart/:id
-// @desc    Change quantity of product
+// @route   PUT /cart/:productId
+// @desc    Edit one product to cart
 // @access  Private
 router.put(
-    "/:id",
-    check("productId", "Product id is required")
-        .not()
-        .isEmpty(),
-    check("quantity", "Quantity is required and must be greater then 0")
-        .not()
-        .isEmpty()
-        .isInt({ gt: 0 }),
-    updateQuantity);
+  "/product",
+  [
+    check("idCustomer",'idCustomer is require')
+      .not()
+      .isEmpty(),
+    check("idProduct", "idProduct is require")
+      .not()
+      .isEmpty(),
+    check("modelNo", "modelNo is require")
+      .not()
+      .isEmpty(),
+    check("quantity", "cartQuantity is require")
+      .isNumeric()
+      .isInt({ min: 0 }),
+  ],
+  updateProductFromCart
+);
 
-// @route   DELETE /cart/:id
-// @desc    Delete one product from cart
+
+// @route   DELETE /cart/:idCustomer
+// @desc    clean cart
 // @access  Private
-router.delete(
-    "/:id",
-    check("productId", "Quantity is required and must be greater then 0")
-        .not()
-        .isEmpty()
-        .isInt({ gt: 0 }),
-    deleteProductFromCart);
+router.delete("/:idCustomer",  cleanCart);
+
+
+// @route   GET /cart
+// @desc    Get cart for customer
+// @access  Private
+router.get("/:idCustomer", getCart);
 
 module.exports = router;

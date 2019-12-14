@@ -1,11 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const customerid = require('order-id')(process.env.usersIdSecret);
-
+const cloudinary = require('cloudinary').v2;
 
 const sendEmail = require('../common/sendEmail');
 const CustomerModel = require('../models/Customer');
 const {validationResult} = require('express-validator');
+const _ = require('lodash');
 
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
@@ -14,6 +15,9 @@ exports.createCustomer = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({errors: errors.array()});
     }
+
+    const values = Object.values(req.files);
+    const userAvatar = values.length > 0 ? await cloudinary.uploader.upload(values[0].path, {folder: "final-project/userAvatar"}) : null;
 
     const {firstName, lastName, login, email, password, gender} = req.body;
 
@@ -41,6 +45,7 @@ exports.createCustomer = async (req, res) => {
       lastName,
       login,
       gender,
+      avatarUrl: userAvatar ? userAvatar.public_id : '',
       customerNo: customerid.generate(),
       socialmedia: [4],
       isAdmin: false,
@@ -85,7 +90,6 @@ exports.createCustomer = async (req, res) => {
       }
     );
   } catch (e) {
-    console.log(e);
     res.status(400).json({
       message: e.message
     })
@@ -116,20 +120,20 @@ exports.checkLoginOrEmail = async (req, res) => {
     const {type, data} = req.body;
 
     if (!type || !data) {
-      return  res.status(200).json({status: false});
+      return res.status(200).json({status: false});
     }
     let config = type === 'login' ? {"login": data} : {"email": data};
 
     const customer = await CustomerModel.findOne(config);
 
     if (customer) {
-      return  res.status(200).json({status: false});
+      return res.status(200).json({status: false});
     }
 
-    return  res.status(200).json({status: true});
+    return res.status(200).json({status: true});
 
   } catch (e) {
-    return  res.status(500).json({
+    return res.status(500).json({
       message: `Server error ${e.message}`
     })
   }
@@ -161,11 +165,13 @@ exports.createCustomerSocialNetwork = async (req, res) => {
     } else {
       console.log('новый пользователь ---->');
       //регестрируем пользователя
-      const Customer = new CustomerModel({
+      const userImg = await cloudinary.uploader.upload(customer.avatarUrl, {folder: "final-project/userAvatar"});
+
+      Customer = new CustomerModel({
         email: customer.email,
         firstName: customer.firstName,
         lastName: customer.lastName,
-        avatarUrl: customer.avatarUrl,
+        avatarUrl: userImg.public_id,
         customerNo: customerid.generate(),
         socialmedia: [customer.typeSocial],
         isAdmin: false,
@@ -184,6 +190,7 @@ exports.createCustomerSocialNetwork = async (req, res) => {
     });
 
   } catch (e) {
+    console.log(e);
     return res.status(400).json({message: e.message});
   }
 
@@ -261,61 +268,76 @@ exports.getCustomer = (req, res) => {
 };
 
 // Controller for editing customer personal info
-exports.editCustomerInfo = (req, res) => {
-  CustomerModel.findById(req.user._id)
-    .then(customer => {
-      if (!customer) {
-        errors.id = "Customer not found";
-        return res.status(404).json(errors);
+exports.editCustomerInfo = async (req, res) => {
+  try {
+
+    const {_id} = req.user;
+
+    const customer = await CustomerModel.findById(_id);
+    if (!customer) {
+      errors.id = "Customer not found";
+      return res.status(404).json(errors);
+    }
+
+
+    const currentEmail = customer.email;
+    const currentLogin = customer.login;
+
+    const {firstName, lastName, telephone, birthday, gender, email, login} = req.body;
+    const {avatarUrl} = req.files;
+
+
+    if (_.isString(email) && ( currentEmail !== email))
+    {
+      const isUseEmail = CustomerModel.findOne({email: email});
+      if (isUseEmail) {
+        return res.status(400).json({
+          message: `Email ${email} is already exists`
+        })
+      }
+      customer.email = email;
+    }
+    if (_.isString(login) && (currentLogin !== login)) {
+      const isUseLogin = CustomerModel.findOne({login: login});
+      if (isUseLogin) {
+        return res.status(400).json({
+          message: `Login ${login} is already exists`
+        })
+      }
+      customer.login = login;
+    }
+
+    //отвязываем соц сети от аккаунта так ка почта изменена
+    if (_.isString(email)) {
+      customer.socialmedia = [4];
+    }
+
+    if (_.isObject(avatarUrl)) {
+
+      if(_.isString(customer.avatarUrl)){
+        await cloudinary.uploader.destroy(customer.avatarUrl);
       }
 
+      const photo = await cloudinary.uploader.upload(avatarUrl.path, {folder: "final-project/userAvatar"});
+      customer.avatarUrl = photo.public_id;
+    }
 
-      const currentEmail = customer.email;
-      const currentLogin = customer.login;
-      const newEmail = req.body.email;
-      const newLogin = req.body.login;
 
-      if (currentEmail !== newEmail) {
-        CustomerModel.findOne({email: newEmail}).then(customer => {
-          if (customer) {
-            errors.email = `Email ${newEmail} is already exists`;
-            res.status(400).json(errors);
-          }
-        });
+    customer.firstName = _.isString(firstName) ? firstName : customer.description;
+    customer.lastName = _.isString(lastName) ? lastName : customer.lastName;
+    customer.birthday = _.isString(birthday) ? birthday : customer.birthday;
+    customer.telephone = _.isString(telephone) ? telephone : customer.telephone;
+    customer.gender = _.isString(gender) ? gender : customer.gender;
 
-      }
-      if (currentLogin !== newLogin) {
-        CustomerModel.findOne({login: newLogin}).then(customer => {
-          if (customer) {
-            errors.login = `Login ${newLogin} is already exists`;
-            res.status(400).json(errors);
-          }
-        });
-      }
+    await customer.save();
 
-      //отвязываем соц сети от аккаунта так ка почта изменена
-      if (newEmail) {
-        req.body.socialmedia = [4];
-      }
-
-      CustomerModel.findOneAndUpdate(
-        {_id: req.user.id},
-        {$set: req.body},
-        {new: true}
-      )
-        .then(customer => res.json(customer))
-        .catch(err =>
-          res.status(400).json({
-            message: `Error happened on server: "${err}" `
-          })
-        );
-
+    res.status(200).json(customer);
+  } catch (e) {
+    res.status(500).json({
+      message: 'Server Error!'
     })
-    .catch(err =>
-      res.status(400).json({
-        message: `Error happened on server:"${err}" `
-      })
-    );
+  }
+
 };
 
 // Controller for editing customer password
@@ -328,6 +350,7 @@ exports.updatePassword = (req, res) => {
       let oldPassword = req.body.password;
       let newPassword = req.body.newPassword;
       let passwordValid;
+
       if (customer.password) {
         passwordValid = await bcrypt.compare(oldPassword, customer.password);
         if (!passwordValid) {
@@ -341,7 +364,7 @@ exports.updatePassword = (req, res) => {
       newPassword = await bcrypt.hash(newPassword, salt);
 
       CustomerModel.findOneAndUpdate(
-        {_id: req.user.id},
+        {_id: req.user._id},
         {
           $set: {
             password: newPassword

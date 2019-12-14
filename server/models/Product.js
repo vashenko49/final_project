@@ -1,16 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const uuid = require('order-id')(process.env.orderIdSecret);
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
 const ProductSchema = new Schema(
   {
     itemNo: {
       type: String,
-      default: uuid.generate()
+      required: true
     },
     nameProduct: {
       type: String,
       required: true
+
     },
     warning: [{
       type: String
@@ -56,9 +58,9 @@ const ProductSchema = new Schema(
           require: true,
           ref: 'subfilters'
         },
-        urlImg:{
+        urlImg:[{
           type:String
-        }
+        }]
       }
     ],
     htmlPage:{
@@ -103,7 +105,7 @@ const ProductSchema = new Schema(
         },
         modelNo: {
           type: String,
-          default: uuid.generate()
+          required: true
         }
       }
     ]

@@ -1,3 +1,5 @@
+const customCloudinaryInstrument = require("../common/customCloudinaryInstrument");
+
 const _ = require("lodash");
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
@@ -5,6 +7,8 @@ const mongoose = require("mongoose");
 const commonProduct = require("../common/commonProduct ");
 const Product = require("../models/Product");
 const ChildCatalog = require("../models/ChildCatalog");
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
 exports.addProduct = async (req, res, next) => {
   try {
@@ -13,10 +17,46 @@ exports.addProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
+    let itemNo = rand().toString();
+    let { _idChildCategory } = req.body;
+    let { productUrlImg, filterImg } = req.files;
+    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(itemNo)}`;
+
+    if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
+      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+        productUrlImg,
+        folder
+      );
+      urlProductOnCloudinary.forEach(element => {
+        _.set(req.body, element.field, element.url);
+      });
+    }
+
+    if (_.isArray(filterImg) && filterImg.length > 0) {
+      for (let i = 0; i < filterImg.length; i++) {
+        if (_.isArray(filterImg[i].urlImg) && filterImg[i].urlImg.length > 0) {
+          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+            filterImg[i].urlImg,
+            folder
+          );
+          urlProductOnCloudinary.forEach(element => {
+            if (element.field) {
+              _.set(req.body, element.field, element.url);
+            }
+          });
+        }
+      }
+    }
+
     let product = _.cloneDeepWith(req.body, value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
         return value;
       }
+    });
+
+    product.model = product.model.map(element => {
+      element.modelNo = rand();
+      return element;
     });
 
     let filter = product.filters;
@@ -41,11 +81,14 @@ exports.addProduct = async (req, res, next) => {
     commonProduct.addNewSubFilterToCategory(filter, childCatalog);
     await childCatalog.save();
 
+    product.itemNo = itemNo;
+
     let newProduct = new Product(product);
     await newProduct.save();
 
     res.status(200).json(newProduct);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: "Server Error!"
     });
@@ -91,6 +134,7 @@ exports.addModelForProduct = async (req, res, next) => {
     await childCatalog.save();
 
     model = _.omit(model, "_idProduct");
+    model.modelNo = rand();
 
     product.model.push(model);
     await product.save();
@@ -113,16 +157,14 @@ exports.updateProduct = async (req, res, next) => {
       _idProduct,
       warning,
       htmlPage,
-      filterImg,
       isBigImg,
       enabled,
-      model,
       filters,
       description,
-      productUrlImg,
       nameProduct,
       _idChildCategory
     } = req.body;
+    let { model } = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -130,6 +172,58 @@ exports.updateProduct = async (req, res, next) => {
       res.status(400).json({
         message: "Product not found"
       });
+    }
+
+    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(
+      product.itemNo
+    )}`;
+    let { productUrlImg, filterImg } = req.files;
+
+    if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
+      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+        productUrlImg,
+        folder
+      );
+      urlProductOnCloudinary.forEach(element => {
+        _.set(req.body, element.field, element.url);
+      });
+    }
+
+    if (_.isArray(filterImg) && filterImg.length > 0) {
+      for (let i = 0; i < filterImg.length; i++) {
+        if (_.isArray(filterImg[i].urlImg) && filterImg[i].urlImg.length > 0) {
+          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+            filterImg[i].urlImg,
+            folder
+          );
+          urlProductOnCloudinary.forEach(element => {
+            if (element.field) {
+              _.set(req.body, element.field, element.url);
+            }
+          });
+        }
+      }
+    }
+    let oldImgProduct = [];
+    if (_.isArray(req.body.productUrlImg) && req.body.productUrlImg.length > 0) {
+      oldImgProduct = product.productUrlImg.filter(
+        commonProduct.comparerImg(req.body.productUrlImg)
+      );
+
+      product.filterImg.forEach(oldElement => {
+        req.body.filterImg.forEach(newElement => {
+          if (oldElement._idSubFilters.toString() === newElement._idSubFilters.toString()) {
+            oldImgProduct.push(
+              ...oldElement.urlImg.filter(commonProduct.comparerImg(newElement.urlImg))
+            );
+          }
+        });
+      });
+
+      //удаляем старые фотки, которые не используем
+      if (_.isArray(oldImgProduct) && oldImgProduct.length > 0) {
+        await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(oldImgProduct);
+      }
     }
 
     if (_.isArray(filters) || _.isArray(model)) {
@@ -164,6 +258,7 @@ exports.updateProduct = async (req, res, next) => {
       });
 
       let onlyNewFilter = newFilter.filter(commonProduct.comparer(oldFilter));
+
       let onlyOldFilter = oldFilter.filter(commonProduct.comparer(newFilter));
 
       let childCatalog = await ChildCatalog.findById(product._idChildCategory);
@@ -171,11 +266,21 @@ exports.updateProduct = async (req, res, next) => {
       //добавляем в каталог ранее не используемые под фильтры
       commonProduct.addNewSubFilterToCategory(onlyNewFilter, childCatalog);
 
+      if (_.isArray) {
+        model = model.map(element => {
+          if (!element.modelNo) {
+            element.modelNo = rand().toString();
+          }
+          return element;
+        });
+      }
+
       product.model = _.isArray(model) ? model : product.model;
       product.filters = _.isArray(filters) ? filters : product.filters;
 
       await product.save();
       await childCatalog.save();
+
       //контроль не используемых подфильтров в категории при удалении
       await commonProduct.removeSubFilterFromChildCategoryCheckProduct(
         onlyOldFilter,
@@ -184,20 +289,23 @@ exports.updateProduct = async (req, res, next) => {
     }
 
     product.enabled = _.isBoolean(enabled) ? enabled : product.enabled;
-    product.description = description ? description : product.description;
-    product.productUrlImg = _.isArray(productUrlImg) ? productUrlImg : product.productUrlImg;
+    product.description = _.isString(description) ? description : product.description;
     product.nameProduct = _.isString(nameProduct) ? nameProduct : product.nameProduct;
     product.htmlPage = _.isString(htmlPage) ? htmlPage : product.htmlPage;
     product._idChildCategory = _.isString(_idChildCategory)
       ? _idChildCategory
       : product._idChildCategory;
     product.warning = _.isArray(warning) ? warning : product.warning;
-    product.filterImg = _.isArray(filterImg) ? filterImg : product.filterImg;
+    product.productUrlImg = _.isArray(req.body.productUrlImg)
+      ? req.body.productUrlImg
+      : product.productUrlImg;
+    product.filterImg = _.isArray(req.body.filterImg) ? req.body.filterImg : product.filterImg;
     product.isBigImg = _.isBoolean(isBigImg) ? isBigImg : product.isBigImg;
 
     await product.save();
     res.status(200).json(product);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: "Server Error!"
     });
@@ -333,6 +441,12 @@ exports.deleteProduct = async (req, res, next) => {
       product._idChildCategory
     );
 
+    //удаляем фотки товара
+    await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(product.productUrlImg);
+    for (let i = 0; i < product.filterImg.length; i++) {
+      await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(product.filterImg[i].urlImg);
+    }
+
     await product.delete();
     res.status(200).json({ msg: "Product deleted" });
   } catch (err) {
@@ -395,11 +509,27 @@ exports.deleteModelProduct = async (req, res) => {
 exports.getProducts = async (req, res, next) => {
   try {
     let products = await Product.find()
-      .populate("_idChildCategory")
-      .populate("filters.filter")
-      .populate("filters.subFilter")
-      .populate("model.filters.filter")
-      .populate("model.filters.subFilter");
+      .populate({
+        path: "_idChildCategory",
+        select: "-filters",
+        populate: {
+          path: "parentId"
+        }
+      })
+      .populate({
+        path: "filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "filters.subFilter"
+      })
+      .populate({
+        path: "model.filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "model.filters.subFilter"
+      });
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -412,11 +542,27 @@ exports.getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
     let product = await Product.findById(id)
-      .populate("_idChildCategory")
-      .populate("filters.filter")
-      .populate("filters.subFilter")
-      .populate("model.filters.filter")
-      .populate("model.filters.subFilter");
+      .populate({
+        path: "_idChildCategory",
+        select: "-filters",
+        populate: {
+          path: "parentId"
+        }
+      })
+      .populate({
+        path: "filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "filters.subFilter"
+      })
+      .populate({
+        path: "model.filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "model.filters.subFilter"
+      });
 
     if (!product) {
       return res.status(400).json({
@@ -435,9 +581,29 @@ exports.getProductById = async (req, res, next) => {
 exports.searchProductsHeader = async (req, res, next) => {
   try {
     const { searchheader } = req.params;
-    const products = await Product.find({ nameProduct: { $regex: decodeURI(searchheader) } }).limit(
-      5
-    );
+    const products = await Product.find({ nameProduct: { $regex: decodeURI(searchheader) } })
+      .limit(5)
+      .populate({
+        path: "_idChildCategory",
+        select: "-filters",
+        populate: {
+          path: "parentId"
+        }
+      })
+      .populate({
+        path: "filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "filters.subFilter"
+      })
+      .populate({
+        path: "model.filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "model.filters.subFilter"
+      });
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -449,7 +615,28 @@ exports.searchProductsHeader = async (req, res, next) => {
 exports.searchProducts = async (req, res, next) => {
   try {
     const { search } = req.params;
-    const products = await Product.find({ nameProduct: { $regex: decodeURI(search) } });
+    const products = await Product.find({ nameProduct: { $regex: decodeURI(search) } })
+      .populate({
+        path: "_idChildCategory",
+        select: "-filters",
+        populate: {
+          path: "parentId"
+        }
+      })
+      .populate({
+        path: "filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "filters.subFilter"
+      })
+      .populate({
+        path: "model.filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "model.filters.subFilter"
+      });
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -475,7 +662,28 @@ exports.getProductsFilterParams = async (req, res, next) => {
           "model.filters.subFilter": { $in: subfilters }
         }
       ]
-    });
+    })
+      .populate({
+        path: "_idChildCategory",
+        select: "-filters",
+        populate: {
+          path: "parentId"
+        }
+      })
+      .populate({
+        path: "filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "filters.subFilter"
+      })
+      .populate({
+        path: "model.filters.filter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "model.filters.subFilter"
+      });
 
     res.status(200).json(Products);
   } catch (e) {

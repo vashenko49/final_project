@@ -9,8 +9,8 @@ import Box from '@material-ui/core/Box';
 
 import './ThroughSocialNetwork.scss';
 import * as AuthorizationActions from '../../../actions/authorizationAction';
-import SocialID from '../../../config/idSocialNetworks';
 import TypeLogIn from '../../../services/AuthorizationAPI';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class ThroughSocialNetwork extends Component {
   constructor(props) {
@@ -36,54 +36,72 @@ class ThroughSocialNetwork extends Component {
 
   render() {
     const { failSocial } = this.props;
+    const {
+      google_clientID,
+      facebook_clientID,
+      github_clientID,
+      errorConfig,
+      loading
+    } = this.props.configuration;
     return (
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Box m={3}>
-          <GoogleLogin
-            clientId={SocialID.oauth.google.clientID}
-            buttonText="Login"
-            onSuccess={this.responseGoogle}
-            onFailure={failSocial}
-            render={renderProps => (
-              <button
+      <div>
+        {errorConfig ? (
+          <p>Oops, something went wrong</p>
+        ) : loading ? (
+          <Grid container direction="column" justify="center" alignItems="center">
+            <Box m={3}>
+              <GoogleLogin
+                clientId={google_clientID}
+                buttonText="Login"
+                onSuccess={this.responseGoogle}
+                onFailure={failSocial}
+                render={renderProps => (
+                  <button
+                    className="ripple btn"
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                  >
+                    Google
+                  </button>
+                )}
+                cookiePolicy={'single_host_origin'}
+              />
+            </Box>
+            <Box m={3}>
+              <FacebookLogin
+                textButton="Facebook"
+                appId={facebook_clientID}
+                autoLoad={false}
+                onFailure={failSocial}
+                fields="picture, email, name"
+                callback={this.responseFacebook}
+                cssClass="ripple btn"
+              />
+            </Box>
+            <Box m={3}>
+              <GitHubLogin
+                clientId={github_clientID}
+                redirectUri=""
+                buttonText="GitHub"
+                onSuccess={this.responseGitHub}
+                onFailure={failSocial}
                 className="ripple btn"
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                Google
-              </button>
-            )}
-            cookiePolicy={'single_host_origin'}
-          />
-        </Box>
-        <Box m={3}>
-          <FacebookLogin
-            textButton="Facebook"
-            appId={SocialID.oauth.facebook.clientID}
-            autoLoad={false}
-            onFailure={failSocial}
-            fields="picture, email, name"
-            callback={this.responseFacebook}
-            cssClass="ripple btn"
-          />
-        </Box>
-        <Box m={3}>
-          <GitHubLogin
-            clientId={SocialID.oauth.github.clientID}
-            redirectUri=""
-            buttonText="GitHub"
-            onSuccess={this.responseGitHub}
-            onFailure={failSocial}
-            className="ripple btn"
-          />
-        </Box>
-      </Grid>
+              />
+            </Box>
+          </Grid>
+        ) : (
+          <CircularProgress />
+        )}
+      </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { authorization: state.authorization };
+  return {
+    authorization: state.authorization,
+    configuration: state.configuration
+  };
 }
 
 function mapDispatchToProps(dispatch) {

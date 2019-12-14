@@ -5,6 +5,8 @@ const passport = require('passport');
 const path = require('path');
 const getConfig = require('./config/GetConfig');
 const cors = require('cors');
+const formData = require('express-form-data');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 app.use(cors());
@@ -20,11 +22,16 @@ getConfig('configs-v1')
     connectDB(process.env.urlDataBase);
     app.use(passport.initialize());
     require("./config/passport")(passport);
+    cloudinary.config({
+      cloud_name: process.env.cloudinary_cloud_name,
+      api_key: process.env.cloudinary_apikey,
+      api_secret: process.env.cloudinary_apiSecret
+    });
   }).catch(err => {
   console.error(err);
 });
 
-
+app.use(formData.parse());
 app.use(bodyParser.json());
 
 // Use Routes
@@ -38,6 +45,15 @@ app.use('/subscriber', require('./routes/subscribers'));
 app.use('/comment', require('./routes/comment'));
 app.use('/cart', require('./routes/cart'));
 app.use('/links', require('./routes/links'));
+app.use('/shippingmethods', require('./routes/shippingMethod'));
+app.use('/paymentmethods', require('./routes/paymentMethods'));
+app.use('/deliveryaddresses', require('./routes/deliveryAddresses'));
+app.use('/slider', require('./routes/slides'));
+app.use('/partners', require('./routes/partner'));
+app.use('/orders', require('./routes/order'));
+
+
+
 
 
 app.use(express.static('../client/build'));

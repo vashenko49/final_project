@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { configureStore } from './store';
 import AdminPanel from './components/admin-panel/AdminPanel';
 import FooterLinkPage from './components/FooterLinkPage/FooterLinkPage';
 import Footer from './components/Footer/Footer';
+import Header from './components/Header/Header';
 
 import ProductPageF from './components/page/ProductPageF';
 import Cart from './components/cart/Cart';
@@ -19,6 +20,8 @@ import './font/Roboto/Roboto-font.css';
 import './App.scss';
 import Authorization from './components/Authorization/Authorization';
 import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
+import Upda from './components/Example/UpdateProduct';
+import CreateProducts from './components/Example/CreateProducts';
 
 const store = configureStore();
 
@@ -27,16 +30,25 @@ class App extends Component {
     return (
       <Provider store={store}>
         <Router>
+<<<<<<< HEAD
           {/* <li>
             <Link to="/admin-panel">Admin Panel</Link>
           </li> */}
+=======
+          <Header />
+>>>>>>> develop
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
+            <Route exact path="/testLoadFile" component={CreateProducts} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
+<<<<<<< HEAD
             <Route exact exect path="/main-page" component={MainPage} />
             <Route exact exect path="/cart/:id" component={Cart} />
             <Route exact exect path="/c" component={Carousel} />
+=======
+            <Route exact exect path="/" component={MainPage} />
+>>>>>>> develop
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
