@@ -17,7 +17,7 @@ class Bag extends Component {
             <h2>BAG</h2>
             <div>
               <p className="about-item">
-                {items.length} items |{' '}
+                {items.length} items |{'Ch'}
                 <span className="price">
                   $
                   {/* {items.reduce((acc, curr) => {

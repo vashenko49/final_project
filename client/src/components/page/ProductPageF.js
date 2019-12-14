@@ -35,8 +35,6 @@ const ProductPageF = ({
   product: { product, loading },
   match
 }) => {
-  const [customerId, setId] = useState('5de5592bf82b736ff4eb3c08');
-
   const {
     _id,
     nameProduct,
@@ -48,11 +46,47 @@ const ProductPageF = ({
     _idChildCategory
   } = product;
 
+  const [customerId, setId] = useState('5de5592bf82b736ff4eb3c08');
+
+  const [currentModel, setCurrentModel] = useState({});
+
+  const [productData, setProductData] = useState({
+    currentColor: '',
+    currentPrice: '',
+    currentSize: ''
+  });
+
+  const { currentColor, currentPrice, currentSize } = productData;
+
+  const onChange = e => {
+    setProductData({ ...productData, [e.target.name]: e.target.value });
+  };
+
+  const handleModel = () => {
+    const foundIndex = model.find(v => {
+      const tmp = v.filters
+        .map(e => {
+          if (e.subFilter.name === 'Nike Air') {
+            return true;
+          }
+          return false;
+        })
+        .join();
+      console.log(tmp);
+      return tmp;
+    });
+    // console.log('%cfoundIndex: ' + foundIndex, 'background-color: purple; padding: 5px;');
+    // const currentModelIndex = model.indexOf(foundIndex);
+    setCurrentModel(model[foundIndex]);
+  };
+
+  // Load product
   useEffect(() => {
     getCurrentProduct(match.params.id);
     // eslint-disable-next-line
   }, [getCurrentProduct]);
 
+  // Modal settings
   const [active, setActive] = useState(false);
 
   const classes = useStyles();
@@ -93,9 +127,15 @@ const ProductPageF = ({
             {filters.map(v => {
               if (v.filter.type === 'Color') {
                 return (
-                  <div
+                  <button
                     className="product-select-color"
+                    name="currentColor"
+                    onClick={e => {
+                      onChange(e);
+                      handleModel();
+                    }}
                     style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
+                    value={v.subFilter.name.toLowerCase()}
                   />
                 );
               }
@@ -112,6 +152,7 @@ const ProductPageF = ({
           </div>
           <div className="product-sizes container">
             {filters.map(v => {
+              debugger;
               if (v.filter.type === 'Sizes') {
                 return <button className="light-btn">US {v.subFilter.name}</button>;
               }
@@ -145,7 +186,7 @@ const ProductPageF = ({
                       Price: <span>${89}</span>
                     </p>
                     <p className="checkout-field">
-                      Color: <span>{'vimous'}</span>
+                      Color: <span>{currentColor}</span>
                     </p>
                     <p className="checkout-field">
                       Size: <span>{37.5}</span>

@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const userId = require("order-id")(process.env.usersIdSecret);
+// const userId = require("order-id")(process.env.usersIdSecret);
 
 const bcrypt = require("bcryptjs");
 
 const CustomerSchema = new Schema({
   customerNo: {
-    type: String,
-    default: userId.generate()
+    type: String
+    // default: userId.generate()
   },
   firstName: {
     type: String,

@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const customerid = require('order-id')(process.env.usersIdSecret);
+// const customerid = require('order-id')(process.env.usersIdSecret);
 const cloudinary = require('cloudinary').v2;
 
 const sendEmail = require('../common/sendEmail');
@@ -46,7 +46,7 @@ exports.createCustomer = async (req, res) => {
       login,
       gender,
       avatarUrl: userAvatar ? userAvatar.public_id : '',
-      customerNo: customerid.generate(),
+      // customerNo: customerid.generate(),
       socialmedia: [4],
       isAdmin: false,
       enabled: false
@@ -172,7 +172,7 @@ exports.createCustomerSocialNetwork = async (req, res) => {
         firstName: customer.firstName,
         lastName: customer.lastName,
         avatarUrl: userImg.public_id,
-        customerNo: customerid.generate(),
+        // customerNo: customerid.generate(),
         socialmedia: [customer.typeSocial],
         isAdmin: false,
         enabled: true

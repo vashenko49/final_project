@@ -30,26 +30,15 @@ class App extends Component {
     return (
       <Provider store={store}>
         <Router>
-<<<<<<< HEAD
-          {/* <li>
-            <Link to="/admin-panel">Admin Panel</Link>
-          </li> */}
-=======
           <Header />
->>>>>>> develop
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
             <Route exact path="/testLoadFile" component={CreateProducts} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />
             <Route exact path="/admin-panel*" component={AdminPanel} />
-<<<<<<< HEAD
-            <Route exact exect path="/main-page" component={MainPage} />
-            <Route exact exect path="/cart/:id" component={Cart} />
-            <Route exact exect path="/c" component={Carousel} />
-=======
             <Route exact exect path="/" component={MainPage} />
->>>>>>> develop
             <Route exact exect path="/product/:id" component={ProductPageF} />
+            <Route exact exect path="/cart/:id" component={Cart} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
           <Footer />

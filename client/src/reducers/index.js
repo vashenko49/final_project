@@ -8,12 +8,9 @@ import footerSubscribe from './footerSubscribe';
 import adminBrands from './adminBrands';
 import adminFilters from './adminFilters';
 import product from './product';
-<<<<<<< HEAD
 import cart from './cart';
-=======
 import header from './header';
 import configuration from './configuration';
->>>>>>> develop
 
 export default combineReducers({
   adminProducts,
@@ -24,12 +21,8 @@ export default combineReducers({
   footerLinksId,
   footerSubscribe,
   adminBrands,
-<<<<<<< HEAD
-  adminFilters
-=======
   adminFilters,
   product,
   header,
   configuration
->>>>>>> develop
 });
