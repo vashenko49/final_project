@@ -59,4 +59,14 @@ exports.comparerImg = (otherArray) => {
   }
 };
 
+exports.comparerImg = (otherArray) => {
+  return function (current) {
+    return otherArray.filter(function (other) {
+      return other.toString() === current.toString()
+    }).length === 0;
+  }
+};
+
+
+
 
