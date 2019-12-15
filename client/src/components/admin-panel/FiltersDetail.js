@@ -74,6 +74,12 @@ class FiltersDetail extends Component {
     }
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   async componentDidMount() {
     const { id } = this.props.match.params;
 
@@ -129,7 +135,13 @@ class FiltersDetail extends Component {
               !(title.val.length && serviceName.val.length && subFilters.val.length)
             }
           />
-          <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+
+          <SnackBars
+            handleClose={this.handleCloseSnackBars}
+            variant={sendDataStatus}
+            open={!!sendDataMessage}
+            message={sendDataMessage}
+          />
         </Paper>
       </Container>
     );
