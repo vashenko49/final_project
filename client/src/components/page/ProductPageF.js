@@ -4,23 +4,23 @@ import { connect } from 'react-redux';
 import { getCurrentProduct } from '../../actions/product';
 import { getCurrentItems, addNewProduct } from '../../actions/cart';
 
-import {Image} from 'cloudinary-react';
+import { Image } from 'cloudinary-react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 
 import Carousel from './Carousel';
-import ProdcutHeader from './ProductHeader'
-import ProductSizes from './ProductSizes'
+import ProdcutHeader from './ProductHeader';
+import ProductSizes from './ProductSizes';
+import ProductReview from './ProductReview';
+import ProductCheckout from './ProductCheckout';
 
 import './ProductPage.scss';
-import ProductReview from './ProductReview';
 
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
     backgroundColor: theme.palette.background.paper,
-    // border: '.6px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     display: 'flex',
@@ -46,20 +46,19 @@ const ProductPageF = ({
     productUrlImg,
     _idChildCategory
   } = product;
-  
-  const modelsFilters = model ? model.map(v => v.filters).flat() : []
 
-  const [customerId, setId] = useState('5de5592bf82b736ff4eb3c08');
+  const modelsFilters = model ? model.map(v => v.filters).flat() : [];
 
+  const [customerId] = useState('5df3e7aeace3e149fcc94957');
   const [currentModel, setCurrentModel] = useState({});
-
   const [currentColor, setCurrentColor] = useState('');
 
   const handleModel = () => {
     const foundIndex = model.find(v => {
       const tmp = v.filters
         .map(e => {
-          if (e.subFilter.name === 'Nike Air') { //Current color
+          if (e.subFilter.name === 'Nike Air') {
+            // Current color
             return true;
           }
           return false;
@@ -82,25 +81,25 @@ const ProductPageF = ({
 
   const handleOpen = () => {
     setOpen(true);
-    addNewProduct('5de5592bf82b736ff4eb3c08', _id, 1);
+    // addNewProduct('', _id, 1); ////////////// ADD //////// CURRENT //////// MODEL_ID
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const amount = [];
-
-  for (let i = 1; i < 10; i++) {
-    amount.push(<option key={i} value={i}>{i}</option>);
-  }
   return (
     <Fragment>
       {loading === true ? (
         <h1>preloader</h1>
       ) : (
         <div className="product">
-          <ProdcutHeader itemNo={itemNo} nameProduct={nameProduct} currentModel={currentModel} model={model}/>
+          <ProdcutHeader
+            itemNo={itemNo}
+            nameProduct={nameProduct}
+            currentModel={currentModel}
+            model={model}
+          />
           <div className="product-photo">
             <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} crop="scale" />
           </div>
@@ -112,7 +111,7 @@ const ProductPageF = ({
                     className="product-select-color"
                     name="currentColor"
                     onClick={e => {
-                      setCurrentColor(e.target.value)
+                      setCurrentColor(e.target.value);
                       handleModel();
                     }}
                     style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
@@ -140,39 +139,22 @@ const ProductPageF = ({
               onClose={handleClose}
             >
               <div className={classes.paper}>
-                <h3 className="checkout-title">Added to Bag</h3> {/* TODO */}
-                <div className="checkout-content">
-                  <img src={productUrlImg[0]} alt="sneaker not found"></img>
-                  <div className="checkout-info">
-                    <h5>{nameProduct}</h5>
-                    <p>{_idChildCategory.name}</p>
-                    <p className="checkout-field">
-                      Price: <span>${89}</span>
-                    </p>
-                    <p className="checkout-field">
-                      Color: <span>{currentColor}</span>
-                    </p>
-                    <p className="checkout-field">
-                      Size: <span>{37.5}</span>
-                    </p>
-                    <label htmlFor="quantity">Quantity</label>
-                    <select name="quantity">{amount}</select>
-                  </div>
-                </div>
+                <h3 className="checkout-title">Added to Bag</h3>
+
+                <ProductCheckout
+                  productUrlImg={productUrlImg}
+                  nameProduct={nameProduct}
+                  _idChildCategory={_idChildCategory}
+                  currentColor={currentColor}
+                />
                 <div className="product-buttons container">
-                  <Link to={`/cart/${customerId}`}>
-                    {/* TODO */}
-                    <button
-                      className="grey-btn"
-                      onClick={getCurrentItems('5de5592bf82b736ff4eb3c08')}
-                    >
-                      View bag
-                    </button>
-                  </Link>
-                  <button
-                    className="black-btn"
-                    onClick={getCurrentItems('5de5592bf82b736ff4eb3c08')}
-                  >
+                  {/* <Link to={`/cart/${customerId}`}> */}
+                  {/* TODO */}
+                  <button className="grey-btn" onClick={getCurrentItems(match.params.id)}>
+                    View bag
+                  </button>
+                  {/* </Link> */}
+                  <button className="black-btn" onClick={getCurrentItems(match.params.id)}>
                     Checkout
                   </button>{' '}
                   {/* UPDATE THEN REDIRECT */}
@@ -180,8 +162,8 @@ const ProductPageF = ({
               </div>
             </Modal>
           </div>
-          <Carousel productUrlImg={productUrlImg}/>
-          <ProductReview />
+          <Carousel productUrlImg={productUrlImg} />
+          <ProductReview productId={match.params.id} />
           <div className="product-discription container">
             <p className="short-description">{description}</p>
             <ul className="property-description">

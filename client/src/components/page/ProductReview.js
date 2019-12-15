@@ -1,32 +1,54 @@
-import React, { Component, useState } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
+import { connect } from 'react-redux';
 
 import Rating from '../common/rating/Rating';
 
-import './ProductPage.scss'
+import { getCurrentComments } from '../../actions/comments';
 
-const ProductReview = () => {
+import './ProductPage.scss';
 
-    const [active, setActive] = useState(false);
+const ProductReview = ({ getCurrentComments, comments: { comments }, productId }) => {
+  const [active, setActive] = useState(false);
 
-    return (
-      <div className="product-reviews container">
-        <div className="review-header" onClick={() => setActive(!active)}>
-          <div className="title" type="button">
-            Reviews
-          </div>
-          <div className="arrow"></div>
+  useEffect(() => {
+    getCurrentComments(productId);
+    // eslint-disable-next-line
+  }, [getCurrentComments]);
+
+  return (
+    <div className="product-reviews container">
+      <div className="review-header" onClick={() => setActive(!active)}>
+        <div className="title" type="button">
+          Reviews
         </div>
-        <div
-          className={active ? 'review-content container active' : 'review-content container'}>
-          <p className="review-headline">Great buy</p>
-          <Rating stars={4} className="review-rating" />
-          <p className="review-date">Marklive - 22 Nov 2019</p>
-          <div>
-            <p className="review-text">Get a lot of compliments and very comfortable</p>
-          </div>
-        </div>
+        <div className="arrow"></div>
       </div>
-    )
-}
+      <div className={active ? 'review-content container active' : 'review-content container'}>
+        {comments.map(v => {
+          return (
+            <Fragment key={v._id}>
+              <Rating stars={v.score} className="review-rating" />
+              <p className="review-date">
+                {v.authorId.firstName + ' ' + v.authorId.lastName} -{' '}
+                {new Date(v.date).toLocaleString().split(', ')[0]}
+              </p>
+              <div>
+                <p className="review-text">{v.text}</p>
+              </div>
+            </Fragment>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
-export default ProductReview;
+const mapStateToProps = state => ({
+  comments: state.comments
+});
+
+const mapDispatchToProps = {
+  getCurrentComments
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductReview);

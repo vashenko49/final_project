@@ -20,7 +20,10 @@ class Bag extends Component {
                 <span className="price">
                   $
                   {items.reduce((acc, curr) => {
-                    return acc.modelNo.currentPrice * acc.quantity + curr.modelNo.currentPrice * curr.quantity;
+                    return (
+                      acc.modelNo.currentPrice * acc.quantity +
+                      curr.modelNo.currentPrice * curr.quantity
+                    );
                   })}
                 </span>
               </p>

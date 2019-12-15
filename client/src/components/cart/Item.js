@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {Image} from 'cloudinary-react';
+import { Image } from 'cloudinary-react';
 
 import { updateQuantity } from '../../actions/cart';
 
@@ -31,48 +31,44 @@ class Item extends Component {
         ) : (
           <div className="bag-item">
             {items.map(v => {
-              const {
-                _id,
-                filters: property,
-                currentPrice,
-                modelNo
-              } = v.modelNo;
+              const { _id, filters: property, currentPrice, modelNo } = v.modelNo;
 
-              const {
-                _id: parentId,
-                nameProduct,
-                productUrlImg,
-                _idChildCategory
-              } = v.idProduct
+              const { _id: parentId, nameProduct, productUrlImg, _idChildCategory } = v.idProduct;
 
               let quantity = v.quantity;
               return (
                 <div className="sneaker-item" key={_id}>
-                  <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} width="400" crop="scale" />
+                  <Image
+                    cloudName="dxge5r7h2"
+                    publicId={productUrlImg[0]}
+                    width="400"
+                    crop="scale"
+                  />
                   <div className="sneaker-item-info">
                     <h2 className="info-title">{nameProduct}</h2>
                     <p>{_idChildCategory.name}</p>
                     <p>
-                      {property
-                        .map(v => {
-                          if (v.filter.type === 'Color') {
-                            return v.subFilter.name;
-                          }
-                          return [];
-                        })}
+                      {property.map(v => {
+                        if (v.filter.type === 'Color') {
+                          return v.subFilter.name;
+                        }
+                        return [];
+                      })}
                     </p>
-                    <p>Size {property
-                        .map(v => {
-                          if (v.filter.type === 'Sizes') {
-                            return v.subFilter.name;
-                          }
-                          return [];
-                        })}</p>
+                    <p>
+                      Size{' '}
+                      {property.map(v => {
+                        if (v.filter.type === 'Sizes') {
+                          return v.subFilter.name;
+                        }
+                        return [];
+                      })}
+                    </p>
                     <label htmlFor="quantity">Quantity</label>
                     <select
                       name="quantity"
                       onChange={e => {
-                        updateQuantity(customerId, parentId, modelNo,e.target.value);
+                        updateQuantity(customerId, parentId, modelNo, e.target.value);
                       }}
                       value={quantity}
                     >

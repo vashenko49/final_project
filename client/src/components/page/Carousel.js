@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 
-import {Image} from 'cloudinary-react';
+import { Image } from 'cloudinary-react';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -49,8 +49,14 @@ export default class Responsive extends Component {
 
     for (let i = 0; i < productUrlImg.length; i++) {
       photos.push(
-        <div>
-          <Image key={i} cloudName="dxge5r7h2" publicId={productUrlImg[i]} width="400" crop="scale" alt="sneaker not found"/>
+        <div key={i}>
+          <Image
+            cloudName="dxge5r7h2"
+            publicId={productUrlImg[i]}
+            width="400"
+            crop="scale"
+            alt="sneaker not found"
+          />
         </div>
       );
     }

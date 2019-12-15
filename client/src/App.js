@@ -10,7 +10,6 @@ import Header from './components/Header/Header';
 
 import ProductPageF from './components/page/ProductPageF';
 import Cart from './components/cart/Cart';
-import Carousel from './components/page/Carousel';
 import MainPage from './components/page/MainPage';
 
 import './font/Varta/Varta-font.css';
@@ -20,7 +19,6 @@ import './font/Roboto/Roboto-font.css';
 import './App.scss';
 import Authorization from './components/Authorization/Authorization';
 import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
-import Upda from './components/Example/UpdateProduct';
 import CreateProducts from './components/Example/CreateProducts';
 
 const store = configureStore();

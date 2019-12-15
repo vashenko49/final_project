@@ -1,21 +1,20 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
-import './ProductPage.scss'
+import './ProductPage.scss';
 
 export default class ProductHeader extends Component {
-
   render() {
-    const { nameProduct, itemNo, currentModel ,model } = this.props;
+    const { nameProduct, itemNo, currentModel, model } = this.props;
 
     const modelPrice = () => {
-      if(currentModel.currentPrice) {
+      if (currentModel.currentPrice) {
         return currentModel.currentPrice;
-      }else if(model.length === 1) {
-        return model[0].currentPrice
-      }else if(model.length > 1) {
-        return 
+      } else if (model.length === 1) {
+        return model[0].currentPrice;
+      } else if (model.length > 1) {
+        return;
       }
-    }
+    };
 
     return (
       <div className="product-header">
