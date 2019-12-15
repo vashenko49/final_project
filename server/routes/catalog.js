@@ -178,12 +178,6 @@ router.put(
   "/child", [
     check('_id', "Id child catalog is require")
       .not()
-      .isEmpty(),
-    check('name', "Name is require")
-      .not()
-      .isEmpty(),
-    check("parentId", "Parent id is require")
-      .not()
       .isEmpty()
   ],
   updateChildCatalog

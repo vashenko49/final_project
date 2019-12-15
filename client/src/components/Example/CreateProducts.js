@@ -12,31 +12,36 @@ class CreateProducts extends Component {
     this.state = {
       formData: {
         productUrlImg: [],
-        nameProduct: 'New Balance Fresh Foam 1080v10',
-        _idChildCategory: '5de02b89e8a23045f0c1559c',
+        nameProduct: 'Rockport Fresh Foam Hierro v5',
+        _idChildCategory: '5df545b54c6aa00bf453b31a',
         description:
-          'The Fresh Foam 1080v10 is our premium expression of runner’s data, supreme comfort, and cutting-edge design. The new Fresh Foam X midsole delivers enhanced softness and a more energetic rebound than its predecessor. Experience 360 degrees of comfort with a soft fitting knit upper and Ultra Heel in a stylish new look. ',
+          "Distance and time. Our latest evolution of the Fresh Foam Hierro v5 trail shoes takes the limits off of both. Designed and engineered with a plush Fresh Foam platform, a Vibram® MegaGrip outsole and an upper that's refined for improved breathability, your boundaries will need to be reimagined. A snug bootie construction, paired with a toe-protecting upper, will make this your new go-to shoe for wherever the trail takes you.",
         filters: [
           {
             filter: '5de02aece8a23045f0c1559b',
-            subFilter: '5de02aece8a23045f0c15593'
+            subFilter: '5de02aece8a23045f0c15599'
+          },
+          {
+            filter: '5df544c24c6aa00bf453b315',
+            subFilter: '5df540846189763ab82a373a'
           }
         ],
-        htmlPage: '<div>gogo ogo oggfdjgouifhgiufd </div>',
+        htmlPage:
+          '<!DOCTYPE html> <html> <body> <h2>An Unordered HTML List</h2> <ul> <li>Coffee</li> <li>Tea</li> <li>Milk</li> </ul> <h2>An Ordered HTML List</h2> <ol> <li>Coffee</li> <li>Tea</li> <li>Milk</li> </ol> </body> </html> ',
         filterImg: [
           {
-            _idFilter: '5de575a65ac80a23483fece7',
-            _idSubFilters: '5de575945ac80a23483fece6',
+            _idFilter: '5de027f4e8a23045f0c15580',
+            _idSubFilters: '5de0296ce8a23045f0c15581',
             urlImg: []
           },
           {
-            _idFilter: '5de575a65ac80a23483fece7',
-            _idSubFilters: '5de7697d535af507733c22b0',
+            _idFilter: '5de027f4e8a23045f0c15580',
+            _idSubFilters: '5de0296de8a23045f0c15585',
             urlImg: []
           },
           {
-            _idFilter: '5de575a65ac80a23483fece7',
-            _idSubFilters: '5df507faa4660f32442a0f41',
+            _idFilter: '5de027f4e8a23045f0c15580',
+            _idSubFilters: '5de0296ce8a23045f0c15582',
             urlImg: []
           }
         ],
@@ -151,7 +156,7 @@ class CreateProducts extends Component {
         </Box>
         <Box>
           <input
-            data-index={'5de575945ac80a23483fece6'}
+            data-index={'5de0296ce8a23045f0c15581'}
             multiple
             onChange={this.handleChangeFilterImg}
             name="userAvatar"
@@ -161,7 +166,7 @@ class CreateProducts extends Component {
         <Box>
           {/* {data-index храню id subfilter что бы отслеживать куда ложить файлы} */}
           <input
-            data-index={'5de7697d535af507733c22b0'}
+            data-index={'5de0296de8a23045f0c15585'}
             multiple
             onChange={this.handleChangeFilterImg}
             name="userAvatar"
@@ -171,7 +176,7 @@ class CreateProducts extends Component {
         <Box>
           {/* {data-index храню id subfilter что бы отслеживать куда ложить файлы} */}
           <input
-            data-index={'5df507faa4660f32442a0f41'}
+            data-index={'5de0296ce8a23045f0c15582'}
             multiple
             onChange={this.handleChangeFilterImg}
             name="userAvatar"

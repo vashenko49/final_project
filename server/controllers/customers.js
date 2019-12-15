@@ -1,7 +1,10 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const customerid = require('order-id')(process.env.usersIdSecret);
 const cloudinary = require('cloudinary').v2;
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
+
+
 
 const sendEmail = require('../common/sendEmail');
 const CustomerModel = require('../models/Customer');
@@ -46,7 +49,7 @@ exports.createCustomer = async (req, res) => {
       login,
       gender,
       avatarUrl: userAvatar ? userAvatar.public_id : '',
-      customerNo: customerid.generate(),
+      customerNo: (rand()).toString(),
       socialmedia: [4],
       isAdmin: false,
       enabled: false
