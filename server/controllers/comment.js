@@ -200,3 +200,39 @@ exports.getCommentsByProductId = async (req, res) => {
     })
   }
 };
+
+exports.getMeanRatingProductByProductId = async (req, res) => {
+  try {
+    const {productID}= req.params;
+
+    if(!mongoose.Types.ObjectId.isValid(productID)){
+      return res.status(400).json({
+        message:`ID is not valid ${productID}`
+      })
+    }
+
+    const product = await ProductSchema.findById(productID);
+
+    if(_.isEmpty(product)){
+      res.status(400).json({
+        message:`Not found a product with ID ${productID}`
+      })
+    }
+
+    const comments = await CommentSchema.find({productID: productID});
+
+    let meanRating = (_.sumBy(comments,function (o) {
+          return o.score;
+    }))/comments.length;
+
+    res.status(200).json({
+      rating:meanRating,
+      comments:comments
+    });
+
+  } catch (e) {
+    res.status(500).json({
+      message: `Server error ${e.message}`
+    })
+  }
+};

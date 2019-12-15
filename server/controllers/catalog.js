@@ -234,7 +234,7 @@ exports.updateChildCatalog = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {name, _id, enabled = false, filters} = req.body;
+    const {_id} = req.body;
 
     const catalog = await childCatalog.findById(_id);
 
@@ -245,13 +245,12 @@ exports.updateChildCatalog = async (req, res) => {
     }
 
 
-    catalog.name = name;
-    catalog.enabled = enabled;
-    catalog.filters = filters;
+    let data = _.cloneDeep(req.body);
+    let updateCatalog = await childCatalog.findByIdAndUpdate(_id,{$set: data}, {new: true});
 
+    updateCatalog = await updateCatalog.save();
 
-    await catalog.save();
-    res.status(200).json(catalog);
+    res.status(200).json(updateCatalog);
 
 
   } catch (e) {

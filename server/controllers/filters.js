@@ -37,9 +37,8 @@ exports.createFilter = async (req, res) => {
     }
 
 
-    let newFilter = new Filter(filter);
+    let newFilter = await (new Filter(filter)).save();
 
-    //await newFilter.save();
     res.status(200).json(newFilter);
 
   } catch (err) {
