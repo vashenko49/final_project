@@ -15,11 +15,13 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import cloudinary from 'cloudinary-core';
+
 const styles = theme => ({
   form: {
     padding: theme.spacing(1),
     display: 'flex',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     flexWrap: 'wrap',
     '& > *': {
       margin: theme.spacing(1)
@@ -74,7 +76,8 @@ const ProductsDetailMainImages = ({
   onChangeValue,
   filtersImage,
   onDeleteCardImg,
-  models
+  models,
+  cloudinaryCloudName
 }) => {
   return (
     <form autoComplete="off" className={classes.form}>
@@ -125,7 +128,13 @@ const ProductsDetailMainImages = ({
               <CardMedia
                 component="img"
                 className={classes.media}
-                image={URL.createObjectURL(card.image[0])}
+                image={
+                  typeof card.image[0] === 'object'
+                    ? URL.createObjectURL(card.image[0])
+                    : new cloudinary.Cloudinary({ cloud_name: cloudinaryCloudName }).url(
+                        card.image[0]
+                      )
+                }
               />
             </Box>
 
@@ -133,8 +142,7 @@ const ProductsDetailMainImages = ({
               id={`filtersImageSubFilter${card.id}`}
               options={models
                 .map(i => i.subFilters)
-                .reduce((flat, current) => flat.concat(current), [])
-                .filter(i => !filtersImage.map(i => i.subFilter).includes(i))}
+                .reduce((flat, current) => flat.concat(current), [])}
               groupBy={option => option.parentServiceName}
               getOptionLabel={option => (option.name ? option.name : '')}
               value={card.subFilter}

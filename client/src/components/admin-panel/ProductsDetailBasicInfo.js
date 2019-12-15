@@ -58,7 +58,7 @@ const ProductsDetailBasicInfo = ({
         <Autocomplete
           id="categories"
           options={dataCategories}
-          defaultValue={category}
+          value={category}
           groupBy={option => option.parent.name}
           getOptionLabel={option => option.name}
           onChange={(e, val) => onChangeValue('category', val)}

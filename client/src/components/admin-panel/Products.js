@@ -11,6 +11,8 @@ import MaterialTable from 'material-table';
 
 import Switch from '@material-ui/core/Switch';
 
+import { connect } from 'react-redux';
+
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -49,7 +51,7 @@ const tableIcons = {
   Refresh: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />)
 };
 
-export default class Products extends Component {
+class Products extends Component {
   state = {
     columns: [
       {
@@ -58,7 +60,7 @@ export default class Products extends Component {
         render: rowData =>
           rowData.imgProduct ? (
             <Image
-              cloudName="dxge5r7h2"
+              cloudName={this.props.configuration.cloudinary_cloud_name}
               publicId={rowData.imgProduct}
               width="150px"
               // dpr="auto"
@@ -97,17 +99,22 @@ export default class Products extends Component {
   getData = async () => {
     try {
       const { data } = await AdminProductsAPI.getProducts();
+      console.log(data);
 
       const preViewRes = data.map(product => ({
         id: product._id,
-        imgProduct: product.productUrlImg[0],
+        imgProduct: product.productUrlImg.length
+          ? product.productUrlImg[0]
+          : product.filterImg.length
+          ? product.filterImg[0].urlImg[0]
+          : '',
         nameProduct: product.nameProduct,
         numberProduct: product.itemNo,
-        categoryProduct: product.childCategory.name,
+        categoryProduct: product._idChildCategory.name,
         priceProduct: Math.min(...product.model.map(i => i.currentPrice)),
         quantityProduct:
           product.model.length > 1
-            ? product.model.reduce((prev, curr) => prev.quantity + curr.quantity)
+            ? product.model.map(i => i.quantity).reduce((prev, curr) => prev + curr)
             : product.model[0].quantity,
         enabled: product.enabled
       }));
@@ -123,8 +130,8 @@ export default class Products extends Component {
     }
   };
 
-  componentDidMount() {
-    this.getData();
+  async componentDidMount() {
+    await this.getData();
   }
 
   onSelectDelete = (event, delData) => {
@@ -219,3 +226,11 @@ export default class Products extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    configuration: state.configuration
+  };
+}
+
+export default connect(mapStateToProps)(Products);

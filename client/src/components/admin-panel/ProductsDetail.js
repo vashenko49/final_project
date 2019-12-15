@@ -9,6 +9,8 @@ import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
 import ProductsDetailMainImages from './ProductsDetailMainImages';
 import ProductsDetailModels from './ProductsDetailModels';
 
+import { withStyles } from '@material-ui/core/styles';
+
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -18,10 +20,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
-import { withStyles } from '@material-ui/core/styles';
 import SaveIcon from '@material-ui/icons/Save';
+
 import objectToFormData from 'object-to-formdata';
+
+import { connect } from 'react-redux';
 
 function a11yProps(index) {
   return {
@@ -130,7 +133,8 @@ class ProductsDetail extends Component {
       mainFilters,
       filtersImage,
       models,
-      typeForm
+      typeForm,
+      idUpdate
     } = this.state;
 
     // получаем все уникальные id фильтров которые выбраны в форме
@@ -174,28 +178,46 @@ class ProductsDetail extends Component {
         sendDataMessage: 'All category filters not selected!'
       });
     } else {
+      // grouping filterImage
+      const newFilterImage = filtersImage
+        .filter(i => i.subFilter._id)
+        .map(i => ({
+          _idFilter: i.subFilter.parentId,
+          _idSubFilters: i.subFilter._id,
+          urlImg: i.image
+        }));
+
+      const groupingFilterImage = [...new Set(newFilterImage.map(i => i._idSubFilters))].map(i => {
+        const groupArr = newFilterImage.filter(k => k._idSubFilters === i);
+        return {
+          ...groupArr[0],
+          urlImg: groupArr.map(s => s.urlImg[0])
+        };
+      });
+
       const sendData = {
         nameProduct,
         description,
         _idChildCategory: category._id,
         filters: mainFilters.map(i => ({ filter: i.parentId, subFilter: i._id })),
         productUrlImg: filtersImage.filter(i => !i.subFilter._id).map(i => i.image[0]),
-        filterImg: filtersImage
-          .filter(i => i.subFilter._id)
-          .map(i => ({
-            _idFilter: i.subFilter.parentId,
-            _idSubFilters: i.subFilter._id,
-            urlImg: i.image
-          })),
-        model: models.map(i => ({
-          quantity: i.quantity,
-          currentPrice: i.price,
-          filters: i.subFilters.map(subFilter => ({
-            filter: subFilter.parentId,
-            subFilter: subFilter._id
-          }))
-        }))
+        filterImg: groupingFilterImage,
+        model: models.map(i => {
+          const objModel = {
+            quantity: i.quantity,
+            currentPrice: i.price,
+            filters: i.subFilters.map(subFilter => ({
+              filter: subFilter.parentId,
+              subFilter: subFilter._id
+            }))
+          };
+          if (i.modelNo) objModel.modelNo = i.modelNo;
+
+          return objModel;
+        })
       };
+
+      if (typeForm === 'update') sendData._idProduct = idUpdate;
 
       console.log('!!!!!', sendData);
 
@@ -217,13 +239,11 @@ class ProductsDetail extends Component {
         }
 
         if (typeForm === 'update') {
-          // sendData.idUpdate = idUpdate;
-          // sendData.enabledFilter = enabledFilter;
-          // await AdminFiltersAPI.updateFilters(sendData);
+          await AdminProductsAPI.updateProducts(formData);
 
           this.setState({
-            sendDataStatus: 'success'
-            // sendDataMessage: `${title.val} filter has been update!`
+            sendDataStatus: 'success',
+            sendDataMessage: `${sendData.nameProduct} product has been updated!`
           });
         }
       } catch (err) {
@@ -300,25 +320,83 @@ class ProductsDetail extends Component {
   async componentDidMount() {
     const { id } = this.props.match.params;
 
-    this.getCategories();
+    await this.getCategories();
 
     if (id) {
-      this.setState({ typeForm: 'update' });
-
       try {
-        // const { data } = await AdminProductsAPI.getProductsById(id);
+        const { data } = await AdminProductsAPI.getProductsById(id);
+
+        // get category
+        const category = this.state.dataCategories.filter(
+          i => i._id === data._idChildCategory._id
+        )[0];
+
+        const dataFilters = [];
+
+        // get dataFilters
+        category.filters.forEach(filter => {
+          filter.filter._idSubFilters.forEach(subFilter => {
+            dataFilters.push({
+              parentId: filter.filter._id,
+              parentType: filter.filter.type,
+              parentServiceName: filter.filter.serviceName,
+              ...subFilter
+            });
+          });
+        });
+
+        // get mainFilters
+        const mainFilters = dataFilters.filter(i =>
+          data.filters.map(i => i.subFilter._id).includes(i._id)
+        );
+
+        // get models
+        const models = data.model.map(model => ({
+          id: model._id,
+          subFilters: dataFilters.filter(i =>
+            model.filters.map(i => i.subFilter._id).includes(i._id)
+          ),
+          quantity: model.quantity.toString(),
+          price: model.currentPrice.toString(),
+          modelNo: model.modelNo
+        }));
+
+        // get filtersImage
+        const filtersImage = [];
+
+        data.filterImg.forEach(item => {
+          item.urlImg.forEach(img => {
+            filtersImage.push({
+              id: (~~(Math.random() * 1e8)).toString(16),
+              image: [img],
+              subFilter: dataFilters.filter(i => i._id === item._idSubFilters)[0]
+            });
+          });
+        });
+
+        data.productUrlImg.forEach(item => {
+          filtersImage.push({
+            id: (~~(Math.random() * 1e8)).toString(16),
+            image: [item],
+            subFilter: ''
+          });
+        });
 
         this.setState({
-          // title: { val: res.data.type, error: false },
-          // serviceName: { val: res.data.serviceName, error: false },
-          // subFilters: { val: res.data._idSubFilters.map(i => i.name), error: false },
-          // idUpdate: res.data._id,
-          // enabledFilter: res.data.enabled
+          nameProduct: data.nameProduct,
+          description: data.description,
+          category,
+          dataFilters,
+          mainFilters,
+          filtersImage,
+          models,
+          typeForm: 'update',
+          idUpdate: id
         });
       } catch (err) {
         this.setState({
-          sendDataStatus: 'error'
-          // sendDataMessage: err.response.data.message
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
         });
       }
     }
@@ -338,6 +416,7 @@ class ProductsDetail extends Component {
       filtersImage,
       models
     } = this.state;
+    console.log('STATE', this.state);
     return (
       <Container maxWidth="md">
         <Paper className={classes.root}>
@@ -387,6 +466,7 @@ class ProductsDetail extends Component {
               />
             ) : this.state.tabValue === 2 ? (
               <ProductsDetailMainImages
+                cloudinaryCloudName={this.props.configuration.cloudinary_cloud_name}
                 onChangeValue={this.onChangeValue}
                 filtersImage={filtersImage}
                 onDeleteCardImg={this.onDeleteCardImg}
@@ -397,7 +477,6 @@ class ProductsDetail extends Component {
 
           <Box align="right" pr={3}>
             <Button
-              // disabled={onSubmitFormDisabled}
               onClick={this.onSubmitForm}
               variant="contained"
               color="primary"
@@ -422,4 +501,10 @@ ProductsDetail.defaultProps = {
   classes: {}
 };
 
-export default withStyles(styles)(ProductsDetail);
+function mapStateToProps(state) {
+  return {
+    configuration: state.configuration
+  };
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(ProductsDetail));

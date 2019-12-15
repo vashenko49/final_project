@@ -10,8 +10,10 @@ exports.uploadArrayImgToCloudinary = (files, path) =>{
   }))
 };
 
-exports.removeImgFromCloudinaryUseArray = (pathArray)=>{
-  return Promise.all(pathArray.map(async element=>{
-    return await cloudinary.uploader.destroy(element);
+exports.removeImgFromCloudinaryUseArray = (pathArray) => {
+  return Promise.all(pathArray.map(async element => {
+    if (element) {
+      return await cloudinary.uploader.destroy(element);
+    }
   }))
 };

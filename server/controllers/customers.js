@@ -175,7 +175,7 @@ exports.createCustomerSocialNetwork = async (req, res) => {
         firstName: customer.firstName,
         lastName: customer.lastName,
         avatarUrl: userImg.public_id,
-        customerNo: customerid.generate(),
+        customerNo:  (rand()).toString(),
         socialmedia: [customer.typeSocial],
         isAdmin: false,
         enabled: true

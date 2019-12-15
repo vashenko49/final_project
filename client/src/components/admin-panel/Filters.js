@@ -76,11 +76,11 @@ export default class Filters extends Component {
 
   async componentDidMount() {
     try {
-      const res = await AdminFiltersAPI.getFilters();
+      const { data } = await AdminFiltersAPI.getFilters();
 
       const preViewRes = [];
 
-      res.data.forEach(item => {
+      data.forEach(item => {
         preViewRes.push({
           id: item._id,
           title: item.type,
@@ -147,11 +147,11 @@ export default class Filters extends Component {
 
   onRefreshData = async () => {
     try {
-      const res = await AdminFiltersAPI.getFilters();
+      const { data } = await AdminFiltersAPI.getFilters();
 
       const preViewRes = [];
 
-      res.data.forEach(item => {
+      data.forEach(item => {
         preViewRes.push({
           id: item._id,
           title: item.type,

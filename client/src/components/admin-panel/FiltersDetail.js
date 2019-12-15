@@ -15,7 +15,6 @@ import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { withStyles } from '@material-ui/core/styles';
-import AdminProductAPI from '../../services/AdminProductsAPI';
 
 const styles = theme => ({
   root: {
@@ -82,14 +81,14 @@ class FiltersDetail extends Component {
       this.setState({ typeForm: 'update' });
 
       try {
-        const res = await AdminProductAPI.getProductsById(id);
+        const { data } = await AdminFiltersAPI.getFiltersById(id);
 
         this.setState({
-          title: { val: res.data.type, error: false },
-          serviceName: { val: res.data.serviceName, error: false },
-          subFilters: { val: res.data._idSubFilters.map(i => i.name), error: false },
-          idUpdate: res.data._id,
-          enabledFilter: res.data.enabled
+          title: { val: data.type, error: false },
+          serviceName: { val: data.serviceName, error: false },
+          subFilters: { val: data._idSubFilters.map(i => i.name), error: false },
+          idUpdate: data._id,
+          enabledFilter: data.enabled
         });
       } catch (err) {
         this.setState({

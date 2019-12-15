@@ -141,7 +141,8 @@ export default class Categories extends Component {
             sendDataMessage: `${item.titleSubCategory} filter has been remove!`
           });
         } else if (nameItem.includes('titleFilter')) {
-          await AdminCategoriesAPI.deleteFilter(item.id);
+          console.log(item);
+          await AdminCategoriesAPI.deleteFilter(item.parentId, item.id);
           this.setState({
             sendDataStatus: 'success',
             sendDataMessage: `${item.titleFilter} filter has been remove!`

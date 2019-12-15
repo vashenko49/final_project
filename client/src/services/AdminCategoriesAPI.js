@@ -25,7 +25,7 @@ export default class AdminCategoriesAPI {
     return axios.delete(`/catalog/child/${id}`);
   }
 
-  static deleteFilter(id) {
-    return axios.delete(`/catalog/child/${id}`);
+  static deleteFilter(idChildCatalog, idFilter) {
+    return axios.delete(`/catalog/child/filter/${idChildCatalog}/${idFilter}`);
   }
 }
