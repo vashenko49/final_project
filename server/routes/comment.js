@@ -9,11 +9,12 @@ const {
   getComments,
   getCommentById,
   getCommentsByUserId,
-  getCommentsByProductId
+  getCommentsByProductId,
+  getMeanRatingProductByProductId
 } = require('../controllers/comment');
 
 
-// @route   POST /catalog/comment
+// @route   POST /comment
 // @desc    POST create a new comment
 // @access  Private
 router.post(
@@ -34,7 +35,7 @@ router.post(
   , createNewComment
 );
 
-// @route   PUT /catalog/comment
+// @route   PUT /comment
 // @desc    PUT Edit comment
 // @access  Private
 router.put(
@@ -47,7 +48,7 @@ router.put(
 );
 
 
-// @route   DELETE /catalog/comment
+// @route   DELETE /comment
 // @desc    DELETE remove comment
 // @access  Private
 router.delete(
@@ -56,7 +57,7 @@ router.delete(
 );
 
 
-// @route   GET /catalog/comment
+// @route   GET /comment
 // @desc    GET get all comment for admin
 // @access Private
 router.get(
@@ -64,7 +65,7 @@ router.get(
   getComments
 );
 
-// @route   GET /catalog/comment/one/:commentID
+// @route   GET /comment/one/:commentID
 // @desc    GET one comment
 // @access Public
 router.get(
@@ -72,7 +73,7 @@ router.get(
   getCommentById
 );
 
-// @route   GET /catalog/comment/user/:userID
+// @route   GET /comment/user/:userID
 // @desc    GET all user's comments
 // @access Private
 router.get(
@@ -81,12 +82,20 @@ router.get(
 );
 
 
-// @route   GET /catalog/comment/product/:productID
+// @route   GET /comment/product/:productID
 // @desc    GET all product's comments
 // @access Public
 router.get(
   '/product/:productID',
   getCommentsByProductId
+);
+
+// @route   GET /comment/product/:productID
+// @desc    GET all product's comments
+// @access Public
+router.get(
+  '/rating/:productID',
+  getMeanRatingProductByProductId
 );
 
 

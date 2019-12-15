@@ -12,6 +12,14 @@ const CatalogSchema = new Schema(
       ref:"rootcatalogs",
       required: true
     },
+    default:{
+      type:Boolean,
+      default: false
+    },
+    countProductMainPage:{
+      type:Number,
+      default:8
+    },
     enabled:{
       type: Boolean,
       default: false
