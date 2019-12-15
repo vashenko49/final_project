@@ -41,6 +41,7 @@ const ProductsDetailModels = ({
   classes,
   models,
   dataFilters,
+  mainFilters,
   onChangeValue,
   onClickDeleteModel,
   onAddNewModel
@@ -72,7 +73,15 @@ const ProductsDetailModels = ({
           <FormControl margin="normal" fullWidth>
             <Autocomplete
               id={`modelsSubFilter${item.id}`}
-              options={dataFilters}
+              options={dataFilters
+                .filter(i => !mainFilters.map(i => i.parentId).includes(i.parentId))
+                .filter(
+                  i =>
+                    !models
+                      .map(i => i.subFilters)
+                      .reduce((flat, current) => flat.concat(current), [])
+                      .includes(i)
+                )}
               groupBy={option => option.parentServiceName}
               getOptionLabel={option => option.name}
               value={item.subFilters}

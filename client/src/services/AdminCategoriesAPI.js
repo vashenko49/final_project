@@ -1,14 +1,12 @@
 import axios from 'axios';
 
 export default class AdminCategoriesAPI {
-  static apiHost = 'http://localhost:5000';
-
   static getCategories() {
-    return axios.get(`${this.apiHost}/catalog/hierarchy`);
+    return axios.get(`/catalog/hierarchy`);
   }
 
   static getCategoriesById(id) {
-    return axios.get(`${this.apiHost}/catalog/hierarchy/one/${id}`);
+    return axios.get(`/catalog/hierarchy/one/${id}`);
   }
 
   static createCategories(data) {
@@ -18,7 +16,7 @@ export default class AdminCategoriesAPI {
       resolve(data);
     });
 
-    // return axios.post(`${this.apiHost}/catalog/hierarchy`, sendData);
+    // return axios.post(`/catalog/hierarchy`, sendData);
   }
 
   static updateCategories(data) {
@@ -26,15 +24,15 @@ export default class AdminCategoriesAPI {
     return new Promise((resolve, reject) => {
       resolve(data);
     });
-    // return axios.put(`${this.apiHost}/catalog/hierarchy`, sendData);
+    // return axios.put(`/catalog/hierarchy`, sendData);
   }
 
   static deleteRootCategory(id) {
-    return axios.delete(`${this.apiHost}/catalog/root/${id}`);
+    return axios.delete(`/catalog/root/${id}`);
   }
 
   static deleteSubCategory(id) {
-    return axios.delete(`${this.apiHost}/catalog/child/${id}`);
+    return axios.delete(`/catalog/child/${id}`);
   }
 
   static deleteFilter(id) {
@@ -43,6 +41,6 @@ export default class AdminCategoriesAPI {
     return new Promise((resolve, reject) => {
       resolve(id);
     });
-    // return axios.delete(`${this.apiHost}/catalog/child/${id}`);
+    // return axios.delete(`/catalog/child/${id}`);
   }
 }

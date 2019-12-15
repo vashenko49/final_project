@@ -226,8 +226,6 @@ export default class AdminProductAPI {
     ]
   };
 
-  static apiHost = 'http://localhost:5000';
-
   static getProducts() {
     return new Promise((resolve, reject) => resolve(this.dataGetProducts));
     // return axios.get(`${this.apiHost}/products`);
@@ -248,6 +246,6 @@ export default class AdminProductAPI {
   }
 
   static createProducts(data) {
-    return axios.post(`${this.apiHost}/products`, data);
+    return axios.post(`/products`, data);
   }
 }

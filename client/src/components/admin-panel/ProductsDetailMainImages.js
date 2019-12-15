@@ -74,7 +74,7 @@ const ProductsDetailMainImages = ({
   onChangeValue,
   filtersImage,
   onDeleteCardImg,
-  dataFilters
+  models
 }) => {
   return (
     <form autoComplete="off" className={classes.form}>
@@ -125,19 +125,19 @@ const ProductsDetailMainImages = ({
               <CardMedia
                 component="img"
                 className={classes.media}
-                image={URL.createObjectURL(card.image)}
+                image={URL.createObjectURL(card.image[0])}
               />
             </Box>
 
             <Autocomplete
               id={`filtersImageSubFilter${card.id}`}
-              options={dataFilters}
+              options={models
+                .map(i => i.subFilters)
+                .reduce((flat, current) => flat.concat(current), [])
+                .filter(i => !filtersImage.map(i => i.subFilter).includes(i))}
               groupBy={option => option.parentServiceName}
               getOptionLabel={option => (option.name ? option.name : '')}
               value={card.subFilter}
-              // getOptionDisabled={option =>
-              //   !!(mainFilters && mainFilters.find(i => i._id === option._id))
-              // }
               filterSelectedOptions
               onChange={(e, val) => onChangeValue('filtersImageSubFilter', val, card.id)}
               renderInput={params => (

@@ -21,6 +21,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { withStyles } from '@material-ui/core/styles';
 import SaveIcon from '@material-ui/icons/Save';
+import objectToFormData from 'object-to-formdata';
 
 function a11yProps(index) {
   return {
@@ -80,7 +81,7 @@ class ProductsDetail extends Component {
       for (let i = 0; i < val.files.length; i++) {
         newArrImages.push({
           id: (~~(Math.random() * 1e8 * val.files[i].lastModified)).toString(16),
-          image: val.files[i],
+          image: [val.files[i]],
           subFilter: ''
         });
       }
@@ -132,51 +133,105 @@ class ProductsDetail extends Component {
       typeForm
     } = this.state;
 
-    const sendData = {
-      nameProduct,
-      description,
-      _idChildCategory: category._id,
-      filters: mainFilters.map(i => ({ filter: i.parentId, subFilter: i._id })),
-      filterImg: filtersImage.map(i => ({
-        _idFilter: i.subFilter.parentId,
-        _idSubFilters: i.subFilter._id,
-        urlImg: i.image
-      })),
-      model: models.map(i => ({
-        quantity: i.quantity,
-        currentPrice: i.price,
-        filters: i.subFilters.map(subFilter => ({
-          filter: subFilter.parentId,
-          subFilter: subFilter._id
-        }))
-      }))
-    };
+    // получаем все уникальные id фильтров которые выбраны в форме
+    const uniqueCategoryForm = [
+      ...new Set([
+        ...mainFilters.map(i => i.parentId),
+        ...models
+          .map(i => i.subFilters)
+          .reduce((flat, current) => flat.concat(current), [])
+          .map(i => i.parentId)
+      ])
+    ];
 
-    console.log(sendData);
-    try {
-      if (typeForm === 'create') {
-        await AdminProductsAPI.createProducts(sendData);
-
-        this.setState({
-          sendDataStatus: 'success',
-          sendDataMessage: `${sendData.nameProduct} product has been created!`
-        });
+    // Проверка зполенния всех моделек
+    let errorModels = false;
+    models.forEach(i => {
+      if (!i.subFilters.length || !i.quantity.length || !i.price.length) {
+        errorModels = true;
       }
-      if (typeForm === 'update') {
-        // sendData.idUpdate = idUpdate;
-        // sendData.enabledFilter = enabledFilter;
-        // await AdminFiltersAPI.updateFilters(sendData);
+    });
 
-        this.setState({
-          sendDataStatus: 'success'
-          // sendDataMessage: `${title.val} filter has been update!`
-        });
-      }
-    } catch (err) {
+    // проверка, выбраны ли все фильтра категории
+    if (!nameProduct.length || !description.length || !category || !mainFilters.length) {
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: 'Enter required fields!'
       });
+    } else if (errorModels) {
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: 'Fields of models is required!'
+      });
+    } else if (!filtersImage.length) {
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: 'Image product is required!'
+      });
+    } else if (uniqueCategoryForm.length !== category.filters.length) {
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: 'All category filters not selected!'
+      });
+    } else {
+      const sendData = {
+        nameProduct,
+        description,
+        _idChildCategory: category._id,
+        filters: mainFilters.map(i => ({ filter: i.parentId, subFilter: i._id })),
+        productUrlImg: filtersImage.filter(i => !i.subFilter._id).map(i => i.image[0]),
+        filterImg: filtersImage
+          .filter(i => i.subFilter._id)
+          .map(i => ({
+            _idFilter: i.subFilter.parentId,
+            _idSubFilters: i.subFilter._id,
+            urlImg: i.image
+          })),
+        model: models.map(i => ({
+          quantity: i.quantity,
+          currentPrice: i.price,
+          filters: i.subFilters.map(subFilter => ({
+            filter: subFilter.parentId,
+            subFilter: subFilter._id
+          }))
+        }))
+      };
+
+      console.log('!!!!!', sendData);
+
+      const options = {
+        indices: true,
+        nullsAsUndefineds: true
+      };
+
+      const formData = objectToFormData(sendData, options);
+
+      try {
+        if (typeForm === 'create') {
+          await AdminProductsAPI.createProducts(formData);
+
+          this.setState({
+            sendDataStatus: 'success',
+            sendDataMessage: `${sendData.nameProduct} product has been created!`
+          });
+        }
+
+        if (typeForm === 'update') {
+          // sendData.idUpdate = idUpdate;
+          // sendData.enabledFilter = enabledFilter;
+          // await AdminFiltersAPI.updateFilters(sendData);
+
+          this.setState({
+            sendDataStatus: 'success'
+            // sendDataMessage: `${title.val} filter has been update!`
+          });
+        }
+      } catch (err) {
+        this.setState({
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
+        });
+      }
     }
   };
 
@@ -283,7 +338,6 @@ class ProductsDetail extends Component {
       filtersImage,
       models
     } = this.state;
-    console.log(this.state);
     return (
       <Container maxWidth="md">
         <Paper className={classes.root}>
@@ -307,8 +361,8 @@ class ProductsDetail extends Component {
             centered
           >
             <Tab label="Basic Info" {...a11yProps(0)} />
-            <Tab label="Main Images" {...a11yProps(1)} />
-            <Tab label="Models" {...a11yProps(2)} />
+            <Tab label="Models" {...a11yProps(1)} />
+            <Tab label="Main Images" {...a11yProps(2)} />
           </Tabs>
 
           <Box p={3}>
@@ -323,19 +377,20 @@ class ProductsDetail extends Component {
                 description={description}
               />
             ) : this.state.tabValue === 1 ? (
+              <ProductsDetailModels
+                models={models}
+                dataFilters={dataFilters}
+                mainFilters={mainFilters}
+                onChangeValue={this.onChangeValueModels}
+                onClickDeleteModel={this.onClickDeleteModel}
+                onAddNewModel={this.onAddNewModel}
+              />
+            ) : this.state.tabValue === 2 ? (
               <ProductsDetailMainImages
                 onChangeValue={this.onChangeValue}
                 filtersImage={filtersImage}
                 onDeleteCardImg={this.onDeleteCardImg}
-                dataFilters={dataFilters}
-              />
-            ) : this.state.tabValue === 2 ? (
-              <ProductsDetailModels
                 models={models}
-                dataFilters={dataFilters}
-                onChangeValue={this.onChangeValueModels}
-                onClickDeleteModel={this.onClickDeleteModel}
-                onAddNewModel={this.onAddNewModel}
               />
             ) : null}
           </Box>
