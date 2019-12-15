@@ -6,7 +6,6 @@ import './Cart.scss';
 
 class Bag extends Component {
   render() {
-    debugger;
     const { items, loading } = this.props.cart;
     return (
       <Fragment>
@@ -17,12 +16,12 @@ class Bag extends Component {
             <h2>BAG</h2>
             <div>
               <p className="about-item">
-                {items.length} items |{'Ch'}
+                {items.length} items |
                 <span className="price">
                   $
-                  {/* {items.reduce((acc, curr) => {
-                    return acc.product.model[0].currentPrice + curr.product.model[0].currentPrice;
-                  })} */}
+                  {items.reduce((acc, curr) => {
+                    return acc.modelNo.currentPrice * acc.quantity + curr.modelNo.currentPrice * curr.quantity;
+                  })}
                 </span>
               </p>
             </div>

@@ -101,7 +101,7 @@
 }
 
 //  MODAL
-.makeStyles-paper-1 {
+.makeStyles-paper-76 {
   .checkout-title {
     margin: 20px 0;
     font-weight: 400;
@@ -141,6 +141,11 @@
       list-style-type: disc;
     }
   }
+}
+
+.product-photos {
+  display: none;
+  grid-area: carousel;
 }
 
 .product-reviews {
@@ -222,10 +227,6 @@
   }
 }
 
-.slick-slide img {
-  width: 138px;
-}
-
 @media screen and (min-width: 1000px) {
   .product {
     display: grid;
@@ -236,6 +237,7 @@
       'photo photo select select'
       'photo photo sizes sizes'
       'photo photo buttons buttons'
+      'carousel carousel carousel carousel'
       'reviews reviews reviews reviews';
     grid-template-rows: repeat(1fr, 6);
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -248,5 +250,20 @@
 
   .property-description {
     margin: 0;
+  }
+  
+  .makeStyles-paper-76 {
+    top: 17%;
+    left: 33%;
+    width: 39%;
+  }
+
+  .product-photos {
+    display: block;
+    margin: 40px 0;
+  }
+
+  .slick-slide img {
+    width: 210px;
   }
 }

@@ -27,7 +27,7 @@ router.put(
   updateCart
 );
 
-// @route   PUT /cart/:productId
+// @route   PUT /cart/product
 // @desc    Edit one product to cart
 // @access  Private
 router.put(

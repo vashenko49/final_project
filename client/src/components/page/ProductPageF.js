@@ -4,20 +4,21 @@ import { connect } from 'react-redux';
 import { getCurrentProduct } from '../../actions/product';
 import { getCurrentItems, addNewProduct } from '../../actions/cart';
 
+import {Image} from 'cloudinary-react';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 
 import Carousel from './Carousel';
-import Rating from '../common/rating/Rating';
+import ProdcutHeader from './ProductHeader'
+import ProductSizes from './ProductSizes'
 
 import './ProductPage.scss';
+import ProductReview from './ProductReview';
 
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
-    top: 13 + '%',
-    left: 33 + '%',
-    width: 39 + '%',
     backgroundColor: theme.palette.background.paper,
     // border: '.6px solid #000',
     boxShadow: theme.shadows[5],
@@ -45,39 +46,28 @@ const ProductPageF = ({
     productUrlImg,
     _idChildCategory
   } = product;
+  
+  const modelsFilters = model ? model.map(v => v.filters).flat() : []
 
   const [customerId, setId] = useState('5de5592bf82b736ff4eb3c08');
 
   const [currentModel, setCurrentModel] = useState({});
 
-  const [productData, setProductData] = useState({
-    currentColor: '',
-    currentPrice: '',
-    currentSize: ''
-  });
-
-  const { currentColor, currentPrice, currentSize } = productData;
-
-  const onChange = e => {
-    setProductData({ ...productData, [e.target.name]: e.target.value });
-  };
+  const [currentColor, setCurrentColor] = useState('');
 
   const handleModel = () => {
     const foundIndex = model.find(v => {
       const tmp = v.filters
         .map(e => {
-          if (e.subFilter.name === 'Nike Air') {
+          if (e.subFilter.name === 'Nike Air') { //Current color
             return true;
           }
           return false;
         })
         .join();
-      console.log(tmp);
       return tmp;
     });
-    // console.log('%cfoundIndex: ' + foundIndex, 'background-color: purple; padding: 5px;');
-    // const currentModelIndex = model.indexOf(foundIndex);
-    setCurrentModel(model[foundIndex]);
+    setCurrentModel(foundIndex);
   };
 
   // Load product
@@ -87,8 +77,6 @@ const ProductPageF = ({
   }, [getCurrentProduct]);
 
   // Modal settings
-  const [active, setActive] = useState(false);
-
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -104,34 +92,27 @@ const ProductPageF = ({
   const amount = [];
 
   for (let i = 1; i < 10; i++) {
-    amount.push(<option value={i}>{i}</option>);
+    amount.push(<option key={i} value={i}>{i}</option>);
   }
-
   return (
     <Fragment>
       {loading === true ? (
         <h1>preloader</h1>
       ) : (
         <div className="product">
-          <div className="product-header">
-            <div className="header-info">
-              <h2>{nameProduct}</h2>
-              <h3 className="item-No">{itemNo}</h3>
-            </div>
-            <p className="item-price">${model[0].currentPrice.toFixed(2)}</p>
-          </div>
+          <ProdcutHeader itemNo={itemNo} nameProduct={nameProduct} currentModel={currentModel} model={model}/>
           <div className="product-photo">
-            <img src={productUrlImg[0]} alt="sneaker not found"></img>
+            <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} crop="scale" />
           </div>
           <div className="product-colors container">
-            {filters.map(v => {
+            {modelsFilters.map(v => {
               if (v.filter.type === 'Color') {
                 return (
                   <button
                     className="product-select-color"
                     name="currentColor"
                     onClick={e => {
-                      onChange(e);
+                      setCurrentColor(e.target.value)
                       handleModel();
                     }}
                     style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
@@ -142,23 +123,7 @@ const ProductPageF = ({
               return [];
             })}
           </div>
-          <div className="product-select">
-            <div className="sizes-info">
-              <p>Select Size</p>
-              <a href="/" className="size-guide">
-                Size Guide
-              </a>
-            </div>
-          </div>
-          <div className="product-sizes container">
-            {filters.map(v => {
-              debugger;
-              if (v.filter.type === 'Sizes') {
-                return <button className="light-btn">US {v.subFilter.name}</button>;
-              }
-              return [];
-            })}
-          </div>
+          <ProductSizes currentModel={currentModel} filters={filters} />
           <div className="product-buttons container">
             <button className="black-btn" onClick={handleOpen}>
               {' '}
@@ -167,7 +132,6 @@ const ProductPageF = ({
             </button>
             <button className="grey-btn">Favourite</button>
           </div>
-
           <div>
             <Modal
               aria-labelledby="simple-modal-title"
@@ -216,32 +180,14 @@ const ProductPageF = ({
               </div>
             </Modal>
           </div>
-
-          <div className="product-photos">{/* <Carousel /> */}</div>
+          <Carousel productUrlImg={productUrlImg}/>
+          <ProductReview />
           <div className="product-discription container">
             <p className="short-description">{description}</p>
-            {/* <ul className="property-description">
-              <li>Shown: {''}</li>
+            <ul className="property-description">
+              <li>Shown: {currentColor}</li>
               <li>Style: {itemNo}</li>
-            </ul> */}
-          </div>
-          <div className="product-reviews container">
-            <div className="review-header" onClick={() => setActive(!active)}>
-              <div className="title" type="button">
-                Reviews
-              </div>
-              <div className="arrow"></div>
-            </div>
-            <div
-              className={active ? 'review-content container active' : 'review-content container'}
-            >
-              <p className="review-headline">Great buy</p>
-              <Rating stars={4} className="review-rating" />
-              <p className="review-date">Marklive - 22 Nov 2019</p>
-              <div>
-                <p className="review-text">Get a lot of compliments and very comfortable</p>
-              </div>
-            </div>
+            </ul>
           </div>
         </div>
       )}

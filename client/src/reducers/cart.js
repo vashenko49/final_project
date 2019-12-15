@@ -9,16 +9,9 @@ const initialState = {
 export default function(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    // debugger;
-    // return {
-    //   ...state,
-    //   items: state.products,
-    //   loading: false
-    // };
     case UPDATE_ITEM:
     case GET_ITEMS:
     case ADD_ITEMS:
-      debugger;
       return {
         ...state,
         items: payload.products,

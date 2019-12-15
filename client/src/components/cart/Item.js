@@ -3,6 +3,8 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import {Image} from 'cloudinary-react';
+
 import { updateQuantity } from '../../actions/cart';
 
 import './Cart.scss';
@@ -22,7 +24,6 @@ class Item extends Component {
         </option>
       );
     }
-    debugger;
     return (
       <Fragment>
         {loading ? (
@@ -30,21 +31,24 @@ class Item extends Component {
         ) : (
           <div className="bag-item">
             {items.map(v => {
-              // v it's item in products array
               const {
                 _id,
                 filters: property,
-                _idChildCategory,
+                currentPrice,
+                modelNo
+              } = v.modelNo;
+
+              const {
+                _id: parentId,
                 nameProduct,
                 productUrlImg,
-                model: item
-              } = v.product;
+                _idChildCategory
+              } = v.idProduct
 
-              let currentQuantity = v.cartQuantity;
-
+              let quantity = v.quantity;
               return (
                 <div className="sneaker-item" key={_id}>
-                  <img src={productUrlImg[0]} alt="product not found"></img>
+                  <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} width="400" crop="scale" />
                   <div className="sneaker-item-info">
                     <h2 className="info-title">{nameProduct}</h2>
                     <p>{_idChildCategory.name}</p>
@@ -55,22 +59,28 @@ class Item extends Component {
                             return v.subFilter.name;
                           }
                           return [];
-                        })
-                        .join()}
+                        })}
                     </p>
-                    <p>Size {9}</p>
+                    <p>Size {property
+                        .map(v => {
+                          if (v.filter.type === 'Sizes') {
+                            return v.subFilter.name;
+                          }
+                          return [];
+                        })}</p>
                     <label htmlFor="quantity">Quantity</label>
                     <select
                       name="quantity"
                       onChange={e => {
-                        updateQuantity(customerId, _id, e.target.value);
+                        updateQuantity(customerId, parentId, modelNo,e.target.value);
                       }}
+                      value={quantity}
                     >
                       {amount}
                     </select>
                   </div>
                   <div>
-                    <p className="about-item">${item[0].currentPrice * currentQuantity}</p>
+                    <p className="about-item">${currentPrice * quantity}</p>
                   </div>
                 </div>
               );

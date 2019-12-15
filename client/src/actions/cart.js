@@ -24,7 +24,6 @@ export function getCurrentItems(id) {
 // Add new product
 export const addNewProduct = (id, productId, quantity) => async dispatch => {
   try {
-    debugger;
     const res = await CartAPI.addNewProduct(id, productId, quantity);
     dispatch({
       type: ADD_ITEMS,
@@ -41,29 +40,10 @@ export const addNewProduct = (id, productId, quantity) => async dispatch => {
   }
 };
 
-export function updateQuantity(id, productId, quantity) {
-  // try {
-  //   debugger;
-  //   const res = await CartAPI.updateQuantity(id, productId, quantity);
-  //   dispatch({
-  //     type: UPDATE_ITEM,
-  //     payload: res.data
-  //   });
-  // } catch (err) {
-  //   dispatch({
-  //     type: ITEMS_ERROR,
-  //     payload: {
-  //       msg: err.response.statusText,
-  //       status: err.response.status
-  //     }
-  //   });
-  // }
-
+export function updateQuantity(id, productId, modelNo, quantity) {
   return async dispatch => {
     try {
-      console.log(id);
-      const res = await CartAPI.updateQuantity(id, productId, quantity);
-
+      const res = await CartAPI.updateQuantity(id, productId, modelNo, parseFloat(quantity));
       dispatch({
         type: UPDATE_ITEM,
         payload: res.data

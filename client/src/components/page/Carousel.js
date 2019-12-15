@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 
+import {Image} from 'cloudinary-react';
+
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
-import logo1 from './../../assets/1.png';
 
 export default class Responsive extends Component {
   render() {
@@ -12,14 +12,14 @@ export default class Responsive extends Component {
       dots: true,
       infinite: false,
       speed: 500,
-      slidesToShow: 10,
+      slidesToShow: 9,
       slidesToScroll: 2,
       initialSlide: 0,
       responsive: [
         {
           breakpoint: 1024,
           settings: {
-            slidesToShow: 3,
+            slidesToShow: 6,
             slidesToScroll: 3,
             infinite: true,
             dots: true
@@ -28,8 +28,8 @@ export default class Responsive extends Component {
         {
           breakpoint: 600,
           settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
+            slidesToShow: 1,
+            slidesToScroll: 1,
             initialSlide: 2
           }
         },
@@ -43,19 +43,20 @@ export default class Responsive extends Component {
       ]
     };
 
+    const { productUrlImg } = this.props;
+
     const photos = [];
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < productUrlImg.length; i++) {
       photos.push(
         <div>
-          <img src={logo1} />
+          <Image key={i} cloudName="dxge5r7h2" publicId={productUrlImg[i]} width="400" crop="scale" alt="sneaker not found"/>
         </div>
       );
     }
 
     return (
-      <div>
-        <h2> Responsive </h2>
+      <div className="product-photos">
         <Slider {...settings}>{photos}</Slider>
       </div>
     );
