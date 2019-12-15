@@ -55,12 +55,13 @@ const ProductSchema = new Schema(
         },
         _idSubFilters:{
           type: Schema.Types.ObjectID,
-          require: true,
           ref: 'subfilters'
-        },
-        urlImg:[{
+      },
+        urlImg:[
+          {
           type:String
-        }]
+        }
+        ]
       }
     ],
     htmlPage:{
