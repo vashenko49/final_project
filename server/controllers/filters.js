@@ -33,9 +33,8 @@ exports.createFilter = async (req, res) => {
       filter._idSubFilters = await commonFilterOrSubFilter.sortingSubFilter(filter);
     }
 
-    let newFilter = new Filter(filter);
+    let newFilter = await new Filter(filter).save();
 
-    //await newFilter.save();
     res.status(200).json(newFilter);
   } catch (err) {
     console.log(err);
@@ -257,6 +256,38 @@ exports.createSubFilter = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Server Error!"
+    });
+  }
+};
+
+exports.createManySubFilter = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let { names } = req.body;
+
+    if (_.isArray(names) && names.length > 0) {
+      names = await Promise.all(
+        names.map(async element => {
+          let subFilter = await SubFilter.findOne({ name: element });
+
+          if (subFilter) {
+            return subFilter;
+          } else {
+            return await new SubFilter({ name: element }).save();
+          }
+        })
+      );
+    }
+
+    res.status(200).json(names);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Server Error!!"
     });
   }
 };

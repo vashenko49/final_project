@@ -441,8 +441,11 @@ exports.deleteProduct = async (req, res, next) => {
       product._idChildCategory
     );
 
+
     //удаляем фотки товара
     await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(product.productUrlImg);
+
+
     for (let i = 0; i < product.filterImg.length; i++) {
       await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(product.filterImg[i].urlImg);
     }
@@ -450,6 +453,7 @@ exports.deleteProduct = async (req, res, next) => {
     await product.delete();
     res.status(200).json({ msg: "Product deleted" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: `Error happened on server: "${err}" `
     });

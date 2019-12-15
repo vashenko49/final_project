@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-// const userId = require("order-id")(process.env.usersIdSecret);
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
 const bcrypt = require("bcryptjs");
 
 const CustomerSchema = new Schema({
   customerNo: {
-    type: String
-    // default: userId.generate()
+    type: String,
+    default: rand().toString()
   },
   firstName: {
     type: String,

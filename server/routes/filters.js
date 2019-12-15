@@ -12,6 +12,7 @@ const {
   getOneFilters,
   deleteFilter,
   createSubFilter,
+  createManySubFilter,
   updateSubFilter,
   getAllSubFilters,
   getOneSubFilter,
@@ -120,6 +121,16 @@ router.post(
   ],
   createSubFilter);
 
+// @route POST /subfilters
+// @desc Create new subfilter
+// @access Private
+router.post(
+  "/sub/many",[
+    check('names', 'Name is required')
+      .isArray(),
+  ],
+  createManySubFilter);
+
 // @route PUT /subfilters
 // @desc Update subfilter
 // @access Private
@@ -170,7 +181,9 @@ router.delete(
 // @access  Private
 router.put(
   "/sub/many",
-  check('_idSubFiltersForDeletion','_idSubFiltersForDeletion is require'),
+  check('_idSubFiltersForDeletion','_idSubFiltersForDeletion is require')
+    .not()
+    .notEmpty(),
   removeManySubFilters
 );
 
