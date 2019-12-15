@@ -24,6 +24,11 @@ exports.getCart = async (idCustomer) => {
       ]
     })));
 
+
+  return cart;
+};
+
+exports.getModelByModelNo = (cart)=>{
   cart.products.forEach(((element, indexProd) => {
     let index = _.findIndex(element.idProduct.model, function (o) {
       return o.modelNo == element.modelNo;

@@ -62,7 +62,7 @@ exports.updateCart = async (req, res) => {
     }
 
     let cart = await commonCart.getCart(idCustomer);
-
+    cart = commonCart.getModelByModelNo(cart);
     res.status(200).json(cart);
   } catch (e) {
     res.status(400).json({
@@ -114,39 +114,52 @@ exports.updateProductFromCart = async (req, res) => {
 
     let isCart = await Cart.findOne({"customerId": idCustomer});
 
-    if (!isCart) {
-      isCart = await (new Cart({
+
+    if (!isCart && quantity > 0) {
+      //коризны нету и добавляем товар
+      isCart = new Cart({
         customerId: idCustomer,
         products: [{
           idProduct: idProduct,
           modelNo: modelNo,
           quantity: quantity
         }]
-      })).save();
+      });
     } else {
+
       let indexProd = _.findIndex(isCart.products, function (o) {
         //documentation recommend use ==
         return (o.idProduct == idProduct && o.modelNo == modelNo)
       });
 
-
-      if (indexProd => 0) {
-        isCart.products[indexProd].quantity = quantity;
+      if (indexProd>=0 && quantity <= 0) {
+        //если товар пришел с количеством 0 удалить с корзины этот товар
+        _.pullAt(isCart.products, [indexProd]);
       } else {
-        isCart.products.push({
-          idProduct: idProduct,
-          modelNo: modelNo,
-          quantity: quantity
-        })
+        if (indexProd >= 0) {
+          isCart.products[indexProd].quantity = quantity;
+        } else {
+          isCart.products.push({
+            idProduct: idProduct,
+            modelNo: modelNo,
+            quantity: quantity
+          })
+        }
       }
 
-      await isCart.save();
     }
 
-    let cart = await commonCart.getCart(idCustomer);
+
+    isCart = await Cart.findOneAndUpdate({"customerId": idCustomer}, {$set: {products:isCart.products}}, {new: true});
+    isCart = await isCart.save();
+    console.log(isCart);
+
+    let cart = await commonCart.getCart(isCart.customerId);
+    cart = commonCart.getModelByModelNo(cart);
 
     res.status(200).json(cart);
   } catch (e) {
+    console.log(e);
     res.status(400).json({
       message: `Server error ${e.message}`
     })
@@ -215,19 +228,13 @@ exports.getCart = async (req, res) => {
     let cart = await commonCart.getCart(idCustomer);
 
     if (!cart) {
-      return res.status(400).json({
-        message: "Cart not found"
-      })
-    }
-
-    if (!cart) {
       cart = await (new Cart({
         customerId: idCustomer,
         products: []
       })).save();
     }
 
-
+    cart = commonCart.getModelByModelNo(cart);
 
     res.status(200).json(cart);
 
