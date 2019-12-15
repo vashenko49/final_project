@@ -4,7 +4,7 @@ const Customer = require('../models/Customer');
 const _ = require("lodash");
 const {validationResult} = require('express-validator');
 const mongoose = require('mongoose');
-
+const commonCart = require('../common/commonCart');
 
 exports.updateCart = async (req, res) => {
   try {
@@ -52,16 +52,18 @@ exports.updateCart = async (req, res) => {
 
     let isCart = await Cart.findOne({"customerId": idCustomer});
     if (!isCart) {
-      isCart = await (new Cart({
+      await (new Cart({
         customerId: idCustomer,
         products: products
       })).save();
     } else {
       isCart.products = products;
-      isCart = await isCart.save();
+      await isCart.save();
     }
 
-    res.status(200).json(isCart);
+    let cart = await commonCart.getCart(idCustomer);
+
+    res.status(200).json(cart);
   } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`
@@ -122,25 +124,28 @@ exports.updateProductFromCart = async (req, res) => {
         }]
       })).save();
     } else {
-      let indexProd = _.findIndex(isCart.products,function (o) {
+      let indexProd = _.findIndex(isCart.products, function (o) {
         //documentation recommend use ==
         return (o.idProduct == idProduct && o.modelNo == modelNo)
       });
 
 
-      if(indexProd=>0){
-        isCart.products[indexProd].quantity= quantity;
-      }else {
+      if (indexProd => 0) {
+        isCart.products[indexProd].quantity = quantity;
+      } else {
         isCart.products.push({
           idProduct: idProduct,
           modelNo: modelNo,
           quantity: quantity
         })
       }
-      isCart = await isCart.save();
+
+      await isCart.save();
     }
 
-    res.status(200).json(isCart);
+    let cart = await commonCart.getCart(idCustomer);
+
+    res.status(200).json(cart);
   } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`
@@ -179,7 +184,7 @@ exports.cleanCart = async (req, res) => {
 
     res.status(200).json({
       message: `Cart successfully emptied`,
-      cart:cart
+      cart: cart
     })
 
   } catch (e) {
@@ -207,29 +212,22 @@ exports.getCart = async (req, res) => {
     }
 
 
-    let cart  = JSON.parse(JSON.stringify(await Cart.findOne({"customerId": idCustomer})
-      .populate('customerId')
-      .populate('products.idProduct')));
+    let cart = await commonCart.getCart(idCustomer);
+
     if (!cart) {
       return res.status(400).json({
         message: "Cart not found"
       })
     }
 
-    if(!cart){
+    if (!cart) {
       cart = await (new Cart({
         customerId: idCustomer,
-        products:[]
+        products: []
       })).save();
     }
 
 
-    cart.products.forEach(((element, indexProd)=>{
-      let index = _.findIndex(element.idProduct.model,function (o) {
-        return o.modelNo == element.modelNo;
-      });
-     cart.products[indexProd].modelNo = _.clone(cart.products[indexProd].idProduct.model[index]);
-    }));
 
     res.status(200).json(cart);
 
