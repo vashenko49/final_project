@@ -5,7 +5,9 @@ import AdminFiltersAPI from '../../services/AdminFiltersAPI';
 import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
 
 import CategoriesDetailForm from './CategoriesDetailForm.js';
+
 import SnackBars from '../common/admin-panel/SnackBars';
+import Preloader from '../common/admin-panel/Preloader';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -33,7 +35,12 @@ class CategoriesDetail extends Component {
     idUpdate: null,
     isOpenSnack: false,
     sendDataStatus: 'success',
-    sendDataMessage: ''
+    sendDataMessage: '',
+    isLoading: false
+  };
+
+  setIsLoading = state => {
+    this.setState({ isLoading: state });
   };
 
   newObjChildCategory = () => ({
@@ -87,6 +94,8 @@ class CategoriesDetail extends Component {
   };
 
   onSubmitForm = async () => {
+    this.setIsLoading(true);
+
     const { rootCategory, childCategory, idUpdate, typeForm } = this.state;
 
     const sendData = {
@@ -111,14 +120,18 @@ class CategoriesDetail extends Component {
         await AdminCategoriesAPI.updateCategories(sendData);
       }
 
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'success',
         sendDataMessage: `${rootCategory} category has been ${typeForm}!`
       });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
-        sendDataStatus: 'error'
-        // sendDataMessage: err.response.data.message
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
       });
     }
   };
@@ -130,6 +143,8 @@ class CategoriesDetail extends Component {
   };
 
   async componentDidMount() {
+    this.setIsLoading(true);
+
     const { data } = await AdminFiltersAPI.getFilters();
     this.setState({
       filtersData: data.map(i => ({ id: i._id, serviceName: i.serviceName }))
@@ -156,7 +171,11 @@ class CategoriesDetail extends Component {
             }))
           }))
         });
+
+        this.setIsLoading(false);
       } catch (err) {
+        this.setIsLoading(false);
+
         this.setState({
           isOpenSnack: true,
           sendDataStatus: 'error',
@@ -176,7 +195,8 @@ class CategoriesDetail extends Component {
       childCategory,
       filtersData,
       sendDataStatus,
-      sendDataMessage
+      sendDataMessage,
+      isLoading
     } = this.state;
 
     return (
@@ -213,6 +233,8 @@ class CategoriesDetail extends Component {
             open={!!sendDataMessage}
             message={sendDataMessage}
           />
+
+          <Preloader open={isLoading} />
         </Paper>
       </Container>
     );
