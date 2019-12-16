@@ -109,7 +109,9 @@ export default class Categories extends Component {
         });
       });
       this.setState({
-        data: preViewRes
+        data: preViewRes,
+        sendDataStatus: 'success',
+        sendDataMessage: 'Categories has been update!'
       });
     } catch (err) {
       this.setState({
@@ -117,6 +119,12 @@ export default class Categories extends Component {
         sendDataMessage: err.response.data.message
       });
     }
+  };
+
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
   };
 
   componentDidMount() {
@@ -242,7 +250,12 @@ export default class Categories extends Component {
         />
         <BtnCreateAdmin to="/admin-panel/categories/new" />
 
-        <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+        <SnackBars
+          handleClose={this.handleCloseSnackBars}
+          variant={sendDataStatus}
+          open={!!sendDataMessage}
+          message={sendDataMessage}
+        />
 
         {this.state.clickId ? (
           <Redirect to={`/admin-panel/categories/${clickId}`} push={true} />

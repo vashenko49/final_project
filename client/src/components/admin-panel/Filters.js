@@ -75,38 +75,7 @@ export default class Filters extends Component {
   };
 
   async componentDidMount() {
-    try {
-      const { data } = await AdminFiltersAPI.getFilters();
-
-      const preViewRes = [];
-
-      data.forEach(item => {
-        preViewRes.push({
-          id: item._id,
-          title: item.type,
-          serviceName: item.serviceName,
-          enabled: item.enabled
-        });
-
-        item._idSubFilters.forEach(sub => {
-          preViewRes.push({
-            id: sub._id,
-            title: sub.name,
-            parentId: item._id,
-            enabled: sub.enabled
-          });
-        });
-      });
-
-      this.setState({
-        data: preViewRes
-      });
-    } catch (err) {
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
-      });
-    }
+    await this.onRefreshData();
   }
 
   onSelectDelete = (event, delData) => {
@@ -193,6 +162,12 @@ export default class Filters extends Component {
     });
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   render() {
     const { columns, data, sendDataStatus, sendDataMessage, clickId } = this.state;
 
@@ -233,7 +208,12 @@ export default class Filters extends Component {
         />
         <BtnCreateAdmin to="/admin-panel/filters/new" />
 
-        <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+        <SnackBars
+          handleClose={this.handleCloseSnackBars}
+          variant={sendDataStatus}
+          open={!!sendDataMessage}
+          message={sendDataMessage}
+        />
 
         {this.state.clickId ? (
           <Redirect to={`/admin-panel/filters/${clickId}`} push={true} />

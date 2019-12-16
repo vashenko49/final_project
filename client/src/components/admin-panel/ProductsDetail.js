@@ -317,6 +317,12 @@ class ProductsDetail extends Component {
     });
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   async componentDidMount() {
     const { id } = this.props.match.params;
 
@@ -416,7 +422,7 @@ class ProductsDetail extends Component {
       filtersImage,
       models
     } = this.state;
-    console.log('STATE', this.state);
+
     return (
       <Container maxWidth="md">
         <Paper className={classes.root}>
@@ -486,7 +492,12 @@ class ProductsDetail extends Component {
             </Button>
           </Box>
 
-          <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+          <SnackBars
+            handleClose={this.handleCloseSnackBars}
+            variant={sendDataStatus}
+            open={!!sendDataMessage}
+            message={sendDataMessage}
+          />
         </Paper>
       </Container>
     );

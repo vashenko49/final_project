@@ -99,7 +99,6 @@ class Products extends Component {
   getData = async () => {
     try {
       const { data } = await AdminProductsAPI.getProducts();
-      console.log(data);
 
       const preViewRes = data.map(product => ({
         id: product._id,
@@ -120,7 +119,9 @@ class Products extends Component {
       }));
 
       this.setState({
-        data: preViewRes
+        data: preViewRes,
+        sendDataStatus: 'success',
+        sendDataMessage: 'Products has been update!!'
       });
     } catch (err) {
       this.setState({
@@ -176,6 +177,12 @@ class Products extends Component {
     });
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   render() {
     const { columns, data, sendDataStatus, sendDataMessage, clickId } = this.state;
 
@@ -217,7 +224,12 @@ class Products extends Component {
         />
         <BtnCreateAdmin to="/admin-panel/products/new" />
 
-        <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+        <SnackBars
+          handleClose={this.handleCloseSnackBars}
+          variant={sendDataStatus}
+          open={!!sendDataMessage}
+          message={sendDataMessage}
+        />
 
         {this.state.clickId ? (
           <Redirect to={`/admin-panel/products/${clickId}`} push={true} />
