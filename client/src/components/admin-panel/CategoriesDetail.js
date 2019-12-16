@@ -123,6 +123,12 @@ class CategoriesDetail extends Component {
     }
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   async componentDidMount() {
     const { data } = await AdminFiltersAPI.getFilters();
     this.setState({
@@ -200,7 +206,13 @@ class CategoriesDetail extends Component {
               !!(childCategory.find(i => !i.name || !i.filters.length) || !rootCategory)
             }
           />
-          <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+
+          <SnackBars
+            handleClose={this.handleCloseSnackBars}
+            variant={sendDataStatus}
+            open={!!sendDataMessage}
+            message={sendDataMessage}
+          />
         </Paper>
       </Container>
     );

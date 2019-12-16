@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -46,35 +46,30 @@ const styles = theme => ({
   }
 });
 
-const MySnackbarContentWrapper = withStyles(styles)(function({
-  classes,
-  className,
-  message,
-  onClose,
-  variant,
-  ...other
-}) {
-  const Icon = variantIcon[variant];
+const MySnackbarContentWrapper = withStyles(styles)(
+  ({ classes, className, message, onClose, variant, ...other }) => {
+    const Icon = variantIcon[variant];
 
-  return (
-    <SnackbarContent
-      className={clsx(classes[variant], className)}
-      aria-describedby="client-snackbar"
-      message={
-        <span id="client-snackbar" className={classes.message}>
-          <Icon className={clsx(classes.icon, classes.iconVariant)} />
-          {message}
-        </span>
-      }
-      action={[
-        <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-          <CloseIcon className={classes.icon} />
-        </IconButton>
-      ]}
-      {...other}
-    />
-  );
-});
+    return (
+      <SnackbarContent
+        className={clsx(classes[variant], className)}
+        aria-describedby="client-snackbar"
+        message={
+          <span id="client-snackbar" className={classes.message}>
+            <Icon className={clsx(classes.icon, classes.iconVariant)} />
+            {message}
+          </span>
+        }
+        action={[
+          <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+            <CloseIcon className={classes.icon} />
+          </IconButton>
+        ]}
+        {...other}
+      />
+    );
+  }
+);
 
 MySnackbarContentWrapper.propTypes = {
   className: PropTypes.string,
@@ -83,45 +78,20 @@ MySnackbarContentWrapper.propTypes = {
   variant: PropTypes.oneOf(['error', 'info', 'success', 'warning']).isRequired
 };
 
-class SnackBars extends Component {
-  state = {
-    open: false
-  };
-
-  handleClose = (event, reason) => {
-    if (reason === 'clickaway') return;
-
-    this.setState({ open: false });
-  };
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({ open: nextProps.open });
-  }
-
-  render() {
-    const { variant, message } = this.props;
-    const { open } = this.state;
-
-    return (
-      <div>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left'
-          }}
-          open={open}
-          autoHideDuration={6000}
-          onClose={this.handleClose}
-        >
-          <MySnackbarContentWrapper
-            onClose={this.handleClose}
-            variant={variant}
-            message={message}
-          />
-        </Snackbar>
-      </div>
-    );
-  }
-}
+const SnackBars = ({ variant, message, open, handleClose }) => (
+  <div>
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left'
+      }}
+      open={open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+    >
+      <MySnackbarContentWrapper onClose={handleClose} variant={variant} message={message} />
+    </Snackbar>
+  </div>
+);
 
 export default SnackBars;

@@ -74,6 +74,12 @@ class FiltersDetail extends Component {
     }
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   async componentDidMount() {
     const { id } = this.props.match.params;
 
@@ -81,14 +87,14 @@ class FiltersDetail extends Component {
       this.setState({ typeForm: 'update' });
 
       try {
-        const res = await AdminFiltersAPI.getFiltersById(id);
+        const { data } = await AdminFiltersAPI.getFiltersById(id);
 
         this.setState({
-          title: { val: res.data.type, error: false },
-          serviceName: { val: res.data.serviceName, error: false },
-          subFilters: { val: res.data._idSubFilters.map(i => i.name), error: false },
-          idUpdate: res.data._id,
-          enabledFilter: res.data.enabled
+          title: { val: data.type, error: false },
+          serviceName: { val: data.serviceName, error: false },
+          subFilters: { val: data._idSubFilters.map(i => i.name), error: false },
+          idUpdate: data._id,
+          enabledFilter: data.enabled
         });
       } catch (err) {
         this.setState({
@@ -129,7 +135,13 @@ class FiltersDetail extends Component {
               !(title.val.length && serviceName.val.length && subFilters.val.length)
             }
           />
-          <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+
+          <SnackBars
+            handleClose={this.handleCloseSnackBars}
+            variant={sendDataStatus}
+            open={!!sendDataMessage}
+            message={sendDataMessage}
+          />
         </Paper>
       </Container>
     );
