@@ -56,6 +56,7 @@ class ProductsDetail extends Component {
         price: ''
       }
     ],
+    htmlPage: null,
     tabValue: 0,
     typeForm: 'create',
     idUpdate: null,
@@ -129,6 +130,7 @@ class ProductsDetail extends Component {
     const {
       nameProduct,
       description,
+      htmlPage,
       category,
       mainFilters,
       filtersImage,
@@ -198,6 +200,7 @@ class ProductsDetail extends Component {
       const sendData = {
         nameProduct,
         description,
+        htmlPage,
         _idChildCategory: category._id,
         filters: mainFilters.map(i => ({ filter: i.parentId, subFilter: i._id })),
         productUrlImg: filtersImage.filter(i => !i.subFilter._id).map(i => i.image[0]),
@@ -218,8 +221,6 @@ class ProductsDetail extends Component {
       };
 
       if (typeForm === 'update') sendData._idProduct = idUpdate;
-
-      console.log('!!!!!', sendData);
 
       const options = {
         indices: true,
@@ -391,6 +392,7 @@ class ProductsDetail extends Component {
         this.setState({
           nameProduct: data.nameProduct,
           description: data.description,
+          htmlPage: data.htmlPage,
           category,
           dataFilters,
           mainFilters,
@@ -420,9 +422,9 @@ class ProductsDetail extends Component {
       dataFilters,
       mainFilters,
       filtersImage,
-      models
+      models,
+      htmlPage
     } = this.state;
-
     return (
       <Container maxWidth="md">
         <Paper className={classes.root}>
@@ -460,6 +462,7 @@ class ProductsDetail extends Component {
                 mainFilters={mainFilters}
                 nameProduct={nameProduct}
                 description={description}
+                htmlPage={htmlPage}
               />
             ) : this.state.tabValue === 1 ? (
               <ProductsDetailModels
