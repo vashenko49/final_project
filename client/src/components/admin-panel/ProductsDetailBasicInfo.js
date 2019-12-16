@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
+import { Editor } from '@tinymce/tinymce-react';
+
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -24,7 +26,8 @@ const ProductsDetailBasicInfo = ({
   onChangeValue,
   category,
   dataFilters,
-  mainFilters
+  mainFilters,
+  htmlPage
 }) => {
   return (
     <form autoComplete="off" className={classes.form}>
@@ -51,6 +54,26 @@ const ProductsDetailBasicInfo = ({
           variant="outlined"
           value={description}
           onChange={e => onChangeValue('description', e.currentTarget.value)}
+        />
+      </FormControl>
+
+      <FormControl margin="normal" fullWidth>
+        <Editor
+          apiKey="f4wlvhjnp35loqdyh7o17fxkgiv0p6ik4u9i51o0lv0mh5jf"
+          initialValue="<p>Describe a more structured product</p>"
+          value={htmlPage}
+          init={{
+            height: 300,
+            menubar: true,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar:
+              'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+          }}
+          onChange={e => onChangeValue('htmlPage', e.target.getContent())}
         />
       </FormControl>
 
