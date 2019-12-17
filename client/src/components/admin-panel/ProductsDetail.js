@@ -130,163 +130,156 @@ class ProductsDetail extends Component {
   };
 
   onSubmitForm = async () => {
-    this.setIsLoading(true);
+    try {
+      this.setIsLoading(true);
 
-    const {
-      nameProduct,
-      description,
-      htmlPage,
-      category,
-      mainFilters,
-      filtersImage,
-      models,
-      typeForm,
-      idUpdate
-    } = this.state;
+      let sendType = 'success';
+      let sendMessage = '';
 
-    // получаем все уникальные id фильтров которые выбраны в форме
-    const uniqueCategoryForm = [
-      ...new Set([
-        ...mainFilters.map(i => i.parentId),
-        ...models
-          .map(i => i.subFilters)
-          .reduce((flat, current) => flat.concat(current), [])
-          .map(i => i.parentId)
-      ])
-    ];
-
-    // Проверка зполенния всех моделек
-    let errorModels = false;
-    models.forEach(i => {
-      if (!i.subFilters.length || !i.quantity.length || !i.price.length) {
-        errorModels = true;
-      }
-    });
-
-    // проверка, выбраны ли все фильтра категории
-    if (!nameProduct.length || !description.length || !category || !mainFilters.length) {
-      this.setIsLoading(false);
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: 'Enter required fields!'
-      });
-    } else if (errorModels) {
-      this.setIsLoading(false);
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: 'Fields of models is required!'
-      });
-    } else if (!filtersImage.length) {
-      this.setIsLoading(false);
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: 'Image product is required!'
-      });
-    } else if (uniqueCategoryForm.length !== category.filters.length) {
-      this.setIsLoading(false);
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: 'All category filters not selected!'
-      });
-    } else {
-      // grouping filterImage
-      const newFilterImage = filtersImage
-        .filter(i => i.subFilter._id)
-        .map(i => ({
-          _idFilter: i.subFilter.parentId,
-          _idSubFilters: i.subFilter._id,
-          urlImg: i.image
-        }));
-
-      const groupingFilterImage = [...new Set(newFilterImage.map(i => i._idSubFilters))].map(i => {
-        const groupArr = newFilterImage.filter(k => k._idSubFilters === i);
-        return {
-          ...groupArr[0],
-          urlImg: groupArr.map(s => s.urlImg[0])
-        };
-      });
-
-      const sendData = {
+      const {
         nameProduct,
         description,
         htmlPage,
-        _idChildCategory: category._id,
-        filters: mainFilters.map(i => ({ filter: i.parentId, subFilter: i._id })),
-        productUrlImg: filtersImage.filter(i => !i.subFilter._id).map(i => i.image[0]),
-        filterImg: groupingFilterImage,
-        model: models.map(i => {
-          const objModel = {
-            quantity: i.quantity,
-            currentPrice: i.price,
-            filters: i.subFilters.map(subFilter => ({
-              filter: subFilter.parentId,
-              subFilter: subFilter._id
-            }))
-          };
-          if (i.modelNo) objModel.modelNo = i.modelNo;
+        category,
+        mainFilters,
+        filtersImage,
+        models,
+        typeForm,
+        idUpdate
+      } = this.state;
 
-          return objModel;
-        })
-      };
+      // получаем все уникальные id фильтров которые выбраны в форме
+      const uniqueCategoryForm = [
+        ...new Set([
+          ...mainFilters.map(i => i.parentId),
+          ...models
+            .map(i => i.subFilters)
+            .reduce((flat, current) => flat.concat(current), [])
+            .map(i => i.parentId)
+        ])
+      ];
 
-      if (typeForm === 'update') sendData._idProduct = idUpdate;
+      // Проверка зполенния всех моделек
+      let errorModels = false;
+      models.forEach(i => {
+        if (!i.subFilters.length || !i.quantity.length || !i.price.length) {
+          errorModels = true;
+        }
+      });
 
-      const options = {
-        indices: true,
-        nullsAsUndefineds: true
-      };
+      // проверка, выбраны ли все фильтра категории
 
-      const formData = objectToFormData(sendData, options);
+      if (!nameProduct.length || !description.length || !category || !mainFilters.length) {
+        sendMessage = 'Enter required fields!';
+      } else if (errorModels) {
+        sendMessage = 'Fields of models is required!';
+      } else if (!filtersImage.length) {
+        sendMessage = 'Image product is required!';
+      } else if (uniqueCategoryForm.length !== category.filters.length) {
+        sendMessage = 'All category filters not selected!';
+      } else {
+        // grouping filterImage
+        const newFilterImage = filtersImage
+          .filter(i => i.subFilter._id)
+          .map(i => ({
+            _idFilter: i.subFilter.parentId,
+            _idSubFilters: i.subFilter._id,
+            urlImg: i.image
+          }));
 
-      try {
+        const groupingFilterImage = [...new Set(newFilterImage.map(i => i._idSubFilters))].map(
+          i => {
+            const groupArr = newFilterImage.filter(k => k._idSubFilters === i);
+            return {
+              ...groupArr[0],
+              urlImg: groupArr.map(s => s.urlImg[0])
+            };
+          }
+        );
+
+        const sendData = {
+          nameProduct,
+          description,
+          htmlPage,
+          _idChildCategory: category._id,
+          filters: mainFilters.map(i => ({ filter: i.parentId, subFilter: i._id })),
+          productUrlImg: filtersImage.filter(i => !i.subFilter._id).map(i => i.image[0]),
+          filterImg: groupingFilterImage,
+          model: models.map(i => {
+            const objModel = {
+              quantity: i.quantity,
+              currentPrice: i.price,
+              filters: i.subFilters.map(subFilter => ({
+                filter: subFilter.parentId,
+                subFilter: subFilter._id
+              }))
+            };
+            if (i.modelNo) objModel.modelNo = i.modelNo;
+
+            return objModel;
+          })
+        };
+
+        if (typeForm === 'update') sendData._idProduct = idUpdate;
+
+        const options = {
+          indices: true,
+          nullsAsUndefineds: true
+        };
+
+        const formData = objectToFormData(sendData, options);
+
         if (typeForm === 'create') {
           await AdminProductsAPI.createProducts(formData);
-
-          this.setIsLoading(false);
-
-          this.setState({
-            sendDataStatus: 'success',
-            sendDataMessage: `${sendData.nameProduct} product has been created!`
-          });
+          sendMessage = `${sendData.nameProduct} product has been ${typeForm}!`;
         }
 
         if (typeForm === 'update') {
           await AdminProductsAPI.updateProducts(formData);
-
-          this.setIsLoading(false);
-
-          this.setState({
-            sendDataStatus: 'success',
-            sendDataMessage: `${sendData.nameProduct} product has been updated!`
-          });
+          sendMessage = `${sendData.nameProduct} product has been ${typeForm}!`;
         }
-      } catch (err) {
-        this.setIsLoading(false);
-
-        this.setState({
-          sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
-        });
       }
+
+      this.setIsLoading(false);
+      this.setState({
+        sendDataStatus: sendType,
+        sendDataMessage: sendMessage
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
     }
   };
 
   getCategories = async () => {
-    this.setIsLoading(true);
+    try {
+      this.setIsLoading(true);
 
-    const { data } = await AdminCategoriesAPI.getCategories();
+      const { data } = await AdminCategoriesAPI.getCategories();
 
-    const newData = [];
+      const newData = [];
 
-    data.forEach(main => {
-      main.childCatalog.forEach(sub => {
-        sub.parent = main;
-        newData.push(sub);
+      data.forEach(main => {
+        main.childCatalog.forEach(sub => {
+          sub.parent = main;
+          newData.push(sub);
+        });
       });
-    });
-    this.setState({ dataCategories: newData });
+      this.setState({ dataCategories: newData });
 
-    this.setIsLoading(false);
+      this.setIsLoading(false);
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
+    }
   };
 
   setFiltersByCategory = filters => {
@@ -347,14 +340,14 @@ class ProductsDetail extends Component {
   };
 
   async componentDidMount() {
-    const { id } = this.props.match.params;
+    try {
+      this.setIsLoading(true);
 
-    await this.getCategories();
+      const { id } = this.props.match.params;
 
-    if (id) {
-      try {
-        this.setIsLoading(true);
+      await this.getCategories();
 
+      if (id) {
         const { data } = await AdminProductsAPI.getProductsById(id);
 
         // get category
@@ -425,16 +418,16 @@ class ProductsDetail extends Component {
           typeForm: 'update',
           idUpdate: id
         });
-
-        this.setIsLoading(false);
-      } catch (err) {
-        this.setIsLoading(false);
-
-        this.setState({
-          sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
-        });
       }
+
+      this.setIsLoading(false);
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
     }
   }
 
