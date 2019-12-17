@@ -2,7 +2,9 @@ import React, { Component, forwardRef } from 'react';
 import { Redirect } from 'react-router';
 
 import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+
 import SnackBars from '../common/admin-panel/SnackBars';
+import Preloader from '../common/admin-panel/Preloader';
 
 import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
 
@@ -73,11 +75,18 @@ export default class Categories extends Component {
     data: [],
     clickId: null,
     sendDataStatus: 'success',
-    sendDataMessage: ''
+    sendDataMessage: '',
+    isLoading: false
+  };
+
+  setIsLoading = state => {
+    this.setState({ isLoading: state });
   };
 
   getData = async () => {
     try {
+      this.setIsLoading(true);
+
       const { data } = await AdminCategoriesAPI.getCategories();
 
       const preViewRes = [];
@@ -108,12 +117,15 @@ export default class Categories extends Component {
           });
         });
       });
+
+      this.setIsLoading(false);
+
       this.setState({
-        data: preViewRes,
-        sendDataStatus: 'success',
-        sendDataMessage: 'Categories has been update!'
+        data: preViewRes
       });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -133,24 +145,34 @@ export default class Categories extends Component {
 
   onSelectDelete = (event, delData) => {
     try {
+      this.setIsLoading(true);
+
       delData.forEach(async item => {
         let nameItem = Object.keys(item);
 
         if (nameItem.includes('titleCategory')) {
           await AdminCategoriesAPI.deleteRootCategory(item.id);
+
+          this.setIsLoading(false);
+
           this.setState({
             sendDataStatus: 'success',
             sendDataMessage: `${item.titleCategory} has been remove!`
           });
         } else if (nameItem.includes('titleSubCategory')) {
           await AdminCategoriesAPI.deleteSubCategory(item.id);
+
+          this.setIsLoading(false);
+
           this.setState({
             sendDataStatus: 'success',
             sendDataMessage: `${item.titleSubCategory} filter has been remove!`
           });
         } else if (nameItem.includes('titleFilter')) {
-          console.log(item);
           await AdminCategoriesAPI.deleteFilter(item.parentId, item.id);
+
+          this.setIsLoading(false);
+
           this.setState({
             sendDataStatus: 'success',
             sendDataMessage: `${item.titleFilter} filter has been remove!`
@@ -163,6 +185,8 @@ export default class Categories extends Component {
         return { ...prevState, data };
       });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -209,7 +233,7 @@ export default class Categories extends Component {
   };
 
   render() {
-    const { columns, data, sendDataStatus, sendDataMessage, clickId } = this.state;
+    const { columns, data, sendDataStatus, sendDataMessage, clickId, isLoading } = this.state;
 
     return (
       <>
@@ -256,6 +280,8 @@ export default class Categories extends Component {
           open={!!sendDataMessage}
           message={sendDataMessage}
         />
+
+        <Preloader open={isLoading} />
 
         {this.state.clickId ? (
           <Redirect to={`/admin-panel/categories/${clickId}`} push={true} />

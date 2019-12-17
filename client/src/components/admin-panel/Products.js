@@ -3,7 +3,9 @@ import { Redirect } from 'react-router';
 import { Image } from 'cloudinary-react';
 
 import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+
 import SnackBars from '../common/admin-panel/SnackBars';
+import Preloader from '../common/admin-panel/Preloader';
 
 import AdminProductsAPI from './../../services/AdminProductsAPI';
 
@@ -93,11 +95,18 @@ class Products extends Component {
     data: [],
     clickId: null,
     sendDataStatus: 'success',
-    sendDataMessage: ''
+    sendDataMessage: '',
+    isLoading: false
+  };
+
+  setIsLoading = state => {
+    this.setState({ isLoading: state });
   };
 
   getData = async () => {
     try {
+      this.setIsLoading(true);
+
       const { data } = await AdminProductsAPI.getProducts();
 
       const preViewRes = data.map(product => ({
@@ -118,12 +127,14 @@ class Products extends Component {
         enabled: product.enabled
       }));
 
+      this.setIsLoading(false);
+
       this.setState({
-        data: preViewRes,
-        sendDataStatus: 'success',
-        sendDataMessage: 'Products has been update!!'
+        data: preViewRes
       });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -137,9 +148,13 @@ class Products extends Component {
 
   onSelectDelete = (event, delData) => {
     try {
+      this.setIsLoading(true);
+
       delData.forEach(async i => {
         await AdminProductsAPI.deleteProducts(i.id);
       });
+
+      this.setIsLoading(false);
 
       this.setState(prevState => {
         const data = prevState.data.filter(i => !delData.includes(i));
@@ -151,6 +166,8 @@ class Products extends Component {
         };
       });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -184,7 +201,7 @@ class Products extends Component {
   };
 
   render() {
-    const { columns, data, sendDataStatus, sendDataMessage, clickId } = this.state;
+    const { columns, data, sendDataStatus, sendDataMessage, clickId, isLoading } = this.state;
 
     return (
       <>
@@ -230,6 +247,8 @@ class Products extends Component {
           open={!!sendDataMessage}
           message={sendDataMessage}
         />
+
+        <Preloader open={isLoading} />
 
         {this.state.clickId ? (
           <Redirect to={`/admin-panel/products/${clickId}`} push={true} />
