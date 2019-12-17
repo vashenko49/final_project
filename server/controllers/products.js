@@ -157,8 +157,6 @@ exports.updateProduct = async (req, res, next) => {
     const { _idProduct, warning, htmlPage, isBigImg, enabled, filters, description, nameProduct, _idChildCategory } = req.body;
     let { model } = req.body;
 
-    console.log(req.body.filterImg.length);
-
     const product = await Product.findById(_idProduct);
 
     if (!product) {

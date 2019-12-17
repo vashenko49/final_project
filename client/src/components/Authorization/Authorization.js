@@ -54,12 +54,6 @@ class Authorization extends Component {
       tabs: ['Log in', 'Sing Up', 'Social Network'],
       isForgotPassword: false
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.a11yProps = this.a11yProps.bind(this);
-    this.switchToRegistration = this.switchToRegistration.bind(this);
-    this.failSocial = this.failSocial.bind(this);
-    this.toggleForgotPassword = this.toggleForgotPassword.bind(this);
   }
 
   handleChange = (event, newValue) => {

@@ -36,10 +36,6 @@ class PasswordRecovery extends Component {
       send: false,
       response: ''
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.togglePasswordMask = this.togglePasswordMask.bind(this);
-    this.toggleRepeatPasswordMask = this.toggleRepeatPasswordMask.bind(this);
   }
 
   handleSubmit = event => {
@@ -72,12 +68,12 @@ class PasswordRecovery extends Component {
     }
   };
 
-  togglePasswordMask = event => {
+  togglePasswordMask = () => {
     this.setState(prevState => ({
       passwordIsMasked: !prevState.passwordIsMasked
     }));
   };
-  toggleRepeatPasswordMask = event => {
+  toggleRepeatPasswordMask = () => {
     this.setState(prevState => ({
       repeatPasswordIsMasked: !prevState.repeatPasswordIsMasked
     }));
