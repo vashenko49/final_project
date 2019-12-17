@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import AdminFiltersAPI from '../../services/AdminFiltersAPI';
 
 import FiltersDetailForm from './FiltersDetailForm';
+
 import SnackBars from '../common/admin-panel/SnackBars';
+import Preloader from '../common/admin-panel/Preloader';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -31,7 +33,8 @@ class FiltersDetail extends Component {
     idUpdate: null,
     enabledFilter: true,
     sendDataStatus: 'success',
-    sendDataMessage: ''
+    sendDataMessage: '',
+    isLoading: false
   };
 
   onChangeValue = (name, val) => {
@@ -49,7 +52,11 @@ class FiltersDetail extends Component {
 
     try {
       if (typeForm === 'create') {
+        this.setIsLoading(true);
+
         await AdminFiltersAPI.createFilters(sendData);
+
+        this.setIsLoading(false);
 
         this.setState({
           sendDataStatus: 'success',
@@ -57,9 +64,13 @@ class FiltersDetail extends Component {
         });
       }
       if (typeForm === 'update') {
+        this.setIsLoading(true);
+
         sendData.idUpdate = idUpdate;
         sendData.enabledFilter = enabledFilter;
         await AdminFiltersAPI.updateFilters(sendData);
+
+        this.setIsLoading(false);
 
         this.setState({
           sendDataStatus: 'success',
@@ -67,6 +78,8 @@ class FiltersDetail extends Component {
         });
       }
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -80,6 +93,10 @@ class FiltersDetail extends Component {
     this.setState({ sendDataMessage: '' });
   };
 
+  setIsLoading = state => {
+    this.setState({ isLoading: state });
+  };
+
   async componentDidMount() {
     const { id } = this.props.match.params;
 
@@ -87,6 +104,8 @@ class FiltersDetail extends Component {
       this.setState({ typeForm: 'update' });
 
       try {
+        this.setIsLoading(true);
+
         const { data } = await AdminFiltersAPI.getFiltersById(id);
 
         this.setState({
@@ -96,7 +115,11 @@ class FiltersDetail extends Component {
           idUpdate: data._id,
           enabledFilter: data.enabled
         });
+
+        this.setIsLoading(false);
       } catch (err) {
+        this.setIsLoading(false);
+
         this.setState({
           sendDataStatus: 'error',
           sendDataMessage: err.response.data.message
@@ -107,7 +130,14 @@ class FiltersDetail extends Component {
 
   render() {
     const { classes } = this.props;
-    const { title, serviceName, subFilters, sendDataStatus, sendDataMessage } = this.state;
+    const {
+      title,
+      serviceName,
+      subFilters,
+      sendDataStatus,
+      sendDataMessage,
+      isLoading
+    } = this.state;
 
     return (
       <Container maxWidth="md">
@@ -142,6 +172,8 @@ class FiltersDetail extends Component {
             open={!!sendDataMessage}
             message={sendDataMessage}
           />
+
+          <Preloader open={isLoading} />
         </Paper>
       </Container>
     );

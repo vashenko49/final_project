@@ -5,6 +5,8 @@ import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
 import AdminProductsAPI from '../../services/AdminProductsAPI';
 
 import SnackBars from '../common/admin-panel/SnackBars';
+import Preloader from '../common/admin-panel/Preloader';
+
 import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
 import ProductsDetailMainImages from './ProductsDetailMainImages';
 import ProductsDetailModels from './ProductsDetailModels';
@@ -61,7 +63,8 @@ class ProductsDetail extends Component {
     typeForm: 'create',
     idUpdate: null,
     sendDataStatus: 'success',
-    sendDataMessage: ''
+    sendDataMessage: '',
+    isLoading: false
   };
 
   onChangeTabValue = (e, newValue) => {
@@ -127,6 +130,8 @@ class ProductsDetail extends Component {
   };
 
   onSubmitForm = async () => {
+    this.setIsLoading(true);
+
     const {
       nameProduct,
       description,
@@ -160,21 +165,25 @@ class ProductsDetail extends Component {
 
     // проверка, выбраны ли все фильтра категории
     if (!nameProduct.length || !description.length || !category || !mainFilters.length) {
+      this.setIsLoading(false);
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: 'Enter required fields!'
       });
     } else if (errorModels) {
+      this.setIsLoading(false);
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: 'Fields of models is required!'
       });
     } else if (!filtersImage.length) {
+      this.setIsLoading(false);
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: 'Image product is required!'
       });
     } else if (uniqueCategoryForm.length !== category.filters.length) {
+      this.setIsLoading(false);
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: 'All category filters not selected!'
@@ -233,6 +242,8 @@ class ProductsDetail extends Component {
         if (typeForm === 'create') {
           await AdminProductsAPI.createProducts(formData);
 
+          this.setIsLoading(false);
+
           this.setState({
             sendDataStatus: 'success',
             sendDataMessage: `${sendData.nameProduct} product has been created!`
@@ -242,12 +253,16 @@ class ProductsDetail extends Component {
         if (typeForm === 'update') {
           await AdminProductsAPI.updateProducts(formData);
 
+          this.setIsLoading(false);
+
           this.setState({
             sendDataStatus: 'success',
             sendDataMessage: `${sendData.nameProduct} product has been updated!`
           });
         }
       } catch (err) {
+        this.setIsLoading(false);
+
         this.setState({
           sendDataStatus: 'error',
           sendDataMessage: err.response.data.message
@@ -257,6 +272,8 @@ class ProductsDetail extends Component {
   };
 
   getCategories = async () => {
+    this.setIsLoading(true);
+
     const { data } = await AdminCategoriesAPI.getCategories();
 
     const newData = [];
@@ -267,8 +284,9 @@ class ProductsDetail extends Component {
         newData.push(sub);
       });
     });
-    // this.setState({ categories: [].concat(...data.map(i => i.childCatalog), ...data) });
     this.setState({ dataCategories: newData });
+
+    this.setIsLoading(false);
   };
 
   setFiltersByCategory = filters => {
@@ -324,6 +342,10 @@ class ProductsDetail extends Component {
     this.setState({ sendDataMessage: '' });
   };
 
+  setIsLoading = state => {
+    this.setState({ isLoading: state });
+  };
+
   async componentDidMount() {
     const { id } = this.props.match.params;
 
@@ -331,6 +353,8 @@ class ProductsDetail extends Component {
 
     if (id) {
       try {
+        this.setIsLoading(true);
+
         const { data } = await AdminProductsAPI.getProductsById(id);
 
         // get category
@@ -401,7 +425,11 @@ class ProductsDetail extends Component {
           typeForm: 'update',
           idUpdate: id
         });
+
+        this.setIsLoading(false);
       } catch (err) {
+        this.setIsLoading(false);
+
         this.setState({
           sendDataStatus: 'error',
           sendDataMessage: err.response.data.message
@@ -423,7 +451,8 @@ class ProductsDetail extends Component {
       mainFilters,
       filtersImage,
       models,
-      htmlPage
+      htmlPage,
+      isLoading
     } = this.state;
     return (
       <Container maxWidth="md">
@@ -501,6 +530,8 @@ class ProductsDetail extends Component {
             open={!!sendDataMessage}
             message={sendDataMessage}
           />
+
+          <Preloader open={isLoading} />
         </Paper>
       </Container>
     );

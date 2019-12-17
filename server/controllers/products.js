@@ -289,9 +289,9 @@ exports.updateProduct = async (req, res, next) => {
       return _.isObject(element);
     });
 
-    req.body.productUrlIm = req.body.productUrlImg.filter(element=>{
-      return _.isObject(element);
-    })
+    req.body.productUrlImg= req.body.productUrlImg.filter(element=>{
+      return _.isString(element) && element;
+    });
 
 
     product.enabled = _.isBoolean(enabled) ? enabled : product.enabled;
