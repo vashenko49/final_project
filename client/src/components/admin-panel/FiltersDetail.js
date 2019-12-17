@@ -42,41 +42,33 @@ class FiltersDetail extends Component {
   };
 
   onSubmitForm = async () => {
-    const { typeForm, title, serviceName, subFilters, idUpdate, enabledFilter } = this.state;
-
-    const sendData = {
-      title: title.val,
-      serviceName: serviceName.val,
-      subFilters: subFilters.val
-    };
-
     try {
+      this.setIsLoading(true);
+
+      const { typeForm, title, serviceName, subFilters, idUpdate, enabledFilter } = this.state;
+
+      const sendData = {
+        title: title.val,
+        serviceName: serviceName.val,
+        subFilters: subFilters.val
+      };
+
       if (typeForm === 'create') {
-        this.setIsLoading(true);
-
         await AdminFiltersAPI.createFilters(sendData);
-
-        this.setIsLoading(false);
-
-        this.setState({
-          sendDataStatus: 'success',
-          sendDataMessage: `${title.val} filter has been created!`
-        });
       }
-      if (typeForm === 'update') {
-        this.setIsLoading(true);
 
+      if (typeForm === 'update') {
         sendData.idUpdate = idUpdate;
         sendData.enabledFilter = enabledFilter;
         await AdminFiltersAPI.updateFilters(sendData);
-
-        this.setIsLoading(false);
-
-        this.setState({
-          sendDataStatus: 'success',
-          sendDataMessage: `${title.val} filter has been update!`
-        });
       }
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `${title.val} filter has been ${typeForm}!`
+      });
     } catch (err) {
       this.setIsLoading(false);
 
@@ -98,13 +90,13 @@ class FiltersDetail extends Component {
   };
 
   async componentDidMount() {
-    const { id } = this.props.match.params;
+    try {
+      this.setIsLoading(true);
 
-    if (id) {
-      this.setState({ typeForm: 'update' });
+      const { id } = this.props.match.params;
 
-      try {
-        this.setIsLoading(true);
+      if (id) {
+        this.setState({ typeForm: 'update' });
 
         const { data } = await AdminFiltersAPI.getFiltersById(id);
 
@@ -115,16 +107,16 @@ class FiltersDetail extends Component {
           idUpdate: data._id,
           enabledFilter: data.enabled
         });
-
-        this.setIsLoading(false);
-      } catch (err) {
-        this.setIsLoading(false);
-
-        this.setState({
-          sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
-        });
       }
+
+      this.setIsLoading(false);
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
     }
   }
 

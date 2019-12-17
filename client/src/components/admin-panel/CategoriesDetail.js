@@ -94,24 +94,24 @@ class CategoriesDetail extends Component {
   };
 
   onSubmitForm = async () => {
-    this.setIsLoading(true);
-
-    const { rootCategory, childCategory, idUpdate, typeForm } = this.state;
-
-    const sendData = {
-      nameRootCatalog: rootCategory,
-      childCatalogs: childCategory.map(child => {
-        const childData = {
-          nameChildCatalog: child.name,
-          filters: child.filters.map(filter => filter.id)
-        };
-        if (child.idOwner) childData._id = child.idOwner;
-
-        return childData;
-      })
-    };
-
     try {
+      this.setIsLoading(true);
+
+      const { rootCategory, childCategory, idUpdate, typeForm } = this.state;
+
+      const sendData = {
+        nameRootCatalog: rootCategory,
+        childCatalogs: childCategory.map(child => {
+          const childData = {
+            nameChildCatalog: child.name,
+            filters: child.filters.map(filter => filter.id)
+          };
+          if (child.idOwner) childData._id = child.idOwner;
+
+          return childData;
+        })
+      };
+
       if (typeForm === 'create') {
         await AdminCategoriesAPI.createCategories(sendData);
       }
@@ -143,18 +143,18 @@ class CategoriesDetail extends Component {
   };
 
   async componentDidMount() {
-    this.setIsLoading(true);
+    try {
+      this.setIsLoading(true);
 
-    const { data } = await AdminFiltersAPI.getFilters();
-    this.setState({
-      filtersData: data.map(i => ({ id: i._id, serviceName: i.serviceName }))
-    });
+      const { data } = await AdminFiltersAPI.getFilters();
+      this.setState({
+        filtersData: data.map(i => ({ id: i._id, serviceName: i.serviceName }))
+      });
 
-    const { id } = this.props.match.params;
-    if (id) {
-      this.setState({ typeForm: 'update', idUpdate: id });
+      const { id } = this.props.match.params;
+      if (id) {
+        this.setState({ typeForm: 'update', idUpdate: id });
 
-      try {
         const { data } = await AdminCategoriesAPI.getCategoriesById(id);
 
         this.setState({
@@ -171,19 +171,19 @@ class CategoriesDetail extends Component {
             }))
           }))
         });
-
-        this.setIsLoading(false);
-      } catch (err) {
-        this.setIsLoading(false);
-
-        this.setState({
-          isOpenSnack: true,
-          sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
-        });
+      } else {
+        this.setState({ childCategory: [this.newObjChildCategory()] });
       }
-    } else {
-      this.setState({ childCategory: [this.newObjChildCategory()] });
+
+      this.setIsLoading(false);
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        isOpenSnack: true,
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
     }
   }
 
