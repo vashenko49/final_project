@@ -3,6 +3,7 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
 import cloudinary from 'cloudinary-core';
+import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -11,6 +12,7 @@ import Brightness1Icon from '@material-ui/icons/Brightness1';
 
 import './MiniProduct.scss';
 import Box from '@material-ui/core/Box';
+import Link from '../common/styled/StyledLink';
 
 class MiniProduct extends Component {
   constructor(props) {
@@ -18,13 +20,10 @@ class MiniProduct extends Component {
     this.state = {
       currentImg: 'final-project/products/product_without_photo_sample/product_without_phot_ldw3px',
       selectedColor: 0,
-      filterImg: []
+      filterImg: props.filterImg.length > 0 ? this.filterColor(props.filterImg) : [] // это сделано из за того что на componentWillMount ругется авторизация и скоро его вырежут
     };
   }
-  componentWillMount() {
-    let { filterImg } = this.props;
-    this.setState({ filterImg: this.filterColor(filterImg) });
-  }
+
   componentDidMount() {
     if (this.state.filterImg.length > 0) {
       this.setState({ currentImg: this.state.filterImg[0].urlImg });
@@ -53,7 +52,7 @@ class MiniProduct extends Component {
 
   render() {
     const { cloudinary_cloud_name } = this.props.configuration;
-    const { model, nameProduct } = this.props;
+    const { model, nameProduct, _id } = this.props;
     const { currentImg, filterImg, selectedColor } = this.state;
     const { chooseColor } = this;
     const minPrice = Math.min.apply(
@@ -93,25 +92,24 @@ class MiniProduct extends Component {
           className="CardMedia"
         />
         <CardActionArea>
-          <CardContent>
-            <Box display="flex" flexDirection="column" justifyContent="space-between">
-              <Typography
-                className="product-name"
-                fontWeight="fontWeightBold"
-                gutterBottom
-                variant="h5"
-                component="h2"
-              >
-                {nameProduct}
-              </Typography>
-              <Typography variant="h6" color="textSecondary" component="p">
-                {/* {categories} */}
-              </Typography>
-              <Typography className="product-price" fontWeight="fontWeightBold" component="p">
-                $ {`${minPrice}-${maxPrice}`}
-              </Typography>
-            </Box>
-          </CardContent>
+          <Link to={`/product/${_id}`}>
+            <CardContent>
+              <Box display="flex" flexDirection="column" justifyContent="space-between">
+                <Typography
+                  className="product-name"
+                  fontWeight="fontWeightBold"
+                  gutterBottom
+                  variant="h5"
+                  component="h2"
+                >
+                  {nameProduct}
+                </Typography>
+                <Typography className="product-price" fontWeight="fontWeightBold" component="p">
+                  $ {`${minPrice}-${maxPrice}`}
+                </Typography>
+              </Box>
+            </CardContent>
+          </Link>
         </CardActionArea>
       </Card>
     );
@@ -123,5 +121,13 @@ function mapStateToProps(state) {
     configuration: state.configuration
   };
 }
+
+MiniProduct.propTypes = {
+  _id: PropTypes.string,
+  nameProduct: PropTypes.string,
+  filterImg: PropTypes.array,
+  productUrlImg: PropTypes.array,
+  model: PropTypes.array
+};
 
 export default connect(mapStateToProps)(MiniProduct);
