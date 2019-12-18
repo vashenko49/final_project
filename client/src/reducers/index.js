@@ -9,6 +9,7 @@ import adminBrands from './adminBrands';
 import adminFilters from './adminFilters';
 import product from './product';
 import header from './header';
+import headerSearch from './headerSearch';
 import configuration from './configuration';
 
 export default combineReducers({
@@ -21,5 +22,6 @@ export default combineReducers({
   adminFilters,
   product,
   header,
+  headerSearch,
   configuration
 });

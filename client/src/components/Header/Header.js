@@ -10,12 +10,38 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as headerAction from '../../actions/headerAction';
+import * as headerSearchAction from '../../actions/headerSearchAction';
 
 import './Header.scss';
 import NavBar from './NavBar/NavBar';
 import { Link } from 'react-router-dom';
 
 class Header extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchInput: '',
+      searchId: 0
+    };
+  }
+
+  async onSearchInputChange(event) {
+    console.log(event.target)
+    if (this.state.searchId) {
+      clearTimeout(this.state.searchId);
+    }
+    this.setState(state => ({searchInput: event.persist().target.value}));
+    let searchId = setTimeout(await this.props.findProductsBySearchInput(this.state.searchInput), 700);
+    this.setState(state => ({searchId: searchId}));
+    console.log(this.props.foundProducts)
+  }
+
+  async onSearchIconClick() {
+    if (this.state.searchInput) {
+      await this.props.findFiveProductsBySearchIconClick(this.state.searchInput);
+    }
+  }
+
   componentDidMount() {
     this.props.getRootCategories();
     this.props.getChildCategories();
@@ -35,11 +61,12 @@ class Header extends Component {
           childCategories={childCategories}
         />
         <div className="search">
-          <SearchIcon className="search-icon" />
+          <SearchIcon onClick={this.onSearchIconClick.bind(this)} className="search-icon" />
           <InputBase
             placeholder="Search"
             inputProps={{ 'aria-label': 'search' }}
             className="search-input"
+            onChange={this.onSearchInputChange.bind(this)}
           />
         </div>
         <div className="header-navbar-buttons">
@@ -62,14 +89,17 @@ Header.defaultProps = [];
 function mapStateToProps(state) {
   return {
     rootCategories: state.header.rootCategories,
-    childCategories: state.header.childCategories
+    childCategories: state.header.childCategories,
+    foundProducts: state.headerSearch.data
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     getRootCategories: bindActionCreators(headerAction.getRootCategories, dispatch),
-    getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch)
+    getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch),
+    findFiveProductsBySearchIconClick: bindActionCreators(headerSearchAction.findFiveProductsBySearchIconClick, dispatch),
+    findProductsBySearchInput: bindActionCreators(headerSearchAction.findProductsBySearchInput, dispatch)
   };
 }
 
