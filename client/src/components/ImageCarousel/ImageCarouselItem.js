@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Paper } from '@material-ui/core';
 import cloudinary from 'cloudinary-core';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class ImageCarouselItem extends Component {
   render() {
@@ -11,9 +11,9 @@ class ImageCarouselItem extends Component {
         className="image-carousel-item"
         elevation={10}
         style={{
-          background: `url(${new cloudinary
-            .Cloudinary({cloud_name: cloudinary_cloud_name})
-            .url(this.props.item.imageUrl)}) center`,
+          background: `url(${new cloudinary.Cloudinary({ cloud_name: cloudinary_cloud_name }).url(
+            this.props.item.imageUrl
+          )}) center`,
           backgroundSize: 'cover',
           height: '500px'
         }}
