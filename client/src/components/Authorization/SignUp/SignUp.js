@@ -30,12 +30,6 @@ class SignUp extends Component {
       passwordIsMasked: true,
       repeatPasswordIsMasked: true
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangeImg = this.handleChangeImg.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.togglePasswordMask = this.togglePasswordMask.bind(this);
-    this.toggleRepeatPasswordMask = this.toggleRepeatPasswordMask.bind(this);
   }
 
   componentDidMount() {
@@ -96,12 +90,12 @@ class SignUp extends Component {
     loginInSystem(form, TypeLogIn.registration);
   };
 
-  togglePasswordMask = event => {
+  togglePasswordMask = () => {
     this.setState(prevState => ({
       passwordIsMasked: !prevState.passwordIsMasked
     }));
   };
-  toggleRepeatPasswordMask = event => {
+  toggleRepeatPasswordMask = () => {
     this.setState(prevState => ({
       repeatPasswordIsMasked: !prevState.repeatPasswordIsMasked
     }));

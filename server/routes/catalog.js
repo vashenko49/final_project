@@ -29,7 +29,8 @@ const {
   getHierarchyRootChildCatalogFilterByRootCatalogID,
   activateOrDeactivateROOTCatalog,
   activateOrDeactivateChildCatalog,
-  deleteChildCatalogFilter
+  deleteChildCatalogFilter,
+  getCatalogsAndProductForMainPage
 } = require("../controllers/catalog");
 
 // @route   GET /catalog/hierarchy
@@ -277,5 +278,8 @@ router.get(
   getActiveChildCategoryForClientAnySubfilter
 );
 
+router.get('/mainpage',
+  getCatalogsAndProductForMainPage
+);
 
 module.exports = router;

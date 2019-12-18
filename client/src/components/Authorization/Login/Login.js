@@ -24,10 +24,6 @@ class Login extends Component {
       },
       passwordIsMasked: true
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.togglePasswordMask = this.togglePasswordMask.bind(this);
   }
 
   handleChange = event => {

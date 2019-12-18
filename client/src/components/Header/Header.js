@@ -70,7 +70,9 @@ class Header extends Component {
           />
         </div>
         <div className="header-navbar-buttons">
-          <Button href="/authorization">Login</Button>
+          <Link to="/authorization">
+            <Button>Login</Button>
+          </Link>
           <FavoriteBorderIcon />
           <Badge badgeContent={2}>
             <ShoppingBasketIcon />

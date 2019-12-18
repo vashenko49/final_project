@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Filters from './Filters';
 import FiltersDetail from './FiltersDetail';
 import Products from './Products';
+import ProductsDetail from './ProductsDetail';
 import Categories from './Categories';
 import CategoriesDetail from './CategoriesDetail';
 
@@ -88,6 +89,8 @@ class AdminPanel extends Component {
           <Switch>
             <Route exact path="/admin-panel" component={Products} />
             <Route exact path="/admin-panel/products" component={Products} />
+            <Route exact path="/admin-panel/products/new" component={ProductsDetail} />
+            <Route exact path="/admin-panel/products/:id" component={ProductsDetail} />
             <Route exact path="/admin-panel/filters" component={Filters} />
             <Route exact path="/admin-panel/filters/new" component={FiltersDetail} />
             <Route exact path="/admin-panel/filters/:id" component={FiltersDetail} />

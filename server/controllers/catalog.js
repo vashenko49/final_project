@@ -4,7 +4,8 @@ const rootCatalog = require("../models/RootCatalog");
 const childCatalog = require("../models/ChildCatalog");
 const subFilterModel = require('../models/SubFilter');
 const commonCatalog = require('../common/commonCatalog');
-
+const productModel = require('../models/Product');
+const CommentSchema = require('../models/Comment');
 const _ = require('lodash');
 
 const {validationResult} = require('express-validator');
@@ -246,7 +247,7 @@ exports.updateChildCatalog = async (req, res) => {
 
 
     let data = _.cloneDeep(req.body);
-    let updateCatalog = await childCatalog.findByIdAndUpdate(_id,{$set: data}, {new: true});
+    let updateCatalog = await childCatalog.findByIdAndUpdate(_id, {$set: data}, {new: true});
 
     updateCatalog = await updateCatalog.save();
 
@@ -516,7 +517,7 @@ exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
       root[i].childCatalog = await childCatalog.find({"parentId": root[i]._id})
         .select('-filters.subfilters')
         .populate({
-          path:'filters.filter',
+          path: 'filters.filter',
           populate: '_idSubFilters'
         })
     }
@@ -697,6 +698,44 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
     console.log(e);
     res.status(500).json({
       message: 'Server Error!'
+    })
+  }
+};
+
+exports.getCatalogsAndProductForMainPage = async (req, res) => {
+  try {
+    let childCatalogs =await Promise.all( JSON.parse(JSON.stringify(await childCatalog.find({"default": "true"}, '-filters'))).map(async element => {
+      element.products = _.takeRight(
+        _.orderBy(
+          await Promise.all(
+            JSON.parse(
+              JSON.stringify(
+                await productModel.find({'_idChildCategory': element._id})
+                  .populate({
+                    path:'filterImg._idFilter',
+                    select:'_id enabled type serviceName'
+                  })
+                  .populate('filterImg._idSubFilters')
+              ))
+              .map(async prod => {
+                const comments = await CommentSchema.find({productID: prod._id});
+                if (comments.length > 0) {
+                  prod.rating = (_.sumBy(comments, function (o) {
+                    return o.score;
+                  })) / comments.length;
+                } else {
+                  prod.rating = 0;
+                }
+                return prod;
+              })), ['rating']), element.countProductMainPage);
+      return element;
+    }));
+
+    res.status(200).json(childCatalogs);
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({
+      message: `Server error ${e.message}`
     })
   }
 };

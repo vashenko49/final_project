@@ -18,8 +18,6 @@ class ForgotPassword extends Component {
       send: false,
       response: ''
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange = event => {

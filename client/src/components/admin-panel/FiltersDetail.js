@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import AdminFiltersAPI from '../../services/AdminFiltersAPI';
 
 import FiltersDetailForm from './FiltersDetailForm';
+
 import SnackBars from '../common/admin-panel/SnackBars';
+import Preloader from '../common/admin-panel/Preloader';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -31,7 +33,8 @@ class FiltersDetail extends Component {
     idUpdate: null,
     enabledFilter: true,
     sendDataStatus: 'success',
-    sendDataMessage: ''
+    sendDataMessage: '',
+    isLoading: false
   };
 
   onChangeValue = (name, val) => {
@@ -39,34 +42,36 @@ class FiltersDetail extends Component {
   };
 
   onSubmitForm = async () => {
-    const { typeForm, title, serviceName, subFilters, idUpdate, enabledFilter } = this.state;
-
-    const sendData = {
-      title: title.val,
-      serviceName: serviceName.val,
-      subFilters: subFilters.val
-    };
-
     try {
+      this.setIsLoading(true);
+
+      const { typeForm, title, serviceName, subFilters, idUpdate, enabledFilter } = this.state;
+
+      const sendData = {
+        title: title.val,
+        serviceName: serviceName.val,
+        subFilters: subFilters.val
+      };
+
       if (typeForm === 'create') {
         await AdminFiltersAPI.createFilters(sendData);
-
-        this.setState({
-          sendDataStatus: 'success',
-          sendDataMessage: `${title.val} filter has been created!`
-        });
       }
+
       if (typeForm === 'update') {
         sendData.idUpdate = idUpdate;
         sendData.enabledFilter = enabledFilter;
         await AdminFiltersAPI.updateFilters(sendData);
-
-        this.setState({
-          sendDataStatus: 'success',
-          sendDataMessage: `${title.val} filter has been update!`
-        });
       }
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `${title.val} filter has been ${typeForm}!`
+      });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -74,34 +79,57 @@ class FiltersDetail extends Component {
     }
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
+  setIsLoading = state => {
+    this.setState({ isLoading: state });
+  };
+
   async componentDidMount() {
-    const { id } = this.props.match.params;
+    try {
+      this.setIsLoading(true);
 
-    if (id) {
-      this.setState({ typeForm: 'update' });
+      const { id } = this.props.match.params;
 
-      try {
-        const res = await AdminFiltersAPI.getFiltersById(id);
+      if (id) {
+        this.setState({ typeForm: 'update' });
+
+        const { data } = await AdminFiltersAPI.getFiltersById(id);
 
         this.setState({
-          title: { val: res.data.type, error: false },
-          serviceName: { val: res.data.serviceName, error: false },
-          subFilters: { val: res.data._idSubFilters.map(i => i.name), error: false },
-          idUpdate: res.data._id,
-          enabledFilter: res.data.enabled
-        });
-      } catch (err) {
-        this.setState({
-          sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          title: { val: data.type, error: false },
+          serviceName: { val: data.serviceName, error: false },
+          subFilters: { val: data._idSubFilters.map(i => i.name), error: false },
+          idUpdate: data._id,
+          enabledFilter: data.enabled
         });
       }
+
+      this.setIsLoading(false);
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
     }
   }
 
   render() {
     const { classes } = this.props;
-    const { title, serviceName, subFilters, sendDataStatus, sendDataMessage } = this.state;
+    const {
+      title,
+      serviceName,
+      subFilters,
+      sendDataStatus,
+      sendDataMessage,
+      isLoading
+    } = this.state;
 
     return (
       <Container maxWidth="md">
@@ -129,7 +157,15 @@ class FiltersDetail extends Component {
               !(title.val.length && serviceName.val.length && subFilters.val.length)
             }
           />
-          <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+
+          <SnackBars
+            handleClose={this.handleCloseSnackBars}
+            variant={sendDataStatus}
+            open={!!sendDataMessage}
+            message={sendDataMessage}
+          />
+
+          <Preloader open={isLoading} />
         </Paper>
       </Container>
     );

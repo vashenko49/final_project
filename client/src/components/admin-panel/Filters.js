@@ -2,7 +2,9 @@ import React, { Component, forwardRef } from 'react';
 import { Redirect } from 'react-router';
 
 import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+
 import SnackBars from '../common/admin-panel/SnackBars';
+import Preloader from '../common/admin-panel/Preloader';
 
 import AdminFiltersAPI from '../../services/AdminFiltersAPI';
 
@@ -71,49 +73,27 @@ export default class Filters extends Component {
     data: [],
     clickId: null,
     sendDataStatus: 'success',
-    sendDataMessage: ''
+    sendDataMessage: '',
+    isLoading: false
   };
 
   async componentDidMount() {
-    try {
-      const res = await AdminFiltersAPI.getFilters();
-
-      const preViewRes = [];
-
-      res.data.forEach(item => {
-        preViewRes.push({
-          id: item._id,
-          title: item.type,
-          serviceName: item.serviceName,
-          enabled: item.enabled
-        });
-
-        item._idSubFilters.forEach(sub => {
-          preViewRes.push({
-            id: sub._id,
-            title: sub.name,
-            parentId: item._id,
-            enabled: sub.enabled
-          });
-        });
-      });
-
-      this.setState({
-        data: preViewRes
-      });
-    } catch (err) {
-      this.setState({
-        sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
-      });
-    }
+    await this.onRefreshData();
   }
+
+  setIsLoading = state => {
+    this.setState({ isLoading: state });
+  };
 
   onSelectDelete = (event, delData) => {
     try {
+      this.setIsLoading(true);
+
       delData.forEach(async item => {
         if (item.parentId) {
           await AdminFiltersAPI.deleteSubFilters(item.id);
+
+          this.setIsLoading(false);
 
           this.setState({
             sendDataStatus: 'success',
@@ -121,6 +101,8 @@ export default class Filters extends Component {
           });
         } else {
           await AdminFiltersAPI.deleteFilters(item.id);
+
+          this.setIsLoading(false);
 
           this.setState({
             sendDataStatus: 'success',
@@ -134,6 +116,8 @@ export default class Filters extends Component {
         }
       });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -147,11 +131,13 @@ export default class Filters extends Component {
 
   onRefreshData = async () => {
     try {
-      const res = await AdminFiltersAPI.getFilters();
+      this.setIsLoading(true);
+
+      const { data } = await AdminFiltersAPI.getFilters();
 
       const preViewRes = [];
 
-      res.data.forEach(item => {
+      data.forEach(item => {
         preViewRes.push({
           id: item._id,
           title: item.type,
@@ -169,12 +155,14 @@ export default class Filters extends Component {
         });
       });
 
+      this.setIsLoading(false);
+
       this.setState({
-        data: preViewRes,
-        sendDataStatus: 'success',
-        sendDataMessage: 'Filter has been update!'
+        data: preViewRes
       });
     } catch (err) {
+      this.setIsLoading(false);
+
       this.setState({
         sendDataStatus: 'error',
         sendDataMessage: err.response.data.message
@@ -193,8 +181,14 @@ export default class Filters extends Component {
     });
   };
 
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   render() {
-    const { columns, data, sendDataStatus, sendDataMessage, clickId } = this.state;
+    const { columns, data, sendDataStatus, sendDataMessage, clickId, isLoading } = this.state;
 
     return (
       <>
@@ -233,7 +227,14 @@ export default class Filters extends Component {
         />
         <BtnCreateAdmin to="/admin-panel/filters/new" />
 
-        <SnackBars variant={sendDataStatus} open={!!sendDataMessage} message={sendDataMessage} />
+        <SnackBars
+          handleClose={this.handleCloseSnackBars}
+          variant={sendDataStatus}
+          open={!!sendDataMessage}
+          message={sendDataMessage}
+        />
+
+        <Preloader open={isLoading} />
 
         {this.state.clickId ? (
           <Redirect to={`/admin-panel/filters/${clickId}`} push={true} />
