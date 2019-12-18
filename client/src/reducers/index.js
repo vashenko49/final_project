@@ -8,6 +8,7 @@ import footerSubscribe from './footerSubscribe';
 import adminBrands from './adminBrands';
 import adminFilters from './adminFilters';
 import product from './product';
+import slides from './slides';
 import header from './header';
 import configuration from './configuration';
 
@@ -21,5 +22,6 @@ export default combineReducers({
   adminFilters,
   product,
   header,
-  configuration
+  configuration,
+  slides
 });
