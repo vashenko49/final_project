@@ -137,7 +137,7 @@ class CatalogPage extends Component {
             </div>
           </div>
           <Filter className="filter" filters={filters} />
-          <div className="product">
+          <div className="product-mini">
             {products.length <= 0 ? (
               <CircularProgress />
             ) : (

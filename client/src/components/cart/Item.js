@@ -1,41 +1,113 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { Image } from 'cloudinary-react';
+
+import { updateQuantity, addOrRemoveProduct } from '../../actions/cart';
 
 import './Cart.scss';
 
-export default class Item extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: 'Nike Air Max Tailwind',
-      price: 148.0,
-      category: 'Men`s Shoe',
-      color: 'Black/Metallic Pewter/Metallic',
-      size: 9,
-      quantity: 1
-    };
-  }
-
+class Item extends Component {
   render() {
+    const { updateQuantity, customerId, addOrRemoveProduct } = this.props;
+
+    const { items, loading } = this.props.cart;
+
+    const amount = [];
+
+    for (let i = 1; i < 10; i++) {
+      amount.push(
+        <option key={i} value={i}>
+          {i}
+        </option>
+      );
+    }
     return (
-      <div className="bag-item">
-        <img
-          src="https://images.nike.com/is/image/DotCom/CJ0784_001_A_PREM?align=0,1&cropN=0,0,0,0&resMode=sharp&bgc=f5f5f5&wid=150&fmt=jpg"
-          alt="product not found"
-        ></img>
-        <div className="bag-item-info">
-          <h2 className="info-title">{this.state.name}</h2>
-          <p>{this.state.category}</p>
-          <p>{this.state.color}</p>
-          <p>Size {this.state.size}</p>
-          <p>Quantity {this.state.quantity}</p>
-        </div>
-        <div>
-          <p className="about-item">£{this.state.price}</p>
-        </div>
-        {/* <div>
-          <button>More Options!</button>
-        </div> */}
-      </div>
+      <Fragment>
+        {loading ? (
+          <div>preloader</div>
+        ) : (
+          <div className="bag-item">
+            {items.map(v => {
+              const { _id, filters: property, currentPrice, modelNo } = v.modelNo;
+
+              const { _id: parentId, nameProduct, productUrlImg, _idChildCategory } = v.idProduct;
+
+              let quantity = v.quantity;
+              return (
+                <div className="sneaker-item" key={_id}>
+                  <Image
+                    cloudName="dxge5r7h2"
+                    publicId={productUrlImg[0]}
+                    width="400"
+                    crop="scale"
+                  />
+                  <div className="sneaker-item-info">
+                    <Link to={`product/${_id}`} style={{ textDecoration: 'none' }}>
+                      <h2 className="info-title">{nameProduct}</h2>
+                    </Link>
+                    <p>{_idChildCategory.name}</p>
+                    <p>
+                      {property.map(v => {
+                        if (v.filter.type === 'Color') {
+                          return v.subFilter.name;
+                        }
+                        return [];
+                      })}
+                    </p>
+                    <p>
+                      Size{' '}
+                      {property.map(v => {
+                        if (v.filter.type === 'Sizes') {
+                          return v.subFilter.name;
+                        }
+                        return [];
+                      })}
+                    </p>
+                    <label htmlFor="quantity">Quantity</label>
+                    <select
+                      name="quantity"
+                      onChange={e => {
+                        updateQuantity(customerId, parentId, modelNo, e.target.value);
+                      }}
+                      value={quantity}
+                    >
+                      {amount}
+                    </select>
+                  </div>
+                  <div>
+                    <p className="about-item">${currentPrice * quantity}</p>
+                  </div>
+                  <div
+                    className="close"
+                    onClick={() => {
+                      addOrRemoveProduct(customerId, parentId, modelNo, 0);
+                    }}
+                  ></div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Fragment>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    cart: state.cart
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateQuantity: bindActionCreators(updateQuantity, dispatch),
+    addOrRemoveProduct: bindActionCreators(addOrRemoveProduct, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

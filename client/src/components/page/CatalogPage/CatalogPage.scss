@@ -2,7 +2,7 @@
   display: grid;
   grid-gap:25px 30px;
   grid-template-areas: "currentNameCatalog currentNameCatalog currentNameCatalog filterBy"
-                        "filter product product product";
+                        "filter product-mini product-mini product-mini";
   grid-template-rows: auto;
   grid-template-columns:  .8fr 1fr 1fr 1fr;
   justify-items: start;
@@ -11,9 +11,9 @@
 .popover-filter-by{
   z-index: 10;
 }
-.product{
+.product-mini{
   display: grid;
-  grid-area: product;
+  grid-area: product-mini;
   grid-gap:30px 30px;
   grid-template-columns:  1fr 1fr 1fr;
 }

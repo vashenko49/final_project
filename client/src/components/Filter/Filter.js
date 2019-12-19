@@ -51,7 +51,7 @@ class Filter extends Component {
                   onChange={handleChangePrice}
                   aria-labelledby="range-slider"
                   getAriaValueText={valuetext}
-                  valueLabelDisplay="on"
+                  valueLabelDisplay="auto"
                 />
               </ExpansionPanelDetails>
             </ExpansionPanel>

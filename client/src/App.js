@@ -9,6 +9,7 @@ import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
 
 import ProductPageF from './components/page/ProductPageF';
+import Cart from './components/cart/Cart';
 import MainPage from './components/page/MainPage';
 
 import './font/Varta/Varta-font.css';
@@ -35,6 +36,7 @@ class App extends Component {
             <Route exact exect path="/" component={MainPage} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
             <Route exact exect path="/catalog/:id" component={CatalogPage} />
+            <Route exact exect path="/cart/:id" component={Cart} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
           <Footer />
