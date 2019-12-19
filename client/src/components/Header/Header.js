@@ -73,7 +73,7 @@ class Header extends Component {
           rootCategories={rootCategories}
           childCategories={childCategories}
         />
-        <div className="search">
+        <div className="search" id="header-search-input">
           <SearchIcon onClick={this.onSearchIconClick} className="search-icon" />
           <InputBase
             aria-describedby={popupId}
@@ -94,9 +94,9 @@ class Header extends Component {
             id={popupId}
             open={this.state.anchorEl}
             onClose={this.handleClose}
-            anchorEl={this.anchorEl}
+            anchorEl={document.getElementById('header-search-input')}
             anchorOrigin={{
-              vertical: 70,
+              vertical: 'bottom',
               horizontal: 'center',
             }}
             transformOrigin={{
@@ -106,7 +106,7 @@ class Header extends Component {
           >
             {this.props.foundProducts.length === 0 ? <Typography>{this.props.foundProductsError === "" ? "Такого товара в магазине нет" : this.props.foundProductsError}</Typography> :
               foundProducts.map(elem =>
-                <Typography className="search-popup-item" id={elem._id} onClick={this.onSearchResultsClick}>{elem.nameProduct}</Typography>)
+                <Typography className="search-popup-item" key={elem._id} id={elem._id} onClick={this.onSearchResultsClick}>{elem.nameProduct}</Typography>)
             }
           </Popover>
         </div>

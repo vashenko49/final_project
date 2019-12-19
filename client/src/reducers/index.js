@@ -25,8 +25,7 @@ export default combineReducers({
   product,
   header,
   headerSearch,
-  configuration
-  partner,
   configuration,
+  partner,
   slides
 });
