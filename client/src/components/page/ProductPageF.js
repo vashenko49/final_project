@@ -21,6 +21,9 @@ import './ProductPage.scss';
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
+    left: 23 + '%',
+    top: 23 + '%',
+    width: 50 + '%',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
