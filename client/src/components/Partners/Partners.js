@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {bindActionCreators} from "redux";
-import * as partnerAction from "../../actions/partnerAction";
-import {connect} from "react-redux";
-import PartnersItem from "./PartnersItem";
-import './Partners.scss'
+import { bindActionCreators } from 'redux';
+import * as partnerAction from '../../actions/partnerAction';
+import { connect } from 'react-redux';
+import PartnersItem from './PartnersItem';
+import './Partners.scss';
 
 class Partners extends Component {
   componentDidMount() {
@@ -17,7 +17,7 @@ class Partners extends Component {
       <section className="partners">
         {partners.map((item, index) => (
           <PartnersItem item={item} key={index} />
-          ))}
+        ))}
       </section>
     );
   }
