@@ -8,6 +8,8 @@ import footerSubscribe from './footerSubscribe';
 import adminBrands from './adminBrands';
 import adminFilters from './adminFilters';
 import product from './product';
+import cart from './cart';
+import comments from './comments';
 import slides from './slides';
 import header from './header';
 import headerSearch from './headerSearch';
@@ -16,13 +18,15 @@ import configuration from './configuration';
 
 export default combineReducers({
   adminProducts,
+  product,
+  cart,
+  comments,
   authorization,
   footerLinks,
   footerLinksId,
   footerSubscribe,
   adminBrands,
   adminFilters,
-  product,
   header,
   headerSearch,
   configuration,

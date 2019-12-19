@@ -1,43 +1,43 @@
-const {validationResult} = require('express-validator');
-const mongoose = require('mongoose');
+const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
-const CommentSchema = require('../models/Comment');
-const CustomerSchema = require('../models/Customer');
-const ProductSchema = require('../models/Product');
-const _ = require('lodash');
+const CommentSchema = require("../models/Comment");
+const CustomerSchema = require("../models/Customer");
+const ProductSchema = require("../models/Product");
+const _ = require("lodash");
 
 exports.createNewComment = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(422).json({ errors: errors.array() });
     }
 
-    const {authorId, productID, score, text} = req.body;
+    const { authorId, productID, score, text } = req.body;
 
-    if(score>5 || score<0){
+    if (score > 5 || score < 0) {
       res.status(400).json({
-        message:'Score must be greater than zero and less than 5'
-      })
+        message: "Score must be greater than zero and less than 5"
+      });
     }
     const product = await ProductSchema.findById(productID);
 
-    if(_.isEmpty(product)){
+    if (_.isEmpty(product)) {
       res.status(400).json({
-        message:`Not found a product with ID ${productID}`
-      })
+        message: `Not found a product with ID ${productID}`
+      });
     }
 
     const customer = await CustomerSchema.findById(authorId);
-    if(_.isEmpty(customer)){
+    if (_.isEmpty(customer)) {
       res.status(400).json({
-        message:`Not found a user with ID ${authorId}`
-      })
+        message: `Not found a user with ID ${authorId}`
+      });
     }
 
     const newComment = await CommentSchema({
-      authorId:authorId,
-      productID:productID,
+      authorId: authorId,
+      productID: productID,
       score: score,
       text: text
     });
@@ -47,7 +47,7 @@ exports.createNewComment = async (req, res) => {
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };
 
@@ -55,22 +55,21 @@ exports.editComment = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({errors: errors.array()});
+      return res.status(422).json({ errors: errors.array() });
     }
 
-    const {commentID, score, text } = req.body;
+    const { commentID, score, text } = req.body;
 
     let comment = await CommentSchema.findById(commentID);
 
-
-    if(_.isEmpty(comment)){
+    if (_.isEmpty(comment)) {
       res.status(400).json({
-        message:`Not found a comment with ID ${commentID}`
-      })
+        message: `Not found a comment with ID ${commentID}`
+      });
     }
 
-    comment.score = !_.isNumber(score)&&((score>5 || score<0))?comment.score:score;
-    comment.text = _.isString(text)?text:comment.text;
+    comment.score = !_.isNumber(score) && (score > 5 || score < 0) ? comment.score : score;
+    comment.text = _.isString(text) ? text : comment.text;
 
     comment = await comment.save();
 
@@ -78,34 +77,34 @@ exports.editComment = async (req, res) => {
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };
 
 exports.removeComment = async (req, res) => {
   try {
-    const {idComment} = req.params;
+    const { idComment } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(idComment)){
+    if (!mongoose.Types.ObjectId.isValid(idComment)) {
       return res.status(400).json({
-        message:`ID is not valid ${idComment}`
-      })
+        message: `ID is not valid ${idComment}`
+      });
     }
     let comment = await CommentSchema.findById(idComment);
 
-    if(_.isEmpty(comment)){
+    if (_.isEmpty(comment)) {
       return res.status(400).json({
-        message:`Not found a comment with ID ${idComment}`
-      })
+        message: `Not found a comment with ID ${idComment}`
+      });
     }
 
     await comment.delete();
 
-    res.status(200).json({msg: 'SubFilter deleted'})
+    res.status(200).json({ msg: "SubFilter deleted" });
   } catch (e) {
     return res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };
 
@@ -116,123 +115,124 @@ exports.getComments = async (req, res) => {
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };
 
 exports.getCommentById = async (req, res) => {
   try {
-    const {commentID} = req.params;
+    const { commentID } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(commentID)){
+    if (!mongoose.Types.ObjectId.isValid(commentID)) {
       return res.status(400).json({
-        message:`ID is not valid ${commentID}`
-      })
+        message: `ID is not valid ${commentID}`
+      });
     }
-
 
     const comment = await CommentSchema.findById(commentID);
 
     if (!comment) {
       return res.status(400).json({
         message: `comment with id ${commentID} is not found`
-      })
+      });
     }
 
     res.status(200).json(comment);
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };
 
 exports.getCommentsByUserId = async (req, res) => {
   try {
-    const {userID} = req.params;
+    const { userID } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(userID)){
+    if (!mongoose.Types.ObjectId.isValid(userID)) {
       return res.status(400).json({
-        message:`ID is not valid ${userID}`
-      })
+        message: `ID is not valid ${userID}`
+      });
     }
 
     const customer = await CustomerSchema.findById(userID);
-    if(_.isEmpty(customer)){
+    if (_.isEmpty(customer)) {
       res.status(400).json({
-        message:`Not found a user with ID ${userID}`
-      })
+        message: `Not found a user with ID ${userID}`
+      });
     }
 
-    const comments = await CommentSchema.find({authorId: userID});
+    const comments = await CommentSchema.find({ authorId: userID });
     res.status(200).json(comments);
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };
 
 exports.getCommentsByProductId = async (req, res) => {
   try {
-    const {productID}= req.params;
+    const { productID } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(productID)){
+    if (!mongoose.Types.ObjectId.isValid(productID)) {
       return res.status(400).json({
-        message:`ID is not valid ${productID}`
-      })
+        message: `ID is not valid ${productID}`
+      });
     }
 
     const product = await ProductSchema.findById(productID);
 
-    if(_.isEmpty(product)){
+    if (_.isEmpty(product)) {
       res.status(400).json({
-        message:`Not found a product with ID ${productID}`
-      })
+        message: `Not found a product with ID ${productID}`
+      });
     }
 
-    const comments = await CommentSchema.find({productID: productID});
+    const comments = await CommentSchema.find({ productID: productID }).populate({
+      path: "authorId",
+      select: "_id firstName lastName avatarUrl"
+    });
     res.status(200).json(comments);
-
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };
 
 exports.getMeanRatingProductByProductId = async (req, res) => {
   try {
-    const {productID}= req.params;
+    const { productID } = req.params;
 
-    if(!mongoose.Types.ObjectId.isValid(productID)){
+    if (!mongoose.Types.ObjectId.isValid(productID)) {
       return res.status(400).json({
-        message:`ID is not valid ${productID}`
-      })
+        message: `ID is not valid ${productID}`
+      });
     }
 
     const product = await ProductSchema.findById(productID);
 
-    if(_.isEmpty(product)){
+    if (_.isEmpty(product)) {
       res.status(400).json({
-        message:`Not found a product with ID ${productID}`
-      })
+        message: `Not found a product with ID ${productID}`
+      });
     }
 
-    const comments = await CommentSchema.find({productID: productID});
+    const comments = await CommentSchema.find({ productID: productID });
 
-    let meanRating = (_.sumBy(comments,function (o) {
-          return o.score;
-    }))/comments.length;
+    let meanRating =
+      _.sumBy(comments, function(o) {
+        return o.score;
+      }) / comments.length;
 
     res.status(200).json({
-      rating:meanRating,
-      comments:comments
+      rating: meanRating,
+      comments: comments
     });
-
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`
-    })
+    });
   }
 };

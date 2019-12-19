@@ -28,6 +28,7 @@
     "cloudinary-react": "^1.2.1",
     "clsx": "^1.0.4",
     "html-react-parser": "^0.10.0",
+    "lodash": "^4.17.15",
     "material-table": "^1.54.1",
     "materialize-css": "^1.0.0-rc.2",
     "object-to-formdata": "^2.2.0",
@@ -45,7 +46,9 @@
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
+    "react-slick": "^0.25.2",
     "redux": "^4.0.4",
+    "slick-carousel": "^1.8.1",
     "styled-components": "^4.4.1"
   },
   "scripts": {
