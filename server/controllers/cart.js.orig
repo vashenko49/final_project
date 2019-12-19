@@ -73,7 +73,12 @@ exports.updateProductFromCart = async (req, res) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
+<<<<<<< HEAD
+    const {idCustomer, idProduct, modelNo, quantity} = req.body;
+=======
     const { idCustomer, idProduct, modelNo, quantity } = req.body;
+
+>>>>>>> develop
     if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
       return res.status(400).json({
         message: `ID Customer is not valid ${idCustomer}`
@@ -141,12 +146,15 @@ exports.updateProductFromCart = async (req, res) => {
       }
     }
 
-
+<<<<<<< HEAD
+    isCart = await Cart.findOneAndUpdate({"customerId": idCustomer}, {$set: {products: isCart.products}}, {new: true});
+=======
     isCart = await Cart.findOneAndUpdate(
       { customerId: idCustomer },
       { $set: { products: isCart.products } },
       { new: true }
     );
+>>>>>>> develop
     isCart = await isCart.save();
 
     let cart = await commonCart.getCart(isCart.customerId);

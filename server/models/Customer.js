@@ -8,7 +8,7 @@ const bcrypt = require("bcryptjs");
 const CustomerSchema = new Schema({
   customerNo: {
     type: String,
-    default: (rand()).toString()
+    default: rand().toString()
   },
   firstName: {
     type: String,
@@ -19,24 +19,24 @@ const CustomerSchema = new Schema({
     required: true
   },
   login: {
-    type: String,
+    type: String
   },
   email: {
     type: String,
     required: true
   },
   password: {
-    type: String,
+    type: String
   },
   telephone: {
     type: String
   },
-  socialmedia:{
+  socialmedia: {
     type: Array,
-    default:[]  /*0-google, 1-facebook, 2-github, 3-local*/
+    default: [] /*0-google, 1-facebook, 2-github, 3-local*/
   },
   birthday: {
-    type: String,
+    type: String
   },
   gender: {
     type: String
@@ -67,4 +67,4 @@ CustomerSchema.methods.comparePassword = function(candidatePassword, cb) {
   });
 };
 
-module.exports = Customer = mongoose.model("customer", CustomerSchema, 'customer');
+module.exports = Customer = mongoose.model("customer", CustomerSchema, "customer");

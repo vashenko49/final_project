@@ -7,19 +7,19 @@ display: flex;
   background: #33333A;
   border-radius: 25%;
 }
-.MuiExpansionPanel-root.Mui-expanded{
+.filters-container > .MuiExpansionPanel-root.Mui-expanded{
   margin: 0 !important;
 }
-.MuiPaper-elevation1{
+.filters-container > .MuiPaper-elevation1{
   box-shadow: none !important;
 }
-.MuiPaper-elevation1:before{
+.filters-container > .MuiPaper-elevation1:before{
   display: none;
 }
-.MuiPaper-root{
+.filters-container > .MuiPaper-root{
   color: inherit !important;
   background: inherit !important;
 }
-.MuiIconButton-root{
+.filters-container > .MuiIconButton-root{
   color: inherit !important;
 }

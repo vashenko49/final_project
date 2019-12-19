@@ -4,7 +4,6 @@ const _ = require("lodash");
 const {validationResult} = require("express-validator");
 const mongoose = require("mongoose");
 
-
 const commonProduct = require("../common/commonProduct ");
 const Product = require("../models/Product");
 const ChildCatalog = require("../models/ChildCatalog");
@@ -23,9 +22,11 @@ exports.addProduct = async (req, res, next) => {
     let {productUrlImg, filterImg} = req.files;
     const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(itemNo)}`;
 
-
     if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
-      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(productUrlImg, folder);
+      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+        productUrlImg,
+        folder
+      );
       urlProductOnCloudinary.forEach(element => {
         _.set(req.body, element.field, element.url);
       });
@@ -34,7 +35,10 @@ exports.addProduct = async (req, res, next) => {
     if (_.isArray(filterImg) && filterImg.length > 0) {
       for (let i = 0; i < filterImg.length; i++) {
         if (_.isArray(filterImg[i].urlImg) && filterImg[i].urlImg.length > 0) {
-          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(filterImg[i].urlImg, folder);
+          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+            filterImg[i].urlImg,
+            folder
+          );
           urlProductOnCloudinary.forEach(element => {
             if (element.field) {
               _.set(req.body, element.field, element.url);
@@ -44,19 +48,16 @@ exports.addProduct = async (req, res, next) => {
       }
     }
 
-
-    let product = _.cloneDeepWith(req.body, (value => {
+    let product = _.cloneDeepWith(req.body, value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
         return value;
       }
-    }));
-
+    });
 
     product.model = product.model.map(element => {
       element.modelNo = rand();
       return element;
     });
-
 
     let filter = product.filters;
     product.model.forEach(element => {
@@ -75,17 +76,14 @@ exports.addProduct = async (req, res, next) => {
 
     let childCatalog = await ChildCatalog.findById(product._idChildCategory);
 
-
     //добавляем в каталог ранее не используемые под фильтры
     commonProduct.addNewSubFilterToCategory(filter, childCatalog);
     await childCatalog.save();
 
     product.itemNo = itemNo;
 
-
     let newProduct = new Product(product);
     await newProduct.save();
-
 
     res.status(200).json(newProduct);
   } catch (e) {
@@ -102,11 +100,11 @@ exports.addModelForProduct = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()});
     }
-    let model = _.cloneDeepWith(req.body, (value => {
+    let model = _.cloneDeepWith(req.body, value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
         return value;
       }
-    }));
+    });
 
     const product = await Product.findById(model._idProduct);
 
@@ -132,7 +130,6 @@ exports.addModelForProduct = async (req, res, next) => {
     let childCatalog = await ChildCatalog.findById(product._idChildCategory);
     commonProduct.addNewSubFilterToCategory(filter, childCatalog);
     await childCatalog.save();
-
 
     model = _.omit(model, "_idProduct");
     model.modelNo = rand();
@@ -170,7 +167,10 @@ exports.updateProduct = async (req, res, next) => {
 
 
     if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
-      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(productUrlImg, folder);
+      let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+        productUrlImg,
+        folder
+      );
       urlProductOnCloudinary.forEach(element => {
         _.set(req.body, element.field, element.url);
       });
@@ -179,7 +179,10 @@ exports.updateProduct = async (req, res, next) => {
     if (_.isArray(filterImg) && filterImg.length > 0) {
       for (let i = 0; i < filterImg.length; i++) {
         if (_.isArray(filterImg[i].urlImg) && filterImg[i].urlImg.length > 0) {
-          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(filterImg[i].urlImg, folder);
+          let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
+            filterImg[i].urlImg,
+            folder
+          );
           urlProductOnCloudinary.forEach(element => {
             if (element.field) {
               _.set(req.body, element.field, element.url);
@@ -221,11 +224,9 @@ exports.updateProduct = async (req, res, next) => {
     }
 
     if (_.isArray(filters) || _.isArray(model)) {
-
       let newFilter = _.isArray(filters) ? filters : [];
 
       if (_.isArray(model)) {
-
         model.forEach(element => {
           newFilter = _.concat(newFilter, element.filters);
         });
@@ -240,7 +241,6 @@ exports.updateProduct = async (req, res, next) => {
           return JSON.parse(obj);
         }
       );
-
 
       let oldFilter = product.filters;
 
@@ -265,12 +265,11 @@ exports.updateProduct = async (req, res, next) => {
       if (_.isArray) {
         model = model.map(element => {
           if (!element.modelNo) {
-            element.modelNo = (rand()).toString();
+            element.modelNo = rand().toString();
           }
           return element;
         });
       }
-
 
       product.model = _.isArray(model) ? model : product.model;
       product.filters = _.isArray(filters) ? filters : product.filters;
@@ -279,7 +278,10 @@ exports.updateProduct = async (req, res, next) => {
       await childCatalog.save();
 
       //контроль не используемых подфильтров в категории при удалении
-      await commonProduct.removeSubFilterFromChildCategoryCheckProduct(onlyOldFilter, product._idChildCategory);
+      await commonProduct.removeSubFilterFromChildCategoryCheckProduct(
+        onlyOldFilter,
+        product._idChildCategory
+      );
     }
 
 
@@ -296,9 +298,13 @@ exports.updateProduct = async (req, res, next) => {
     product.description = _.isString(description) ? description : product.description;
     product.nameProduct = _.isString(nameProduct) ? nameProduct : product.nameProduct;
     product.htmlPage = _.isString(htmlPage) ? htmlPage : product.htmlPage;
-    product._idChildCategory = _.isString(_idChildCategory) ? _idChildCategory : product._idChildCategory;
+    product._idChildCategory = _.isString(_idChildCategory)
+      ? _idChildCategory
+      : product._idChildCategory;
     product.warning = _.isArray(warning) ? warning : product.warning;
-    product.productUrlImg = _.isArray(req.body.productUrlImg) ? req.body.productUrlImg : product.productUrlImg;
+    product.productUrlImg = _.isArray(req.body.productUrlImg)
+      ? req.body.productUrlImg
+      : product.productUrlImg;
     product.filterImg = _.isArray(req.body.filterImg) ? req.body.filterImg : product.filterImg;
     product.isBigImg = _.isBoolean(isBigImg) ? isBigImg : product.isBigImg;
 
@@ -352,25 +358,39 @@ exports.updateModelForProduct = async (req, res, next) => {
       let onlyNewFilter = filters.filter(commonProduct.comparer(oldFilter));
       let onlyOldFilter = oldFilter.filter(commonProduct.comparer(filters));
 
-
       let childCatalog = await ChildCatalog.findById(product._idChildCategory);
 
       //добавляем в каталог ранее не используемые под фильтры
       commonProduct.addNewSubFilterToCategory(onlyNewFilter, childCatalog);
 
-      product.model[indexModel].filters = _.isArray(filters) ? filters : product.model[indexModel].filters;
+      product.model[indexModel].filters = _.isArray(filters)
+        ? filters
+        : product.model[indexModel].filters;
 
       await product.save();
       await childCatalog.save();
       //контроль не используемых подфильтров в категории при удалении
-      await commonProduct.removeSubFilterFromChildCategoryCheckProduct(onlyOldFilter, product._idChildCategory);
+      await commonProduct.removeSubFilterFromChildCategoryCheckProduct(
+        onlyOldFilter,
+        product._idChildCategory
+      );
     }
 
-    product.model[indexModel].modelUrlImg = _.isArray(modelUrlImg) ? modelUrlImg : product.model[indexModel].modelUrlImg;
-    product.model[indexModel].enabled = _.isBoolean(enabled) ? enabled : product.model[indexModel].enabled;
-    product.model[indexModel].quantity = _.isNumber(quantity) ? quantity : product.model[indexModel].quantity;
-    product.model[indexModel].currentPrice = _.isNumber(currentPrice) ? currentPrice : product.model[indexModel].currentPrice;
-    product.model[indexModel].previousPrice = _.isNumber(previousPrice) ? currentPrice : product.model[indexModel].previousPrice;
+    product.model[indexModel].modelUrlImg = _.isArray(modelUrlImg)
+      ? modelUrlImg
+      : product.model[indexModel].modelUrlImg;
+    product.model[indexModel].enabled = _.isBoolean(enabled)
+      ? enabled
+      : product.model[indexModel].enabled;
+    product.model[indexModel].quantity = _.isNumber(quantity)
+      ? quantity
+      : product.model[indexModel].quantity;
+    product.model[indexModel].currentPrice = _.isNumber(currentPrice)
+      ? currentPrice
+      : product.model[indexModel].currentPrice;
+    product.model[indexModel].previousPrice = _.isNumber(previousPrice)
+      ? currentPrice
+      : product.model[indexModel].previousPrice;
 
     await product.save();
     res.status(200).json(product);
@@ -392,7 +412,6 @@ exports.deleteProduct = async (req, res, next) => {
       });
     }
 
-
     let filter = product.filters;
     product.model.forEach(element => {
       filter = _.concat(filter, element.filters);
@@ -413,9 +432,11 @@ exports.deleteProduct = async (req, res, next) => {
       }
     );
 
-
     //контроль не используемых подфильтров в категории
-    await commonProduct.removeSubFilterFromChildCategoryCheckProduct(filter, product._idChildCategory);
+    await commonProduct.removeSubFilterFromChildCategoryCheckProduct(
+      filter,
+      product._idChildCategory
+    );
 
 
     //удаляем фотки товара
@@ -470,9 +491,11 @@ exports.deleteModelProduct = async (req, res) => {
       }
     );
 
-
     //контроль не используемых подфильтров в категории
-    await commonProduct.removeSubFilterFromChildCategoryCheckProduct(filter, product._idChildCategory);
+    await commonProduct.removeSubFilterFromChildCategoryCheckProduct(
+      filter,
+      product._idChildCategory
+    );
 
     await product.save();
     res.status(200).json({msg: "Product's model deleted"});
@@ -545,7 +568,6 @@ exports.getProductById = async (req, res, next) => {
         select: '_id enabled type serviceName'
       })
       .populate('filterImg._idSubFilters');
-
 
     if (!product) {
       return res.status(400).json({
@@ -724,8 +746,6 @@ exports.activateOrDeactivateProduct = async (req, res) => {
     product = await product.save();
 
     res.status(200).json(product);
-
-
   } catch (e) {
     res.status(500).json({
       message: "Server Error!"
@@ -764,8 +784,6 @@ exports.activateOrDeactivateProductModel = async (req, res) => {
     product = await product.save();
 
     res.status(200).json(product);
-
-
   } catch (e) {
     res.status(500).json({
       message: "Server Error!"

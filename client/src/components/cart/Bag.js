@@ -1,26 +1,47 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+
+import _ from 'lodash';
+import { connect } from 'react-redux';
 
 import './Cart.scss';
 
-export default class Bag extends Component {
-  constructor() {
-    super();
-    this.state = {
-      items: 2,
-      price: 299
-    };
-  }
-
+class Bag extends Component {
   render() {
+    const { items, loading } = this.props.cart;
+
+    const bagPrice = () => {
+      if (!loading) {
+        let price = 0;
+        for (let i = 0; i < items.length; i++) {
+          price += _.get(items[i], 'modelNo.currentPrice') * items[i].quantity;
+        }
+        return price;
+      }
+    };
+
     return (
-      <div className="bag">
-        <h2>BAG</h2>
-        <div>
-          <p className="about-item">
-            {this.state.items} items | <span className="price">${this.state.price}</span>
-          </p>
-        </div>
-      </div>
+      <Fragment>
+        {loading ? (
+          <h5>Preloader</h5>
+        ) : (
+          <div className="bag">
+            <h2>BAG</h2>
+            <div>
+              <p className="about-item">
+                {items.length} items |<span className="price">${bagPrice()}</span>
+              </p>
+            </div>
+          </div>
+        )}
+      </Fragment>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    cart: state.cart
+  };
+}
+
+export default connect(mapStateToProps)(Bag);
