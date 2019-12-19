@@ -1,0 +1,32 @@
+.grid-container{
+  display: grid;
+  grid-gap:25px 30px;
+  grid-template-areas: "currentNameCatalog currentNameCatalog currentNameCatalog filterBy"
+                        "filter product product product";
+  grid-template-rows: auto;
+  grid-template-columns:  .8fr 1fr 1fr 1fr;
+  justify-items: start;
+  width: 100%;
+}
+.popover-filter-by{
+  z-index: 10;
+}
+.product{
+  display: grid;
+  grid-area: product;
+  grid-gap:30px 30px;
+  grid-template-columns:  1fr 1fr 1fr;
+}
+.product-item{
+}
+.currentNameCatalog{
+  grid-area: currentNameCatalog;
+}
+.filterBy{
+  display: flex;
+  grid-area: filterBy;
+  justify-self: right;
+}
+.filter{
+  grid-area: filter;
+}

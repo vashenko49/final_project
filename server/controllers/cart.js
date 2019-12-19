@@ -79,7 +79,6 @@ exports.updateProductFromCart = async (req, res) => {
     }
 
     const {idCustomer, idProduct, modelNo, quantity} = req.body;
-
     if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
       return res.status(400).json({
         message: `ID Customer is not valid ${idCustomer}`
@@ -132,9 +131,11 @@ exports.updateProductFromCart = async (req, res) => {
         return (o.idProduct == idProduct && o.modelNo == modelNo)
       });
 
-      if (indexProd>=0 && quantity <= 0) {
+      if (quantity <= 0) {
         //если товар пришел с количеством 0 удалить с корзины этот товар
-        _.pullAt(isCart.products, [indexProd]);
+        if (indexProd >= 0) {
+          _.pullAt(isCart.products, [indexProd]);
+        }
       } else {
         if (indexProd >= 0) {
           isCart.products[indexProd].quantity = quantity;
@@ -149,10 +150,8 @@ exports.updateProductFromCart = async (req, res) => {
 
     }
 
-
-    isCart = await Cart.findOneAndUpdate({"customerId": idCustomer}, {$set: {products:isCart.products}}, {new: true});
+    isCart = await Cart.findOneAndUpdate({"customerId": idCustomer}, {$set: {products: isCart.products}}, {new: true});
     isCart = await isCart.save();
-    console.log(isCart);
 
     let cart = await commonCart.getCart(isCart.customerId);
     cart = commonCart.getModelByModelNo(cart);

@@ -18,6 +18,7 @@ import './font/Roboto/Roboto-font.css';
 import './App.scss';
 import Authorization from './components/Authorization/Authorization';
 import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
+import CatalogPage from './components/page/CatalogPage/CatalogPage';
 
 const store = configureStore();
 
@@ -33,6 +34,7 @@ class App extends Component {
             <Route exact path="/admin-panel*" component={AdminPanel} />
             <Route exact exect path="/" component={MainPage} />
             <Route exact exect path="/product/:id" component={ProductPageF} />
+            <Route exact exect path="/catalog/:id" component={CatalogPage} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
           <Footer />

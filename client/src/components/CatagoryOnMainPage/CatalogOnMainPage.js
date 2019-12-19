@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CategoriesAPI from '../../services/CategoriesAPI';
+import CatalogAPI from '../../services/CatalogAPI';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
@@ -19,7 +19,7 @@ class CatalogOnMainPage extends Component {
   }
 
   componentDidMount() {
-    CategoriesAPI.getCategoriesForPreview().then(res => {
+    CatalogAPI.getCategoriesForPreview().then(res => {
       this.setState({ categories: res });
     });
   }
@@ -46,7 +46,7 @@ class CatalogOnMainPage extends Component {
                   </Grid>
                   <Grid item lg={1} md={1} sm={1} xs={12}>
                     <Box mb={6} display={'flex'} justifyContent="flex-end">
-                      <Link className="see-all" to="/authorization">
+                      <Link className="see-all" to={`/catalog/${_id}`}>
                         See all
                       </Link>
                     </Box>

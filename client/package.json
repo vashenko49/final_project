@@ -28,7 +28,6 @@
     "cloudinary-react": "^1.2.1",
     "html-react-parser": "^0.10.0",
     "material-table": "^1.54.1",
-    "materialize-css": "^1.0.0-rc.2",
     "object-to-formdata": "^2.1.2",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",

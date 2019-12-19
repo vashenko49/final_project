@@ -105,7 +105,7 @@ class MiniProduct extends Component {
                   {nameProduct}
                 </Typography>
                 <Typography className="product-price" fontWeight="fontWeightBold" component="p">
-                  $ {`${minPrice}-${maxPrice}`}
+                  $ {minPrice === maxPrice ? maxPrice : `${minPrice}-${maxPrice}`}
                 </Typography>
               </Box>
             </CardContent>

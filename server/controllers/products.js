@@ -1,7 +1,7 @@
 const customCloudinaryInstrument = require("../common/customCloudinaryInstrument");
 
 const _ = require("lodash");
-const { validationResult } = require("express-validator");
+const {validationResult} = require("express-validator");
 const mongoose = require("mongoose");
 
 
@@ -15,12 +15,12 @@ exports.addProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
     let itemNo = (rand()).toString();
-    let { _idChildCategory } = req.body;
-    let { productUrlImg, filterImg } = req.files;
+    let {_idChildCategory} = req.body;
+    let {productUrlImg, filterImg} = req.files;
     const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(itemNo)}`;
 
 
@@ -65,10 +65,10 @@ exports.addProduct = async (req, res, next) => {
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -100,7 +100,7 @@ exports.addModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
     let model = _.cloneDeepWith(req.body, (value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
@@ -120,10 +120,10 @@ exports.addModelForProduct = async (req, res, next) => {
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -151,11 +151,11 @@ exports.updateProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const { _idProduct, warning, htmlPage, isBigImg, enabled, filters, description, nameProduct, _idChildCategory } = req.body;
-    let { model } = req.body;
+    const {_idProduct, warning, htmlPage, isBigImg, enabled, filters, description, nameProduct, _idChildCategory} = req.body;
+    let {model} = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -166,7 +166,7 @@ exports.updateProduct = async (req, res, next) => {
     }
 
     const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(product.itemNo)}`;
-    let { productUrlImg, filterImg } = req.files;
+    let {productUrlImg, filterImg} = req.files;
 
 
     if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
@@ -233,10 +233,10 @@ exports.updateProduct = async (req, res, next) => {
 
       newFilter = _.map(
         _.uniq(
-          _.map(newFilter, function(obj) {
+          _.map(newFilter, function (obj) {
             return JSON.stringify(obj);
           })
-        ), function(obj) {
+        ), function (obj) {
           return JSON.parse(obj);
         }
       );
@@ -249,8 +249,8 @@ exports.updateProduct = async (req, res, next) => {
       });
 
       oldFilter = oldFilter.map(element => {
-        const { filter, subFilter } = element;
-        return { filter, subFilter };
+        const {filter, subFilter} = element;
+        return {filter, subFilter};
       });
 
       let onlyNewFilter = newFilter.filter(commonProduct.comparer(oldFilter));
@@ -283,11 +283,11 @@ exports.updateProduct = async (req, res, next) => {
     }
 
 
-    req.body.filterImg = req.body.filterImg.filter(element=>{
+    req.body.filterImg = req.body.filterImg.filter(element => {
       return _.isObject(element);
     });
 
-    req.body.productUrlImg= req.body.productUrlImg.filter(element=>{
+    req.body.productUrlImg = req.body.productUrlImg.filter(element => {
       return _.isString(element) && element;
     });
 
@@ -316,10 +316,10 @@ exports.updateModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const { _idProduct, modelNo, filters, modelUrlImg, enabled, quantity, currentPrice, previousPrice } = req.body;
+    const {_idProduct, modelNo, filters, modelUrlImg, enabled, quantity, currentPrice, previousPrice} = req.body;
 
 
     let product = await Product.findById(_idProduct);
@@ -345,8 +345,8 @@ exports.updateModelForProduct = async (req, res, next) => {
       });
 
       oldFilter = oldFilter.map(element => {
-        const { filter, subFilter } = element;
-        return { filter, subFilter };
+        const {filter, subFilter} = element;
+        return {filter, subFilter};
       });
 
       let onlyNewFilter = filters.filter(commonProduct.comparer(oldFilter));
@@ -383,7 +383,7 @@ exports.updateModelForProduct = async (req, res, next) => {
 
 exports.deleteProduct = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -399,16 +399,16 @@ exports.deleteProduct = async (req, res, next) => {
     });
 
     filter = filter.map(element => {
-      const { filter, subFilter } = element;
-      return { filter, subFilter };
+      const {filter, subFilter} = element;
+      return {filter, subFilter};
     });
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -427,7 +427,7 @@ exports.deleteProduct = async (req, res, next) => {
     }
 
     await product.delete();
-    res.status(200).json({ msg: "Product deleted" });
+    res.status(200).json({msg: "Product deleted"});
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -438,7 +438,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.deleteModelProduct = async (req, res) => {
   try {
-    const { id, modelno } = req.params;
+    const {id, modelno} = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -456,16 +456,16 @@ exports.deleteModelProduct = async (req, res) => {
     });
 
     filter = filter.map(element => {
-      const { filter, subFilter } = element;
-      return { filter, subFilter };
+      const {filter, subFilter} = element;
+      return {filter, subFilter};
     });
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -475,7 +475,7 @@ exports.deleteModelProduct = async (req, res) => {
     await commonProduct.removeSubFilterFromChildCategoryCheckProduct(filter, product._idChildCategory);
 
     await product.save();
-    res.status(200).json({ msg: "Product's model deleted" });
+    res.status(200).json({msg: "Product's model deleted"});
   } catch (err) {
     res.status(500).json({
       message: `Error happened on server: "${err}" `
@@ -517,7 +517,7 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProductById = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     let product = await Product.findById(id)
       .populate({
         path: "_idChildCategory",
@@ -558,8 +558,8 @@ exports.getProductById = async (req, res, next) => {
 
 exports.searchProductsHeader = async (req, res, next) => {
   try {
-    const { searchheader } = req.params;
-    const products = await Product.find({ "nameProduct": { $regex: decodeURI(searchheader) } })
+    const {searchheader} = req.params;
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}})
       .limit(5)
       .populate({
         path: "_idChildCategory",
@@ -592,8 +592,8 @@ exports.searchProductsHeader = async (req, res, next) => {
 
 exports.searchProducts = async (req, res, next) => {
   try {
-    const { search } = req.params;
-    const products = await Product.find({ "nameProduct": { $regex: decodeURI(search) } })
+    const {search} = req.params;
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}})
       .populate({
         path: "_idChildCategory",
         select: "-filters",
@@ -625,21 +625,24 @@ exports.searchProducts = async (req, res, next) => {
 
 exports.getProductsFilterParams = async (req, res, next) => {
   try {
-    let { subfilters } = req.body;
+    let {subfilters, idCatalog} = req.body;
 
     subfilters = subfilters.map(element => {
       return mongoose.Types.ObjectId(element);
     });
 
-    const Products = await Product.find({
+    const Products = await Product.find(subfilters.length<=0?{'_idChildCategory': idCatalog}:{
       $and: [
         {
-          "filters.subFilter": { $in: subfilters }
-        },
-        {
-          "model.filters.subFilter": { $in: subfilters }
-        }
-      ]
+          $and: [
+            {
+              "filters.subFilter": {$in: subfilters}
+            },
+            {
+              "model.filters.subFilter": {$in: subfilters}
+            }
+          ]
+        }, {'_idChildCategory': idCatalog}]
     })
       .populate({
         path: "_idChildCategory",
@@ -661,7 +664,15 @@ exports.getProductsFilterParams = async (req, res, next) => {
       })
       .populate({
         path: "model.filters.subFilter"
+      })
+      .populate({
+        path: "filterImg._idFilter",
+        select: "enabled _id type serviceName"
+      })
+      .populate({
+        path: "filterImg._idSubFilters",
       });
+
 
     res.status(200).json(Products);
   } catch (e) {
@@ -673,10 +684,10 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
 exports.activateOrDeactivateProduct = async (req, res) => {
   try {
-    const { _idProduct, status } = req.body;
+    const {_idProduct, status} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
     if (!mongoose.Types.ObjectId.isValid(_idProduct)) {
@@ -709,10 +720,10 @@ exports.activateOrDeactivateProduct = async (req, res) => {
 
 exports.activateOrDeactivateProductModel = async (req, res) => {
   try {
-    const { _idProduct, status, modelNo } = req.body;
+    const {_idProduct, status, modelNo} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
     if (!mongoose.Types.ObjectId.isValid(_idProduct)) {
