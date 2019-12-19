@@ -1,17 +1,18 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { Image } from 'cloudinary-react';
 
-import { updateQuantity } from '../../actions/cart';
+import { updateQuantity,addOrRemoveProduct } from '../../actions/cart';
 
 import './Cart.scss';
 
 class Item extends Component {
   render() {
-    const { updateQuantity, customerId } = this.props;
+    const { updateQuantity, customerId, addOrRemoveProduct } = this.props;
 
     const { items, loading } = this.props.cart;
 
@@ -45,7 +46,9 @@ class Item extends Component {
                     crop="scale"
                   />
                   <div className="sneaker-item-info">
-                    <h2 className="info-title">{nameProduct}</h2>
+                    <Link to={`product/${_id}`} style={{ textDecoration: 'none' }}>
+                      <h2 className="info-title">{nameProduct}</h2>
+                    </Link>
                     <p>{_idChildCategory.name}</p>
                     <p>
                       {property.map(v => {
@@ -78,6 +81,9 @@ class Item extends Component {
                   <div>
                     <p className="about-item">${currentPrice * quantity}</p>
                   </div>
+                  <div className="close" onClick={() => {
+                    addOrRemoveProduct(customerId, parentId, modelNo, 0)
+                  }}></div>
                 </div>
               );
             })}
@@ -96,7 +102,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateQuantity: bindActionCreators(updateQuantity, dispatch)
+    updateQuantity: bindActionCreators(updateQuantity, dispatch),
+    addOrRemoveProduct: bindActionCreators(addOrRemoveProduct, dispatch)
   };
 }
 

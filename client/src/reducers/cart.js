@@ -1,4 +1,4 @@
-import { GET_ITEMS, ADD_ITEMS, UPDATE_ITEM, ITEMS_ERROR } from '../constants/cart';
+import { GET_ITEMS, UPDATE_ITEM, UPDATE_ITEMS, ITEMS_ERROR, DELETE_ITEM } from '../constants/cart';
 
 const initialState = {
   items: [],
@@ -11,7 +11,8 @@ export default function(state = initialState, action) {
   switch (type) {
     case UPDATE_ITEM:
     case GET_ITEMS:
-    case ADD_ITEMS:
+    case UPDATE_ITEMS:
+    case DELETE_ITEM:
       return {
         ...state,
         items: payload.products,

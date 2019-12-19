@@ -1,8 +1,9 @@
 import React, { useEffect, Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import _ from 'lodash'
 import { getCurrentProduct } from '../../actions/product';
-import { getCurrentItems, addNewProduct } from '../../actions/cart';
+import { getCurrentItems, addOrRemoveProduct } from '../../actions/cart';
 
 import { Image } from 'cloudinary-react';
 
@@ -31,8 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 const ProductPageF = ({
   getCurrentProduct,
-  getCurrentItems,
-  addNewProduct,
+  addOrRemoveProduct,
   product: { product, loading },
   match
 }) => {
@@ -52,21 +52,20 @@ const ProductPageF = ({
   const [customerId] = useState('5df3e7aeace3e149fcc94957');
   const [currentModel, setCurrentModel] = useState({});
   const [currentColor, setCurrentColor] = useState('');
+  const [currentSize, setCurrentSize] = useState('');
 
-  const handleModel = () => {
-    const foundIndex = model.find(v => {
-      const tmp = v.filters
-        .map(e => {
-          if (e.subFilter.name === 'Nike Air') {
-            // Current color
-            return true;
-          }
-          return false;
-        })
-        .join();
-      return tmp;
-    });
-    setCurrentModel(foundIndex);
+  const handleModel = (color) => {
+    for(let i = 0; i < model.length; i++) {
+      for(let j = 0; j < model[i].filters.length; j++){
+        if(_.get(model[i], `filters[${j}].subFilter.name`) === color.toUpperCase()){
+          setCurrentModel(model[i])
+        } else if(_.get(model[i].filters[j], 'filter.type') === 'Sizes'){
+          setCurrentSize(model[i].filters[j].subFilter.name)
+        }
+      }
+    }
+
+
   };
 
   // Load product
@@ -81,7 +80,7 @@ const ProductPageF = ({
 
   const handleOpen = () => {
     setOpen(true);
-    // addNewProduct('', _id, 1); ////////////// ADD //////// CURRENT //////// MODEL_ID
+    addOrRemoveProduct(customerId, _id, currentModel.modelNo, 1);
   };
 
   const handleClose = () => {
@@ -108,11 +107,12 @@ const ProductPageF = ({
               if (v.filter.type === 'Color') {
                 return (
                   <button
+                    key={v._id}
                     className="product-select-color"
                     name="currentColor"
                     onClick={e => {
                       setCurrentColor(e.target.value);
-                      handleModel();
+                      handleModel(e.target.value);
                     }}
                     style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
                     value={v.subFilter.name.toLowerCase()}
@@ -125,7 +125,6 @@ const ProductPageF = ({
           <ProductSizes currentModel={currentModel} filters={filters} />
           <div className="product-buttons container">
             <button className="black-btn" onClick={handleOpen}>
-              {' '}
               {/* parallel make request to add new product */}
               Add to bag
             </button>
@@ -145,19 +144,21 @@ const ProductPageF = ({
                   productUrlImg={productUrlImg}
                   nameProduct={nameProduct}
                   _idChildCategory={_idChildCategory}
+                  currentModel={currentModel}
                   currentColor={currentColor}
+                  currentSize={currentSize}
                 />
                 <div className="product-buttons container">
-                  {/* <Link to={`/cart/${customerId}`}> */}
-                  {/* TODO */}
-                  <button className="grey-btn" onClick={getCurrentItems(match.params.id)}>
-                    View bag
-                  </button>
-                  {/* </Link> */}
-                  <button className="black-btn" onClick={getCurrentItems(match.params.id)}>
+                  <Link to={`/cart/${customerId}`}>
+                    <button className="grey-btn">
+                      View bag
+                    </button>
+                  </Link>
+                  <Link to={`/cart/${customerId}`}>
+                  <button className="black-btn">
                     Checkout
-                  </button>{' '}
-                  {/* UPDATE THEN REDIRECT */}
+                  </button>
+                  </Link>
                 </div>
               </div>
             </Modal>
@@ -184,7 +185,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   getCurrentProduct,
   getCurrentItems,
-  addNewProduct
+  addOrRemoveProduct
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPageF);

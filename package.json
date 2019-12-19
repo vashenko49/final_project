@@ -25,6 +25,7 @@
     "concurrently": "^5.0.0"
   },
   "dependencies": {
+    "lodash": "^4.17.15",
     "travis": "^0.1.1"
   }
 }

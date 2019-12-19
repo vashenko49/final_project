@@ -6,7 +6,6 @@ import { GET_COMMENTS, COMMENT_ERROR } from '../constants/comments';
 export function getCurrentComments(productId) {
   return async dispatch => {
     try {
-      debugger;
       const res = await CommentAPI.getComments(productId);
 
       dispatch({
