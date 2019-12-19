@@ -12,6 +12,7 @@ import cart from './cart';
 import comments from './comments';
 import slides from './slides';
 import header from './header';
+import headerSearch from './headerSearch';
 import partner from './partner';
 import configuration from './configuration';
 
@@ -27,7 +28,8 @@ export default combineReducers({
   adminBrands,
   adminFilters,
   header,
-  partner,
+  headerSearch,
   configuration,
+  partner,
   slides
 });

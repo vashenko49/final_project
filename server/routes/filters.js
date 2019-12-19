@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const {check} = require('express-validator');
+const { check } = require('express-validator');
 
 
 //Import controllers
