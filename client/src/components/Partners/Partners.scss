@@ -1,0 +1,18 @@
+.partners {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 50px 0;
+}
+
+.partners-item {
+  width: 8vw;
+  margin: 10px;
+}
+
+@media screen and (max-width: 640px) {
+  .partners-item {
+    width: 22vw;
+  }
+}

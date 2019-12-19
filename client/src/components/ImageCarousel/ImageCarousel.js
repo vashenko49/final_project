@@ -5,7 +5,7 @@ import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import * as product from '../../actions/product';
+import * as slides from '../../actions/slidesAction';
 import './ImageCarousel.scss';
 
 class ImageCarousel extends Component {
@@ -23,11 +23,11 @@ class ImageCarousel extends Component {
   }
 
   componentDidMount() {
-    this.props.getProducts();
+    this.props.getActiveSlides();
   }
 
   render() {
-    const { products } = this.props;
+    const { slides } = this.props;
 
     return (
       <Carousel
@@ -37,7 +37,7 @@ class ImageCarousel extends Component {
         animation={this.state.animation}
         indicators={this.state.indicators}
       >
-        {products.map((item, index) => {
+        {slides.map((item, index) => {
           return <ImageCarouselItem item={item} key={index} />;
         })}
       </Carousel>
@@ -46,20 +46,20 @@ class ImageCarousel extends Component {
 }
 
 ImageCarousel.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.object.isRequired)
+  slides: PropTypes.arrayOf(PropTypes.object.isRequired)
 };
 
 ImageCarousel.defaultProps = {};
 
 function mapStateToProps(state) {
   return {
-    products: state.product.products
+    slides: state.slides.data
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getProducts: bindActionCreators(product.getProducts, dispatch)
+    getActiveSlides: bindActionCreators(slides.getActiveSlides, dispatch)
   };
 }
 
