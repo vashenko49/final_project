@@ -17,7 +17,7 @@ exports.addProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    let itemNo = rand().toString();
+    let itemNo = (rand()).toString();
     let { _idChildCategory } = req.body;
     let { productUrlImg, filterImg } = req.files;
     const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(itemNo)}`;
@@ -69,8 +69,7 @@ exports.addProduct = async (req, res, next) => {
         _.map(filter, function(obj) {
           return JSON.stringify(obj);
         })
-      ),
-      function(obj) {
+      ), function(obj) {
         return JSON.parse(obj);
       }
     );
@@ -122,8 +121,7 @@ exports.addModelForProduct = async (req, res, next) => {
         _.map(filter, function(obj) {
           return JSON.stringify(obj);
         })
-      ),
-      function(obj) {
+      ), function(obj) {
         return JSON.parse(obj);
       }
     );
@@ -153,17 +151,7 @@ exports.updateProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const {
-      _idProduct,
-      warning,
-      htmlPage,
-      isBigImg,
-      enabled,
-      filters,
-      description,
-      nameProduct,
-      _idChildCategory
-    } = req.body;
+    const { _idProduct, warning, htmlPage, isBigImg, enabled, filters, description, nameProduct, _idChildCategory } = req.body;
     let { model } = req.body;
 
     const product = await Product.findById(_idProduct);
@@ -174,10 +162,9 @@ exports.updateProduct = async (req, res, next) => {
       });
     }
 
-    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(
-      product.itemNo
-    )}`;
+    const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(product.itemNo)}`;
     let { productUrlImg, filterImg } = req.files;
+
 
     if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
       let urlProductOnCloudinary = await customCloudinaryInstrument.uploadArrayImgToCloudinary(
@@ -204,26 +191,36 @@ exports.updateProduct = async (req, res, next) => {
         }
       }
     }
+
     let oldImgProduct = [];
-    if (_.isArray(req.body.productUrlImg) && req.body.productUrlImg.length > 0) {
-      oldImgProduct = product.productUrlImg.filter(
-        commonProduct.comparerImg(req.body.productUrlImg)
-      );
 
-      product.filterImg.forEach(oldElement => {
-        req.body.filterImg.forEach(newElement => {
-          if (oldElement._idSubFilters.toString() === newElement._idSubFilters.toString()) {
-            oldImgProduct.push(
-              ...oldElement.urlImg.filter(commonProduct.comparerImg(newElement.urlImg))
-            );
-          }
-        });
-      });
-
-      //удаляем старые фотки, которые не используем
-      if (_.isArray(oldImgProduct) && oldImgProduct.length > 0) {
-        await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(oldImgProduct);
+    if (_.isArray(req.body.productUrlImg)) {
+      if (req.body.productUrlImg.length > 0) {
+        oldImgProduct = product.productUrlImg.filter(commonProduct.comparerImg(req.body.productUrlImg));
+      } else {
+        oldImgProduct.push(...product.productUrlImg);
       }
+    }
+
+    if (req.body.filterImg && _.isArray(req.body.filterImg)) {
+      if (req.body.filterImg.length > 0) {
+        product.filterImg.forEach(oldElement => {
+          req.body.filterImg.forEach(newElement => {
+            if (_.isObject(newElement) && (oldElement._idSubFilters.toString() === newElement._idSubFilters.toString())) {
+              oldImgProduct.push(...oldElement.urlImg.filter(commonProduct.comparerImg(newElement.urlImg)));
+            }
+          });
+        });
+      } else {
+        product.filterImg.forEach(oldElement => {
+          oldImgProduct.push(...oldElement.urlImg);
+        });
+      }
+    }
+
+    //удаляем старые фотки, которые не используем
+    if (_.isArray(oldImgProduct) && oldImgProduct.length > 0) {
+      await customCloudinaryInstrument.removeImgFromCloudinaryUseArray(oldImgProduct);
     }
 
     if (_.isArray(filters) || _.isArray(model)) {
@@ -240,8 +237,7 @@ exports.updateProduct = async (req, res, next) => {
           _.map(newFilter, function(obj) {
             return JSON.stringify(obj);
           })
-        ),
-        function(obj) {
+        ), function(obj) {
           return JSON.parse(obj);
         }
       );
@@ -288,6 +284,16 @@ exports.updateProduct = async (req, res, next) => {
       );
     }
 
+
+    req.body.filterImg = req.body.filterImg.filter(element=>{
+      return _.isObject(element);
+    });
+
+    req.body.productUrlImg= req.body.productUrlImg.filter(element=>{
+      return _.isString(element) && element;
+    });
+
+
     product.enabled = _.isBoolean(enabled) ? enabled : product.enabled;
     product.description = _.isString(description) ? description : product.description;
     product.nameProduct = _.isString(nameProduct) ? nameProduct : product.nameProduct;
@@ -319,16 +325,8 @@ exports.updateModelForProduct = async (req, res, next) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const {
-      _idProduct,
-      modelNo,
-      filters,
-      modelUrlImg,
-      enabled,
-      quantity,
-      currentPrice,
-      previousPrice
-    } = req.body;
+    const { _idProduct, modelNo, filters, modelUrlImg, enabled, quantity, currentPrice, previousPrice } = req.body;
+
 
     let product = await Product.findById(_idProduct);
 
@@ -429,8 +427,7 @@ exports.deleteProduct = async (req, res, next) => {
         _.map(filter, function(obj) {
           return JSON.stringify(obj);
         })
-      ),
-      function(obj) {
+      ), function(obj) {
         return JSON.parse(obj);
       }
     );
@@ -489,8 +486,7 @@ exports.deleteModelProduct = async (req, res) => {
         _.map(filter, function(obj) {
           return JSON.stringify(obj);
         })
-      ),
-      function(obj) {
+      ), function(obj) {
         return JSON.parse(obj);
       }
     );
@@ -585,7 +581,7 @@ exports.getProductById = async (req, res, next) => {
 exports.searchProductsHeader = async (req, res, next) => {
   try {
     const { searchheader } = req.params;
-    const products = await Product.find({ nameProduct: { $regex: decodeURI(searchheader) } })
+    const products = await Product.find({ "nameProduct": { $regex: decodeURI(searchheader) } })
       .limit(5)
       .populate({
         path: "_idChildCategory",
@@ -619,7 +615,7 @@ exports.searchProductsHeader = async (req, res, next) => {
 exports.searchProducts = async (req, res, next) => {
   try {
     const { search } = req.params;
-    const products = await Product.find({ nameProduct: { $regex: decodeURI(search) } })
+    const products = await Product.find({ "nameProduct": { $regex: decodeURI(search) } })
       .populate({
         path: "_idChildCategory",
         select: "-filters",

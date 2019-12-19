@@ -94,7 +94,7 @@ const CategoriesDetailForm = ({
               <TextField
                 error={item.childCategoryError}
                 required
-                id="childCategory"
+                id={`childCategory${item.id}`}
                 label="child category"
                 variant="outlined"
                 value={item.name ? item.name : ''}
@@ -105,7 +105,7 @@ const CategoriesDetailForm = ({
             <FormControl margin="normal" fullWidth>
               <Autocomplete
                 multiple
-                id="filters"
+                id={`filters${item.id}`}
                 options={filtersData}
                 getOptionLabel={option => option.serviceName}
                 defaultValue={filtersData.filter(i => item.filters.map(i => i.id).includes(i.id))}

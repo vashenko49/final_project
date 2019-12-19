@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import CreateSubProduct from './CreateSubProduct';
+import CreateSubProduct from './old_CreateSubProduct';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -21,7 +21,7 @@ const styles = {
   }
 };
 
-class CreateProduct extends Component {
+class Old_CreateProduct extends Component {
   state = {
     title: '',
     description: '',
@@ -169,11 +169,11 @@ class CreateProduct extends Component {
   }
 }
 
-CreateProduct.propTypes = {
+Old_CreateProduct.propTypes = {
   brands: PropTypes.array
 };
 
-CreateProduct.defaultProps = {
+Old_CreateProduct.defaultProps = {
   brands: [
     { id: 1, title: 'Бренд 1' },
     { id: 2, title: 'Бренд 2' }
@@ -199,4 +199,4 @@ CreateProduct.defaultProps = {
   ]
 };
 
-export default withStyles(styles)(CreateProduct);
+export default withStyles(styles)(Old_CreateProduct);

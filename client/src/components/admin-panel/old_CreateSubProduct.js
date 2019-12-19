@@ -47,7 +47,7 @@ const styles = theme => ({
   }
 });
 
-class CreateSubProduct extends Component {
+class Old_CreateSubProduct extends Component {
   state = {
     colorProduct: {},
     anchorEl: null,
@@ -231,7 +231,7 @@ class CreateSubProduct extends Component {
   }
 }
 
-CreateSubProduct.propTypes = {
+Old_CreateSubProduct.propTypes = {
   colors: PropTypes.array,
   sizes: PropTypes.array,
   classes: PropTypes.object.isRequired,
@@ -241,6 +241,6 @@ CreateSubProduct.propTypes = {
   onChangeSubCards: PropTypes.func.isRequired
 };
 
-CreateSubProduct.defaultProps = {};
+Old_CreateSubProduct.defaultProps = {};
 
-export default withStyles(styles)(CreateSubProduct);
+export default withStyles(styles)(Old_CreateSubProduct);

@@ -13,13 +13,6 @@ import TypeLogIn from '../../../services/AuthorizationAPI';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 class ThroughSocialNetwork extends Component {
-  constructor(props) {
-    super(props);
-    this.responseGoogle = this.responseGoogle.bind(this);
-    this.responseFacebook = this.responseFacebook.bind(this);
-    this.responseGitHub = this.responseGitHub.bind(this);
-  }
-
   responseGoogle = res => {
     const { loginInSystem } = this.props;
     loginInSystem(res, TypeLogIn.responseGoogle);

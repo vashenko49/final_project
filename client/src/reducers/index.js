@@ -10,7 +10,9 @@ import adminFilters from './adminFilters';
 import product from './product';
 import cart from './cart';
 import comments from './comments';
+import slides from './slides';
 import header from './header';
+import partner from './partner';
 import configuration from './configuration';
 
 export default combineReducers({
@@ -25,5 +27,7 @@ export default combineReducers({
   adminBrands,
   adminFilters,
   header,
-  configuration
+  partner,
+  configuration,
+  slides
 });
