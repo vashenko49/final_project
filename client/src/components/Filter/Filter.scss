@@ -1,4 +1,25 @@
 .filters{
 display: flex;
   flex-direction: column;
+  color:#FFFFFF;
+}
+.filters-container{
+  background: #33333A;
+  border-radius: 25%;
+}
+.MuiExpansionPanel-root.Mui-expanded{
+  margin: 0 !important;
+}
+.MuiPaper-elevation1{
+  box-shadow: none !important;
+}
+.MuiPaper-elevation1:before{
+  display: none;
+}
+.MuiPaper-root{
+  color: inherit !important;
+  background: inherit !important;
+}
+.MuiIconButton-root{
+  color: inherit !important;
 }

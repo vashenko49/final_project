@@ -15,6 +15,7 @@ import ProductAPI from '../../../services/ProductAPI';
 import CatalogAPI from '../../../services/CatalogAPI';
 import Filter from '../../Filter/Filter';
 import './CatalogPage.scss';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class CatalogPage extends Component {
   constructor(props) {
@@ -137,7 +138,9 @@ class CatalogPage extends Component {
           </div>
           <Filter className="filter" filters={filters} />
           <div className="product">
-            {products.length > 0 &&
+            {products.length <= 0 ? (
+              <CircularProgress />
+            ) : (
               products.map(element => {
                 const { productUrlImg, filterImg, nameProduct, _id, model } = element;
                 return (
@@ -151,7 +154,8 @@ class CatalogPage extends Component {
                     model={model}
                   />
                 );
-              })}
+              })
+            )}
           </div>
         </div>
       </Container>

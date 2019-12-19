@@ -539,7 +539,12 @@ exports.getProductById = async (req, res, next) => {
       })
       .populate({
         path: "model.filters.subFilter"
-      });
+      })
+      .populate({
+        path: 'filterImg._idFilter',
+        select: '_id enabled type serviceName'
+      })
+      .populate('filterImg._idSubFilters');
 
 
     if (!product) {
@@ -581,7 +586,12 @@ exports.searchProductsHeader = async (req, res, next) => {
       })
       .populate({
         path: "model.filters.subFilter"
-      });
+      })
+      .populate({
+        path: 'filterImg._idFilter',
+        select: '_id enabled type serviceName'
+      })
+      .populate('filterImg._idSubFilters');
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -614,7 +624,12 @@ exports.searchProducts = async (req, res, next) => {
       })
       .populate({
         path: "model.filters.subFilter"
-      });
+      })
+      .populate({
+        path: 'filterImg._idFilter',
+        select: '_id enabled type serviceName'
+      })
+      .populate('filterImg._idSubFilters');
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -631,7 +646,7 @@ exports.getProductsFilterParams = async (req, res, next) => {
       return mongoose.Types.ObjectId(element);
     });
 
-    const Products = await Product.find(subfilters.length<=0?{'_idChildCategory': idCatalog}:{
+    const Products = await Product.find(subfilters.length <= 0 ? {'_idChildCategory': idCatalog} : {
       $and: [
         {
           $and: [
