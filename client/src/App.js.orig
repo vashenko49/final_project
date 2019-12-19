@@ -11,6 +11,7 @@ import Header from './components/Header/Header';
 import ProductPageF from './components/page/ProductPageF';
 import Cart from './components/cart/Cart';
 import MainPage from './components/page/MainPage';
+import HeaderSearchProductPage from './components/HeaderSearchProductPage/HeaderSearchProductPage';
 
 import './font/Varta/Varta-font.css';
 import './font/Proxima_Nova/Proxima_Nova-font.css';
@@ -38,8 +39,9 @@ class App extends Component {
 <<<<<<< HEAD
             <Route exact exect path="/catalog/:id" component={CatalogPage} />
 =======
-            <Route exact exect path="/cart/:id" component={Cart} />
+            <Route exact exect path="/products/search" component={HeaderSearchProductPage} />
 >>>>>>> develop
+            <Route exact exect path="/cart/:id" component={Cart} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
           </Switch>
           <Footer />
