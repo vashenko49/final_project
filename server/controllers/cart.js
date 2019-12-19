@@ -143,16 +143,9 @@ exports.updateProductFromCart = async (req, res) => {
     }
 
 
-<<<<<<< HEAD
-    isCart = await Cart.findOneAndUpdate(
-      { customerId: idCustomer },
-      { $set: { products: isCart.products } },
-      { new: true }
-    );
-=======
+
     isCart = await Cart.findOneAndUpdate({"customerId": idCustomer}, {$set: {products: isCart.products}}, {new: true});
 
->>>>>>> 5b2c9874bf0c7ca894931268a7ad32396fd67e01
     isCart = await isCart.save();
 
     let cart = await commonCart.getCart(isCart.customerId);
