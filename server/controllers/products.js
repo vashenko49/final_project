@@ -558,8 +558,8 @@ exports.getProductById = async (req, res, next) => {
 
 exports.searchProductsHeader = async (req, res, next) => {
   try {
-    const { searchheader } = req.params;
-    const products = await Product.find({ "nameProduct": { $regex: decodeURI(searchheader) } })
+    const {searchheader} = req.params;
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}})
       .limit(5)
       .populate({
         path: "_idChildCategory",
@@ -581,7 +581,12 @@ exports.searchProductsHeader = async (req, res, next) => {
       })
       .populate({
         path: "model.filters.subFilter"
-      });
+      })
+      .populate({
+        path: 'filterImg._idFilter',
+        select: '_id enabled type serviceName'
+      })
+      .populate('filterImg._idSubFilters');
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
@@ -592,8 +597,8 @@ exports.searchProductsHeader = async (req, res, next) => {
 
 exports.searchProducts = async (req, res, next) => {
   try {
-    const { search } = req.params;
-    const products = await Product.find({ "nameProduct": { $regex: decodeURI(search) } })
+    const {search} = req.params;
+    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}})
       .populate({
         path: "_idChildCategory",
         select: "-filters",
@@ -614,7 +619,12 @@ exports.searchProducts = async (req, res, next) => {
       })
       .populate({
         path: "model.filters.subFilter"
-      });
+      })
+      .populate({
+        path: 'filterImg._idFilter',
+        select: '_id enabled type serviceName'
+      })
+      .populate('filterImg._idSubFilters');
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({

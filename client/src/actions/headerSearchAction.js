@@ -2,18 +2,18 @@ import * as HEADERSEARCH from '../constants/headerSearch';
 
 import HeaderSearchAPI from '../services/HeaderSearchAPI';
 
-export function findFiveProductsBySearchIconClick(searchInputValue) {
+export function findProductsBySearchIconClick(searchInputValue) {
   return async dispatch => {
     dispatch({
       type: HEADERSEARCH.FIND_API_PRODUCTS_REQUEST
     });
 
     try {
-      const res = HeaderSearchAPI.findFiveProductsBySearchIconClick(searchInputValue);
+      const res = await HeaderSearchAPI.findProductsBySearchIconClick(searchInputValue);
 
       dispatch({
         type: HEADERSEARCH.FIND_API_PRODUCTS_SUCCEEDED,
-        payload: res
+        payload: res.data
       });
     } catch (err) {
       dispatch({
@@ -31,11 +31,11 @@ export function findProductsBySearchInput(searchInputValue) {
     });
 
     try {
-      const res = HeaderSearchAPI.findProductsBySearchInput(searchInputValue);
+      const res = await HeaderSearchAPI.findProductsBySearchInput(searchInputValue);
 
       dispatch({
         type: HEADERSEARCH.FIND_API_PRODUCTS_SUCCEEDED,
-        payload: res
+        payload: res.data
       });
     } catch (err) {
       dispatch({

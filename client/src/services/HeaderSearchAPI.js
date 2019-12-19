@@ -1,13 +1,15 @@
 const axios = require('axios');
 
 export default class HeaderSearchAPI {
-  static async findFiveProductsBySearchIconClick(searchInputValue) {
+  static async findProductsBySearchIconClick(searchInputValue) {
     const encodedSearchInputValue = encodeURI(searchInputValue);
-    return await axios.get(`/products/searchheader/${encodedSearchInputValue}`);
+
+    console.log('--->' + encodedSearchInputValue);
+    return await axios.get(`/products/search/${encodedSearchInputValue}`);
   }
 
   static async findProductsBySearchInput(searchInputValue) {
     const encodedSearchInputValue = encodeURI(searchInputValue);
-    return await axios.get(`/products/search/${encodedSearchInputValue}`);
+    return await axios.get(`/products/searchheader/${encodedSearchInputValue}`);
   }
 }
