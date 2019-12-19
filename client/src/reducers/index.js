@@ -10,6 +10,7 @@ import adminFilters from './adminFilters';
 import product from './product';
 import slides from './slides';
 import header from './header';
+import partner from './partner';
 import configuration from './configuration';
 
 export default combineReducers({
@@ -22,6 +23,7 @@ export default combineReducers({
   adminFilters,
   product,
   header,
+  partner,
   configuration,
   slides
 });
