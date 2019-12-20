@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import _ from 'lodash'
+import _ from 'lodash';
 import { getCurrentProduct } from '../../actions/product';
 import { getCurrentItems, addOrRemoveProduct } from '../../actions/cart';
 
@@ -57,18 +57,16 @@ const ProductPageF = ({
   const [currentColor, setCurrentColor] = useState('');
   const [currentSize, setCurrentSize] = useState('');
 
-  const handleModel = (color) => {
-    for(let i = 0; i < model.length; i++) {
-      for(let j = 0; j < model[i].filters.length; j++){
-        if(_.get(model[i], `filters[${j}].subFilter.name`) === color.toUpperCase()){
-          setCurrentModel(model[i])
-        } else if(_.get(model[i].filters[j], 'filter.type') === 'Sizes'){
-          setCurrentSize(model[i].filters[j].subFilter.name)
+  const handleModel = color => {
+    for (let i = 0; i < model.length; i++) {
+      for (let j = 0; j < model[i].filters.length; j++) {
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === color.toUpperCase()) {
+          setCurrentModel(model[i]);
+        } else if (_.get(model[i].filters[j], 'filter.type') === 'Sizes') {
+          setCurrentSize(model[i].filters[j].subFilter.name);
         }
       }
     }
-
-
   };
 
   // Load product
@@ -153,14 +151,10 @@ const ProductPageF = ({
                 />
                 <div className="product-buttons container">
                   <Link to={`/cart/${customerId}`}>
-                    <button className="grey-btn">
-                      View bag
-                    </button>
+                    <button className="grey-btn">View bag</button>
                   </Link>
                   <Link to={`/cart/${customerId}`}>
-                  <button className="black-btn">
-                    Checkout
-                  </button>
+                    <button className="black-btn">Checkout</button>
                   </Link>
                 </div>
               </div>

@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 
 import { Image } from 'cloudinary-react';
 
-import { updateQuantity,addOrRemoveProduct } from '../../actions/cart';
+import { updateQuantity, addOrRemoveProduct } from '../../actions/cart';
 
 import './Cart.scss';
 
@@ -81,9 +81,12 @@ class Item extends Component {
                   <div>
                     <p className="about-item">${currentPrice * quantity}</p>
                   </div>
-                  <div className="close" onClick={() => {
-                    addOrRemoveProduct(customerId, parentId, modelNo, 0)
-                  }}></div>
+                  <div
+                    className="close"
+                    onClick={() => {
+                      addOrRemoveProduct(customerId, parentId, modelNo, 0);
+                    }}
+                  ></div>
                 </div>
               );
             })}

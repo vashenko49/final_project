@@ -28,7 +28,7 @@ class Header extends Component {
     this.onSearchInputChange = this.onSearchInputChange.bind(this);
     this.onSearchIconClick = this.onSearchIconClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.onSearchResultsClick = this.onSearchResultsClick.bind(this)
+    this.onSearchResultsClick = this.onSearchResultsClick.bind(this);
   }
 
   onSearchResultsClick(event) {
@@ -36,20 +36,20 @@ class Header extends Component {
   }
 
   handleClose() {
-    this.setState(state => ({anchorEl: false}))
+    this.setState(state => ({ anchorEl: false }));
   }
 
   timerHandler = createRef();
 
   async onSearchInputChange() {
     await this.props.findProductsBySearchInput(this.state.searchInput);
-    this.setState(state => ({anchorEl: true}))
+    this.setState(state => ({ anchorEl: true }));
   }
 
   async onSearchIconClick() {
     if (this.state.searchInput) {
       await this.props.findProductsBySearchIconClick(this.state.searchInput);
-      this.props.history.push("/products/search");
+      this.props.history.push('/products/search');
     }
   }
 
@@ -80,15 +80,16 @@ class Header extends Component {
             placeholder="Search"
             inputProps={{ 'aria-label': 'search' }}
             className="search-input"
-            onChange={
-              event => {
-                clearTimeout(this.timerHandler.current);
-                const inputValue = event.target.value;
-                this.timerHandler.current = setTimeout(() => {
-                  this.setState(state => ({searchInput: inputValue}), () => this.onSearchInputChange());
-                }, 700);
-              }
-            }
+            onChange={event => {
+              clearTimeout(this.timerHandler.current);
+              const inputValue = event.target.value;
+              this.timerHandler.current = setTimeout(() => {
+                this.setState(
+                  state => ({ searchInput: inputValue }),
+                  () => this.onSearchInputChange()
+                );
+              }, 700);
+            }}
           />
           <Popover
             id={popupId}
@@ -97,17 +98,31 @@ class Header extends Component {
             anchorEl={document.getElementById('header-search-input')}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'center',
+              horizontal: 'center'
             }}
             transformOrigin={{
               vertical: 'top',
               horizontal: 'center'
             }}
           >
-            {this.props.foundProducts.length === 0 ? <Typography>{this.props.foundProductsError === "" ? "Такого товара в магазине нет" : this.props.foundProductsError}</Typography> :
-              foundProducts.map(elem =>
-                <Typography className="search-popup-item" key={elem._id} id={elem._id} onClick={this.onSearchResultsClick}>{elem.nameProduct}</Typography>)
-            }
+            {this.props.foundProducts.length === 0 ? (
+              <Typography>
+                {this.props.foundProductsError === ''
+                  ? 'Такого товара в магазине нет'
+                  : this.props.foundProductsError}
+              </Typography>
+            ) : (
+              foundProducts.map(elem => (
+                <Typography
+                  className="search-popup-item"
+                  key={elem._id}
+                  id={elem._id}
+                  onClick={this.onSearchResultsClick}
+                >
+                  {elem.nameProduct}
+                </Typography>
+              ))
+            )}
           </Popover>
         </div>
         <div className="header-navbar-buttons">
@@ -142,8 +157,14 @@ function mapDispatchToProps(dispatch) {
   return {
     getRootCategories: bindActionCreators(headerAction.getRootCategories, dispatch),
     getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch),
-    findProductsBySearchIconClick: bindActionCreators(headerSearchAction.findProductsBySearchIconClick, dispatch),
-    findProductsBySearchInput: bindActionCreators(headerSearchAction.findProductsBySearchInput, dispatch)
+    findProductsBySearchIconClick: bindActionCreators(
+      headerSearchAction.findProductsBySearchIconClick,
+      dispatch
+    ),
+    findProductsBySearchInput: bindActionCreators(
+      headerSearchAction.findProductsBySearchInput,
+      dispatch
+    )
   };
 }
 
