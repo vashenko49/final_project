@@ -4,6 +4,7 @@ const _ = require("lodash");
 const {validationResult} = require("express-validator");
 const mongoose = require("mongoose");
 
+
 const commonProduct = require("../common/commonProduct ");
 const Product = require("../models/Product");
 const ChildCatalog = require("../models/ChildCatalog");
@@ -662,57 +663,58 @@ exports.searchProducts = async (req, res, next) => {
 
 exports.getProductsFilterParams = async (req, res, next) => {
   try {
-    let {subfilters, idCatalog} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
 
-    subfilters = subfilters.map(element => {
+    let {subfilters, idCatalog, page, limit, sort, price} = req.body;
+
+    subfilters = subfilters.filter(element => {
       return mongoose.Types.ObjectId(element);
     });
 
-    const Products = await Product.find(subfilters.length <= 0 ? {'_idChildCategory': idCatalog} : {
+    const query = {
       $and: [
         {
-          $and: [
-            {
-              "filters.subFilter": {$in: subfilters}
-            },
-            {
-              "model.filters.subFilter": {$in: subfilters}
-            }
-          ]
-        }, {'_idChildCategory': idCatalog}]
-    })
-      .populate({
-        path: "_idChildCategory",
-        select: "-filters",
-        populate: {
-          path: "parentId"
+          "_idChildCategory": idCatalog
+        }
+      ]
+    };
+
+    if (_.isArray(price)&& price.length===2) {
+      query.$and.push({
+        'model.currentPrice': {$gt: price[0]}
+      }, {
+        'model.currentPrice': {$lt: price[1]}
+      },)
+    }
+    if(_.isArray(subfilters)&& subfilters.length>0){
+      query.$and.push({
+        $or: [
+          {
+            "filters.subFilter": {$in: subfilters}
+          },
+          {
+            "model.filters.subFilter": {$in: subfilters}
+          }
+        ]
+      })
+    }
+
+    const Products = await Product.paginate(query,
+      {
+        page: page,
+        limit: limit,
+        sort: sort === 0 ? {'date': 1} : {
+          'model.currentPrice': 1 ? 1 : -1
         }
       })
-      .populate({
-        path: "filters.filter",
-        select: "enabled _id type serviceName"
-      })
-      .populate({
-        path: "filters.subFilter"
-      })
-      .populate({
-        path: "model.filters.filter",
-        select: "enabled _id type serviceName"
-      })
-      .populate({
-        path: "model.filters.subFilter"
-      })
-      .populate({
-        path: "filterImg._idFilter",
-        select: "enabled _id type serviceName"
-      })
-      .populate({
-        path: "filterImg._idSubFilters",
-      });
 
 
     res.status(200).json(Products);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: "Server Error!"
     });

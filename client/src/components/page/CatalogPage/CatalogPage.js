@@ -66,6 +66,7 @@ class CatalogPage extends Component {
       this.setState({ sortByOpen: false, anchorRef: null });
     }
   };
+  updateProduct = (sortBy, price, filters) => {};
 
   render() {
     const {

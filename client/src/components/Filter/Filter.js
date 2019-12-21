@@ -14,47 +14,45 @@ class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: [],
-      price: props.price
+      selected: []
     };
   }
 
-  valuetext = value => {
-    return `${value}$`;
-  };
   handleChangePrice = (event, newValue) => {
     this.setState({ price: newValue });
   };
 
   render() {
-    const { valuetext, handleChangePrice } = this;
-    const { price } = this.state;
-    const { filters } = this.props;
-    console.log(filters);
+    const { handleChangePrice } = this;
+    const { filters, price } = this.props;
+    console.log(price);
     return (
       <div className="filters">
         {filters.length <= 0 ? (
           <CircularProgress />
         ) : (
           <div className="filters-container">
-            <ExpansionPanel>
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-              >
-                <Typography>Price</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Slider
-                  value={price}
-                  onChange={handleChangePrice}
-                  aria-labelledby="range-slider"
-                  getAriaValueText={valuetext}
-                  valueLabelDisplay="auto"
-                />
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
+            {price.length > 0 && (
+              <ExpansionPanel>
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel2a-content"
+                  id="panel2a-header"
+                >
+                  <Typography>Price</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Slider
+                    min={price[0]}
+                    max={price[1]}
+                    value={price}
+                    onChange={handleChangePrice}
+                    aria-labelledby="range-slider"
+                    valueLabelDisplay="auto"
+                  />
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            )}
 
             <ExpansionPanel>
               <ExpansionPanelSummary
