@@ -136,7 +136,7 @@ class CatalogPage extends Component {
               </Popper>
             </div>
           </div>
-          <Filter className="filter" filters={filters} />
+          <Filter className="filter" filters={filters} price={[99, 1000]} />
           <div className="product-mini">
             {products.length <= 0 ? (
               <CircularProgress />

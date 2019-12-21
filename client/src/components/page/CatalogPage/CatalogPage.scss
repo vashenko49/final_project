@@ -10,6 +10,7 @@
 }
 .popover-filter-by{
   z-index: 10;
+
 }
 .product-mini{
   display: grid;
@@ -29,4 +30,10 @@
 }
 .filter{
   grid-area: filter;
+}
+
+.popover-filter-by > .MuiPaper-root{
+  color:#FFFFFF ;
+  background-color: #33333A ;
+  border-radius: 4% ;
 }

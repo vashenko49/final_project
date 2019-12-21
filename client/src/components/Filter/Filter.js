@@ -15,7 +15,7 @@ class Filter extends Component {
     super(props);
     this.state = {
       selected: [],
-      price: [0, 100]
+      price: props.price
     };
   }
 
@@ -109,7 +109,8 @@ class Filter extends Component {
 }
 
 Filter.propTypes = {
-  filters: PropTypes.array
+  filters: PropTypes.array,
+  price: PropTypes.array
 };
 
 export default Filter;

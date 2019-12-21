@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
@@ -8,12 +9,16 @@ import Badge from '@material-ui/core/Badge';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
 
+import cloudinary from 'cloudinary-core';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as headerAction from '../../actions/headerAction';
 import * as headerSearchAction from '../../actions/headerSearchAction';
-
+import * as AuthorizationActions from '../../actions/authorizationAction';
+import Authorization from '../Authorization/Authorization';
 import './Header.scss';
 import NavBar from './NavBar/NavBar';
 import { Link, withRouter } from 'react-router-dom';
@@ -59,8 +64,17 @@ class Header extends Component {
   }
 
   render() {
-    const { rootCategories, childCategories, foundProducts } = this.props;
-
+    const {
+      rootCategories,
+      childCategories,
+      foundProducts,
+      openWindowAuth,
+      closeWindowAuth,
+      signOut
+    } = this.props;
+    const { cloudinary_cloud_name } = this.props.configuration;
+    const { openWindowLogIn, isAuthorization } = this.props.authorization;
+    const { avatarUrl } = this.props.authorization.personalInfo;
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
 
     return (
@@ -125,10 +139,21 @@ class Header extends Component {
             )}
           </Popover>
         </div>
-        <div className="header-navbar-buttons">
-          <Link to="/authorization">
-            <Button>Login</Button>
-          </Link>
+        <Box display="flex" className="header-navbar-buttons">
+          {isAuthorization ? (
+            <Box>
+              <img
+                className="avatar-user"
+                alt="Remy Sharp"
+                src={new cloudinary.Cloudinary({
+                  cloud_name: cloudinary_cloud_name
+                }).url(avatarUrl)}
+              />
+              <Button onClick={signOut}>Sign out</Button>
+            </Box>
+          ) : (
+            <Button onClick={openWindowAuth}>Login</Button>
+          )}
           <FavoriteBorderIcon />
           <Badge badgeContent={2}>
             <ShoppingBasketIcon />
@@ -136,7 +161,16 @@ class Header extends Component {
           <Link to="/admin-panel">
             <SettingsIcon />
           </Link>
-        </div>
+        </Box>
+        <Dialog
+          open={openWindowLogIn}
+          onClose={closeWindowAuth}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Authorization />
+          </DialogContent>
+        </Dialog>
       </header>
     );
   }
@@ -149,7 +183,9 @@ function mapStateToProps(state) {
     rootCategories: state.header.rootCategories,
     childCategories: state.header.childCategories,
     foundProducts: state.headerSearch.data,
-    foundProductsError: state.headerSearch.error
+    foundProductsError: state.headerSearch.error,
+    authorization: state.authorization,
+    configuration: state.configuration
   };
 }
 
@@ -157,6 +193,9 @@ function mapDispatchToProps(dispatch) {
   return {
     getRootCategories: bindActionCreators(headerAction.getRootCategories, dispatch),
     getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch),
+    openWindowAuth: bindActionCreators(AuthorizationActions.openWindowAuth, dispatch),
+    closeWindowAuth: bindActionCreators(AuthorizationActions.closeWindowAuth, dispatch),
+    signOut: bindActionCreators(AuthorizationActions.signOut, dispatch),
     findProductsBySearchIconClick: bindActionCreators(
       headerSearchAction.findProductsBySearchIconClick,
       dispatch
