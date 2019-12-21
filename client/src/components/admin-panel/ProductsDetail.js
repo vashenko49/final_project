@@ -133,7 +133,7 @@ class ProductsDetail extends Component {
     try {
       this.setIsLoading(true);
 
-      let sendType = 'success';
+      let sendType = 'warning';
       let sendMessage = '';
 
       const {
