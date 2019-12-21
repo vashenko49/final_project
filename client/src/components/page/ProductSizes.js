@@ -17,24 +17,27 @@ export default class ProductSizes extends Component {
           </div>
         </div>
         <div className="product-sizes container">
-          {Object.entries(currentModel).length === 0 
-          ? filters.map(v => {
-            if (v.filter.type === 'Sizes') {
-              return (
-                <button key={v.subFilter._id} className="light-btn">
-                  US {v.subFilter.name}
-                </button>
-              );
-            }
-            return [];
-          })
-        : currentModel.filters.map(v => {
-          if (v.filter.type === 'Sizes') {
-            return <button key={v.subFilter._id} className="light-btn">US {v.subFilter.name}</button>;
-          }
-          return [];
-        })
-        }
+          {Object.entries(currentModel).length === 0
+            ? filters.map(v => {
+                if (v.filter.type === 'Sizes') {
+                  return (
+                    <button key={v.subFilter._id} className="light-btn">
+                      US {v.subFilter.name}
+                    </button>
+                  );
+                }
+                return [];
+              })
+            : currentModel.filters.map(v => {
+                if (v.filter.type === 'Sizes') {
+                  return (
+                    <button key={v.subFilter._id} className="light-btn">
+                      US {v.subFilter.name}
+                    </button>
+                  );
+                }
+                return [];
+              })}
         </div>
       </Fragment>
     );

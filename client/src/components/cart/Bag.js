@@ -1,24 +1,23 @@
 import React, { Component, Fragment } from 'react';
 
-import _ from 'lodash'
+import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import './Cart.scss';
 
 class Bag extends Component {
-
   render() {
     const { items, loading } = this.props.cart;
 
     const bagPrice = () => {
-      if(!loading){
-        let price = 0
-        for(let i = 0; i < items.length; i++) {
+      if (!loading) {
+        let price = 0;
+        for (let i = 0; i < items.length; i++) {
           price += _.get(items[i], 'modelNo.currentPrice') * items[i].quantity;
         }
-        return price
+        return price;
       }
-    }
+    };
 
     return (
       <Fragment>
@@ -29,11 +28,7 @@ class Bag extends Component {
             <h2>BAG</h2>
             <div>
               <p className="about-item">
-                {items.length} items |
-                <span className="price">
-                  $
-                  {bagPrice()}
-                </span>
+                {items.length} items |<span className="price">${bagPrice()}</span>
               </p>
             </div>
           </div>

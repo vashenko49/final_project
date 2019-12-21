@@ -12,8 +12,8 @@ export default class ProductHeader extends Component {
       } else if (model.length === 1) {
         return model[0].currentPrice;
       } else if (model.length > 1) {
-        const prices = model.map(e => e.currentPrice).sort((a,b) => a - b)
-        return prices[0] + '...' + prices[prices.length - 1]
+        const prices = model.map(e => e.currentPrice).sort((a, b) => a - b);
+        return prices[0] + '...' + prices[prices.length - 1];
       }
     };
 

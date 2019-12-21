@@ -5,7 +5,14 @@ import './ProductPage.scss';
 
 export default class ProductCheckout extends Component {
   render() {
-    const { productUrlImg, nameProduct, _idChildCategory, currentColor, currentModel, currentSize } = this.props;
+    const {
+      productUrlImg,
+      nameProduct,
+      _idChildCategory,
+      currentColor,
+      currentModel,
+      currentSize
+    } = this.props;
 
     const amount = [];
 
@@ -20,7 +27,12 @@ export default class ProductCheckout extends Component {
     return (
       <Fragment>
         <div className="checkout-content">
-          <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} crop="scale" alt="sneaker not found"/>
+          <Image
+            cloudName="dxge5r7h2"
+            publicId={productUrlImg[0]}
+            crop="scale"
+            alt="sneaker not found"
+          />
           <div className="checkout-info">
             <h5>{nameProduct}</h5>
             <p>{_idChildCategory.name}</p>
@@ -34,11 +46,14 @@ export default class ProductCheckout extends Component {
               Size: <span>{currentSize}</span>
             </p>
             <label htmlFor="quantity">Quantity</label>
-            <select name="quantity" 
-                    // onChange={e => {
-                    //   updateQuantity(customerId, parentId, modelNo, e.target.value);
-                    // }}
-                    >{amount}</select>
+            <select
+              name="quantity"
+              // onChange={e => {
+              //   updateQuantity(customerId, parentId, modelNo, e.target.value);
+              // }}
+            >
+              {amount}
+            </select>
           </div>
         </div>
       </Fragment>
