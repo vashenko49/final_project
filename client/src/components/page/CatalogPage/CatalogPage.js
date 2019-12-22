@@ -3,37 +3,37 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import MenuList from '@material-ui/core/MenuList';
-import MenuItem from '@material-ui/core/MenuItem';
-import Popper from '@material-ui/core/Popper';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Pagination from 'material-ui-flat-pagination';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Box } from '@material-ui/core';
 
 import MiniProduct from '../../MiniProduct/MiniProduct';
 import ProductAPI from '../../../services/ProductAPI';
 import CatalogAPI from '../../../services/CatalogAPI';
 import Filter from '../../Filter/Filter';
 import './CatalogPage.scss';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import ListGrow from '../../common/listGrow/listGrow';
 
 class CatalogPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: props.match.params.id,
       load: true,
       breadcrumbs: ['Home'],
       currentNameCatalog: '',
+      sortBy: 0,
       filters: [],
       products: [],
-      sortBy: 0,
-      sortByOpen: false,
-      anchorRef: null
+      totalDocs: 1100,
+      limit: 9,
+      page: 1,
+      offset: 0
     };
   }
 
   componentDidMount() {
-    const { id } = this.props.match.params;
+    const { id } = this.state;
     this.setState({ load: false });
     CatalogAPI.getCatalogById(id).then(res => {
       this.setState(prevState => {
@@ -44,40 +44,55 @@ class CatalogPage extends Component {
           filters: res.filters
         };
       });
-      ProductAPI.getProductProductByFilter(id, []).then(res => {
-        this.setState({ products: res });
+      ProductAPI.getProductProductByFilter(id).then(res => {
+        const { docs, totalDocs, page } = res;
+        console.log(res);
+        this.setState({ products: docs, totalDocs: totalDocs, page: page });
       });
     });
   }
 
-  handleToggle = event => {
-    const { sortByOpen, anchorRef } = this.state;
-    this.setState({
-      sortByOpen: !sortByOpen,
-      anchorRef: anchorRef ? null : event.currentTarget
+  handleClickPagination = offset => {
+    const { limit, sortBy, id } = this.state;
+    let page = Math.floor(offset / limit) + 1;
+    this.setState({ offset: offset, page: page, products: [] });
+    ProductAPI.getProductProductByFilter(id, limit, page, sortBy).then(res => {
+      const { docs, totalDocs, page } = res;
+      console.log(res);
+      this.setState({ products: docs, totalDocs: totalDocs, page: page });
     });
   };
-  handleClose = () => {
-    this.setState({ sortByOpen: false, anchorRef: null });
+  changePropsSortBy = sortBy => {
+    const { limit, id } = this.state;
+    this.setState({ sortBy: sortBy, products: [], page: 1 });
+    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy).then(res => {
+      const { docs, totalDocs, page } = res;
+      this.setState({ products: docs, totalDocs: totalDocs, page: page });
+    });
   };
-  handleListKeyDown = event => {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      this.setState({ sortByOpen: false, anchorRef: null });
-    }
+  changePropsLimit = limit => {
+    const { sortBy, id } = this.state;
+    this.setState({ limit: limit, products: [], page: 1 });
+    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy).then(res => {
+      const { docs, totalDocs, page } = res;
+      this.setState({ products: docs, totalDocs: totalDocs, page: page });
+    });
   };
-  updateProduct = (sortBy, price, filters) => {};
 
   render() {
     const {
       breadcrumbs,
       currentNameCatalog,
-      sortByOpen,
-      anchorRef,
       filters,
-      products
+      products,
+      offset,
+      totalDocs,
+      limit,
+      sortBy
     } = this.state;
-    const { handleToggle, handleClose, handleListKeyDown } = this;
+    console.log('limit---> ' + limit);
+    console.log('sortBy---> ' + sortBy);
+    const { handleClickPagination, changePropsLimit, changePropsSortBy } = this;
     return (
       <Container>
         <Breadcrumbs className="breadcrumbs" aria-label="breadcrumb">
@@ -101,46 +116,27 @@ class CatalogPage extends Component {
           <div className="currentNameCatalog">
             <Typography variant={'h5'}>{currentNameCatalog}</Typography>
           </div>
-          <div className="filterBy">
-            <Typography variant={'h6'}>Filter</Typography>
-            <div>
-              <Button
-                ref={anchorRef}
-                aria-controls={sortByOpen ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                onClick={handleToggle}
-              >
-                Sort by
-              </Button>
-              <Popper
-                open={sortByOpen}
-                anchorEl={anchorRef}
-                role={undefined}
-                placement="bottom-end"
-                transition
-                disablePortal
-                className="popover-filter-by"
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList
-                      autoFocusItem={sortByOpen}
-                      id="menu-list-grow"
-                      onKeyDown={handleListKeyDown}
-                    >
-                      <MenuItem onClick={handleClose}>Newest</MenuItem>
-                      <MenuItem onClick={handleClose}>Price: High - Low</MenuItem>
-                      <MenuItem onClick={handleClose}>Price: Low - High </MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Popper>
-            </div>
+          <div className="params-filter">
+            <ListGrow
+              changePropsParent={changePropsLimit}
+              title={'On page'}
+              menuItem={[9, 12, 15]}
+              isCurrentData={true}
+            />
+            <ListGrow
+              changePropsParent={changePropsSortBy}
+              title={'Sort by'}
+              menuItem={['Newest', 'Price: High - Low', 'Price: Low - High ']}
+              isCurrentData={false}
+              titleButton={'Sort By'}
+            />
           </div>
           <Filter className="filter" filters={filters} price={[99, 1000]} />
           <div className="product-mini">
             {products.length <= 0 ? (
-              <CircularProgress />
+              <div className="preloader">
+                <CircularProgress />
+              </div>
             ) : (
               products.map(element => {
                 const { productUrlImg, filterImg, nameProduct, _id, model } = element;
@@ -159,6 +155,14 @@ class CatalogPage extends Component {
             )}
           </div>
         </div>
+        <Box display="flex" my={3} justifyContent="center">
+          <Pagination
+            limit={limit}
+            offset={offset}
+            total={totalDocs}
+            onClick={(e, offset) => handleClickPagination(offset)}
+          />
+        </Box>
       </Container>
     );
   }

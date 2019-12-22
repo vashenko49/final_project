@@ -25,7 +25,7 @@ class Filter extends Component {
   render() {
     const { handleChangePrice } = this;
     const { filters, price } = this.props;
-    console.log(price);
+
     return (
       <div className="filters">
         {filters.length <= 0 ? (

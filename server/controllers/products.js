@@ -670,9 +670,11 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
     let {subfilters, idCatalog, page, limit, sort, price} = req.body;
 
-    subfilters = subfilters.filter(element => {
-      return mongoose.Types.ObjectId(element);
-    });
+    if (_.isArray(subfilters)) {
+      subfilters = subfilters.filter(element => {
+        return mongoose.Types.ObjectId(element);
+      });
+    }
 
     const query = {
       $and: [
@@ -682,14 +684,14 @@ exports.getProductsFilterParams = async (req, res, next) => {
       ]
     };
 
-    if (_.isArray(price)&& price.length===2) {
+    if (_.isArray(price) && price.length === 2) {
       query.$and.push({
         'model.currentPrice': {$gt: price[0]}
       }, {
         'model.currentPrice': {$lt: price[1]}
       },)
     }
-    if(_.isArray(subfilters)&& subfilters.length>0){
+    if (_.isArray(subfilters) && subfilters.length > 0) {
       query.$and.push({
         $or: [
           {
@@ -704,11 +706,39 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
     const Products = await Product.paginate(query,
       {
-        page: page,
-        limit: limit,
-        sort: sort === 0 ? {'date': 1} : {
+        page: _.isNumber(page) ? page : 1,
+        limit: _.isNumber(limit) ? limit : 9,
+        sort: _.isNumber(sort) ? 0 : sort === 0 ? {'date': 1} : {
           'model.currentPrice': 1 ? 1 : -1
-        }
+        },
+        populate: [
+          {
+            path: "_idChildCategory",
+            select: "-filters",
+            populate: {
+              path: "parentId"
+            }
+          },
+          {
+            path: "filters.filter",
+            select: "enabled _id type serviceName"
+          },
+          {
+            path: "filters.subFilter"
+          },
+          {
+            path: "model.filters.filter",
+            select: "enabled _id type serviceName"
+          }, {
+            path: "model.filters.subFilter"
+          }, {
+            path: "filterImg._idFilter",
+            select: "enabled _id type serviceName"
+          },
+          {
+            path: "filterImg._idSubFilters",
+          }
+        ]
       })
 
 

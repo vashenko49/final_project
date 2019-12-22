@@ -131,13 +131,7 @@ router.post('/filter',
   [
     check('idCatalog', 'idCatalog is require')
       .not()
-      .isEmpty(),
-    check('page', "page is requrie")
-      .isNumeric(),
-    check('limit', "limit is requrie")
-      .isNumeric(),
-    check('sort', 'sort is require')
-      .isNumeric()
+      .isEmpty()
   ],
   getProductsFilterParams
 );

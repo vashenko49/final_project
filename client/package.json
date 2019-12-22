@@ -30,6 +30,7 @@
     "html-react-parser": "^0.10.0",
     "lodash": "^4.17.15",
     "material-table": "^1.54.1",
+    "material-ui-flat-pagination": "^4.0.0",
     "object-to-formdata": "^2.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
