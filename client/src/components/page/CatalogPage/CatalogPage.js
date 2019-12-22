@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Pagination from 'material-ui-flat-pagination';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Box } from '@material-ui/core';
 
 import MiniProduct from '../../MiniProduct/MiniProduct';
 import ProductAPI from '../../../services/ProductAPI';
@@ -25,10 +24,13 @@ class CatalogPage extends Component {
       sortBy: 0,
       filters: [],
       products: [],
-      totalDocs: 1100,
+      totalDocs: 0,
       limit: 9,
       page: 1,
-      offset: 0
+      offset: 0,
+      priceCurrentCatalog: [0, 0],
+      price: [0, 0],
+      subfilters: []
     };
   }
 
@@ -46,34 +48,59 @@ class CatalogPage extends Component {
       });
       ProductAPI.getProductProductByFilter(id).then(res => {
         const { docs, totalDocs, page } = res;
-        console.log(res);
-        this.setState({ products: docs, totalDocs: totalDocs, page: page });
+        const price = docs.length > 0 ? this.getMaxMinPrice(docs) : [0, 0];
+        this.setState({
+          products: docs,
+          totalDocs: totalDocs,
+          page: page,
+          price: price,
+          priceCurrentCatalog: price
+        });
       });
     });
   }
 
+  changePrice = newValue => {
+    this.setState({ price: newValue });
+  };
+
+  getMaxMinPrice = product => {
+    let min = Number.POSITIVE_INFINITY;
+    let max = Number.NEGATIVE_INFINITY;
+
+    product.forEach(prod => {
+      prod.model.forEach(model => {
+        let tmp = model.currentPrice;
+        if (tmp < min) min = tmp;
+        if (tmp > max) max = tmp;
+      });
+    });
+    return [min, max];
+  };
+
   handleClickPagination = offset => {
-    const { limit, sortBy, id } = this.state;
+    const { limit, sortBy, id, price, subfilters } = this.state;
+    console.log(price);
+    console.log(subfilters);
     let page = Math.floor(offset / limit) + 1;
     this.setState({ offset: offset, page: page, products: [] });
-    ProductAPI.getProductProductByFilter(id, limit, page, sortBy).then(res => {
+    ProductAPI.getProductProductByFilter(id, limit, page, sortBy, subfilters, price).then(res => {
       const { docs, totalDocs, page } = res;
-      console.log(res);
       this.setState({ products: docs, totalDocs: totalDocs, page: page });
     });
   };
   changePropsSortBy = sortBy => {
-    const { limit, id } = this.state;
+    const { limit, id, price, subfilters } = this.state;
     this.setState({ sortBy: sortBy, products: [], page: 1 });
-    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy).then(res => {
+    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy, subfilters, price).then(res => {
       const { docs, totalDocs, page } = res;
       this.setState({ products: docs, totalDocs: totalDocs, page: page });
     });
   };
   changePropsLimit = limit => {
-    const { sortBy, id } = this.state;
+    const { sortBy, id, price, subfilters } = this.state;
     this.setState({ limit: limit, products: [], page: 1 });
-    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy).then(res => {
+    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy, subfilters, price).then(res => {
       const { docs, totalDocs, page } = res;
       this.setState({ products: docs, totalDocs: totalDocs, page: page });
     });
@@ -88,11 +115,10 @@ class CatalogPage extends Component {
       offset,
       totalDocs,
       limit,
-      sortBy
+      priceCurrentCatalog,
+      price
     } = this.state;
-    console.log('limit---> ' + limit);
-    console.log('sortBy---> ' + sortBy);
-    const { handleClickPagination, changePropsLimit, changePropsSortBy } = this;
+    const { handleClickPagination, changePropsLimit, changePropsSortBy, changePrice } = this;
     return (
       <Container>
         <Breadcrumbs className="breadcrumbs" aria-label="breadcrumb">
@@ -131,7 +157,13 @@ class CatalogPage extends Component {
               titleButton={'Sort By'}
             />
           </div>
-          <Filter className="filter" filters={filters} price={[99, 1000]} />
+          <Filter
+            className="filter"
+            filters={filters}
+            price={price}
+            priceCurrentCatalog={priceCurrentCatalog}
+            changePrice={changePrice}
+          />
           <div className="product-mini">
             {products.length <= 0 ? (
               <div className="preloader">
@@ -154,15 +186,14 @@ class CatalogPage extends Component {
               })
             )}
           </div>
-        </div>
-        <Box display="flex" my={3} justifyContent="center">
           <Pagination
+            className="paginate"
             limit={limit}
             offset={offset}
             total={totalDocs}
             onClick={(e, offset) => handleClickPagination(offset)}
           />
-        </Box>
+        </div>
       </Container>
     );
   }

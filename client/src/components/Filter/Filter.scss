@@ -1,9 +1,7 @@
-.filters{
-display: flex;
+.filters-container{
+  display: flex;
   flex-direction: column;
   color:#FFFFFF;
-}
-.filters-container{
   background: #33333A;
   border-radius: 25%;
 }
@@ -20,6 +18,6 @@ display: flex;
   color: inherit !important;
   background: inherit !important;
 }
-.filters-container > .MuiIconButton-root{
-  color: inherit !important;
+.MuiButtonBase-root>.MuiIconButton-root{
+  color: #FFFFFF !important;
 }

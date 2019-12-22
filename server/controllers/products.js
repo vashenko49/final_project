@@ -670,6 +670,7 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
     let {subfilters, idCatalog, page, limit, sort, price} = req.body;
 
+
     if (_.isArray(subfilters)) {
       subfilters = subfilters.filter(element => {
         return mongoose.Types.ObjectId(element);
@@ -686,9 +687,9 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
     if (_.isArray(price) && price.length === 2) {
       query.$and.push({
-        'model.currentPrice': {$gt: price[0]}
+        'model.currentPrice': {$gt: +price[0]}
       }, {
-        'model.currentPrice': {$lt: price[1]}
+        'model.currentPrice': {$lt: +price[1]}
       },)
     }
     if (_.isArray(subfilters) && subfilters.length > 0) {

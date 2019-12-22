@@ -11,21 +11,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Slider from '@material-ui/core/Slider';
 
 class Filter extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected: []
-    };
-  }
-
   handleChangePrice = (event, newValue) => {
-    this.setState({ price: newValue });
+    const { changePrice } = this.props;
+    changePrice(newValue);
+    console.log(newValue);
   };
 
   render() {
     const { handleChangePrice } = this;
-    const { filters, price } = this.props;
-
+    const { filters, price, priceCurrentCatalog } = this.props;
+    console.log(price);
     return (
       <div className="filters">
         {filters.length <= 0 ? (
@@ -34,17 +29,13 @@ class Filter extends Component {
           <div className="filters-container">
             {price.length > 0 && (
               <ExpansionPanel>
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel2a-content"
-                  id="panel2a-header"
-                >
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography>Price</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <Slider
-                    min={price[0]}
-                    max={price[1]}
+                    min={priceCurrentCatalog[0]}
+                    max={priceCurrentCatalog[1]}
                     value={price}
                     onChange={handleChangePrice}
                     aria-labelledby="range-slider"
@@ -108,7 +99,8 @@ class Filter extends Component {
 
 Filter.propTypes = {
   filters: PropTypes.array,
-  price: PropTypes.array
+  price: PropTypes.array,
+  changePrice: PropTypes.func
 };
 
 export default Filter;

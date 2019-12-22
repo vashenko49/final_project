@@ -2,7 +2,8 @@
   display: grid;
   grid-gap:25px 30px;
   grid-template-areas: "currentNameCatalog currentNameCatalog params-filter params-filter"
-                        "filter product-mini product-mini product-mini";
+                        "filter product-mini product-mini product-mini"
+                        "paginate paginate paginate paginate";
   grid-template-rows: auto;
   grid-template-columns:  .8fr 1fr 1fr 1fr;
   justify-items: start;
@@ -29,7 +30,10 @@
   grid-area: currentNameCatalog;
 }
 
-
+.paginate{
+  grid-area:paginate;
+  justify-self: center;
+}
 .params-filter{
   display: flex;
   grid-area: params-filter;
@@ -43,4 +47,9 @@
   color:#FFFFFF ;
   background-color: #33333A ;
   border-radius: 4% ;
+}
+
+.MuiBreadcrumbs-li>a{
+  color:inherit;
+  font-weight: bold;
 }
