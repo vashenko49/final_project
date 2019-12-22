@@ -5,22 +5,24 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import Checkbox from '@material-ui/core/Checkbox';
+import Slider from '@material-ui/core/Slider';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './Filter.scss';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Slider from '@material-ui/core/Slider';
 
 class Filter extends Component {
   handleChangePrice = (event, newValue) => {
     const { changePrice } = this.props;
     changePrice(newValue);
-    console.log(newValue);
   };
 
   render() {
     const { handleChangePrice } = this;
     const { filters, price, priceCurrentCatalog } = this.props;
-    console.log(price);
+
     return (
       <div className="filters">
         {filters.length <= 0 ? (
@@ -45,51 +47,42 @@ class Filter extends Component {
               </ExpansionPanel>
             )}
 
-            <ExpansionPanel>
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                <Typography>Expansion Panel 1</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-                  lacus ex, sit amet blandit leo lobortis eget.
-                </Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-            <ExpansionPanel>
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-              >
-                <Typography>Expansion Panel 2</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-                  lacus ex, sit amet blandit leo lobortis eget.
-                </Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-            <ExpansionPanel>
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel3a-content"
-                id="panel3a-header"
-              >
-                <Typography>Disabled Expansion Panel</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-                  lacus ex, sit amet blandit leo lobortis eget.
-                </Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
+            {filters.map(element => {
+              const {
+                _id,
+                filter: { type },
+                subfilters
+              } = element;
+              console.log(subfilters);
+              return (
+                <ExpansionPanel key={_id}>
+                  <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                  >
+                    <Typography>{type}</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <FormGroup>
+                      {subfilters.map(typesSub => {
+                        const { name, _id } = typesSub;
+                        return (
+                          <FormControlLabel
+                            key={_id}
+                            data-subfilter={_id}
+                            value="start"
+                            control={<Checkbox color="primary" />}
+                            label={name}
+                            labelPlacement="start"
+                          />
+                        );
+                      })}
+                    </FormGroup>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+              );
+            })}
           </div>
         )}
       </div>
