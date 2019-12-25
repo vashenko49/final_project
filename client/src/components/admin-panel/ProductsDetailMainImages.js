@@ -140,9 +140,11 @@ const ProductsDetailMainImages = ({
 
             <Autocomplete
               id={`filtersImageSubFilter${card.id}`}
-              options={models
-                .map(i => i.subFilters)
-                .reduce((flat, current) => flat.concat(current), [])}
+              options={[
+                ...new Set(
+                  models.map(i => i.subFilters).reduce((flat, current) => flat.concat(current), [])
+                )
+              ]}
               groupBy={option => option.parentServiceName}
               getOptionLabel={option => (option.name ? option.name : '')}
               value={card.subFilter}
