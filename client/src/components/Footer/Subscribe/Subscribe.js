@@ -15,9 +15,9 @@ class Subscribe extends Component {
     await this.props.addSubscriber(this.props.email);
 
     if (this.props.error.status === true) {
-      // alert(this.props.error.msg);
+      alert(this.props.error.msg);
     } else {
-      // alert(this.props.email);
+      alert(this.props.email);
     }
   }
 
