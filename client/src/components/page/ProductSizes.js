@@ -4,7 +4,7 @@ import './ProductPage.scss';
 
 export default class ProductSizes extends Component {
   render() {
-    const { currentModel, filters } = this.props;
+    const { currentModel, filters, setCurrentSize } = this.props;
 
     return (
       <Fragment>
@@ -31,7 +31,12 @@ export default class ProductSizes extends Component {
             : currentModel.filters.map(v => {
                 if (v.filter.type === 'Sizes') {
                   return (
-                    <button key={v.subFilter._id} className="light-btn">
+                    <button
+                      key={v.subFilter._id}
+                      className="light-btn"
+                      onClick={e => setCurrentSize(e.target.value)}
+                      value={v.subFilter.name}
+                    >
                       US {v.subFilter.name}
                     </button>
                   );
