@@ -106,9 +106,6 @@ const ProductsDetailBasicInfo = ({
           groupBy={option => option.parentServiceName}
           getOptionLabel={option => option.name}
           value={mainFilters}
-          // getOptionDisabled={option =>
-          //   !!(mainFilters && mainFilters.find(i => i._id === option._id))
-          // }
           filterSelectedOptions
           disableCloseOnSelect
           onChange={(e, val) => onChangeValue('mainFilters', val)}
