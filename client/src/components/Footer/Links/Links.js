@@ -10,8 +10,7 @@ import './Links.scss';
 
 class Links extends Component {
   onClick(event) {
-    const { onFooterLinkClick } = this.props.onFooterLinkClick;
-    onFooterLinkClick(event.target.getAttribute('linkgroupid'));
+    this.props.onFooterLinkClick(event.target.getAttribute('linkgroupid'));
   }
 
   render() {
