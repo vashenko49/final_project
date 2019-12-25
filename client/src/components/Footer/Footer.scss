@@ -1,12 +1,26 @@
 .footer {
-  padding: 35px 8% 0;
+  padding: 35px 1% 0;
   color: #DEDEDE;
-  font-size: 14px;
+  font-size: 11px;
   background-color: #33333A;
   
   &-copyright {
     margin-top: 60px;
     margin-bottom: 40px;
     text-align: center;
+  }
+}
+
+@media screen and (min-width: 650px) {
+  .footer {
+    padding: 35px 2% 0;
+    font-size: 12px;
+  }
+}
+
+@media screen and (min-width: 850px) {
+  .footer {
+    padding: 35px 8% 0;
+    font-size: 14px;
   }
 }
