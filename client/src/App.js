@@ -28,7 +28,7 @@ class App extends Component {
     return (
       <Provider store={store}>
         <Router>
-          <Header />
+          {/* <Header /> */}
           <Switch>
             <Route exact path="/authorization" component={Authorization} />
             <Route exact path="/links/content/:customId" component={FooterLinkPage} />

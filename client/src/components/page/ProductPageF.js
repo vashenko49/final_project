@@ -46,7 +46,7 @@ const ProductPageF = ({
     description,
     itemNo,
     model,
-    filters,
+    // filters,
     productUrlImg,
     _idChildCategory
   } = product;
@@ -58,13 +58,20 @@ const ProductPageF = ({
   const [currentColor, setCurrentColor] = useState('');
   const [currentSize, setCurrentSize] = useState('');
 
-  const handleModel = color => {
+  const needed = 2;
+  const handleModel = size => {
+    debugger;
     for (let i = 0; i < model.length; i++) {
+      let counter = 0;
       for (let j = 0; j < model[i].filters.length; j++) {
-        if (_.get(model[i], `filters[${j}].subFilter.name`) === color.toUpperCase()) {
-          setCurrentModel(model[i]);
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === currentColor.toUpperCase()) {
+          ++counter;
+        }
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === size) {
+          ++counter;
         }
       }
+      if (counter === needed) setCurrentModel(model[i]);
     }
   };
 
@@ -108,12 +115,13 @@ const ProductPageF = ({
             handleModel={handleModel}
           />
           <ProductSizes
-            currentModel={currentModel}
-            filters={filters}
+            handleModel={handleModel}
+            currentColor={currentColor}
+            model={model}
             setCurrentSize={setCurrentSize}
           />
           <div className="product-buttons container">
-            <button className="black-btn" onClick={handleOpen}>
+            <button className="black-btn" onClick={handleOpen} disabled={currentSize === ''}>
               Add to bag
             </button>
             <button className="grey-btn">Favourite</button>

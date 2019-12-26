@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
-import Rater from 'react-rater';
-import 'react-rater/lib/react-rater.css';
+import Rating from 'react-rating';
 
-/* total: Number, default 5
-rating: Number, default 0
-interactive: Boolean, default true. Create a read-only rater by setting this attribute to false.
-onRate: function({ rating }). Callback to retrieve rating value. Called after rated.
-onRating: function({ rating }). Callback to retrieve rating value. Called during rating (mouse moving between stars).
-onCancelRate: function({ rating }). Called when mouse moves out from rater.
-*/
-
-export default class Rating extends Component {
+class Stars extends Component {
   render() {
-    return <Rater total={5} rating={this.props.stars} interactive={false} />;
+    return (
+      <Rating
+        initialRating={this.props.stars}
+        readonly
+        // emptySymbol="fa fa-star-o fa-2x"
+        // fullSymbol="fa fa-star fa-2x"
+        // fractions={this.props.stars}
+      />
+    );
   }
 }
+
+class StarsChange extends Component {
+  render() {
+    return <Rating onChange={this.props.onChange} />;
+  }
+}
+
+export { Stars, StarsChange };

@@ -4,26 +4,26 @@ import './ProductPage.scss';
 
 export default class ProductColors extends Component {
   render() {
-    const { handleModel, modelsFilters, setCurrentColor } = this.props;
-
+    const { modelsFilters, setCurrentColor } = this.props;
+    const uniqueColors = [];
     return (
       <Fragment>
         <div className="product-colors container">
           {modelsFilters.map(v => {
             if (v.filter.type === 'Color') {
-              return (
-                <button
-                  key={v._id}
-                  className="product-select-color"
-                  name="currentColor"
-                  onClick={e => {
-                    setCurrentColor(e.target.value);
-                    handleModel(e.target.value);
-                  }}
-                  style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
-                  value={v.subFilter.name.toLowerCase()}
-                />
-              );
+              if (!uniqueColors.includes(v.subFilter._id)) {
+                uniqueColors.push(v.subFilter._id);
+                return (
+                  <button
+                    key={v._id}
+                    className="product-select-color"
+                    name="currentColor"
+                    onClick={e => setCurrentColor(e.target.value)}
+                    style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
+                    value={v.subFilter.name.toLowerCase()}
+                  />
+                );
+              }
             }
             return [];
           })}
