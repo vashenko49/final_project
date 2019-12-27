@@ -3,7 +3,7 @@
   grid-gap:25px 30px;
   grid-template-areas: "currentNameCatalog currentNameCatalog params-filter params-filter"
                         "filter product-mini product-mini product-mini"
-                        "paginate paginate paginate paginate";
+                        ". paginate paginate paginate";
   grid-template-rows: auto;
   grid-template-columns:  .8fr 1fr 1fr 1fr;
   justify-items: start;
@@ -19,6 +19,7 @@
   grid-gap:30px 30px;
   grid-template-columns:  1fr 1fr 1fr;
   width: 100%;
+  height: fit-content;
 }
 
 .preloader{
@@ -39,6 +40,11 @@
   grid-area: params-filter;
   justify-self: end;
 }
+
+.listGrow:first-child{
+  margin-right: 8px;
+}
+
 .filter{
   grid-area: filter;
 }

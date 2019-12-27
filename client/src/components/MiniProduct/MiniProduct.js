@@ -4,7 +4,7 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
 import cloudinary from 'cloudinary-core';
 import PropTypes from 'prop-types';
-
+import isColor from 'is-color';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
@@ -35,7 +35,9 @@ class MiniProduct extends Component {
   filterColor = filterImg => {
     return filterImg
       .filter(element => {
-        return element._idFilter.type.toLowerCase() === 'color';
+        return (
+          element._idFilter.type.toLowerCase() === 'color' && isColor(element._idSubFilters.name)
+        );
       })
       .map(element => {
         return {

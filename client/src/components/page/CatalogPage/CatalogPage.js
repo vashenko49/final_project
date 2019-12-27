@@ -35,7 +35,7 @@ class CatalogPage extends Component {
   }
 
   componentDidMount() {
-    const { id } = this.state;
+    const { id, limit, page } = this.state;
     this.setState({ load: false });
     CatalogAPI.getCatalogById(id).then(res => {
       this.setState(prevState => {
@@ -43,10 +43,20 @@ class CatalogPage extends Component {
           load: true,
           breadcrumbs: [...prevState.breadcrumbs, res.parentId.name],
           currentNameCatalog: res.name,
-          filters: res.filters
+          filters: res.filters.map(element => {
+            return {
+              ...element,
+              subfilters: element.subfilters.map(sub => {
+                return {
+                  ...sub,
+                  choose: false
+                };
+              })
+            };
+          })
         };
       });
-      ProductAPI.getProductProductByFilter(id).then(res => {
+      ProductAPI.getProductProductByFilter(id, limit, page, 0).then(res => {
         const { docs, totalDocs, page } = res;
         const price = docs.length > 0 ? this.getMaxMinPrice(docs) : [0, 0];
         this.setState({
@@ -77,35 +87,94 @@ class CatalogPage extends Component {
     });
     return [min, max];
   };
-
+  convertSubFilterForServer = subfilters => {
+    return subfilters.map(element => {
+      return element._id;
+    });
+  };
   handleClickPagination = offset => {
     const { limit, sortBy, id, price, subfilters } = this.state;
-    console.log(price);
-    console.log(subfilters);
     let page = Math.floor(offset / limit) + 1;
     this.setState({ offset: offset, page: page, products: [] });
-    ProductAPI.getProductProductByFilter(id, limit, page, sortBy, subfilters, price).then(res => {
+    ProductAPI.getProductProductByFilter(
+      id,
+      limit,
+      page,
+      sortBy,
+      this.convertSubFilterForServer(subfilters),
+      price
+    ).then(res => {
       const { docs, totalDocs, page } = res;
       this.setState({ products: docs, totalDocs: totalDocs, page: page });
     });
   };
+  priceSubmit = () => {
+    const { limit, id, price, sortBy, subfilters } = this.state;
+    this.setState({ sortBy: sortBy, products: [], page: 1, offset: 0 });
+
+    ProductAPI.getProductProductByFilter(
+      id,
+      limit,
+      1,
+      sortBy,
+      this.convertSubFilterForServer(subfilters),
+      price
+    ).then(res => {
+      const { docs, totalDocs } = res;
+      this.setState({ products: docs, totalDocs: totalDocs });
+    });
+  };
   changePropsSortBy = sortBy => {
     const { limit, id, price, subfilters } = this.state;
-    this.setState({ sortBy: sortBy, products: [], page: 1 });
-    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy, subfilters, price).then(res => {
+    this.setState({ sortBy: sortBy, products: [], page: 1, offset: 0 });
+    ProductAPI.getProductProductByFilter(
+      id,
+      limit,
+      1,
+      sortBy,
+      this.convertSubFilterForServer(subfilters),
+      price
+    ).then(res => {
       const { docs, totalDocs, page } = res;
       this.setState({ products: docs, totalDocs: totalDocs, page: page });
     });
   };
   changePropsLimit = limit => {
     const { sortBy, id, price, subfilters } = this.state;
-    this.setState({ limit: limit, products: [], page: 1 });
-    ProductAPI.getProductProductByFilter(id, limit, 1, sortBy, subfilters, price).then(res => {
+    this.setState({ limit: limit, products: [], page: 1, offset: 0 });
+    ProductAPI.getProductProductByFilter(
+      id,
+      limit,
+      1,
+      sortBy,
+      this.convertSubFilterForServer(subfilters),
+      price
+    ).then(res => {
       const { docs, totalDocs, page } = res;
       this.setState({ products: docs, totalDocs: totalDocs, page: page });
     });
   };
 
+  handleChooseSubFilter = (newSubFilter, filters) => {
+    this.setState({ subfilters: newSubFilter, filters: filters });
+
+    const { limit, id, price, sortBy } = this.state;
+    this.setState({ sortBy: sortBy, products: [], page: 1, offset: 0 });
+
+    console.log(filters);
+
+    ProductAPI.getProductProductByFilter(
+      id,
+      limit,
+      1,
+      sortBy,
+      this.convertSubFilterForServer(newSubFilter),
+      price
+    ).then(res => {
+      const { docs, totalDocs } = res;
+      this.setState({ products: docs, totalDocs: totalDocs });
+    });
+  };
   render() {
     const {
       breadcrumbs,
@@ -116,9 +185,17 @@ class CatalogPage extends Component {
       totalDocs,
       limit,
       priceCurrentCatalog,
-      price
+      price,
+      subfilters
     } = this.state;
-    const { handleClickPagination, changePropsLimit, changePropsSortBy, changePrice } = this;
+    const {
+      handleClickPagination,
+      changePropsLimit,
+      changePropsSortBy,
+      changePrice,
+      priceSubmit,
+      handleChooseSubFilter
+    } = this;
     return (
       <Container>
         <Breadcrumbs className="breadcrumbs" aria-label="breadcrumb">
@@ -163,6 +240,9 @@ class CatalogPage extends Component {
             price={price}
             priceCurrentCatalog={priceCurrentCatalog}
             changePrice={changePrice}
+            priceSubmit={priceSubmit}
+            handleChooseSubFilter={handleChooseSubFilter}
+            subfilters={subfilters}
           />
           <div className="product-mini">
             {products.length <= 0 ? (
