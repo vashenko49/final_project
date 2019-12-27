@@ -76,7 +76,7 @@ router.put(
     check('_idProduct', '_idProduct is require')
       .not()
       .isEmpty(),
-    check('status','status is require')
+    check('status', 'status is require')
       .isBoolean()
   ],
   activateOrDeactivateProduct
@@ -108,10 +108,10 @@ router.put(
     check('_idProduct', '_idProduct is require')
       .not()
       .isEmpty(),
-    check('modelNo','modelNo is require')
+    check('modelNo', 'modelNo is require')
       .not()
       .isEmpty(),
-    check('status','status is require')
+    check('status', 'status is require')
       .isBoolean()
   ],
   activateOrDeactivateProductModel
@@ -128,6 +128,11 @@ router.get('/searchheader/:searchheader',
 // @desc    Search products
 // @access  Public
 router.post('/filter',
+  [
+    check('idCatalog', 'idCatalog is require')
+      .not()
+      .isEmpty()
+  ],
   getProductsFilterParams
 );
 

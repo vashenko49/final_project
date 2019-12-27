@@ -11,8 +11,8 @@ import './Subscribe.scss';
 class Subscribe extends Component {
   state = {
     sendDataStatus: 'success',
-    sendDataMessage: '',
-  }
+    sendDataMessage: ''
+  };
 
   handleCloseSnackBars = (event, reason) => {
     if (reason === 'clickaway') return;
@@ -41,7 +41,7 @@ class Subscribe extends Component {
   }
 
   render() {
-    const { sendDataStatus, sendDataMessage, isLoading } = this.state;
+    const { sendDataStatus, sendDataMessage } = this.state;
 
     return (
       <div>

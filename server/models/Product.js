@@ -2,12 +2,17 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const uniqueRandom = require("unique-random");
 const rand = uniqueRandom(100000, 999999);
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ProductSchema = new Schema(
   {
     itemNo: {
       type: String,
       required: true
+    },
+    date: {
+      type: Date,
+      default: Date.now
     },
     nameProduct: {
       type: String,
@@ -112,6 +117,8 @@ const ProductSchema = new Schema(
     ]
   }
 );
+
+ProductSchema.plugin(mongoosePaginate);
 
 module.exports = Product = mongoose.model("products", ProductSchema, 'products');
 

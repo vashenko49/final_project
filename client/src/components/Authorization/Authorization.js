@@ -50,7 +50,7 @@ class Authorization extends Component {
     super(props);
     this.state = {
       isLogIn: true,
-      value: 2,
+      value: 0,
       tabs: ['Log in', 'Sing Up', 'Social Network'],
       isForgotPassword: false
     };
