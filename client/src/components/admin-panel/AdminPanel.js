@@ -8,6 +8,8 @@ import Products from './Products';
 import ProductsDetail from './ProductsDetail';
 import Categories from './Categories';
 import CategoriesDetail from './CategoriesDetail';
+import Footer from './Footer';
+import FooterDetail from './FooterDetail';
 
 import StyledLink from '../common/styled/StyledLink';
 
@@ -81,6 +83,11 @@ class AdminPanel extends Component {
                 <StyledLink to="/admin-panel/filters">Filters</StyledLink>
               </ListItemText>
             </ListItem>
+            <ListItem button onClick={this.handleOpenMenu}>
+              <ListItemText>
+                <StyledLink to="/admin-panel/footer">Footer</StyledLink>
+              </ListItemText>
+            </ListItem>
           </List>
           <Divider />
         </Drawer>
@@ -97,6 +104,9 @@ class AdminPanel extends Component {
             <Route exact path="/admin-panel/categories" component={Categories} />
             <Route exact path="/admin-panel/categories/new" component={CategoriesDetail} />
             <Route exact path="/admin-panel/categories/:id" component={CategoriesDetail} />
+            <Route exact path="/admin-panel/footer" component={Footer} />
+            <Route exact path="/admin-panel/footer/new" component={FooterDetail} />
+            <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
           </Switch>
         </Box>
       </Router>
