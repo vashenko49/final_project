@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import SnackBars from '../../common/admin-panel/SnackBars';
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addSubscriber, saveEmailToStore } from '../../../actions/footerSubscribeAction';
@@ -7,6 +9,17 @@ import { addSubscriber, saveEmailToStore } from '../../../actions/footerSubscrib
 import './Subscribe.scss';
 
 class Subscribe extends Component {
+  state = {
+    sendDataStatus: 'success',
+    sendDataMessage: '',
+  }
+
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
+
   onInputChange(event) {
     this.props.saveEmailToStore(event.target.value);
   }
@@ -15,13 +28,21 @@ class Subscribe extends Component {
     await this.props.addSubscriber(this.props.email);
 
     if (this.props.error.status === true) {
-      // alert(this.props.error.msg);
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: this.props.error.msg
+      });
     } else {
-      // alert(this.props.email);
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: this.props.email
+      });
     }
   }
 
   render() {
+    const { sendDataStatus, sendDataMessage, isLoading } = this.state;
+
     return (
       <div>
         <p className="footer-menu-list-header">Subscribe to newsletter</p>
@@ -32,9 +53,17 @@ class Subscribe extends Component {
           placeholder="ENTER YOUR EMAIL"
           onChange={this.onInputChange.bind(this)}
         />
+
         <div className="subscribe-submit" onClick={this.onSubscribe.bind(this)}>
           SUBSCRIBE
         </div>
+
+        <SnackBars
+          handleClose={this.handleCloseSnackBars}
+          variant={sendDataStatus}
+          open={!!sendDataMessage}
+          message={sendDataMessage}
+        />
       </div>
     );
   }
