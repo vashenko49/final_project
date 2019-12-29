@@ -48,6 +48,22 @@ export function failSocial() {
   };
 }
 
+export function openWindowAuth() {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.OPEN_WINDOW_AUTH
+    });
+  };
+}
+
+export function closeWindowAuth() {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.CLOSE_WINDOW_AUTH
+    });
+  };
+}
+
 export function AuthorizationThroughLocalStorage(token) {
   return dispatch => {
     AuthorizationAPI.getCustomerUsingToken(token)
@@ -66,5 +82,13 @@ export function AuthorizationThroughLocalStorage(token) {
           type: AUTHORIZATION.LOG_IN_API_FAILED
         });
       });
+  };
+}
+
+export function signOut() {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.LOG_OUT
+    });
   };
 }

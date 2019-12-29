@@ -439,7 +439,16 @@ exports.getChildCategories = async (req, res) => {
 exports.getChildCategory = async (req, res) => {
   try {
     const {_idchildcatalog} = req.params;
-    const catalog = await childCatalog.findById(_idchildcatalog);
+    const catalog = await childCatalog.findById(_idchildcatalog)
+      .populate({
+        path: 'parentId',
+        select: 'name'
+      })
+      .populate('filters.subfilters')
+      .populate({
+        path: 'filters.filter',
+        select: 'type'
+      });
     res.status(200).json(catalog);
   } catch (e) {
     res.status(500).json({
@@ -704,7 +713,7 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
 
 exports.getCatalogsAndProductForMainPage = async (req, res) => {
   try {
-    let childCatalogs =await Promise.all( JSON.parse(JSON.stringify(await childCatalog.find({"default": "true"}, '-filters'))).map(async element => {
+    let childCatalogs = await Promise.all(JSON.parse(JSON.stringify(await childCatalog.find({"default": "true"}, '-filters'))).map(async element => {
       element.products = _.takeRight(
         _.orderBy(
           await Promise.all(
@@ -712,8 +721,8 @@ exports.getCatalogsAndProductForMainPage = async (req, res) => {
               JSON.stringify(
                 await productModel.find({'_idChildCategory': element._id})
                   .populate({
-                    path:'filterImg._idFilter',
-                    select:'_id enabled type serviceName'
+                    path: 'filterImg._idFilter',
+                    select: '_id enabled type serviceName'
                   })
                   .populate('filterImg._idSubFilters')
               ))

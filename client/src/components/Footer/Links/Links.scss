@@ -8,7 +8,7 @@
       margin-bottom: 10px;
       color: #fff;
       font-weight: 700;
-      font-size: 15px;
+      font-size: 12px;
     }
 
     &-item {
@@ -19,6 +19,26 @@
       color: #DEDEDE;
       font-size: 14px;
       text-decoration: none;
+    }
+  }
+}
+
+@media screen and (min-width: 650px) {
+  .footer-menu {
+    &-list {
+      &-header {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 850px) {
+  .footer-menu {
+    &-list {
+      &-header {
+        font-size: 15px;
+      }
     }
   }
 }

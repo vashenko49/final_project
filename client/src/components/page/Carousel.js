@@ -8,7 +8,7 @@ import 'slick-carousel/slick/slick-theme.css';
 
 export default class Responsive extends Component {
   render() {
-    var settings = {
+    let settings = {
       dots: true,
       infinite: false,
       speed: 500,

@@ -2,6 +2,7 @@ import * as AUTHORIZATION from '../constants/authorization';
 
 const initialState = {
   loading: true,
+  openWindowLogIn: false,
   isAuthorization: false,
   isAdmin: false,
   enabled: false,
@@ -48,6 +49,7 @@ export default function(state = initialState, action) {
         enabled: payload.enabled,
         error: '',
         jwt: payload.token,
+        openWindowLogIn: false,
         personalInfo: {
           customerNo: payload.customerNo,
           firstName: payload.firstName,
@@ -66,6 +68,16 @@ export default function(state = initialState, action) {
         ...state,
         loading: true,
         error: 'Failed to log in.'
+      };
+    case AUTHORIZATION.OPEN_WINDOW_AUTH:
+      return {
+        ...state,
+        openWindowLogIn: true
+      };
+    case AUTHORIZATION.CLOSE_WINDOW_AUTH:
+      return {
+        ...state,
+        openWindowLogIn: false
       };
     case AUTHORIZATION.LOG_OUT:
       return initialState;
