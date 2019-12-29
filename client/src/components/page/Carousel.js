@@ -58,7 +58,6 @@ export default class Responsive extends Component {
             crop="scale"
             alt="sneaker not found"
             onClick={e => {
-              debugger;
               setCurrentPhoto(productUrlImg[e.target.attributes.value.value]);
             }}
           />

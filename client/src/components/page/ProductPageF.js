@@ -107,11 +107,7 @@ const ProductPageF = ({
             model={model}
           />
           <div className="product-photo">
-            <Image
-              cloudName="dxge5r7h2"
-              publicId={currentPhoto ? currentPhoto : productUrlImg[0]}
-              crop="scale"
-            />
+            <Image cloudName="dxge5r7h2" publicId={currentPhoto || productUrlImg[0]} crop="scale" />
           </div>
           <ProductColors
             modelsFilters={modelsFilters}
