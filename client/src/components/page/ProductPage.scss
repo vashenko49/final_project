@@ -166,8 +166,8 @@
   flex-direction: column;
   grid-area: reviews;
   font-size: 18px;
-  border-top: 1px solid rgba(0, 0, 0, 0.226);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.226);
+  border-top: 1px solid rgba(0, 0, 0, .226);
+  border-bottom: 1px solid rgba(0, 0, 0, .226);
 
   .review-header {
     cursor: pointer;
@@ -216,10 +216,10 @@
   }
 
   .review-text {
+    padding: 10px;
     font-weight: 300;
     font-size: 16px;
     line-height: 1.75;
-    padding: 10px;
   }
 
   .active {
@@ -243,6 +243,11 @@
 
 .review-form-label {
   display: block;
+
+  .gray-color {
+    color: #929292;
+    font-size: 15px;
+  }
 }
 
 .product-colors {
@@ -286,6 +291,10 @@
 
   .property-description {
     margin: 0;
+  }
+
+  .product-photo img {
+    object-fit: contain;
   }
 
   .product-photos {

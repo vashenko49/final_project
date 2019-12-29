@@ -35,7 +35,7 @@ class Item extends Component {
               const { _id, filters: property, currentPrice, modelNo } = v.modelNo;
 
               const { _id: parentId, nameProduct, productUrlImg, _idChildCategory } = v.idProduct;
-
+              debugger;
               let quantity = v.quantity;
               return (
                 <div className="sneaker-item" key={_id}>
@@ -46,7 +46,7 @@ class Item extends Component {
                     crop="scale"
                   />
                   <div className="sneaker-item-info">
-                    <Link to={`product/${_id}`} style={{ textDecoration: 'none' }}>
+                    <Link to={`../product/${parentId}`} style={{ textDecoration: 'none' }}>
                       <h2 className="info-title">{nameProduct}</h2>
                     </Link>
                     <p>{_idChildCategory.name}</p>

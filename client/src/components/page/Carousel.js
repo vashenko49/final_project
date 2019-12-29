@@ -43,7 +43,7 @@ export default class Responsive extends Component {
       ]
     };
 
-    const { productUrlImg } = this.props;
+    const { productUrlImg, setCurrentPhoto } = this.props;
 
     const photos = [];
 
@@ -51,11 +51,16 @@ export default class Responsive extends Component {
       photos.push(
         <div key={i}>
           <Image
+            value={i}
             cloudName="dxge5r7h2"
             publicId={productUrlImg[i]}
             width="400"
             crop="scale"
             alt="sneaker not found"
+            onClick={e => {
+              debugger;
+              setCurrentPhoto(productUrlImg[e.target.attributes.value.value]);
+            }}
           />
         </div>
       );

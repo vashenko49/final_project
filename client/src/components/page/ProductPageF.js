@@ -57,10 +57,10 @@ const ProductPageF = ({
   const [currentModel, setCurrentModel] = useState({});
   const [currentColor, setCurrentColor] = useState('');
   const [currentSize, setCurrentSize] = useState('');
+  const [currentPhoto, setCurrentPhoto] = useState('');
 
   const needed = 2;
   const handleModel = size => {
-    debugger;
     for (let i = 0; i < model.length; i++) {
       let counter = 0;
       for (let j = 0; j < model[i].filters.length; j++) {
@@ -107,7 +107,11 @@ const ProductPageF = ({
             model={model}
           />
           <div className="product-photo">
-            <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} crop="scale" />
+            <Image
+              cloudName="dxge5r7h2"
+              publicId={currentPhoto ? currentPhoto : productUrlImg[0]}
+              crop="scale"
+            />
           </div>
           <ProductColors
             modelsFilters={modelsFilters}
@@ -155,8 +159,8 @@ const ProductPageF = ({
               </div>
             </Modal>
           </div>
-          <Carousel productUrlImg={productUrlImg} />
-          <ProductReview productId={match.params.id} />
+          <Carousel productUrlImg={productUrlImg} setCurrentPhoto={setCurrentPhoto} />
+          <ProductReview customerId={customerId} productId={match.params.id} />
           <div className="product-discription container">
             <p className="short-description">{description}</p>
             <ul className="property-description">

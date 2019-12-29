@@ -6,13 +6,20 @@ import { Stars, StarsChange } from '../common/rating/Rating';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 
-import { getCurrentComments } from '../../actions/comments';
+import { getCurrentComments, createNewComment } from '../../actions/comments';
 
 import './ProductPage.scss';
 
-const ProductReview = ({ getCurrentComments, comments: { comments }, productId }) => {
+const ProductReview = ({
+  getCurrentComments,
+  createNewComment,
+  comments: { comments },
+  customerId,
+  productId
+}) => {
   const [active, setActive] = useState(false);
   const [rate, setRate] = useState(0);
+  const [review, setReview] = useState('');
 
   const useStyles = makeStyles(theme => ({
     paper: {
@@ -90,7 +97,7 @@ const ProductReview = ({ getCurrentComments, comments: { comments }, productId }
             <h3 className="checkout-title">Write A Review</h3>
             <form className="review-form">
               <label htmlFor="rating" className="review-form-label">
-                My overall rating:
+                My overall rating: <span className="gray-color">(double click)</span>
               </label>
               <StarsChange onChange={rate => setRate(rate)} />
               <label htmlFor="story" className="review-form-label">
@@ -102,9 +109,20 @@ const ProductReview = ({ getCurrentComments, comments: { comments }, productId }
                 rows="9"
                 cols="46"
                 placeholder="Write your review here. It must be 5 characters long. Consider whether you would recommend this product"
+                onChange={e => setReview(e.target.value)}
               ></textarea>
               <div className="product-buttons container">
-                <button className="black-btn">Submit</button>
+                <button
+                  type="submit"
+                  className="black-btn"
+                  onClick={e => {
+                    e.preventDefault();
+                    createNewComment(customerId, productId, rate, review);
+                    window.location.reload(true);
+                  }}
+                >
+                  Submit
+                </button>
               </div>
             </form>
           </div>
@@ -119,7 +137,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  getCurrentComments
+  getCurrentComments,
+  createNewComment
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductReview);

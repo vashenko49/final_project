@@ -23,7 +23,8 @@ class Header extends Component {
     super(props);
     this.state = {
       searchInput: '',
-      anchorEl: false
+      anchorEl: false,
+      customerId: '5df3e7aeace3e149fcc94957'
     };
     this.onSearchInputChange = this.onSearchInputChange.bind(this);
     this.onSearchIconClick = this.onSearchIconClick.bind(this);
@@ -59,7 +60,7 @@ class Header extends Component {
   }
 
   render() {
-    const { rootCategories, childCategories, foundProducts } = this.props;
+    const { rootCategories, childCategories, foundProducts, cart } = this.props;
 
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
 
@@ -130,9 +131,11 @@ class Header extends Component {
             <Button>Login</Button>
           </Link>
           <FavoriteBorderIcon />
-          <Badge badgeContent={2}>
-            <ShoppingBasketIcon />
-          </Badge>
+          <Link to={`/cart/${this.state.customerId}`}>
+            <Badge badgeContent={cart.items.length}>
+              <ShoppingBasketIcon />
+            </Badge>
+          </Link>
           <Link to="/admin-panel">
             <SettingsIcon />
           </Link>
@@ -149,7 +152,8 @@ function mapStateToProps(state) {
     rootCategories: state.header.rootCategories,
     childCategories: state.header.childCategories,
     foundProducts: state.headerSearch.data,
-    foundProductsError: state.headerSearch.error
+    foundProductsError: state.headerSearch.error,
+    cart: state.cart
   };
 }
 
