@@ -12,6 +12,7 @@ import Modal from '@material-ui/core/Modal';
 
 import Carousel from './Carousel';
 import ProdcutHeader from './ProductHeader';
+import ProductColors from './ProductColors';
 import ProductSizes from './ProductSizes';
 import ProductReview from './ProductReview';
 import ProductCheckout from './ProductCheckout';
@@ -21,9 +22,9 @@ import './ProductPage.scss';
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
-    left: 23 + '%',
-    top: 23 + '%',
-    width: 50 + '%',
+    left: 30 + '%',
+    top: 20 + '%',
+    width: 37 + '%',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -45,7 +46,7 @@ const ProductPageF = ({
     description,
     itemNo,
     model,
-    filters,
+    // filters,
     productUrlImg,
     _idChildCategory
   } = product;
@@ -56,16 +57,21 @@ const ProductPageF = ({
   const [currentModel, setCurrentModel] = useState({});
   const [currentColor, setCurrentColor] = useState('');
   const [currentSize, setCurrentSize] = useState('');
+  const [currentPhoto, setCurrentPhoto] = useState('');
 
-  const handleModel = color => {
+  const needed = 2;
+  const handleModel = size => {
     for (let i = 0; i < model.length; i++) {
+      let counter = 0;
       for (let j = 0; j < model[i].filters.length; j++) {
-        if (_.get(model[i], `filters[${j}].subFilter.name`) === color.toUpperCase()) {
-          setCurrentModel(model[i]);
-        } else if (_.get(model[i].filters[j], 'filter.type') === 'Sizes') {
-          setCurrentSize(model[i].filters[j].subFilter.name);
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === currentColor.toUpperCase()) {
+          ++counter;
+        }
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === size) {
+          ++counter;
         }
       }
+      if (counter === needed) setCurrentModel(model[i]);
     }
   };
 
@@ -101,32 +107,21 @@ const ProductPageF = ({
             model={model}
           />
           <div className="product-photo">
-            <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} crop="scale" />
+            <Image cloudName="dxge5r7h2" publicId={currentPhoto || productUrlImg[0]} crop="scale" />
           </div>
-          <div className="product-colors container">
-            {modelsFilters.map(v => {
-              if (v.filter.type === 'Color') {
-                return (
-                  <button
-                    key={v._id}
-                    className="product-select-color"
-                    name="currentColor"
-                    onClick={e => {
-                      setCurrentColor(e.target.value);
-                      handleModel(e.target.value);
-                    }}
-                    style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
-                    value={v.subFilter.name.toLowerCase()}
-                  />
-                );
-              }
-              return [];
-            })}
-          </div>
-          <ProductSizes currentModel={currentModel} filters={filters} />
+          <ProductColors
+            modelsFilters={modelsFilters}
+            setCurrentColor={setCurrentColor}
+            handleModel={handleModel}
+          />
+          <ProductSizes
+            handleModel={handleModel}
+            currentColor={currentColor}
+            model={model}
+            setCurrentSize={setCurrentSize}
+          />
           <div className="product-buttons container">
-            <button className="black-btn" onClick={handleOpen}>
-              {/* parallel make request to add new product */}
+            <button className="black-btn" onClick={handleOpen} disabled={currentSize === ''}>
               Add to bag
             </button>
             <button className="grey-btn">Favourite</button>
@@ -160,8 +155,8 @@ const ProductPageF = ({
               </div>
             </Modal>
           </div>
-          <Carousel productUrlImg={productUrlImg} />
-          <ProductReview productId={match.params.id} />
+          <Carousel productUrlImg={productUrlImg} setCurrentPhoto={setCurrentPhoto} />
+          <ProductReview customerId={customerId} productId={match.params.id} />
           <div className="product-discription container">
             <p className="short-description">{description}</p>
             <ul className="property-description">

@@ -75,6 +75,15 @@
     border: 1px solid #e5e5e5;
     box-shadow: rgb(229, 229, 229) 0px 0px 0px 1px;
   }
+
+  .light-btn:hover {
+    border: 1px solid #000;
+  }
+
+  .light-btn:focus {
+    color: white;
+    background-color: #000;
+  }
 }
 
 .product-buttons {
@@ -95,38 +104,41 @@
     background-color: #000;
   }
 
+  .black-btn:disabled {
+    background-color: #ccc;
+  }
+
   .grey-btn {
     background-color: #eee;
   }
 }
 
 //  MODAL
-.makeStyles-paper-77 {
-  .checkout-title {
-    margin: 20px 0;
-    font-weight: 400;
-    font-size: 34px;
+.checkout-title {
+  margin: 20px 0;
+  font-weight: 400;
+  font-size: 34px;
+}
+
+.checkout-content {
+  display: flex;
+
+  img {
+    width: 39%;
   }
 
-  .checkout-content {
+  .checkout-info {
     display: flex;
-
-    img {
-      width: 47%;
-    }
-
-    .checkout-info {
-      display: flex;
-      flex-direction: column;
-      width: 47%;
-      margin-left: 19px;
-    }
+    flex-direction: column;
+    width: 47%;
+    margin-left: 19px;
   }
 }
 
 .product-discription {
   grid-area: discription;
   margin: 45px;
+  font-weight: 400;
 
   .short-description {
     font-size: 19px;
@@ -150,6 +162,8 @@
 }
 
 .product-reviews {
+  display: flex;
+  flex-direction: column;
   grid-area: reviews;
   font-size: 18px;
   border-top: 1px solid rgba(0, 0, 0, .226);
@@ -195,7 +209,6 @@
     }
 
     .review-date {
-      display: inline-block;
       margin: 10px;
       color: #929292;
       font-size: 16px;
@@ -203,6 +216,7 @@
   }
 
   .review-text {
+    padding: 10px;
     font-weight: 300;
     font-size: 16px;
     line-height: 1.75;
@@ -211,10 +225,32 @@
   .active {
     display: inline-block;
   }
+
+  .create-review {
+    display: inline-flex;
+    justify-content: flex-end;
+  }
+
+  .review-btn {
+    width: 205px;
+    padding: 16px;
+    color: #fff;
+    font-size: 18px;
+    background-color: #000;
+    border: none;
+  }
+}
+
+.review-form-label {
+  display: block;
+
+  .gray-color {
+    color: #929292;
+    font-size: 15px;
+  }
 }
 
 .product-colors {
-
   display: flex;
   grid-area: colors;
   align-items: center;
@@ -243,6 +279,10 @@
     grid-template-rows: repeat(1fr, 6);
     grid-template-columns: 1fr 1fr 1fr 1fr;
 
+    .product-reviews .review-btn {
+      margin: 20px 246px;
+    }
+
     .product-reviews .review-header .arrow {
       width: 1vw;
       height: 1vw;
@@ -252,11 +292,9 @@
   .property-description {
     margin: 0;
   }
-  
-  .makeStyles-paper-76 {
-    top: 17%;
-    left: 33%;
-    width: 39%;
+
+  .product-photo img {
+    object-fit: contain;
   }
 
   .product-photos {
@@ -266,5 +304,6 @@
 
   .slick-slide img {
     width: 210px;
+    margin-right: 20px;
   }
 }

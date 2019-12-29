@@ -28,7 +28,8 @@ class Header extends Component {
     super(props);
     this.state = {
       searchInput: '',
-      anchorEl: false
+      anchorEl: false,
+      customerId: '5df3e7aeace3e149fcc94957'
     };
     this.onSearchInputChange = this.onSearchInputChange.bind(this);
     this.onSearchIconClick = this.onSearchIconClick.bind(this);
@@ -70,7 +71,8 @@ class Header extends Component {
       foundProducts,
       openWindowAuth,
       closeWindowAuth,
-      signOut
+      signOut,
+      cart
     } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
     const { openWindowLogIn, isAuthorization } = this.props.authorization;
@@ -155,9 +157,11 @@ class Header extends Component {
             <Button onClick={openWindowAuth}>Login</Button>
           )}
           <FavoriteBorderIcon />
-          <Badge badgeContent={2}>
-            <ShoppingBasketIcon />
-          </Badge>
+          <Link to={`/cart/${this.state.customerId}`}>
+            <Badge badgeContent={cart.items.length}>
+              <ShoppingBasketIcon />
+            </Badge>
+          </Link>
           <Link to="/admin-panel">
             <SettingsIcon />
           </Link>
@@ -184,6 +188,7 @@ function mapStateToProps(state) {
     childCategories: state.header.childCategories,
     foundProducts: state.headerSearch.data,
     foundProductsError: state.headerSearch.error,
+    cart: state.cart,
     authorization: state.authorization,
     configuration: state.configuration
   };
