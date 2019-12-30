@@ -5,7 +5,6 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FormGroup from '@material-ui/core/FormGroup';
 import Slider from '@material-ui/core/Slider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
@@ -197,10 +196,10 @@ class Filter extends Component {
       onClickTypeFilter,
       clearFilters
     } = this;
-    const { filters, price, priceCurrentCatalog, subfilters } = this.props;
+    const { filters, price, priceCurrentCatalog, subfilters, className } = this.props;
     const { isValidPrice } = this.state;
     return (
-      <div className="filters">
+      <div className={_.isString(className) ? className : ''}>
         {filters.length <= 0 ? (
           <CircularProgress />
         ) : (
@@ -334,7 +333,7 @@ class Filter extends Component {
                     <Typography>{type}</Typography>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
-                    <FormGroup className={type.toLowerCase() === 'color' ? 'filter-color' : ''}>
+                    <div className={type.toLowerCase() === 'color' ? 'filter-color' : ''}>
                       {subfilters.map(typesSub => {
                         const { name, _id: _idSubFilters, choose } = typesSub;
                         return IsColor(name) ? (
@@ -362,7 +361,7 @@ class Filter extends Component {
                           </Typography>
                         );
                       })}
-                    </FormGroup>
+                    </div>
                   </ExpansionPanelDetails>
                 </ExpansionPanel>
               );
