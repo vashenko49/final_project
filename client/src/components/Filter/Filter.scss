@@ -24,6 +24,7 @@
 .price-filter-container{
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .price-filter-input > label, .MuiChip-deleteIconOutlinedColorPrimary{
   color:  #FFFFFF !important;
@@ -36,9 +37,6 @@
 
 .price-filter-input > .MuiInputBase-root{
   color:  #FFFFFF;
-}
-.MuiOutlinedInput-notchedOutline{
-  border-color:  #FFFFFF !important;
 }
 
 .PrivateValueLabel-label-439{
