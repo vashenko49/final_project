@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -7,6 +7,7 @@ import { getCurrentItems } from '../../actions/cart';
 
 import Item from './Item';
 import Bag from './Bag';
+import Checkout from './Checkout';
 
 class Cart extends Component {
   constructor(props) {
@@ -22,10 +23,11 @@ class Cart extends Component {
 
   render() {
     return (
-      <Fragment>
+      <div className="cart">
         <Bag user={this.state._id} />
         <Item customerId={this.state._id} />
-      </Fragment>
+        <Checkout />
+      </div>
     );
   }
 }

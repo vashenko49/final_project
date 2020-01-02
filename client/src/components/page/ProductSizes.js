@@ -8,6 +8,18 @@ export default class ProductSizes extends Component {
   render() {
     const { handleModel, model, currentColor, setCurrentSize } = this.props;
 
+    const handleClick = e => {
+      setCurrentSize(e.target.value);
+      handleModel(e.target.value);
+      Array.from(e.target.parentNode.children).forEach(child => {
+        if (child !== e.target) {
+          child.classList.remove('light-btn-active');
+        } else {
+          child.classList.add('light-btn-active');
+        }
+      });
+    };
+
     const allSizes = [];
     for (let i = 0; i < model.length; i++) {
       for (let j = 0; j < model[i].filters.length; j++) {
@@ -31,10 +43,7 @@ export default class ProductSizes extends Component {
                 <button
                   key={model[i].filters[k].subFilter._id}
                   className="light-btn"
-                  onClick={e => {
-                    setCurrentSize(e.target.value);
-                    handleModel(e.target.value);
-                  }}
+                  onClick={e => handleClick(e)}
                   value={_.get(model[i], `filters[${k}].subFilter.name`)}
                 >
                   US {_.get(model[i], `filters[${k}].subFilter.name`)}
