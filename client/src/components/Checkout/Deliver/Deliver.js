@@ -1,23 +1,30 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import NavigationButton from '../NavigationButton/NavigationButton';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as CheckoutAction from '../../../actions/checkoutAction';
 
 class Deliver extends Component {
   render() {
-    const { activeStep, changeStep, stepLength } = this.props;
     return (
       <div>
         <div>2</div>
-        <NavigationButton activeStep={activeStep} changeStep={changeStep} stepLength={stepLength} />
+        <NavigationButton />
       </div>
     );
   }
 }
 
-Deliver.propTypes = {
-  changeStep: PropTypes.func,
-  activeStep: PropTypes.number,
-  stepLength: PropTypes.number
-};
+function mapStateToProps(state) {
+  return {
+    checkout: state.checkout
+  };
+}
 
-export default Deliver;
+function mapDispatchToProps(dispatch) {
+  return {
+    changeStatusNextStep: bindActionCreators(CheckoutAction.changeStatusNextStep, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Deliver);

@@ -11,28 +11,19 @@ import PersonalData from './PersonalData/PersonalData';
 import Deliver from './Deliver/Deliver';
 import PayMethod from './PayMethod/PayMethod';
 import CheckOrder from './CheckOrder/CheckOrder';
+import { bindActionCreators } from 'redux';
+import * as CheckoutAction from '../../actions/checkoutAction';
 
 class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 0,
       steps: [],
       component: []
     };
   }
-  // false - back, true - next
-  handleStep = direction => {
-    const { activeStep } = this.state;
-    if (direction) {
-      this.setState({ activeStep: activeStep + 1 });
-    } else {
-      this.setState({ activeStep: activeStep - 1 });
-    }
-  };
-
   componentDidMount() {
-    this.setState({
+    const data = {
       steps: [
         'Personal data',
         'Where to deliver?',
@@ -40,12 +31,16 @@ class Checkout extends Component {
         'Check your order'
       ],
       component: [PersonalData, Deliver, PayMethod, CheckOrder]
-    });
+    };
+    this.setState(data);
+
+    const { changeStepOfLength } = this.props;
+    changeStepOfLength(data.steps.length);
   }
 
   render() {
-    const { activeStep, steps, component } = this.state;
-    const { handleStep } = this;
+    const { activeStep } = this.props.checkout;
+    const { steps, component } = this.state;
     return (
       <Container>
         <Stepper activeStep={activeStep} orientation="vertical">
@@ -53,13 +48,7 @@ class Checkout extends Component {
             return (
               <Step key={label}>
                 <StepLabel className="custom-color-step">{label}</StepLabel>
-                <StepContent>
-                  {React.createElement(component[index], {
-                    changeStep: handleStep,
-                    activeStep: activeStep,
-                    stepLength: steps.length
-                  })}
-                </StepContent>
+                <StepContent>{React.createElement(component[index])}</StepContent>
               </Step>
             );
           })}
@@ -70,9 +59,14 @@ class Checkout extends Component {
 }
 function mapStateToProps(state) {
   return {
-    authorization: state.authorization,
-    configuration: state.configuration
+    checkout: state.checkout
   };
 }
 
-export default connect(mapStateToProps, null)(Checkout);
+function mapDispatchToProps(dispatch) {
+  return {
+    changeStepOfLength: bindActionCreators(CheckoutAction.changeStepOfLength, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
