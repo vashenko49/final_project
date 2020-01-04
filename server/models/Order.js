@@ -64,7 +64,6 @@ const OrderSchema = new Schema(
         houseNumber:{
           type: String,
           require: true
-
         }
       }
     },
@@ -78,6 +77,10 @@ const OrderSchema = new Schema(
     },
     status: {
       type: String
+    },
+    name:{
+      type: String,
+      required: true
     },
     email: {
       type: String,

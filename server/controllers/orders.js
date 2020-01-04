@@ -14,7 +14,7 @@ exports.placeOrder = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {idCustomer, delivery, email, mobile} = req.body;
+    const {idCustomer, delivery, email, name, mobile} = req.body;
     if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
       return res.status(400).json({
         message: `ID Customer is not valid ${idCustomer}`
@@ -25,6 +25,7 @@ exports.placeOrder = async (req, res) => {
       delivery: delivery,
       email: email,
       mobile: mobile,
+      name:name,
       canceled: false,
       products: []
     };

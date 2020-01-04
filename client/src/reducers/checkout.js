@@ -8,8 +8,26 @@ const initState = {
     personalData: {
       name: '',
       email: '',
-      phone: ''
-    }
+      telephone: ''
+    },
+    delivery: {
+      chooseDeliveryMethod: '',
+      indexSelected: -1,
+      deliveryMethod: '',
+      selectedAddress: '',
+      country: '',
+      city: '',
+      postal: '',
+      street: '',
+      houseNumber: ''
+    },
+    payment: {
+      selectedMethodPayment: '',
+      cardNumber: '',
+      mm_yy: '',
+      cvc: ''
+    },
+    totalSum: 0
   }
 };
 
@@ -38,6 +56,22 @@ export default function(state = initState, action) {
         order: {
           ...state.order,
           personalData: action.payload
+        }
+      };
+    case CHECKOUT.SPECIFY_DELIVERY_DATA:
+      return {
+        ...state,
+        order: {
+          ...state.order,
+          delivery: action.payload
+        }
+      };
+    case CHECKOUT.SPECIFY_PAYMENT_DATA:
+      return {
+        ...state,
+        order: {
+          ...state.order,
+          payment: action.payload
         }
       };
     default:

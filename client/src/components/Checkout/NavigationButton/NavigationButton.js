@@ -4,24 +4,21 @@ import { bindActionCreators } from 'redux';
 import * as CheckoutAction from '../../../actions/checkoutAction';
 import { connect } from 'react-redux';
 
-class NavigationButton extends Component {
-  handleStep = direction => {
-    const { activeStep } = this.props.checkout;
-    const { changeStep } = this.props;
-    if (direction) {
-      changeStep(activeStep + 1);
-    } else {
-      changeStep(activeStep - 1);
-    }
-  };
+import './NavigationButton.scss';
 
+class NavigationButton extends Component {
   render() {
+    const { changeStep } = this.props;
     const { activeStep, statusNextStep, numberOfSteps } = this.props.checkout;
     const { isAuthorization } = this.props.authorization;
-    const { handleStep } = this;
     return (
-      <div>
-        <Button disabled={activeStep === 0 || !isAuthorization} onClick={() => handleStep(false)}>
+      <div className="NavigationButton-container">
+        <Button
+          disabled={activeStep === 0 || !isAuthorization}
+          onClick={() => {
+            changeStep(activeStep, false);
+          }}
+        >
           Back
         </Button>
         <Button
@@ -29,7 +26,6 @@ class NavigationButton extends Component {
           disabled={statusNextStep || !isAuthorization}
           variant="contained"
           color="primary"
-          onClick={() => handleStep(true)}
         >
           {activeStep === numberOfSteps - 1 ? 'Finish' : 'Next'}
         </Button>

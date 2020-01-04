@@ -155,7 +155,8 @@ exports.getShippingMethods = async (req, res) => {
 exports.getActiveShippingMethods = async (req, res) => {
   try {
     const shippingMethods = await ShippingMethod.find({enabled: true})
-      .populate('address');
+      .populate('address')
+      .sort({'default':-1});
     res.status(200).json(shippingMethods);
   } catch (e) {
     res.status(400).json({

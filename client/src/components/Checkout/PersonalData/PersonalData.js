@@ -22,12 +22,19 @@ class PersonalData extends Component {
       }
     };
   }
+
   componentDidMount() {
     const { isAuthorization } = this.props.authorization;
     const { openWindowAuth } = this.props;
     if (!isAuthorization) {
       openWindowAuth();
     }
+    const {
+      order: {
+        personalData: { name, email, telephone }
+      }
+    } = this.props.checkout;
+    this.setState({ personalData: { name: name, email: email, telephone: telephone } });
   }
 
   handleChange = event => {
@@ -37,7 +44,17 @@ class PersonalData extends Component {
   };
 
   submit = () => {
-    console.log('1');
+    const { specifyPersonalData, changeStep } = this.props;
+    const {
+      personalData: { name, email, telephone }
+    } = this.state;
+    const { activeStep } = this.props.checkout;
+    specifyPersonalData({
+      name: name,
+      email: email,
+      telephone: telephone
+    });
+    changeStep(activeStep, true);
   };
 
   usePersonalData = () => {
@@ -66,7 +83,7 @@ class PersonalData extends Component {
     } = this.state;
 
     return (
-      <ValidatorForm ref="form" onSubmit={this.submit} onError={errors => console.log(errors)}>
+      <ValidatorForm ref="form" onSubmit={submit}>
         {!isAuthorization ? (
           <div className="unAuth">
             <Typography variant={'h5'}>
@@ -119,7 +136,7 @@ class PersonalData extends Component {
           </Fragment>
         )}
         <div className="navigate-button-and-use-personal-data">
-          <NavigationButton submit={submit} />
+          <NavigationButton />
           <Button disabled={!isAuthorization} onClick={usePersonalData}>
             Use personal data
           </Button>
@@ -138,8 +155,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeStatusNextStep: bindActionCreators(CheckoutAction.changeStatusNextStep, dispatch),
     specifyPersonalData: bindActionCreators(CheckoutAction.specifyPersonalData, dispatch),
+    changeStep: bindActionCreators(CheckoutAction.changeStep, dispatch),
     openWindowAuth: bindActionCreators(AuthorizationActions.openWindowAuth, dispatch)
   };
 }
