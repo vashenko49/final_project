@@ -19,7 +19,9 @@ const initState = {
       city: '',
       postal: '',
       street: '',
-      houseNumber: ''
+      houseNumber: '',
+      costValue: 0,
+      freeShippingOrderSum: 0
     },
     payment: {
       selectedMethodPayment: '',
@@ -74,6 +76,8 @@ export default function(state = initState, action) {
           payment: action.payload
         }
       };
+    case CHECKOUT.RESET_ORDER_DATA:
+      return initState;
     default:
       return state;
   }

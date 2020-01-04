@@ -3,27 +3,32 @@ import NavigationButton from '../NavigationButton/NavigationButton';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as CheckoutAction from '../../../actions/checkoutAction';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 
 class CheckOrder extends Component {
+  submit = () => {};
+
   render() {
+    const { submit } = this;
     return (
-      <div>
+      <ValidatorForm ref="form" onSubmit={submit}>
         <div>4</div>
         <NavigationButton />
-      </div>
+      </ValidatorForm>
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    checkout: state.checkout
+    checkout: state.checkout,
+    configuration: state.configuration
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeStatusNextStep: bindActionCreators(CheckoutAction.changeStatusNextStep, dispatch)
+    resetOrder: bindActionCreators(CheckoutAction.resetOrder, dispatch)
   };
 }
 

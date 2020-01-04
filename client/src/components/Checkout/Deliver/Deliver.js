@@ -78,8 +78,8 @@ class Deliver extends Component {
     event.preventDefault();
     const { specifyDeliveryData, changeStep } = this.props;
     const {
+      deliver,
       chooseDeliveryMethod,
-      indexSelected,
       deliveryMethod,
       selectedAddress,
       country,
@@ -88,6 +88,9 @@ class Deliver extends Component {
       street,
       houseNumber
     } = this.state;
+    const indexSelected = _.findIndex(deliver, function(o) {
+      return o._id === chooseDeliveryMethod;
+    });
     const { activeStep } = this.props.checkout;
     specifyDeliveryData({
       chooseDeliveryMethod,
@@ -98,7 +101,9 @@ class Deliver extends Component {
       city,
       postal,
       street,
-      houseNumber
+      houseNumber,
+      costValue: deliver[indexSelected].costValue,
+      freeShippingOrderSum: deliver[indexSelected].freeShippingOrderSum
     });
     changeStep(activeStep, true);
   };

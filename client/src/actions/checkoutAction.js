@@ -60,3 +60,11 @@ export function specifyPaymentData(paymentData) {
     });
   };
 }
+
+export function resetOrder() {
+  return dispatch => {
+    dispatch({
+      type: CHECKOUT.RESET_ORDER_DATA
+    });
+  };
+}
