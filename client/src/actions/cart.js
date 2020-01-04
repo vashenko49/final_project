@@ -3,10 +3,10 @@ import CartAPI from '../services/CartAPI';
 import { GET_ITEMS, UPDATE_ITEM, UPDATE_ITEMS, DELETE_ITEM, ITEMS_ERROR } from '../constants/cart';
 
 // Get items
-export function getCurrentItems(id) {
+export function getCurrentItems() {
   return async dispatch => {
     try {
-      const res = await CartAPI.getCustomerCart(id);
+      const res = await CartAPI.getCustomerCart();
 
       dispatch({
         type: GET_ITEMS,
@@ -22,9 +22,9 @@ export function getCurrentItems(id) {
 }
 
 // Add new product
-export const addOrRemoveProduct = (id, productId, modelNo, quantity) => async dispatch => {
+export const addOrRemoveProduct = (productId, modelNo, quantity) => async dispatch => {
   try {
-    const res = await CartAPI.addOrRemoveProduct(id, productId, modelNo, quantity);
+    const res = await CartAPI.addOrRemoveProduct(productId, modelNo, quantity);
     dispatch({
       type: UPDATE_ITEMS,
       payload: res.data
@@ -40,10 +40,10 @@ export const addOrRemoveProduct = (id, productId, modelNo, quantity) => async di
   }
 };
 
-export function updateQuantity(id, productId, modelNo, quantity) {
+export function updateQuantity(productId, modelNo, quantity) {
   return async dispatch => {
     try {
-      const res = await CartAPI.updateQuantity(id, productId, modelNo, parseFloat(quantity));
+      const res = await CartAPI.updateQuantity(productId, modelNo, parseFloat(quantity));
       dispatch({
         type: UPDATE_ITEM,
         payload: res.data
@@ -57,10 +57,10 @@ export function updateQuantity(id, productId, modelNo, quantity) {
   };
 }
 
-export function deleteProduct(id, productId, modelNo, quantity) {
+export function deleteProduct(productId, modelNo, quantity) {
   return async dispatch => {
     try {
-      const res = await CartAPI.updateQuantity(id, productId, modelNo, parseFloat(quantity));
+      const res = await CartAPI.updateQuantity(productId, modelNo, parseFloat(quantity));
       dispatch({
         type: DELETE_ITEM,
         payload: res.data

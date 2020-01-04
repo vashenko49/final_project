@@ -12,7 +12,6 @@ class CheckOrder extends Component {
     const { submit } = this;
     return (
       <ValidatorForm ref="form" onSubmit={submit}>
-        <div>4</div>
         <NavigationButton />
       </ValidatorForm>
     );
@@ -22,7 +21,8 @@ class CheckOrder extends Component {
 function mapStateToProps(state) {
   return {
     checkout: state.checkout,
-    configuration: state.configuration
+    configuration: state.configuration,
+    cart: state.cart
   };
 }
 

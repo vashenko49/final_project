@@ -17,7 +17,7 @@ class Checkout extends Component {
   render() {
     return (
       <div className="checkout">
-        <Link to={`/`}>
+        <Link to={`/checkout`}>
           <button className="black-btn">Checkout</button>
         </Link>
       </div>

@@ -87,7 +87,7 @@ const ProductPageF = ({
 
   const handleOpen = () => {
     setOpen(true);
-    addOrRemoveProduct(customerId, _id, currentModel.modelNo, 1);
+    addOrRemoveProduct(_id, currentModel.modelNo, 1);
   };
 
   const handleClose = () => {

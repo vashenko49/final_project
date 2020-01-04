@@ -13,6 +13,7 @@ import PayMethod from './PayMethod/PayMethod';
 import CheckOrder from './CheckOrder/CheckOrder';
 import { bindActionCreators } from 'redux';
 import * as CheckoutAction from '../../actions/checkoutAction';
+import * as CartAction from '../../actions/cart';
 
 class Checkout extends Component {
   constructor(props) {
@@ -34,6 +35,8 @@ class Checkout extends Component {
     };
     this.setState(data);
 
+    const { authorization } = this.props;
+    console.log(authorization);
     const { changeStepOfLength } = this.props;
     changeStepOfLength(data.steps.length);
   }
@@ -59,13 +62,15 @@ class Checkout extends Component {
 }
 function mapStateToProps(state) {
   return {
-    checkout: state.checkout
+    checkout: state.checkout,
+    authorization: state.authorization
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeStepOfLength: bindActionCreators(CheckoutAction.changeStepOfLength, dispatch)
+    changeStepOfLength: bindActionCreators(CheckoutAction.changeStepOfLength, dispatch),
+    getCurrentItems: bindActionCreators(CartAction.getCurrentItems, dispatch)
   };
 }
 
