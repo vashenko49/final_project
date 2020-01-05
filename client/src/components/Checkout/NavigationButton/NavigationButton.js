@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import { bindActionCreators } from 'redux';
 import * as CheckoutAction from '../../../actions/checkoutAction';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import './NavigationButton.scss';
 
@@ -10,6 +11,7 @@ class NavigationButton extends Component {
   render() {
     const { changeStep } = this.props;
     const { activeStep, statusNextStep, numberOfSteps } = this.props.checkout;
+    const { items } = this.props.cart;
     const { isAuthorization } = this.props.authorization;
     return (
       <div className="NavigationButton-container">
@@ -23,7 +25,7 @@ class NavigationButton extends Component {
         </Button>
         <Button
           type="submit"
-          disabled={statusNextStep || !isAuthorization}
+          disabled={items.length <= 0 || !_.isArray(items) || statusNextStep || !isAuthorization}
           variant="contained"
           color="primary"
         >
@@ -37,7 +39,8 @@ class NavigationButton extends Component {
 function mapStateToProps(state) {
   return {
     checkout: state.checkout,
-    authorization: state.authorization
+    authorization: state.authorization,
+    cart: state.cart
   };
 }
 

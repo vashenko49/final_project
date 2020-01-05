@@ -78,6 +78,7 @@ class PersonalData extends Component {
     const { submit, handleChange, usePersonalData } = this;
     const { openWindowAuth } = this.props;
     const { isAuthorization } = this.props.authorization;
+    const { items } = this.props.cart;
     const {
       personalData: { name, email, telephone }
     } = this.state;
@@ -93,6 +94,10 @@ class PersonalData extends Component {
               </span>{' '}
               for the operation
             </Typography>
+          </div>
+        ) : !_.isArray(items) || items.length <= 0 ? (
+          <div className="unAuth">
+            <Typography variant={'h5'}>Your cart is empty</Typography>
           </div>
         ) : (
           <Fragment>
@@ -149,7 +154,8 @@ class PersonalData extends Component {
 function mapStateToProps(state) {
   return {
     authorization: state.authorization,
-    checkout: state.checkout
+    checkout: state.checkout,
+    cart: state.cart
   };
 }
 

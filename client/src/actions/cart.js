@@ -21,6 +21,23 @@ export function getCurrentItems() {
   };
 }
 
+export function getCurrentItemsUsingToken(token) {
+  return async dispatch => {
+    try {
+      const res = await CartAPI.getCustomerCartUsingToken(token);
+      dispatch({
+        type: GET_ITEMS,
+        payload: res
+      });
+    } catch (err) {
+      dispatch({
+        type: ITEMS_ERROR,
+        payload: err
+      });
+    }
+  };
+}
+
 // Add new product
 export const addOrRemoveProduct = (productId, modelNo, quantity) => async dispatch => {
   try {

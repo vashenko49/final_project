@@ -19,7 +19,7 @@ export function changeStep(activeStep, direction) {
 export function changeStatusNextStep(status) {
   return dispatch => {
     dispatch({
-      type: CHECKOUT.CHANGE_NEXT_STEP,
+      type: CHECKOUT.STATUS_NEXT_STEP,
       payload: status
     });
   };
@@ -65,6 +65,15 @@ export function resetOrder() {
   return dispatch => {
     dispatch({
       type: CHECKOUT.RESET_ORDER_DATA
+    });
+  };
+}
+
+export function triggerModalOrder(openModal, success) {
+  return dispatch => {
+    dispatch({
+      type: CHECKOUT.TRIGGER_MODAL_ORDER,
+      payload: { openModal, success }
     });
   };
 }

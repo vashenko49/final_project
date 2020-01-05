@@ -13,7 +13,9 @@ import PayMethod from './PayMethod/PayMethod';
 import CheckOrder from './CheckOrder/CheckOrder';
 import { bindActionCreators } from 'redux';
 import * as CheckoutAction from '../../actions/checkoutAction';
-import * as CartAction from '../../actions/cart';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import Typography from '@material-ui/core/Typography';
 
 class Checkout extends Component {
   constructor(props) {
@@ -35,15 +37,14 @@ class Checkout extends Component {
     };
     this.setState(data);
 
-    const { authorization } = this.props;
-    console.log(authorization);
     const { changeStepOfLength } = this.props;
     changeStepOfLength(data.steps.length);
   }
 
   render() {
-    const { activeStep } = this.props.checkout;
+    const { activeStep, openModal, success } = this.props.checkout;
     const { steps, component } = this.state;
+    const { triggerModalOrder } = this.props;
     return (
       <Container>
         <Stepper activeStep={activeStep} orientation="vertical">
@@ -56,6 +57,25 @@ class Checkout extends Component {
             );
           })}
         </Stepper>
+        <Dialog
+          open={openModal}
+          onClose={() => {
+            triggerModalOrder(false, true);
+          }}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            {success ? (
+              <Typography className="title-table" variant={'h6'}>
+                Your order has been placed
+              </Typography>
+            ) : (
+              <Typography className="title-table" variant={'h6'}>
+                Oops, something went wrong
+              </Typography>
+            )}
+          </DialogContent>
+        </Dialog>
       </Container>
     );
   }
@@ -70,7 +90,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     changeStepOfLength: bindActionCreators(CheckoutAction.changeStepOfLength, dispatch),
-    getCurrentItems: bindActionCreators(CartAction.getCurrentItems, dispatch)
+    triggerModalOrder: bindActionCreators(CheckoutAction.triggerModalOrder, dispatch)
   };
 }
 

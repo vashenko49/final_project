@@ -4,6 +4,8 @@ const initState = {
   activeStep: 0,
   statusNextStep: false,
   numberOfSteps: 0,
+  openModal: false,
+  success: true,
   order: {
     personalData: {
       name: '',
@@ -14,7 +16,9 @@ const initState = {
       chooseDeliveryMethod: '',
       indexSelected: -1,
       deliveryMethod: '',
+      nameDeliveryMethod: '',
       selectedAddress: '',
+      nameSelectedAddress: '',
       country: '',
       city: '',
       postal: '',
@@ -24,6 +28,7 @@ const initState = {
       freeShippingOrderSum: 0
     },
     payment: {
+      nameMethodPayment: '',
       selectedMethodPayment: '',
       cardNumber: '',
       mm_yy: '',
@@ -41,7 +46,7 @@ export default function(state = initState, action) {
         activeStep: action.payload
       };
 
-    case CHECKOUT.CHANGE_NEXT_STEP:
+    case CHECKOUT.STATUS_NEXT_STEP:
       return {
         ...state,
         statusNextStep: action.payload
@@ -75,6 +80,13 @@ export default function(state = initState, action) {
           ...state.order,
           payment: action.payload
         }
+      };
+    case CHECKOUT.TRIGGER_MODAL_ORDER:
+      const { openModal, success } = action.payload;
+      return {
+        ...state,
+        openModal: openModal,
+        success: success
       };
     case CHECKOUT.RESET_ORDER_DATA:
       return initState;

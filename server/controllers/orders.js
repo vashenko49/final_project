@@ -14,8 +14,8 @@ exports.placeOrder = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const { _id : idCustomer } = req.user;
     const { delivery, email, name, mobile} = req.body;
+    const  idCustomer  = req.user._id;
 
     let response = {
       delivery: delivery,
@@ -23,13 +23,8 @@ exports.placeOrder = async (req, res) => {
       mobile: mobile,
       name:name,
       canceled: false,
-      products: []
-    };
-
-
-
-    if (_.isString(idCustomer)) {
-      response.idCustomer = idCustomer;
+      products: [],
+      idCustomer: idCustomer
     }
 
     let cart = JSON.parse(JSON.stringify(await Cart.findOne({"customerId": idCustomer})
@@ -183,8 +178,7 @@ exports.deleteOrder = async (req, res) => {
 
 exports.getOrdersByCustomer = async (req, res) => {
   try {
-    const { _id : idCustomer } = req.user;
-
+    const  idCustomer  = req.user._id;
 
     const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
       .populate('idCustomer')

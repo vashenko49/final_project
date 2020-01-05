@@ -91,6 +91,9 @@ class Deliver extends Component {
     const indexSelected = _.findIndex(deliver, function(o) {
       return o._id === chooseDeliveryMethod;
     });
+    const indexSelectedAddress = _.findIndex(deliver[indexSelected].address, function(o) {
+      return o._id === selectedAddress;
+    });
     const { activeStep } = this.props.checkout;
     specifyDeliveryData({
       chooseDeliveryMethod,
@@ -103,7 +106,9 @@ class Deliver extends Component {
       street,
       houseNumber,
       costValue: deliver[indexSelected].costValue,
-      freeShippingOrderSum: deliver[indexSelected].freeShippingOrderSum
+      freeShippingOrderSum: deliver[indexSelected].freeShippingOrderSum,
+      nameDeliveryMethod: deliver[indexSelected].name,
+      nameSelectedAddress: deliver[indexSelected].address[indexSelectedAddress].address
     });
     changeStep(activeStep, true);
   };

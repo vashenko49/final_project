@@ -12,6 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 
 import PaymentFrom from './PaymentFrom/PaymentFrom';
+import _ from 'lodash';
 class PayMethod extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +28,7 @@ class PayMethod extends Component {
   componentDidMount() {
     const { selectedMethodPayment, cardNumber, mm_yy, cvc } = this.props.checkout.order.payment;
     PaymentMethodsAPI.getActivePaymentMethods().then(res => {
+      console.log(res);
       this.setState({
         payments: res,
         selectedMethodPayment:
@@ -43,10 +45,20 @@ class PayMethod extends Component {
   };
 
   submit = () => {
-    const { selectedMethodPayment, cardNumber, mm_yy, cvc } = this.state;
+    const { payments, selectedMethodPayment, cardNumber, mm_yy, cvc } = this.state;
+
+    const indexSelected = _.findIndex(payments, function(o) {
+      return o._id === selectedMethodPayment;
+    });
     const { specifyPaymentData, changeStep } = this.props;
     const { activeStep } = this.props.checkout;
-    specifyPaymentData({ selectedMethodPayment, cardNumber, mm_yy, cvc });
+    specifyPaymentData({
+      nameMethodPayment: payments[indexSelected].name,
+      selectedMethodPayment,
+      cardNumber,
+      mm_yy,
+      cvc
+    });
     changeStep(activeStep, true);
   };
 
