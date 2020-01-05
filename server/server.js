@@ -52,6 +52,7 @@ app.use("/deliveryaddresses", require("./routes/deliveryAddresses"));
 app.use("/slider", require("./routes/slides"));
 app.use("/partners", require("./routes/partner"));
 app.use("/orders", require("./routes/order"));
+app.use("/favourites", require("./routes/favourites"));
 
 app.use(express.static("../client/build"));
 app.get("*", (req, res) => {

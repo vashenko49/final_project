@@ -17,7 +17,6 @@ import cloudinary from 'cloudinary-core';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-
 import * as CheckoutAction from '../../../actions/checkoutAction';
 import OrderAPI from '../../../services/OrderAPI';
 import './CheckOrder.scss';

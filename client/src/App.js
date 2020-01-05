@@ -22,6 +22,7 @@ import './font/Proxima_Nova/Proxima_Nova-font.css';
 import './font/Roboto/Roboto-font.css';
 
 import './App.scss';
+import PersonalData from './components/PersonalData/PersonalData';
 
 const store = configureStore();
 
@@ -42,6 +43,7 @@ class App extends Component {
             <Route exact exect path="/cart/:id" component={Cart} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
             <Route exact path="/checkout" component={Checkout} />
+            <Route exact path="/personaldata" component={PersonalData} />
           </Switch>
           <Footer />
         </Router>
