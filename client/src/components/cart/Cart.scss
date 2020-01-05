@@ -18,6 +18,14 @@
       color: rgb(141, 141, 141);
       font-weight: 400;
 
+      .stick {
+        width: 1px;
+        height: 14px;
+        background-color: #8d8d8d;
+        display: inline-block;
+        margin: 0 7px;
+      }
+
       .price {
         color: black;
       }
@@ -66,7 +74,7 @@
 
     .close {
       display: inline-block;
-      opacity: .3;
+      opacity: 0.3;
     }
     .close:hover {
       opacity: 1;

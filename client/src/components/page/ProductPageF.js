@@ -137,6 +137,8 @@ const ProductPageF = ({
                 <h3 className="checkout-title">Added to Bag</h3>
 
                 <ProductCheckout
+                  customerId={customerId}
+                  parentId={_id}
                   productUrlImg={productUrlImg}
                   nameProduct={nameProduct}
                   _idChildCategory={_idChildCategory}

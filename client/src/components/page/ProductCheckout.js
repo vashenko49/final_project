@@ -1,17 +1,25 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import { Image } from 'cloudinary-react';
 
 import './ProductPage.scss';
 
-export default class ProductCheckout extends Component {
+import { updateQuantity } from '../../actions/cart';
+
+class ProductCheckout extends Component {
   render() {
     const {
+      customerId,
+      parentId,
       productUrlImg,
       nameProduct,
       _idChildCategory,
       currentColor,
       currentModel,
-      currentSize
+      currentSize,
+      updateQuantity
     } = this.props;
 
     const amount = [];
@@ -48,9 +56,9 @@ export default class ProductCheckout extends Component {
             <label htmlFor="quantity">Quantity</label>
             <select
               name="quantity"
-              // onChange={e => {
-              //   updateQuantity(customerId, parentId, modelNo, e.target.value);
-              // }}
+              onChange={e => {
+                updateQuantity(customerId, parentId, currentModel.modelNo, e.target.value);
+              }}
             >
               {amount}
             </select>
@@ -60,3 +68,11 @@ export default class ProductCheckout extends Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateQuantity: bindActionCreators(updateQuantity, dispatch)
+  };
+}
+
+export default connect(null, mapDispatchToProps)(ProductCheckout);
