@@ -19,11 +19,11 @@
       font-weight: 400;
 
       .stick {
+        display: inline-block;
         width: 1px;
         height: 14px;
-        background-color: #8d8d8d;
-        display: inline-block;
         margin: 0 7px;
+        background-color: #8d8d8d;
       }
 
       .price {
@@ -52,14 +52,18 @@
       }
 
       &-info {
+        min-width: 400px;
         select {
           color: rgb(141, 141, 141);
           font-size: 13px;
         }
 
         .info-title {
+          overflow: hidden;
           color: black;
           font-size: 20px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         .info-title:hover {
@@ -74,7 +78,7 @@
 
     .close {
       display: inline-block;
-      opacity: 0.3;
+      opacity: .3;
     }
     .close:hover {
       opacity: 1;

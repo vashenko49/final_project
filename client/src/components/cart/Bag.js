@@ -28,7 +28,7 @@ class Bag extends Component {
             <h2>BAG</h2>
             <div className="about-item">
               {items.length} items
-              <div class="stick"></div>
+              <div className="stick"></div>
               <span className="price">${bagPrice()}</span>
             </div>
           </div>
