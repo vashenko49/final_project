@@ -12,15 +12,16 @@ import ProductPageF from './components/page/ProductPageF';
 import Cart from './components/cart/Cart';
 import MainPage from './components/page/MainPage';
 import HeaderSearchProductPage from './components/HeaderSearchProductPage/HeaderSearchProductPage';
+import Authorization from './components/Authorization/Authorization';
+import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
+import CatalogPage from './components/page/CatalogPage/CatalogPage';
+import Checkout from './components/Checkout/Checkout';
 
 import './font/Varta/Varta-font.css';
 import './font/Proxima_Nova/Proxima_Nova-font.css';
 import './font/Roboto/Roboto-font.css';
 
 import './App.scss';
-import Authorization from './components/Authorization/Authorization';
-import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
-import CatalogPage from './components/page/CatalogPage/CatalogPage';
 
 const store = configureStore();
 
@@ -40,6 +41,7 @@ class App extends Component {
             <Route exact exect path="/products/search" component={HeaderSearchProductPage} />
             <Route exact exect path="/cart/:id" component={Cart} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
+            <Route exact path="/checkout" component={Checkout} />
           </Switch>
           <Footer />
         </Router>

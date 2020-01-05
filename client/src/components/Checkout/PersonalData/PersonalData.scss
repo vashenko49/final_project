@@ -1,0 +1,14 @@
+.unAuth{
+  text-align: center;
+}
+.login-or-register{
+  font-weight: bold;
+  cursor: pointer;
+}
+.login-or-register:hover{
+  text-decoration: underline;
+}
+.navigate-button-and-use-personal-data{
+  display: flex;
+  justify-content: space-between;
+}

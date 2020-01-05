@@ -28,7 +28,8 @@ class Bag extends Component {
             <h2>BAG</h2>
             <div>
               <p className="about-item">
-                {items.length} items |<span className="price">${bagPrice()}</span>
+                {_.isArray(items) ? items.length : 0} items |
+                <span className="price">${_.isArray(items) ? bagPrice() : 0}</span>
               </p>
             </div>
           </div>

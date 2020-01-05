@@ -13,20 +13,8 @@ exports.updateCart = async (req, res) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const { idCustomer, products } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
-      return res.status(400).json({
-        message: `ID Customer is not valid ${idCustomer}`
-      });
-    }
-
-
-    const customer = await Customer.findById(idCustomer);
-    if (!customer) {
-      return res.status(400).json({
-        message: "Customer not found"
-      });
-    }
+    const { products } = req.body;
+    const { _id : idCustomer } = req.user;
 
     for (let i = 0; i < products.length; i++) {
       const { idProduct, modelNo } = products[i];
@@ -74,19 +62,8 @@ exports.updateProductFromCart = async (req, res) => {
       return res.status(422).json({ errors: errors.array() });
     }
 
-    const { idCustomer, idProduct, modelNo, quantity } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
-      return res.status(400).json({
-        message: `ID Customer is not valid ${idCustomer}`
-      });
-    }
-
-    const customer = await Customer.findById(idCustomer);
-    if (!customer) {
-      return res.status(400).json({
-        message: "Customer not found"
-      });
-    }
+    const { idProduct, modelNo, quantity } = req.body;
+    const { _id : idCustomer } = req.user;
 
     if (!mongoose.Types.ObjectId.isValid(idProduct)) {
       return res.status(400).json({
@@ -153,7 +130,6 @@ exports.updateProductFromCart = async (req, res) => {
 
     res.status(200).json(cart);
   } catch (e) {
-    console.log(e);
     res.status(400).json({
       message: `Server error ${e.message}`
     });
@@ -162,20 +138,7 @@ exports.updateProductFromCart = async (req, res) => {
 
 exports.cleanCart = async (req, res) => {
   try {
-    const { idCustomer } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
-      return res.status(400).json({
-        message: `ID Customer is not valid ${idCustomer}`
-      });
-    }
-
-    const customer = await Customer.findById(idCustomer);
-    if (!customer) {
-      return res.status(400).json({
-        message: "Customer not found"
-      });
-    }
+    const { _id : idCustomer } = req.user;
 
     let cart = await Cart.findOne({ customerId: idCustomer });
     if (!cart) {
@@ -200,7 +163,8 @@ exports.cleanCart = async (req, res) => {
 
 exports.getCart = async (req, res) => {
   try {
-    const { idCustomer } = req.params;
+    const { _id : idCustomer } = req.user;
+
 
     if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
       return res.status(400).json({

@@ -11,6 +11,7 @@ import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import _ from 'lodash';
 
 import cloudinary from 'cloudinary-core';
 import { connect } from 'react-redux';
@@ -158,7 +159,7 @@ class Header extends Component {
           )}
           <FavoriteBorderIcon />
           <Link to={`/cart/${this.state.customerId}`}>
-            <Badge badgeContent={cart.items.length}>
+            <Badge badgeContent={_.isArray(cart.items) ? cart.items.length : 0}>
               <ShoppingBasketIcon />
             </Badge>
           </Link>
