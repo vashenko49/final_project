@@ -15,6 +15,7 @@ import header from './header';
 import headerSearch from './headerSearch';
 import partner from './partner';
 import configuration from './configuration';
+import checkout from './checkout';
 
 export default combineReducers({
   adminProducts,
@@ -31,5 +32,6 @@ export default combineReducers({
   headerSearch,
   configuration,
   partner,
-  slides
+  slides,
+  checkout
 });

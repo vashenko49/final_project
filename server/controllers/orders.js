@@ -14,31 +14,17 @@ exports.placeOrder = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {idCustomer, delivery, email, mobile} = req.body;
-    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
-      return res.status(400).json({
-        message: `ID Customer is not valid ${idCustomer}`
-      })
-    }
+    const { delivery, email, name, mobile} = req.body;
+    const  idCustomer  = req.user._id;
 
     let response = {
       delivery: delivery,
       email: email,
       mobile: mobile,
+      name:name,
       canceled: false,
-      products: []
-    };
-
-
-    const customer = await Customer.findById(idCustomer);
-    if (!customer) {
-      return res.status(400).json({
-        message: "Customer not found"
-      })
-    }
-
-    if (_.isString(idCustomer)) {
-      response.idCustomer = idCustomer;
+      products: [],
+      idCustomer: idCustomer
     }
 
     let cart = JSON.parse(JSON.stringify(await Cart.findOne({"customerId": idCustomer})
@@ -192,19 +178,7 @@ exports.deleteOrder = async (req, res) => {
 
 exports.getOrdersByCustomer = async (req, res) => {
   try {
-    const {idCustomer} = req.params;
-    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
-      return res.status(400).json({
-        message: `ID Customer is not valid ${idCustomer}`
-      })
-    }
-
-    const customer = await Customer.findById(idCustomer);
-    if (!customer) {
-      return res.status(400).json({
-        message: "Customer not found"
-      })
-    }
+    const  idCustomer  = req.user._id;
 
     const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
       .populate('idCustomer')
