@@ -26,11 +26,18 @@ class Bag extends Component {
         ) : (
           <div className="bag">
             <h2>BAG</h2>
+<<<<<<< HEAD
+            <div className="about-item">
+              {items.length} items
+              <div className="stick"></div>
+              <span className="price">${bagPrice()}</span>
+=======
             <div>
               <p className="about-item">
                 {_.isArray(items) ? items.length : 0} items |
                 <span className="price">${_.isArray(items) ? bagPrice() : 0}</span>
               </p>
+>>>>>>> develop
             </div>
           </div>
         )}

@@ -4,6 +4,7 @@ const LocalStrategy = require('passport-custom').Strategy;
 const Customer = require('../models/Customer');
 const axios = require('axios');
 const {google} = require('googleapis');
+const mongoose = require('mongoose');
 
 
 module.exports = async passport => {
@@ -18,7 +19,11 @@ module.exports = async passport => {
     "jwt",
     new JwtStrategy(optsJWT, async (jwt_payload, done) => {
       try {
+        console.log('---> проверка jwt');
         const {_id} = jwt_payload.data;
+        if (!mongoose.Types.ObjectId.isValid(_id)) {
+          return done(null, false);
+        }
         let customer = await Customer.findById(_id);
         if (customer) {
           return done(null, customer);

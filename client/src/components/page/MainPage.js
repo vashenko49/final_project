@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ImageCarousel from '../ImageCarousel/ImageCarousel';
 import Partners from '../Partners/Partners';
 import CatalogOnMainPage from '../CatagoryOnMainPage/CatalogOnMainPage';
+import { Link } from 'react-router-dom';
 
 export default class MainPage extends Component {
   render() {
@@ -10,6 +11,7 @@ export default class MainPage extends Component {
         <ImageCarousel />
         <Partners />
         <CatalogOnMainPage />
+        <Link to={'checkout'}>checkout</Link>
       </div>
     );
   }

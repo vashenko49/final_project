@@ -55,7 +55,7 @@ exports.updatePaymentMethod = async (req, res) => {
       });
     }
 
-    if(isPaymentMethod.imageUrl){
+    if (isPaymentMethod.imageUrl) {
       await cloudinary.uploader.destroy(isPaymentMethod.imageUrl);
     }
 
@@ -110,7 +110,7 @@ exports.activateOrDeactivatePaymentMethod = async (req, res) => {
   }
 };
 
-exports.deletePaymentMethod =  async (req, res) => {
+exports.deletePaymentMethod = async (req, res) => {
   try {
     const {idPaymentMethod} = req.params;
     if (!mongoose.Types.ObjectId.isValid(idPaymentMethod)) {
@@ -125,7 +125,7 @@ exports.deletePaymentMethod =  async (req, res) => {
       });
     }
 
-    if(paymentMethod.imageUrl){
+    if (paymentMethod.imageUrl) {
       await cloudinary.uploader.destroy(paymentMethod.imageUrl);
     }
 
@@ -154,7 +154,8 @@ exports.getPaymentMethods = async (req, res) => {
 };
 exports.getActivePaymentMethods = async (req, res) => {
   try {
-    const paymentMethod = await PaymentMethod.find({enabled: true});
+    const paymentMethod = await PaymentMethod.find({enabled: true}).sort({'default': -1});
+    ;
     res.status(200).json(paymentMethod);
   } catch (e) {
     res.status(400).json({

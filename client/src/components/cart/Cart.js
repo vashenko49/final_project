@@ -18,7 +18,7 @@ class Cart extends Component {
   }
 
   componentDidMount() {
-    this.props.getCurrentItems(this.state._id);
+    this.props.getCurrentItems();
   }
 
   render() {
@@ -32,10 +32,16 @@ class Cart extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    authorization: state.authorization
+  };
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     getCurrentItems: bindActionCreators(getCurrentItems, dispatch)
   };
 };
 
-export default connect(null, mapDispatchToProps)(Cart);
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);
