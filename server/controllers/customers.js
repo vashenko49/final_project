@@ -90,6 +90,19 @@ exports.createCustomer = async (req, res) => {
   }
 };
 
+exports.isPassword = async (req,res)=>{
+  try {
+    const {_id} = req.user;
+    const ispasword = await CustomerModel.findById(_id);
+    res.status(200).json({
+      status: _.isString(ispasword.password)&&ispasword.password.length>0
+    })
+  } catch (err) {
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
+};
 // Controller for confirm customer
 exports.confirmCustomer = async (req, res) => {
   try {
@@ -283,7 +296,6 @@ exports.editCustomerInfo = async (req, res) => {
     }
     if (_.isString(login) && currentLogin !== login) {
       const isUseLogin = await CustomerModel.findOne({ login: login });
-      console.log(isUseLogin);
       if (isUseLogin) {
         return res.status(400).json({
           message: `Login ${login} is already exists`
@@ -331,7 +343,7 @@ exports.updatePassword = (req, res) => {
       let newPassword = req.body.newPassword;
       let passwordValid;
 
-      if (customer.password) {
+      if (_.isString(customer.password)&& customer.password>0) {
         passwordValid = await bcrypt.compare(oldPassword, customer.password);
         if (!passwordValid) {
           return res.status(400).json({
@@ -339,7 +351,6 @@ exports.updatePassword = (req, res) => {
           });
         }
       }
-
       const salt = await bcrypt.genSalt(10);
       newPassword = await bcrypt.hash(newPassword, salt);
 
@@ -355,7 +366,6 @@ exports.updatePassword = (req, res) => {
         .then(customer => {
           res.json({
             message: "Password successfully changed",
-            customer: customer
           });
         })
         .catch(err =>
@@ -364,6 +374,7 @@ exports.updatePassword = (req, res) => {
           })
         );
     } catch (e) {
+      console.log(e);
       res.status(400).json({
         message: `Error happened on server: "${e}" `
       });

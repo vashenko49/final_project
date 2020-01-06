@@ -15,7 +15,8 @@ const {
   forgotPassword,
   updatePasswordAfterConfirm,
   confirmForgotCustomer,
-  checkLoginOrEmail
+  checkLoginOrEmail,
+  isPassword
 } = require("../controllers/customers");
 
 
@@ -82,6 +83,8 @@ router.post("/google",
 );
 
 
+
+
 // @route   POST /customer/facebook
 // @desc    Login Customer or SignUp / Returning JWT Token
 // @access  Private
@@ -106,6 +109,15 @@ router.get(
   "/",
   passport.authenticate("jwt", {session: false}),
   getCustomer
+);
+
+// @route   GET /ispassword
+// @desc    Return status password
+// @access  Private
+router.get(
+  "/ispassword",
+  passport.authenticate("jwt", {session: false}),
+  isPassword
 );
 
 // @route   PUT /customer

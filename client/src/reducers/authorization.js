@@ -29,6 +29,7 @@ export default function(state = initialState, action) {
   switch (type) {
     case AUTHORIZATION.LOG_IN_API_REQUEST:
     case AUTHORIZATION.UPDATE_PERSONAL_DATA_API_REQUEST:
+    case AUTHORIZATION.RESET_PASSWORD_API_REQUEST:
       return {
         ...state,
         loading: false,
@@ -99,6 +100,22 @@ export default function(state = initialState, action) {
           avatarUrl: payload.avatarUrl,
           dateRegistration: payload.date
         }
+      };
+    case AUTHORIZATION.RESET_PASSWORD_DATA_API_SUCCEEDED:
+      return {
+        ...state,
+        error: payload
+      };
+    case AUTHORIZATION.UPDATE_PERSONAL_DATA_API_ERROR:
+    case AUTHORIZATION.RESET_PASSWORD_DATA_API_ERROR:
+      return {
+        ...state,
+        error: payload
+      };
+    case AUTHORIZATION.RESET_ERROR:
+      return {
+        ...state,
+        error: ''
       };
     default:
       return state;
