@@ -57,7 +57,7 @@ class ProductCheckout extends Component {
             <select
               name="quantity"
               onChange={e => {
-                updateQuantity(customerId, parentId, currentModel.modelNo, e.target.value);
+                updateQuantity(parentId, currentModel.modelNo, e.target.value);
               }}
             >
               {amount}

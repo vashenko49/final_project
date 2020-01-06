@@ -46,7 +46,7 @@ const ProductPageF = ({
     description,
     itemNo,
     model,
-    // filters,
+    filterImg,
     productUrlImg,
     _idChildCategory
   } = product;
@@ -147,17 +147,22 @@ const ProductPageF = ({
                   currentSize={currentSize}
                 />
                 <div className="product-buttons container">
-                  <Link to={`/cart/${customerId}`}>
+                  <Link to={`/cart}`}>
                     <button className="grey-btn">View bag</button>
                   </Link>
-                  <Link to={`/cart/${customerId}`}>
+                  <Link to={`/cart`}>
                     <button className="black-btn">Checkout</button>
                   </Link>
                 </div>
               </div>
             </Modal>
           </div>
-          <Carousel productUrlImg={productUrlImg} setCurrentPhoto={setCurrentPhoto} />
+          <Carousel
+            productUrlImg={productUrlImg}
+            setCurrentPhoto={setCurrentPhoto}
+            filterImg={filterImg}
+            currentColor={currentColor}
+          />
           <ProductReview customerId={customerId} productId={match.params.id} />
           <div className="product-discription container">
             <p className="short-description">{description}</p>

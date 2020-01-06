@@ -18,7 +18,7 @@ export default class CartAPI {
     return await axios.put(`/cart/product`, { idProduct, modelNo, quantity });
   }
 
-  static async updateQuantity(idCustomer, idProduct, modelNo, quantity) {
+  static async updateQuantity(idProduct, modelNo, quantity) {
     return await axios.put(`/cart/product`, { idProduct, modelNo, quantity });
   }
 }

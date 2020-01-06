@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { getCurrentItems } from '../../actions/cart';
+import preloader from '../../assets/loading2.gif';
 
 import Item from './Item';
 import Bag from './Bag';
@@ -22,11 +23,23 @@ class Cart extends Component {
   }
 
   render() {
+    const { isAuthorization } = this.props.authorization;
+    const { loading } = this.props.cart;
     return (
       <div className="cart">
-        <Bag user={this.state._id} />
-        <Item customerId={this.state._id} />
-        <Checkout />
+        {loading ? (
+          !isAuthorization ? (
+            <div>Cart only for authorzation user, sorry bro</div>
+          ) : (
+            <img src={preloader} className="preloader" atl="Загрузка..." />
+          )
+        ) : (
+          <Fragment>
+            <Bag user={this.state._id} />
+            <Item customerId={this.state._id} />
+            <Checkout />
+          </Fragment>
+        )}
       </div>
     );
   }
@@ -34,7 +47,8 @@ class Cart extends Component {
 
 function mapStateToProps(state) {
   return {
-    authorization: state.authorization
+    authorization: state.authorization,
+    cart: state.cart
   };
 }
 

@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+
+import _ from 'lodash';
+
 import Slider from 'react-slick';
 
 import { Image } from 'cloudinary-react';
@@ -43,26 +46,40 @@ export default class Responsive extends Component {
       ]
     };
 
-    const { productUrlImg, setCurrentPhoto } = this.props;
+    const { productUrlImg, setCurrentPhoto, filterImg, currentColor } = this.props;
 
-    const photos = [];
+    let photos = [];
 
-    for (let i = 0; i < productUrlImg.length; i++) {
-      photos.push(
-        <div key={i}>
-          <Image
-            value={i}
-            cloudName="dxge5r7h2"
-            publicId={productUrlImg[i]}
-            width="400"
-            crop="scale"
-            alt="sneaker not found"
-            onClick={e => {
-              setCurrentPhoto(productUrlImg[e.target.attributes.value.value]);
-            }}
-          />
-        </div>
+    const setCarousel = arr => {
+      photos = [];
+      for (let i = 0; i < arr.length; i++) {
+        debugger;
+        photos.push(
+          <div key={i}>
+            <Image
+              value={i}
+              cloudName="dxge5r7h2"
+              publicId={arr[i]}
+              width="400"
+              crop="scale"
+              alt="sneaker not found"
+              onClick={e => {
+                setCurrentPhoto(arr[e.target.attributes.value.value]);
+              }}
+            />
+          </div>
+        );
+      }
+    };
+
+    if (currentColor === '') {
+      setCarousel(productUrlImg);
+    } else {
+      const tmp = filterImg.filter(
+        model => model._idSubFilters.name === currentColor.toUpperCase()
       );
+      const { urlImg } = tmp[0];
+      setCarousel(urlImg);
     }
 
     return (

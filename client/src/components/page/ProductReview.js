@@ -97,9 +97,9 @@ const ProductReview = ({
             <h3 className="checkout-title">Write A Review</h3>
             <form className="review-form">
               <label htmlFor="rating" className="review-form-label">
-                My overall rating: <span className="gray-color">(double click)</span>
+                My overall rating:
               </label>
-              <StarsChange onChange={rate => setRate(rate)} />
+              <StarsChange setRate={setRate} />
               <label htmlFor="story" className="review-form-label">
                 Review:
               </label>
