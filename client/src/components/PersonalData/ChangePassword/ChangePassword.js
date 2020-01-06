@@ -117,8 +117,8 @@ class ChangePassword extends Component {
           variant="outlined"
           disabled={load}
           value={newPasswordOne.data}
-          validators={['required', 'isPasswordMatch']}
-          errorMessages={['This field is required', 'isPasswordMatch']}
+          validators={['required']}
+          errorMessages={['This field is required']}
           InputProps={{
             endAdornment: (
               <InputAdornment
