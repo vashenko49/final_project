@@ -28,6 +28,7 @@ export default function(state = initialState, action) {
 
   switch (type) {
     case AUTHORIZATION.LOG_IN_API_REQUEST:
+    case AUTHORIZATION.UPDATE_PERSONAL_DATA_API_REQUEST:
       return {
         ...state,
         loading: false,
@@ -65,7 +66,7 @@ export default function(state = initialState, action) {
       };
     case AUTHORIZATION.LOG_IN_API_FAILED:
       return {
-        ...state,
+        ...initialState,
         loading: true,
         error: 'Failed to log in.'
       };
@@ -81,6 +82,24 @@ export default function(state = initialState, action) {
       };
     case AUTHORIZATION.LOG_OUT:
       return initialState;
+    case AUTHORIZATION.UPDATE_PERSONAL_DATA_API_SUCCEEDED:
+      return {
+        ...state,
+        loading: true,
+        error: '',
+        personalInfo: {
+          customerNo: payload.customerNo,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          login: payload.login,
+          email: payload.email,
+          telephone: payload.telephone,
+          birthday: payload.birthday,
+          gender: payload.gender,
+          avatarUrl: payload.avatarUrl,
+          dateRegistration: payload.date
+        }
+      };
     default:
       return state;
   }

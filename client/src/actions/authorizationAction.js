@@ -85,6 +85,19 @@ export function AuthorizationThroughLocalStorage(token) {
   };
 }
 
+export function updatePersonalData(data) {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_REQUEST
+    });
+    AuthorizationAPI.updatePersonalData(data).then(res => {
+      return dispatch({
+        type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_SUCCEEDED,
+        payload: res
+      });
+    });
+  };
+}
 export function signOut() {
   return dispatch => {
     dispatch({

@@ -267,31 +267,34 @@ exports.editCustomerInfo = async (req, res) => {
     const currentEmail = customer.email;
     const currentLogin = customer.login;
 
-    const { firstName, lastName, telephone, birthday, gender, email, login } = req.body;
+    const deepClone = _.cloneDeep(req.body);
+    const { email, login } = deepClone;
     const { avatarUrl } = req.files;
 
+
     if (_.isString(email) && currentEmail !== email) {
-      const isUseEmail = CustomerModel.findOne({ email: email });
+      const isUseEmail = await CustomerModel.findOne({ email: email });
       if (isUseEmail) {
         return res.status(400).json({
           message: `Email ${email} is already exists`
         });
       }
-      customer.email = email;
+      deepClone.email = email;
     }
     if (_.isString(login) && currentLogin !== login) {
-      const isUseLogin = CustomerModel.findOne({ login: login });
+      const isUseLogin = await CustomerModel.findOne({ login: login });
+      console.log(isUseLogin);
       if (isUseLogin) {
         return res.status(400).json({
           message: `Login ${login} is already exists`
         });
       }
-      customer.login = login;
+      deepClone.login = login;
     }
 
     //отвязываем соц сети от аккаунта так ка почта изменена
     if (_.isString(email)) {
-      customer.socialmedia = [4];
+      deepClone.socialmedia = [4];
     }
 
     if (_.isObject(avatarUrl)) {
@@ -302,19 +305,15 @@ exports.editCustomerInfo = async (req, res) => {
       const photo = await cloudinary.uploader.upload(avatarUrl.path, {
         folder: "final-project/userAvatar"
       });
-      customer.avatarUrl = photo.public_id;
+      deepClone.avatarUrl = photo.public_id;
     }
 
-    customer.firstName = _.isString(firstName) ? firstName : customer.description;
-    customer.lastName = _.isString(lastName) ? lastName : customer.lastName;
-    customer.birthday = _.isString(birthday) ? birthday : customer.birthday;
-    customer.telephone = _.isString(telephone) ? telephone : customer.telephone;
-    customer.gender = _.isString(gender) ? gender : customer.gender;
+    let newData = await CustomerModel.findByIdAndUpdate(_id, {$set: deepClone}, {new: true});
+    newData = await newData.save();
 
-    await customer.save();
-
-    res.status(200).json(customer);
+    res.status(200).json(newData);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: "Server Error!"
     });
