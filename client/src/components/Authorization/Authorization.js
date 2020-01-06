@@ -16,6 +16,7 @@ import SignUp from './SignUp/SignUp';
 
 import './Authorization.scss';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
+import { getCurrentItems } from '../../actions/cart';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -80,6 +81,11 @@ class Authorization extends Component {
     }));
   };
 
+  componentWillUnmount() {
+    const { getCurrentItems } = this.props;
+    getCurrentItems();
+  }
+
   render() {
     const { value, tabs, isForgotPassword } = this.state;
     const { toggleForgotPassword, a11yProps, switchToRegistration } = this;
@@ -137,7 +143,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loginInSystem: bindActionCreators(AuthorizationActions.loginInSystem, dispatch)
+    loginInSystem: bindActionCreators(AuthorizationActions.loginInSystem, dispatch),
+    getCurrentItems: bindActionCreators(getCurrentItems, dispatch)
   };
 }
 

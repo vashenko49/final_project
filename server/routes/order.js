@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const {check} = require('express-validator');
 
 
@@ -18,6 +19,7 @@ const {
 // @access  Private
 router.post("/",
   [
+    passport.authenticate("jwt", {session: false}),
     check('delivery', 'delivery is require')
       .notEmpty(),
     check('email', 'email is require')
@@ -34,6 +36,7 @@ router.post("/",
 router.put(
   "/",
   [
+    passport.authenticate("jwt", {session: false}),
     check('idOrder', 'idOrder is require')
       .not()
       .isEmpty()
@@ -47,6 +50,7 @@ router.put(
 router.put(
   "/cancel",
   [
+    passport.authenticate("jwt", {session: false}),
     check('idOrder', 'idOrder is require')
       .not()
       .isEmpty()
@@ -59,19 +63,21 @@ router.put(
 // @access  Private
 router.delete(
   "/:idOrder",
+  passport.authenticate("jwt", {session: false}),
   deleteOrder
 );
 
 // @route   GET /orders
 // @desc    Get all orders
 // @access  Private
-router.get("/customer/:idCustomer", getOrdersByCustomer);
+router.get("/customer",     passport.authenticate("jwt", {session: false}), getOrdersByCustomer);
 
 // @route   GET /orders/:idOrder
 // @desc    Get one order by orderNo
 // @access  Private
 router.get(
   "/:idOrder",
+  passport.authenticate("jwt", {session: false}),
   getOrderById
 );
 
