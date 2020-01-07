@@ -67,4 +67,8 @@ export default class AuthorizationAPI {
   static resetPassword = data => {
     return axios.put('/customers/password', data).then(res => res.data);
   };
+
+  static checkInUse = data => {
+    return axios.post('/customers/check', data).then(res => res.data);
+  };
 }

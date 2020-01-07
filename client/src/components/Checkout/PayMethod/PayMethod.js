@@ -13,6 +13,8 @@ import Radio from '@material-ui/core/Radio';
 
 import PaymentFrom from './PaymentFrom/PaymentFrom';
 import _ from 'lodash';
+import DialogWindowToPayShip from '../DialogWindowToPayShip/DialogWindowToPayShip';
+
 class PayMethod extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +23,11 @@ class PayMethod extends Component {
       selectedMethodPayment: '',
       cardNumber: '',
       mm_yy: '',
-      cvc: ''
+      cvc: '',
+      openDialog: false,
+      nameDialog: '',
+      descriptionDialog: '',
+      imageUrlDialog: ''
     };
   }
 
@@ -43,6 +49,26 @@ class PayMethod extends Component {
     this.setState({ [`${event.target.name}`]: event.target.value });
   };
 
+  handleCloseDialog = () => {
+    this.setState({ openDialog: false });
+  };
+
+  handleOpenDialog = event => {
+    const id = event.target.dataset.id;
+    const { payments } = this.state;
+    const select = _.findIndex(payments, function(o) {
+      return o._id === id;
+    });
+    const { name, imageUrl, description } = payments[select];
+
+    this.setState({
+      openDialog: true,
+      nameDialog: name,
+      descriptionDialog: description,
+      imageUrlDialog: imageUrl
+    });
+  };
+
   submit = () => {
     const { payments, selectedMethodPayment, cardNumber, mm_yy, cvc } = this.state;
 
@@ -62,8 +88,18 @@ class PayMethod extends Component {
   };
 
   render() {
-    const { submit, handleChange } = this;
-    const { selectedMethodPayment, payments, cardNumber, mm_yy, cvc } = this.state;
+    const { submit, handleChange, handleCloseDialog, handleOpenDialog } = this;
+    const {
+      selectedMethodPayment,
+      payments,
+      cardNumber,
+      mm_yy,
+      cvc,
+      openDialog,
+      nameDialog,
+      descriptionDialog,
+      imageUrlDialog
+    } = this.state;
     return (
       <ValidatorForm ref="form" onSubmit={submit}>
         <FormControl component="fieldset">
@@ -83,6 +119,9 @@ class PayMethod extends Component {
                     value={_id}
                     control={<Radio className="radio-color" />}
                   />
+                  <span className="more-information" onClick={handleOpenDialog} data-id={_id}>
+                    More
+                  </span>
                   {selectedMethodPayment === _id && isPayOnline && (
                     <PaymentFrom
                       handleChange={handleChange}
@@ -95,6 +134,13 @@ class PayMethod extends Component {
           </RadioGroup>
         </FormControl>
         <NavigationButton />
+        <DialogWindowToPayShip
+          name={nameDialog}
+          description={descriptionDialog}
+          handleClose={handleCloseDialog}
+          imageUrl={imageUrlDialog}
+          open={openDialog}
+        />
       </ValidatorForm>
     );
   }

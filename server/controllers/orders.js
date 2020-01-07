@@ -25,7 +25,7 @@ exports.placeOrder = async (req, res) => {
       canceled: false,
       products: [],
       idCustomer: idCustomer
-    }
+    };
 
     let cart = JSON.parse(JSON.stringify(await Cart.findOne({"customerId": idCustomer})
       .populate('customerId')
@@ -55,10 +55,14 @@ exports.placeOrder = async (req, res) => {
     response.totalSum = _.sumBy(response.products, function (o) {
       return o.currentPrice * o.quantity;
     });
+
+    let isCart = await Cart.findOne({ customerId: idCustomer });
+    isCart.products = [];
+    isCart = await isCart.save();
+
     response = await (new Orders(response)).save();
     res.status(200).json(response);
   } catch (e) {
-    console.log(e);
     res.status(400).json({
       message: `Server error ${e.message}`
     })
@@ -185,22 +189,6 @@ exports.getOrdersByCustomer = async (req, res) => {
 
     const  idCustomer  = req.user._id;
     const {page, limit}  = req.body;
-    // const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
-    //   .populate('idCustomer')
-    //   .populate({path: 'delivery.idShippingMethod', select: '-address'})
-    //   .populate('delivery.storeAddress')
-    //   .populate('products.productId')
-    // ));
-    //
-    // orders.forEach((element, index) => {
-    //   orders[index].products = element.products.map(element => {
-    //     let indexModel = _.findIndex(element.productId.model, function (o) {
-    //       return o.modelNo == element.modelNo;
-    //     });
-    //     element.modelNo = element.productId.model[indexModel];
-    //     return element;
-    //   });
-    // });
 
     const orders = await Orders.paginate({"idCustomer": idCustomer},{
       page: _.isNumber(page) ? page : 1,

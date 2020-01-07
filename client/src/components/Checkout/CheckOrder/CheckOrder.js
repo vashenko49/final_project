@@ -13,6 +13,7 @@ import OrderAPI from '../../../services/OrderAPI';
 import './CheckOrder.scss';
 import TableProduct from '../../TableProduct/TableProduct';
 import TableAboutOrder from '../../Order/TableAboutOrder/TableAboutOrder';
+import * as cartAction from '../../../actions/cart';
 
 class CheckOrder extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class CheckOrder extends Component {
 
   submit = event => {
     event.preventDefault();
-    const { changeStep, triggerModalOrder } = this.props;
+    const { changeStep, triggerModalOrder, resetCart } = this.props;
     const { statusAgree, totalSum } = this.state;
     if (statusAgree) {
       const { items } = this.props.cart;
@@ -102,9 +103,11 @@ class CheckOrder extends Component {
 
       newOrder.totalSum = totalSum;
       changeStep(activeStep, true);
+
       OrderAPI.createOrder(newOrder)
         .then(() => {
           triggerModalOrder(true, true);
+          resetCart();
         })
         .catch(() => {
           triggerModalOrder(true, false);
@@ -214,7 +217,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     changeStep: bindActionCreators(CheckoutAction.changeStep, dispatch),
-    triggerModalOrder: bindActionCreators(CheckoutAction.triggerModalOrder, dispatch)
+    triggerModalOrder: bindActionCreators(CheckoutAction.triggerModalOrder, dispatch),
+    resetCart: bindActionCreators(cartAction.resetCart, dispatch)
   };
 }
 

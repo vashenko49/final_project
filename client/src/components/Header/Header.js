@@ -17,6 +17,7 @@ import cloudinary from 'cloudinary-core';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as headerAction from '../../actions/headerAction';
+import * as cartAction from '../../actions/cart';
 import * as headerSearchAction from '../../actions/headerSearchAction';
 import * as AuthorizationActions from '../../actions/authorizationAction';
 import Authorization from '../Authorization/Authorization';
@@ -73,7 +74,8 @@ class Header extends Component {
       openWindowAuth,
       closeWindowAuth,
       signOut,
-      cart
+      cart,
+      resetCart
     } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
     const { openWindowLogIn, isAuthorization } = this.props.authorization;
@@ -152,7 +154,14 @@ class Header extends Component {
                   cloud_name: cloudinary_cloud_name
                 }).url(avatarUrl)}
               />
-              <Button onClick={signOut}>Sign out</Button>
+              <Button
+                onClick={() => {
+                  signOut();
+                  resetCart();
+                }}
+              >
+                Sign out
+              </Button>
             </Box>
           ) : (
             <Button onClick={openWindowAuth}>Login</Button>
@@ -199,6 +208,7 @@ function mapDispatchToProps(dispatch) {
   return {
     getRootCategories: bindActionCreators(headerAction.getRootCategories, dispatch),
     getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch),
+    resetCart: bindActionCreators(cartAction.resetCart, dispatch),
     openWindowAuth: bindActionCreators(AuthorizationActions.openWindowAuth, dispatch),
     closeWindowAuth: bindActionCreators(AuthorizationActions.closeWindowAuth, dispatch),
     signOut: bindActionCreators(AuthorizationActions.signOut, dispatch),
