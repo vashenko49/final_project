@@ -1,0 +1,11 @@
+.purchase-history-container{
+  width: 100%;
+}
+
+.purchase-history-paginate{
+  text-align: center;
+}
+
+.MuiFlatPagination-rootCurrent > .MuiFlatPageButton-label {
+  color: red !important;
+}

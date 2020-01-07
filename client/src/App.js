@@ -16,6 +16,8 @@ import Authorization from './components/Authorization/Authorization';
 import PasswordRecovery from './components/Authorization/PasswordRecovery/PasswordRecovery';
 import CatalogPage from './components/page/CatalogPage/CatalogPage';
 import Checkout from './components/Checkout/Checkout';
+import Order from './components/Order/Order';
+import PersonalProfile from './components/PersonalData/PersonalData';
 
 import './font/Varta/Varta-font.css';
 import './font/Proxima_Nova/Proxima_Nova-font.css';
@@ -42,6 +44,8 @@ class App extends Component {
             <Route exact exect path="/cart/:id" component={Cart} />
             <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
             <Route exact path="/checkout" component={Checkout} />
+            <Route exact path="/personaldata" component={PersonalProfile} />
+            <Route exact path="/order/:id" component={Order} />
           </Switch>
           <Footer />
         </Router>

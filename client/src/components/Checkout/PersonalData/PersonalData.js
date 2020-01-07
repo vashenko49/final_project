@@ -121,11 +121,7 @@ class PersonalData extends Component {
               value={email}
               variant="outlined"
               validators={['required', 'isEmail']}
-              errorMessages={[
-                'This field is required',
-                'Email is not valid',
-                'This mail is already in use'
-              ]}
+              errorMessages={['This field is required', 'Email is not valid']}
             />
             <TextValidator
               margin="normal"

@@ -1,0 +1,36 @@
+.personal-info-cont{
+  display: flex;
+}
+
+.personal-info-from{
+  margin-left: 30px;
+}
+
+.personal-info-submit-preload-con{
+  display: flex;
+}
+.preloader{
+  margin-left: 24px;
+}
+.personal-info-avatar-change-avatar-con{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.change-avatar{
+  margin-top: 13px !important;
+}
+.upload-avatar{
+  display: none;
+}
+
+.personal-info-avatar-change-avatar-con > .MuiAvatar-circle{
+  width: 250px;
+  height: 250px;
+}
+
+@media only screen and (max-width : 1085px) {
+  .personal-info-cont{
+    flex-direction: column;
+  }
+}

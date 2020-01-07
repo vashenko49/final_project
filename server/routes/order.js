@@ -70,7 +70,15 @@ router.delete(
 // @route   GET /orders
 // @desc    Get all orders
 // @access  Private
-router.get("/customer",     passport.authenticate("jwt", {session: false}), getOrdersByCustomer);
+router.post("/customer",    [
+  passport.authenticate("jwt", {session: false}),
+  check('page', 'page is require')
+    .not()
+    .isEmpty(),
+  check('limit', 'limit is require')
+    .not()
+    .isEmpty()
+],  getOrdersByCustomer);
 
 // @route   GET /orders/:idOrder
 // @desc    Get one order by orderNo
