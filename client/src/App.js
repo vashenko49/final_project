@@ -7,7 +7,6 @@ import Routes from './components/routing/Routes';
 import { configureStore } from './store';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
-
 import './font/Varta/Varta-font.css';
 import './font/Proxima_Nova/Proxima_Nova-font.css';
 import './font/Roboto/Roboto-font.css';

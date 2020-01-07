@@ -73,8 +73,11 @@
         }
 
         .info-title {
+          overflow: hidden;
           color: black;
           font-size: 20px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         .info-title:hover {
@@ -89,7 +92,7 @@
 
     .close {
       display: inline-block;
-      opacity: .3;
+      opacity: 0.3;
     }
     .close:hover {
       opacity: 1;
