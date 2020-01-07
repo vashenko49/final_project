@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -18,6 +18,8 @@ import ProductReview from './ProductReview';
 import ProductCheckout from './ProductCheckout';
 
 import './ProductPage.scss';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Container } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -104,9 +106,9 @@ const ProductPageF = ({
   };
 
   return (
-    <Fragment>
+    <Container>
       {loading === true ? (
-        <h1>preloader</h1>
+        <CircularProgress className="preloader-page" />
       ) : (
         <div className="product">
           <ProdcutHeader
@@ -182,7 +184,7 @@ const ProductPageF = ({
           </div>
         </div>
       )}
-    </Fragment>
+    </Container>
   );
 };
 

@@ -1,6 +1,13 @@
 import CartAPI from '../services/CartAPI';
 
-import { GET_ITEMS, UPDATE_ITEM, UPDATE_ITEMS, DELETE_ITEM, ITEMS_ERROR } from '../constants/cart';
+import {
+  GET_ITEMS,
+  UPDATE_ITEM,
+  UPDATE_ITEMS,
+  DELETE_ITEM,
+  ITEMS_ERROR,
+  RESET_ITEM
+} from '../constants/cart';
 
 // Get items
 export function getCurrentItems() {
@@ -71,6 +78,14 @@ export function updateQuantity(productId, modelNo, quantity) {
         payload: err
       });
     }
+  };
+}
+
+export function resetCart() {
+  return dispatch => {
+    dispatch({
+      type: RESET_ITEM
+    });
   };
 }
 

@@ -1,4 +1,11 @@
-import { GET_ITEMS, UPDATE_ITEM, UPDATE_ITEMS, ITEMS_ERROR, DELETE_ITEM } from '../constants/cart';
+import {
+  GET_ITEMS,
+  UPDATE_ITEM,
+  UPDATE_ITEMS,
+  ITEMS_ERROR,
+  DELETE_ITEM,
+  RESET_ITEM
+} from '../constants/cart';
 
 const initialState = {
   items: [],
@@ -24,6 +31,8 @@ export default function(state = initialState, action) {
         items: [],
         err: payload
       };
+    case RESET_ITEM:
+      return initialState;
     default:
       return state;
   }

@@ -13,6 +13,9 @@ import NotFound from '../page/NotFound';
 import Authorization from '../Authorization/Authorization';
 import PasswordRecovery from '../Authorization/PasswordRecovery/PasswordRecovery';
 import CatalogPage from '../page/CatalogPage/CatalogPage';
+import Checkout from '../Checkout/Checkout';
+import PersonalProfile from '../PersonalData/PersonalData';
+import Order from '../Order/Order';
 
 class Routes extends Component {
   render() {
@@ -27,6 +30,9 @@ class Routes extends Component {
         <Route exact exect path="/products/search" component={HeaderSearchProductPage} />
         <Route exact exect path="/cart" component={Cart} />
         <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
+        <Route exact path="/checkout" component={Checkout} />
+        <Route exact path="/personaldata" component={PersonalProfile} />
+        <Route exact path="/order/:id" component={Order} />
         <Route component={NotFound} />
       </Switch>
     );

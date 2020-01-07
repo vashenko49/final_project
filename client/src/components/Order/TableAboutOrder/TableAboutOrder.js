@@ -19,7 +19,6 @@ class TableAboutOrder extends Component {
       nameDeliveryMethod,
       className
     } = this.props;
-    console.log(className);
     return (
       <TableContainer className={_.isString(className) ? className : ''} component={Paper}>
         <Table>
