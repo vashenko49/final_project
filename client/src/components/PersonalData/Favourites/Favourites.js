@@ -6,6 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import './Favourites.scss';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Typography } from '@material-ui/core';
 
 class Favourites extends Component {
   constructor(props) {
@@ -30,9 +31,11 @@ class Favourites extends Component {
   };
 
   getFavourites = () => {
-    FavouritesAPI.getFavourites().then(res => {
-      this.setState({ products: res.idProduct, load: false });
-    });
+    FavouritesAPI.getFavourites()
+      .then(res => {
+        this.setState({ products: res.idProduct, load: false });
+      })
+      .catch(() => {});
   };
 
   render() {
@@ -41,23 +44,29 @@ class Favourites extends Component {
     return (
       <div className="favourite-block-container">
         <Grid container spacing={3} direction="row" alignItems="center">
-          {products.map(product => {
-            const { productUrlImg, filterImg, nameProduct, _id, model } = product;
-            return (
-              <Grid key={_id} item lg={3} md={6} sm={6} xs={12}>
-                <div className="container-product">
-                  <MiniProduct
-                    _id={_id}
-                    nameProduct={nameProduct}
-                    filterImg={filterImg}
-                    productUrlImg={productUrlImg}
-                    model={model}
-                  />
-                  <ClearIcon onClick={onClickRemove} data-id={_id} className="close-icon" />
-                </div>
-              </Grid>
-            );
-          })}
+          {products.length > 0 ? (
+            products.map(product => {
+              const { productUrlImg, filterImg, nameProduct, _id, model } = product;
+              return (
+                <Grid key={_id} item lg={3} md={6} sm={6} xs={12}>
+                  <div className="container-product">
+                    <MiniProduct
+                      _id={_id}
+                      nameProduct={nameProduct}
+                      filterImg={filterImg}
+                      productUrlImg={productUrlImg}
+                      model={model}
+                    />
+                    <ClearIcon onClick={onClickRemove} data-id={_id} className="close-icon" />
+                  </div>
+                </Grid>
+              );
+            })
+          ) : (
+            <Grid className="favourite-empty" lg={12} md={12} sm={12} xs={12} item>
+              <Typography variant={'h6'}>Empty</Typography>
+            </Grid>
+          )}
         </Grid>
         {load && (
           <div className="favourite-block">

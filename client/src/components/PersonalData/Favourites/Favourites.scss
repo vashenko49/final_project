@@ -12,6 +12,7 @@
 }
 .favourite-block-container{
   position: relative;
+  width: 100%;
 }
 .favourite-block{
   position: absolute;
@@ -24,4 +25,7 @@
   position: absolute;
   top:48%;
   left: 48.5%;
+}
+.favourite-empty{
+  text-align: center;
 }

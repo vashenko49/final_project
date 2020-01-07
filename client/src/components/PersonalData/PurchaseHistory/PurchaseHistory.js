@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Paper from '@material-ui/core/Paper';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
@@ -11,6 +11,7 @@ import Pagination from 'material-ui-flat-pagination';
 
 import OrderAPI from '../../../services/OrderAPI';
 import './PurchaseHistory.scss';
+import { Typography } from '@material-ui/core';
 
 class PurchaseHistory extends Component {
   constructor(props) {
@@ -50,40 +51,48 @@ class PurchaseHistory extends Component {
     const { orders, limit, offset, totalDocs } = this.state;
     return (
       <div className="purchase-history-container">
-        <TableContainer component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align={'center'}>Number order</TableCell>
-                <TableCell align={'center'}>Date</TableCell>
-                <TableCell align={'center'}>Number of goods</TableCell>
-                <TableCell align={'center'}>The cost of the order</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {orders.map(order => {
-                const { _id, orderNo, date, products, totalSum } = order;
-                return (
-                  <TableRow key={_id}>
-                    <TableCell align={'center'}>
-                      <Link to={`/order/${_id}`}>{orderNo}</Link>
-                    </TableCell>
-                    <TableCell align={'center'}>{getSimpleDate(date)}</TableCell>
-                    <TableCell align={'center'}>{products.length}</TableCell>
-                    <TableCell align={'center'}>{`${totalSum}$`}</TableCell>
+        {orders.length > 0 ? (
+          <Fragment>
+            <TableContainer component={Paper}>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align={'center'}>Number order</TableCell>
+                    <TableCell align={'center'}>Date</TableCell>
+                    <TableCell align={'center'}>Number of goods</TableCell>
+                    <TableCell align={'center'}>The cost of the order</TableCell>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Pagination
-          className="purchase-history-paginate"
-          limit={limit}
-          offset={offset}
-          total={totalDocs}
-          onClick={(e, offset) => handleClickPagination(offset)}
-        />
+                </TableHead>
+                <TableBody>
+                  {orders.map(order => {
+                    const { _id, orderNo, date, products, totalSum } = order;
+                    return (
+                      <TableRow key={_id}>
+                        <TableCell align={'center'}>
+                          <Link to={`/order/${_id}`}>{orderNo}</Link>
+                        </TableCell>
+                        <TableCell align={'center'}>{getSimpleDate(date)}</TableCell>
+                        <TableCell align={'center'}>{products.length}</TableCell>
+                        <TableCell align={'center'}>{`${totalSum}$`}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Pagination
+              className="purchase-history-paginate"
+              limit={limit}
+              offset={offset}
+              total={totalDocs}
+              onClick={(e, offset) => handleClickPagination(offset)}
+            />
+          </Fragment>
+        ) : (
+          <div className="purchase-history-empty">
+            <Typography variant={'h6'}>Empty</Typography>
+          </div>
+        )}
       </div>
     );
   }
