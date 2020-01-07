@@ -44,7 +44,7 @@ class Checkout extends Component {
   render() {
     const { activeStep, openModal, success } = this.props.checkout;
     const { steps, component } = this.state;
-    const { triggerModalOrder } = this.props;
+    const { triggerModalOrder, resetOrder } = this.props;
     return (
       <Container>
         <Stepper activeStep={activeStep} orientation="vertical">
@@ -60,6 +60,7 @@ class Checkout extends Component {
         <Dialog
           open={openModal}
           onClose={() => {
+            resetOrder();
             triggerModalOrder(false, true);
           }}
           aria-labelledby="form-dialog-title"
@@ -89,6 +90,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    resetOrder: bindActionCreators(CheckoutAction.resetOrder, dispatch),
     changeStepOfLength: bindActionCreators(CheckoutAction.changeStepOfLength, dispatch),
     triggerModalOrder: bindActionCreators(CheckoutAction.triggerModalOrder, dispatch)
   };

@@ -28,7 +28,6 @@ class PayMethod extends Component {
   componentDidMount() {
     const { selectedMethodPayment, cardNumber, mm_yy, cvc } = this.props.checkout.order.payment;
     PaymentMethodsAPI.getActivePaymentMethods().then(res => {
-      console.log(res);
       this.setState({
         payments: res,
         selectedMethodPayment:

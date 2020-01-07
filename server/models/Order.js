@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const uniqueRandom = require("unique-random");
 const rand = uniqueRandom(100000, 999999);
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const OrderSchema = new Schema(
   {
@@ -96,5 +97,6 @@ const OrderSchema = new Schema(
     }
   }
 );
+OrderSchema.plugin(mongoosePaginate);
 
 module.exports = Order = mongoose.model("orders", OrderSchema, "orders");
