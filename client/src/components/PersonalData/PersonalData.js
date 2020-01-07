@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import * as AuthorizationActions from '../../actions/authorizationAction';
 import { connect } from 'react-redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import PersonalInformation from './PersonalInformation/PersonalInformation';
-import ChangePassword from './ChangePassword/ChangePassword';
-import PurchaseHistory from './PurchaseHistory/PurchaseHistory';
-import Favourites from './Favourites/Favourites';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+
+import './PersonalData.scss';
+import * as AuthorizationActions from '../../actions/authorizationAction';
+import PersonalInformation from './PersonalInformation/PersonalInformation';
+import ChangePassword from './ChangePassword/ChangePassword';
+import PurchaseHistory from './PurchaseHistory/PurchaseHistory';
+import Favourites from './Favourites/Favourites';
 
 const theme = createMuiTheme({
   palette: {

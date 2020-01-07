@@ -81,17 +81,13 @@ class PersonalInformation extends Component {
     for (let key in this.state) {
       if (_.isBoolean(this.state[`${key}`].changed)) {
         this.setState({ [`${key}`]: { ...this.state[`${key}`], changed: false } });
-        newData[`${key}`] = this.state[`${key}`].data;
       }
     }
   };
 
   render() {
     const { submit, handleChange, getData, handleNewPhoto } = this;
-    const {
-      avatarUrl: { changed: newImg },
-      newImgBase64
-    } = this.state;
+    const { newImgBase64 } = this.state;
     const { resetError } = this.props;
     const { load, error } = this.props.authorization;
     const { cloudinary_cloud_name } = this.props.configuration;
@@ -102,7 +98,7 @@ class PersonalInformation extends Component {
             <Avatar
               alt={getData('firstName')}
               src={
-                newImg
+                newImgBase64.length > 0
                   ? newImgBase64
                   : new cloudinary.Cloudinary({
                       cloud_name: cloudinary_cloud_name
