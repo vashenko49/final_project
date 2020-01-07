@@ -167,7 +167,7 @@ class Header extends Component {
             <Button onClick={openWindowAuth}>Login</Button>
           )}
           <FavoriteBorderIcon />
-          <Link to={`/cart/${this.state.customerId}`}>
+          <Link to={`/cart`}>
             <Badge badgeContent={_.isArray(cart.items) ? cart.items.length : 0}>
               <ShoppingBasketIcon />
             </Badge>

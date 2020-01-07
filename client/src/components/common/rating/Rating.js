@@ -1,24 +1,32 @@
-import React, { Component } from 'react';
-import Rating from 'react-rating';
+import React from 'react';
+import Rating from '@material-ui/lab/Rating';
+import Box from '@material-ui/core/Box';
 
-class Stars extends Component {
-  render() {
-    return (
-      <Rating
-        initialRating={this.props.stars}
-        readonly
-        // emptySymbol="fa fa-star-o fa-2x"
-        // fullSymbol="fa fa-star fa-2x"
-        // fractions={this.props.stars}
-      />
-    );
-  }
-}
+export const Stars = stars => {
+  const [value] = React.useState(stars.stars);
 
-class StarsChange extends Component {
-  render() {
-    return <Rating onChange={this.props.onChange} />;
-  }
-}
+  return (
+    <Box component="fieldset" mb={3} borderColor="transparent">
+      <Rating name="read-only" value={value} readOnly />
+    </Box>
+  );
+};
 
-export { Stars, StarsChange };
+export const StarsChange = ({ setRate }) => {
+  const [value, setValue] = React.useState(0);
+
+  return (
+    <div>
+      <Box component="fieldset" mb={3} borderColor="transparent">
+        <Rating
+          name="simple-controlled"
+          value={value}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+            setRate(newValue);
+          }}
+        />
+      </Box>
+    </div>
+  );
+};
