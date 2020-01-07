@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import _ from 'lodash';
-
 import Slider from 'react-slick';
 
 import { Image } from 'cloudinary-react';
@@ -53,7 +51,6 @@ export default class Responsive extends Component {
     const setCarousel = arr => {
       photos = [];
       for (let i = 0; i < arr.length; i++) {
-        debugger;
         photos.push(
           <div key={i}>
             <Image

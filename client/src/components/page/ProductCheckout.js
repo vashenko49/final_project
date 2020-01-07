@@ -11,7 +11,6 @@ import { updateQuantity } from '../../actions/cart';
 class ProductCheckout extends Component {
   render() {
     const {
-      customerId,
       parentId,
       productUrlImg,
       nameProduct,
@@ -53,7 +52,7 @@ class ProductCheckout extends Component {
             <p className="checkout-field">
               Size: <span>{currentSize}</span>
             </p>
-            <label htmlFor="quantity">Quantity</label>
+            <label htmlFor="quantity">Quantity:</label>
             <select
               name="quantity"
               onChange={e => {

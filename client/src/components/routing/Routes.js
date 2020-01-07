@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import AdminPanel from '../admin-panel/AdminPanel';
 import FooterLinkPage from '../FooterLinkPage/FooterLinkPage';

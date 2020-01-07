@@ -31,7 +31,7 @@ class Cart extends Component {
           !isAuthorization ? (
             <div>Cart only for authorzation user, sorry bro</div>
           ) : (
-            <img src={preloader} className="preloader" atl="Загрузка..." />
+            <img src={preloader} className="preloader" alt="Загрузка..." />
           )
         ) : (
           <Fragment>

@@ -31,6 +31,12 @@ const ProductReview = ({
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
+      textAlign: 'center',
+      [theme.breakpoints.up('sm')]: {
+        width: 49 + '%',
+        left: 23 + '%',
+        top: 21 + '%'
+      },
       [theme.breakpoints.up('md')]: {
         width: 33 + '%',
         left: 33 + '%',

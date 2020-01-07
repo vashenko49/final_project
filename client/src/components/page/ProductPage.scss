@@ -35,6 +35,7 @@
 
 .product-photo {
   grid-area: photo;
+  text-align: center;
 
   img {
     width: 75%;
@@ -125,6 +126,7 @@
 
   img {
     width: 39%;
+    object-fit: cover;
   }
 
   .checkout-info {
@@ -132,6 +134,10 @@
     flex-direction: column;
     width: 47%;
     margin-left: 19px;
+
+    select {
+      width: 33px;
+    }
   }
 }
 

@@ -64,7 +64,7 @@ class Item extends Component {
                         return [];
                       })}
                     </p>
-                    <label htmlFor="quantity">Quantity</label>
+                    <label htmlFor="quantity">Quantity:</label>
                     <select
                       name="quantity"
                       onChange={e => {

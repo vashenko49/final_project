@@ -22,15 +22,24 @@ import './ProductPage.scss';
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
-    left: 30 + '%',
-    top: 20 + '%',
-    width: 37 + '%',
+    width: 82 + '%',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    [theme.breakpoints.up('sm')]: {
+      width: 49 + '%',
+      left: 23 + '%',
+      top: 21 + '%'
+    },
+    [theme.breakpoints.up('md')]: {
+      width: 33 + '%',
+      left: 33 + '%',
+      top: 22 + '%',
+      alignItems: 'center'
+    }
   }
 }));
 
@@ -147,7 +156,7 @@ const ProductPageF = ({
                   currentSize={currentSize}
                 />
                 <div className="product-buttons container">
-                  <Link to={`/cart}`}>
+                  <Link to={`/cart`}>
                     <button className="grey-btn">View bag</button>
                   </Link>
                   <Link to={`/cart`}>
