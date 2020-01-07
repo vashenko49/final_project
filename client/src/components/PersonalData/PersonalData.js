@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import { bindActionCreators } from 'redux';
+import * as AuthorizationActions from '../../actions/authorizationAction';
+import { connect } from 'react-redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-import './PersonalData.scss';
-
 import PersonalInformation from './PersonalInformation/PersonalInformation';
 import ChangePassword from './ChangePassword/ChangePassword';
 import PurchaseHistory from './PurchaseHistory/PurchaseHistory';
 import Favourites from './Favourites/Favourites';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as AuthorizationActions from '../../actions/authorizationAction';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
 const theme = createMuiTheme({
@@ -34,8 +31,7 @@ class PersonalData extends Component {
 
     this.state = {
       value: 0,
-      tabs: ['Personal Information', 'Change password', 'Purchase history', 'Favourites'],
-      component: []
+      tabs: ['Personal Information', 'Change password', 'Purchase history', 'Favourites']
     };
   }
 
@@ -48,16 +44,15 @@ class PersonalData extends Component {
   };
   componentDidMount() {
     this.setState({
-      tabs: ['Personal Information', 'Change password', 'Purchase history', 'Favourites'],
-      component: [PersonalInformation, ChangePassword, PurchaseHistory, Favourites]
+      tabs: ['Personal Information', 'Change password', 'Purchase history', 'Favourites']
     });
   }
-
   render() {
     const { handleChange } = this;
-    const { value, tabs, component } = this.state;
+    const { value, tabs } = this.state;
     const { openWindowAuth } = this.props;
     const { isAuthorization } = this.props.authorization;
+
     return (
       <MuiThemeProvider theme={theme}>
         <Container>
@@ -74,28 +69,74 @@ class PersonalData extends Component {
             </div>
           ) : (
             <div className="personal-data-container">
-              {tabs.map((tab, index) => {
-                return (
-                  <ExpansionPanel
-                    key={index}
-                    expanded={index === value}
-                    onChange={() => {
-                      handleChange(index);
-                    }}
-                  >
-                    <ExpansionPanelSummary
-                      expandIcon={<ExpandMoreIcon className="ExpandMoreIcon" />}
-                      aria-controls="panel1bh-content"
-                      id="panel1bh-header"
-                    >
-                      <Typography variant={'h6'}>{tab}</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      {React.createElement(component[index])}
-                    </ExpansionPanelDetails>
-                  </ExpansionPanel>
-                );
-              })}
+              <ExpansionPanel
+                expanded={value === 0}
+                onChange={() => {
+                  handleChange(0);
+                }}
+              >
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon className="ExpandMoreIcon" />}
+                  aria-controls="panel1bh-content"
+                  id="panel1bh-header"
+                >
+                  <Typography variant={'h6'}>{tabs[0]}</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <PersonalInformation />
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <ExpansionPanel
+                expanded={value === 1}
+                onChange={() => {
+                  handleChange(1);
+                }}
+              >
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon className="ExpandMoreIcon" />}
+                  aria-controls="panel1bh-content"
+                  id="panel1bh-header"
+                >
+                  <Typography variant={'h6'}>{tabs[1]}</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <ChangePassword />
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <ExpansionPanel
+                expanded={value === 2}
+                onChange={() => {
+                  handleChange(2);
+                }}
+              >
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon className="ExpandMoreIcon" />}
+                  aria-controls="panel1bh-content"
+                  id="panel1bh-header"
+                >
+                  <Typography variant={'h6'}>{tabs[2]}</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <PurchaseHistory />
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+              <ExpansionPanel
+                expanded={value === 3}
+                onChange={() => {
+                  handleChange(3);
+                }}
+              >
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon className="ExpandMoreIcon" />}
+                  aria-controls="panel1bh-content"
+                  id="panel1bh-header"
+                >
+                  <Typography variant={'h6'}>{tabs[3]}</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <Favourites />
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
             </div>
           )}
         </Container>

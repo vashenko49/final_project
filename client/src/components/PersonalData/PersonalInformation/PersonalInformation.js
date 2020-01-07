@@ -77,6 +77,13 @@ class PersonalInformation extends Component {
 
     const formData = objectToFormData(newData, options);
     updatePersonalData(formData);
+
+    for (let key in this.state) {
+      if (_.isBoolean(this.state[`${key}`].changed)) {
+        this.setState({ [`${key}`]: { ...this.state[`${key}`], changed: false } });
+        newData[`${key}`] = this.state[`${key}`].data;
+      }
+    }
   };
 
   render() {
