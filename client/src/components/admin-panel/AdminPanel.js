@@ -27,6 +27,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
+import NotFound from '../page/NotFound';
 
 const styles = {};
 
@@ -107,6 +108,7 @@ class AdminPanel extends Component {
             <Route exact path="/admin-panel/footer" component={Footer} />
             <Route exact path="/admin-panel/footer/new" component={FooterDetail} />
             <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
+            <Route component={NotFound} />
           </Switch>
         </Box>
       </Router>

@@ -10,7 +10,6 @@ import './SignUp.scss';
 
 export default class TextValidator extends ValidatorComponent {
   render() {
-    /* eslint-disable no-unused-vars */
     const {
       error,
       errorMessages,
