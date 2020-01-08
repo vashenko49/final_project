@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import AccessDenied from '../page/AccessDenied/AccessDenied';
 
 class PrivateRoute extends Component {
   render() {
@@ -10,7 +11,7 @@ class PrivateRoute extends Component {
       <Route
         {...rest}
         render={props => {
-          return isAdmin === true ? <Component {...props} /> : <Redirect to="/accessdenied" />;
+          return isAdmin === true ? <Component {...props} /> : <AccessDenied />;
         }}
       />
     );

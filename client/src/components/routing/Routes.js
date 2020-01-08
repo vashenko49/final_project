@@ -17,7 +17,6 @@ import Checkout from '../Checkout/Checkout';
 import PersonalProfile from '../PersonalData/PersonalData';
 import Order from '../Order/Order';
 import PrivateRoute from './PrivateRoute';
-import AccessDenied from '../page/AccessDenied/AccessDenied';
 
 class Routes extends Component {
   render() {
@@ -35,7 +34,6 @@ class Routes extends Component {
         <Route exact path="/checkout" component={Checkout} />
         <Route exact path="/personaldata" component={PersonalProfile} />
         <Route exact path="/order/:id" component={Order} />
-        <Route exact path="/accessdenied" component={AccessDenied} />
         <Route component={NotFound} />
       </Switch>
     );
