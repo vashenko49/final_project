@@ -7,7 +7,7 @@ class AccessDenied extends Component {
     return (
       <Container>
         <Typography variant={'h2'}>
-          You do not have sufficient privileges to access this service.
+          You do not have enough privileges to access this service.
         </Typography>
       </Container>
     );
