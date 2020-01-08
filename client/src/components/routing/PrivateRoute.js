@@ -1,39 +1,24 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-// import PropTypes from 'prop-types'
-// import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
-// For the testing i leave static varibale isAuth and loading
-// For the prod need change to auth: { isAuthenticated, loading }
+class PrivateRoute extends Component {
+  render() {
+    const { component: Component, ...rest } = this.props;
+    const { isAdmin } = this.props.authorization;
+    return (
+      <Route
+        {...rest}
+        render={props => {
+          return isAdmin === true ? <Component {...props} /> : <Redirect to="/accessdenied" />;
+        }}
+      />
+    );
+  }
+}
 
-// Change variables isAuth and loading to true - component will be show
-// with false - hide
-const PrivateRoute = ({
-  component: Component,
-  isAuthenticated = true,
-  loading = true,
-  ...rest
-}) => {
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        !isAuthenticated && !loading ? <Redirect to="/login" /> : <Component {...props} />
-      }
-    />
-  );
-};
+function mapStateToProps(state) {
+  return { authorization: state.authorization };
+}
 
-// Validation data from redux
-// PrivateRoute.propTypes = {
-//   auth: PropTypes.object.isRequired
-// }
-
-// From redux we receive data like: isAuthenticated and loading
-// const mapStateToProps = state => ({
-//   auth: state.auth
-// })
-
-// Yet again for testing
-// For prod connect(mapStateToProps)(PrivateRoute)
-export default PrivateRoute;
+export default connect(mapStateToProps, null)(PrivateRoute);
