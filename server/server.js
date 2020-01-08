@@ -11,7 +11,6 @@ const cloudinary = require("cloudinary").v2;
 const app = express();
 app.use(cors());
 
-
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
