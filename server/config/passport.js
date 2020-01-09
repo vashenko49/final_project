@@ -19,7 +19,6 @@ module.exports = async passport => {
     "jwt",
     new JwtStrategy(optsJWT, async (jwt_payload, done) => {
       try {
-        console.log('---> проверка jwt');
         const {_id} = jwt_payload.data;
         if (!mongoose.Types.ObjectId.isValid(_id)) {
           return done(null, false);
@@ -61,8 +60,9 @@ module.exports = async passport => {
     new JwtStrategy(optsJWT, async (jwt_payload, done) => {
       try {
         const {_id} = jwt_payload.data;
-        let customer = Customer.findById(_id);
-        if (customer) {
+        let customer = await Customer.findById(_id);
+        const {isAdmin} = customer;
+        if (isAdmin) {
           return done(null, customer);
         }
         return done(null, false);

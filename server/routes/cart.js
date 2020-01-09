@@ -54,6 +54,6 @@ router.delete("/", passport.authenticate("jwt", {session: false}), cleanCart);
 // @route   GET /cart
 // @desc    Get cart for customer
 // @access  Private
-router.get("/", passport.authenticate("jwt", {session: false}), getCart);
+router.get("/", passport.authenticate('jwt', {session: false}), getCart);
 
 module.exports = router;
