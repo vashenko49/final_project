@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default class AdminCategoriesAPI {
   static getCategories() {
-    return axios.get(`api/catalog/hierarchy`);
+    return axios.get(`/api/catalog/hierarchy`);
   }
 
   static getCategoriesById(id) {
