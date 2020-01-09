@@ -65,7 +65,7 @@ exports.createCustomer = async (req, res) => {
       }
     );
 
-    let url = `${process.env.domen}/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
+    let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
 
     await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
 
@@ -409,7 +409,7 @@ exports.forgotPassword = async (req, res) => {
       }
     );
 
-    let url = `${process.env.domen_client}/passwordrecovery/${encodeURI(tokenChangePassword)}`;
+    let url = `${process.env.domen_client}/api/passwordrecovery/${encodeURI(tokenChangePassword)}`;
 
     await sendEmail(
       customer.email,
@@ -438,7 +438,7 @@ exports.confirmForgotCustomer = async (req, res) => {
       res.status(301).redirect(process.env.domen_client);
     }
 
-    res.status(301).redirect(`${process.env.domen_client}/passwordrecovery/${token}`);
+    res.status(301).redirect(`${process.env.domen_client}/api/passwordrecovery/${token}`);
   } catch (e) {
     res.status(301).redirect(process.env.domen_client);
   }

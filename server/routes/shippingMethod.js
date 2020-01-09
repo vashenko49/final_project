@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {check} = require('express-validator');
+const passport = require("passport");
 
 const {
   addShippingMethod,
@@ -18,6 +19,7 @@ const {
 router.post(
   "/",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('name','name is require')
       .not()
       .isEmpty(),
@@ -37,6 +39,7 @@ router.post(
 // @access  Private
 router.put(
   "/",[
+    passport.authenticate("jwt-admin", {session: false}),
     check('idShippingMethod','idShippingMethod is require')
       .not()
       .isEmpty()
@@ -49,6 +52,7 @@ router.put(
 // @access  Private
 router.put(
   "/activateordeactivate",  [
+    passport.authenticate("jwt-admin", {session: false}),
     check('idShippingMethod', 'idShippingMethod is require')
       .not()
       .isEmpty(),
@@ -63,13 +67,14 @@ router.put(
 // @access  Private
 router.delete(
   "/:idShippingMethod",
+  passport.authenticate("jwt-admin", {session: false}),
   deleteShippingMethod
 );
 
 // @route   GET /shipping-methods
 // @desc    GET existing shipping methods
 // @access  Public
-router.get("/", getShippingMethods);
+router.get("/",      passport.authenticate("jwt-admin", {session: false}), getShippingMethods);
 
 
 // @route   GET /shipping-methods

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const {check} = require('express-validator');
+const passport = require("passport");
+
 //Import controllers
 const {
   addPartner,
@@ -18,6 +20,7 @@ const {
 router.post(
   "/",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('name','name is require')
       .not()
       .isEmpty()
@@ -31,6 +34,7 @@ router.post(
 router.put(
   "/",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('idPartner', "idPartner is require")
       .not()
       .isEmpty()
@@ -44,6 +48,7 @@ router.put(
 router.put(
   "/activateordeactivate",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('idPartner', 'idPartner is require')
       .not()
       .isEmpty(),
@@ -58,6 +63,7 @@ router.put(
 // @access  Private
 router.delete(
   "/:idPartner",
+  passport.authenticate("jwt-admin", {session: false}),
   deletePartner
 );
 

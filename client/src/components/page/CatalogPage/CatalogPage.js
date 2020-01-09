@@ -43,50 +43,52 @@ class CatalogPage extends Component {
   componentDidMount() {
     const { id, limit, page } = this.state;
     this.setState({ load: false, loadProduct: false });
-    CatalogAPI.getCatalogById(id).then(res => {
-      this.setState(prevState => {
-        return {
-          load: true,
-          breadcrumbs: [...prevState.breadcrumbs, res.parentId.name],
-          currentNameCatalog: res.name,
-          filters: res.filters.map(element => {
-            return {
-              ...element,
-              subfilters: element.subfilters.map(sub => {
-                return {
-                  ...sub,
-                  choose: false
-                };
-              })
-            };
-          })
-        };
-      });
-      ProductAPI.getProductProductByFilter(id, limit, page, 0)
-        .then(res => {
-          const { docs, totalDocs, page } = res;
-          const price = docs.length > 0 ? this.getMaxMinPrice(docs) : [0, 0];
-          this.setState({
-            products: docs,
-            totalDocs: totalDocs,
-            page: page,
-            price: price,
-            priceCurrentCatalog: price,
-            loadProduct: true
-          });
-        })
-        .catch(e => {
-          this.setState({
-            loadProduct: true,
-            products: [],
-            totalDocs: 0,
-            page: 0,
-            price: [0, 0],
-            priceCurrentCatalog: [0, 0],
-            error: true
-          });
+    CatalogAPI.getCatalogById(id)
+      .then(res => {
+        this.setState(prevState => {
+          return {
+            load: true,
+            breadcrumbs: [...prevState.breadcrumbs, res.parentId.name],
+            currentNameCatalog: res.name,
+            filters: res.filters.map(element => {
+              return {
+                ...element,
+                subfilters: element.subfilters.map(sub => {
+                  return {
+                    ...sub,
+                    choose: false
+                  };
+                })
+              };
+            })
+          };
         });
-    });
+        ProductAPI.getProductProductByFilter(id, limit, page, 0)
+          .then(res => {
+            const { docs, totalDocs, page } = res;
+            const price = docs.length > 0 ? this.getMaxMinPrice(docs) : [0, 0];
+            this.setState({
+              products: docs,
+              totalDocs: totalDocs,
+              page: page,
+              price: price,
+              priceCurrentCatalog: price,
+              loadProduct: true
+            });
+          })
+          .catch(e => {
+            this.setState({
+              loadProduct: true,
+              products: [],
+              totalDocs: 0,
+              page: 0,
+              price: [0, 0],
+              priceCurrentCatalog: [0, 0],
+              error: true
+            });
+          });
+      })
+      .catch(() => {});
   }
 
   changePrice = newValue => {

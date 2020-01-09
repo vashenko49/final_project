@@ -15,6 +15,6 @@ export default class ProductAPI {
       data.price = price;
     }
 
-    return axios.post('/products/filter', data).then(value => value.data);
+    return axios.post('/api/products/filter', data).then(value => value.data);
   };
 }
