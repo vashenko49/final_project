@@ -44,7 +44,7 @@ export default class AuthorizationAPI {
   };
 
   static forgotPassword = loginOrEmail => {
-    return axios.post('/customers/forgotpassword', { loginOrEmail: loginOrEmail });
+    return axios.post('/api/customers/forgotpassword', { loginOrEmail: loginOrEmail });
   };
 
   static recoveryPassword = (password, token) => {
@@ -54,21 +54,21 @@ export default class AuthorizationAPI {
       }
     };
 
-    return axios.put('/customers/forgotpassword', { password: password }, config);
+    return axios.put('/api/customers/forgotpassword', { password: password }, config);
   };
 
   static isPassword = () => {
-    return axios.get('/customers/ispassword').then(res => res.data);
+    return axios.get('/api/customers/ispassword').then(res => res.data);
   };
   static updatePersonalData = data => {
-    return axios.put('/customers', data).then(res => res.data);
+    return axios.put('/api/customers', data).then(res => res.data);
   };
 
   static resetPassword = data => {
-    return axios.put('/customers/password', data).then(res => res.data);
+    return axios.put('/api/customers/password', data).then(res => res.data);
   };
 
   static checkInUse = data => {
-    return axios.post('/customers/check', data).then(res => res.data);
+    return axios.post('/api/customers/check', data).then(res => res.data);
   };
 }
