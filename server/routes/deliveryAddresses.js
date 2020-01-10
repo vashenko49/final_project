@@ -24,10 +24,6 @@ router.post(
     check('address', 'address is require')
       .not()
       .isEmpty(),
-    check('default', 'default is require')
-      .isBoolean(),
-    check('enabled', 'enabled is require')
-      .isBoolean(),
   ],
   addDeliveryAddress
 );
@@ -43,11 +39,7 @@ router.post(
       .isArray(),
     check('addresses.*.address', 'address is require')
       .not()
-      .isEmpty(),
-    check('addresses.*.default', 'default is require')
-      .isBoolean(),
-    check('addresses.*.enabled', 'enabled is require')
-      .isBoolean(),
+      .isEmpty()
   ],
   addManyDeliveryAddresses
 );

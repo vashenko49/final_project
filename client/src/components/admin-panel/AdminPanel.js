@@ -30,6 +30,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
+import DeliveryAddresses from './DeliveryAddresses/DeliveryAddresses';
 
 const styles = {};
 
@@ -102,6 +103,11 @@ class AdminPanel extends Component {
                   <StyledLink to="/admin-panel/shippingmethod">Shipping method</StyledLink>
                 </ListItemText>
               </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/deliveryaddresses">Delivery addresses</StyledLink>
+                </ListItemText>
+              </ListItem>
             </List>
             <Divider />
           </Drawer>
@@ -123,6 +129,7 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
               <Route exact path="/admin-panel/paymethod" component={PayMethod} />
               <Route exact path="/admin-panel/shippingmethod" component={ShippingMethod} />
+              <Route exact path="/admin-panel/deliveryaddresses" component={DeliveryAddresses} />
               <Route component={NotFound} />
             </Switch>
           </Box>
