@@ -1,8 +1,10 @@
 const DeliveryAddresses = require('../models/DeliveryAddresses');
 const _ = require("lodash");
 const {validationResult} = require('express-validator');
-const cloudinary = require('cloudinary').v2;
 const mongoose = require('mongoose');
+const ShippingMethod = require('../models/ShippingMethod');
+const OrderSchema = require('../models/Order');
+
 
 exports.addDeliveryAddress = async (req, res) => {
   try {
@@ -127,12 +129,27 @@ exports.deleteDeliveryAddress =  async (req, res) => {
         message: `DeliveryAddresses with an id "${idDeliveryAddress}" is not found.`
       });
     }
-    const info = await deliveryAddress.delete();
+
+    let info = await ShippingMethod.findOne({'address':idDeliveryAddress});
+    if(info){
+      return res.status(400).json({
+        message: `DeliveryAddresses with an id "${idDeliveryAddress}" using in shipping method.`
+      });
+    }
+
+    info = await OrderSchema.findOne({'delivery.storeAddress':idDeliveryAddress});
+    if(info){
+      return res.status(400).json({
+        message: `DeliveryAddresses with an id "${idDeliveryAddress}" using in order.`
+      });
+    }
+
+
+    await deliveryAddress.delete();
 
     res.status(200).json({
       message: `DeliveryAddresses with an id "${idDeliveryAddress}" is successfully deleted from DB.`,
-      deletedDeliveryAddressesInfo: info
-    })
+    });
   } catch (e) {
     res.status(400).json({
       message: `Server error ${e.message}`

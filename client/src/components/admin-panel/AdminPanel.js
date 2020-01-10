@@ -10,6 +10,9 @@ import Categories from './Categories';
 import CategoriesDetail from './CategoriesDetail';
 import Footer from './Footer';
 import FooterDetail from './FooterDetail';
+import PayMethod from './PayMethod/PayMethod';
+import NotFound from '../page/NotFound';
+import ShippingMethod from './ShippingMethod/ShippingMethod';
 
 import StyledLink from '../common/styled/StyledLink';
 
@@ -27,8 +30,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
-import NotFound from '../page/NotFound';
-import PayMethod from './PayMethod/PayMethod';
 
 const styles = {};
 
@@ -96,6 +97,11 @@ class AdminPanel extends Component {
                   <StyledLink to="/admin-panel/paymethod">Pay method</StyledLink>
                 </ListItemText>
               </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/shippingmethod">Shipping method</StyledLink>
+                </ListItemText>
+              </ListItem>
             </List>
             <Divider />
           </Drawer>
@@ -116,6 +122,7 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/footer/new" component={FooterDetail} />
               <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
               <Route exact path="/admin-panel/paymethod" component={PayMethod} />
+              <Route exact path="/admin-panel/shippingmethod" component={ShippingMethod} />
               <Route component={NotFound} />
             </Switch>
           </Box>
