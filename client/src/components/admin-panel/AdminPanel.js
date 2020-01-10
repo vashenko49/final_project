@@ -28,6 +28,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
 import NotFound from '../page/NotFound';
+import PayMethod from './PayMethod/PayMethod';
 
 const styles = {};
 
@@ -45,72 +46,80 @@ class AdminPanel extends Component {
 
     return (
       <Router>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={this.handleOpenMenu}
-              edge="start"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap>
-              Administrative Panel
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <div>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.handleOpenMenu}
+                edge="start"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap>
+                Administrative Panel
+              </Typography>
+            </Toolbar>
+          </AppBar>
 
-        <Drawer variant="temporary" anchor="left" open={isOpenMenu} onClose={this.handleOpenMenu}>
-          <div>
-            <IconButton onClick={this.handleOpenMenu}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <List>
-            <ListItem button onClick={this.handleOpenMenu}>
-              <ListItemText>
-                <StyledLink to="/admin-panel/products">Products</StyledLink>
-              </ListItemText>
-            </ListItem>
-            <ListItem button onClick={this.handleOpenMenu}>
-              <ListItemText>
-                <StyledLink to="/admin-panel/categories">Categories</StyledLink>
-              </ListItemText>
-            </ListItem>
-            <ListItem button onClick={this.handleOpenMenu}>
-              <ListItemText>
-                <StyledLink to="/admin-panel/filters">Filters</StyledLink>
-              </ListItemText>
-            </ListItem>
-            <ListItem button onClick={this.handleOpenMenu}>
-              <ListItemText>
-                <StyledLink to="/admin-panel/footer">Footer</StyledLink>
-              </ListItemText>
-            </ListItem>
-          </List>
-          <Divider />
-        </Drawer>
+          <Drawer variant="temporary" anchor="left" open={isOpenMenu} onClose={this.handleOpenMenu}>
+            <div>
+              <IconButton onClick={this.handleOpenMenu}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </div>
+            <Divider />
+            <List>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/products">Products</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/categories">Categories</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/filters">Filters</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/footer">Footer</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/paymethod">Pay method</StyledLink>
+                </ListItemText>
+              </ListItem>
+            </List>
+            <Divider />
+          </Drawer>
 
-        <Box m={1}>
-          <Switch>
-            <Route exact path="/admin-panel" component={Products} />
-            <Route exact path="/admin-panel/products" component={Products} />
-            <Route exact path="/admin-panel/products/new" component={ProductsDetail} />
-            <Route exact path="/admin-panel/products/:id" component={ProductsDetail} />
-            <Route exact path="/admin-panel/filters" component={Filters} />
-            <Route exact path="/admin-panel/filters/new" component={FiltersDetail} />
-            <Route exact path="/admin-panel/filters/:id" component={FiltersDetail} />
-            <Route exact path="/admin-panel/categories" component={Categories} />
-            <Route exact path="/admin-panel/categories/new" component={CategoriesDetail} />
-            <Route exact path="/admin-panel/categories/:id" component={CategoriesDetail} />
-            <Route exact path="/admin-panel/footer" component={Footer} />
-            <Route exact path="/admin-panel/footer/new" component={FooterDetail} />
-            <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
-            <Route component={NotFound} />
-          </Switch>
-        </Box>
+          <Box m={1}>
+            <Switch>
+              <Route exact path="/admin-panel" component={Products} />
+              <Route exact path="/admin-panel/products" component={Products} />
+              <Route exact path="/admin-panel/products/new" component={ProductsDetail} />
+              <Route exact path="/admin-panel/products/:id" component={ProductsDetail} />
+              <Route exact path="/admin-panel/filters" component={Filters} />
+              <Route exact path="/admin-panel/filters/new" component={FiltersDetail} />
+              <Route exact path="/admin-panel/filters/:id" component={FiltersDetail} />
+              <Route exact path="/admin-panel/categories" component={Categories} />
+              <Route exact path="/admin-panel/categories/new" component={CategoriesDetail} />
+              <Route exact path="/admin-panel/categories/:id" component={CategoriesDetail} />
+              <Route exact path="/admin-panel/footer" component={Footer} />
+              <Route exact path="/admin-panel/footer/new" component={FooterDetail} />
+              <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
+              <Route exact path="/admin-panel/paymethod" component={PayMethod} />
+              <Route component={NotFound} />
+            </Switch>
+          </Box>
+        </div>
       </Router>
     );
   }
