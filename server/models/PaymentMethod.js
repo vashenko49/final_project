@@ -20,6 +20,10 @@ const PaymentMethodSchema = new Schema(
       required: true,
       default: false
     },
+    isPayOnline:{
+      type:Boolean,
+      default:false
+    },
     imageUrl: {
       type: String
     },
@@ -30,8 +34,7 @@ const PaymentMethodSchema = new Schema(
       type: Date,
       default: Date.now
     }
-  },
-  { strict: false }
+  }
 );
 
 module.exports = PaymentMethod = mongoose.model(

@@ -1,8 +1,9 @@
 const customCloudinaryInstrument = require("../common/customCloudinaryInstrument");
 
 const _ = require("lodash");
-const { validationResult } = require("express-validator");
+const {validationResult} = require("express-validator");
 const mongoose = require("mongoose");
+
 
 const commonProduct = require("../common/commonProduct ");
 const Product = require("../models/Product");
@@ -14,12 +15,12 @@ exports.addProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
     let itemNo = (rand()).toString();
-    let { _idChildCategory } = req.body;
-    let { productUrlImg, filterImg } = req.files;
+    let {_idChildCategory} = req.body;
+    let {productUrlImg, filterImg} = req.files;
     const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(itemNo)}`;
 
     if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
@@ -66,10 +67,10 @@ exports.addProduct = async (req, res, next) => {
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -98,7 +99,7 @@ exports.addModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
     let model = _.cloneDeepWith(req.body, value => {
       if (_.isString(value) || _.isBoolean(value) || _.isArray(value)) {
@@ -118,10 +119,10 @@ exports.addModelForProduct = async (req, res, next) => {
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -148,11 +149,11 @@ exports.updateProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const { _idProduct, warning, htmlPage, isBigImg, enabled, filters, description, nameProduct, _idChildCategory } = req.body;
-    let { model } = req.body;
+    const {_idProduct, warning, htmlPage, isBigImg, enabled, filters, description, nameProduct, _idChildCategory} = req.body;
+    let {model} = req.body;
 
     const product = await Product.findById(_idProduct);
 
@@ -163,7 +164,7 @@ exports.updateProduct = async (req, res, next) => {
     }
 
     const folder = `final-project/products/catalog-${_idChildCategory}/${encodeURI(product.itemNo)}`;
-    let { productUrlImg, filterImg } = req.files;
+    let {productUrlImg, filterImg} = req.files;
 
 
     if (_.isArray(productUrlImg) && productUrlImg.length > 0) {
@@ -234,10 +235,10 @@ exports.updateProduct = async (req, res, next) => {
 
       newFilter = _.map(
         _.uniq(
-          _.map(newFilter, function(obj) {
+          _.map(newFilter, function (obj) {
             return JSON.stringify(obj);
           })
-        ), function(obj) {
+        ), function (obj) {
           return JSON.parse(obj);
         }
       );
@@ -249,8 +250,8 @@ exports.updateProduct = async (req, res, next) => {
       });
 
       oldFilter = oldFilter.map(element => {
-        const { filter, subFilter } = element;
-        return { filter, subFilter };
+        const {filter, subFilter} = element;
+        return {filter, subFilter};
       });
 
       let onlyNewFilter = newFilter.filter(commonProduct.comparer(oldFilter));
@@ -285,11 +286,11 @@ exports.updateProduct = async (req, res, next) => {
     }
 
 
-    req.body.filterImg = req.body.filterImg.filter(element=>{
+    req.body.filterImg = req.body.filterImg.filter(element => {
       return _.isObject(element);
     });
 
-    req.body.productUrlImg= req.body.productUrlImg.filter(element=>{
+    req.body.productUrlImg = req.body.productUrlImg.filter(element => {
       return _.isString(element) && element;
     });
 
@@ -322,10 +323,10 @@ exports.updateModelForProduct = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const { _idProduct, modelNo, filters, modelUrlImg, enabled, quantity, currentPrice, previousPrice } = req.body;
+    const {_idProduct, modelNo, filters, modelUrlImg, enabled, quantity, currentPrice, previousPrice} = req.body;
 
 
     let product = await Product.findById(_idProduct);
@@ -351,8 +352,8 @@ exports.updateModelForProduct = async (req, res, next) => {
       });
 
       oldFilter = oldFilter.map(element => {
-        const { filter, subFilter } = element;
-        return { filter, subFilter };
+        const {filter, subFilter} = element;
+        return {filter, subFilter};
       });
 
       let onlyNewFilter = filters.filter(commonProduct.comparer(oldFilter));
@@ -403,7 +404,7 @@ exports.updateModelForProduct = async (req, res, next) => {
 
 exports.deleteProduct = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -418,16 +419,16 @@ exports.deleteProduct = async (req, res, next) => {
     });
 
     filter = filter.map(element => {
-      const { filter, subFilter } = element;
-      return { filter, subFilter };
+      const {filter, subFilter} = element;
+      return {filter, subFilter};
     });
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -448,7 +449,7 @@ exports.deleteProduct = async (req, res, next) => {
     }
 
     await product.delete();
-    res.status(200).json({ msg: "Product deleted" });
+    res.status(200).json({msg: "Product deleted"});
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -459,7 +460,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.deleteModelProduct = async (req, res) => {
   try {
-    const { id, modelno } = req.params;
+    const {id, modelno} = req.params;
     let product = await Product.findById(id);
 
     if (!product) {
@@ -477,16 +478,16 @@ exports.deleteModelProduct = async (req, res) => {
     });
 
     filter = filter.map(element => {
-      const { filter, subFilter } = element;
-      return { filter, subFilter };
+      const {filter, subFilter} = element;
+      return {filter, subFilter};
     });
 
     filter = _.map(
       _.uniq(
-        _.map(filter, function(obj) {
+        _.map(filter, function (obj) {
           return JSON.stringify(obj);
         })
-      ), function(obj) {
+      ), function (obj) {
         return JSON.parse(obj);
       }
     );
@@ -498,7 +499,7 @@ exports.deleteModelProduct = async (req, res) => {
     );
 
     await product.save();
-    res.status(200).json({ msg: "Product's model deleted" });
+    res.status(200).json({msg: "Product's model deleted"});
   } catch (err) {
     res.status(500).json({
       message: `Error happened on server: "${err}" `
@@ -538,9 +539,41 @@ exports.getProducts = async (req, res, next) => {
   }
 };
 
+exports.getProductsActive = async (req, res, next) => {
+  try {
+    let products = await Product.find({enabled:true})
+        .populate({
+          path: "_idChildCategory",
+          select: "-filters",
+          populate: {
+            path: "parentId"
+          }
+        })
+        .populate({
+          path: "filters.filter",
+          select: "enabled _id type serviceName"
+        })
+        .populate({
+          path: "filters.subFilter"
+        })
+        .populate({
+          path: "model.filters.filter",
+          select: "enabled _id type serviceName"
+        })
+        .populate({
+          path: "model.filters.subFilter"
+        });
+    res.status(200).json(products);
+  } catch (e) {
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
+};
+
 exports.getProductById = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     let product = await Product.findById(id)
       .populate({
         path: "_idChildCategory",
@@ -562,7 +595,12 @@ exports.getProductById = async (req, res, next) => {
       })
       .populate({
         path: "model.filters.subFilter"
-      });
+      })
+      .populate({
+        path: 'filterImg._idFilter',
+        select: '_id enabled type serviceName'
+      })
+      .populate('filterImg._idSubFilters');
 
     if (!product) {
       return res.status(400).json({
@@ -581,7 +619,7 @@ exports.getProductById = async (req, res, next) => {
 exports.searchProductsHeader = async (req, res, next) => {
   try {
     const {searchheader} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}})
+    const products = await Product.find({$and:[{"nameProduct": {$regex: decodeURI(searchheader)}},{enabled : true }]})
       .limit(5)
       .populate({
         path: "_idChildCategory",
@@ -620,7 +658,7 @@ exports.searchProductsHeader = async (req, res, next) => {
 exports.searchProducts = async (req, res, next) => {
   try {
     const {search} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}})
+    const products = await Product.find({ $and: [{"nameProduct": {$regex: decodeURI(search)}},{enabled : true } ]})
       .populate({
         path: "_idChildCategory",
         select: "-filters",
@@ -657,46 +695,92 @@ exports.searchProducts = async (req, res, next) => {
 
 exports.getProductsFilterParams = async (req, res, next) => {
   try {
-    let { subfilters } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
 
-    subfilters = subfilters.map(element => {
-      return mongoose.Types.ObjectId(element);
-    });
+    let {subfilters, idCatalog, page, limit, sort, price} = req.body;
 
-    const Products = await Product.find({
+
+    if (_.isArray(subfilters)) {
+      subfilters = subfilters.filter(element => {
+        return mongoose.Types.ObjectId(element);
+      });
+    }
+
+    const query = {
       $and: [
         {
-          "filters.subFilter": { $in: subfilters }
+          "_idChildCategory": idCatalog
         },
         {
-          "model.filters.subFilter": { $in: subfilters }
+          "enabled" : true
         }
       ]
-    })
-      .populate({
-        path: "_idChildCategory",
-        select: "-filters",
-        populate: {
-          path: "parentId"
-        }
+    };
+
+    if (_.isArray(price) && price.length === 2) {
+      query.$and.push({
+        'model.currentPrice': {$gt: +price[0]}
+      }, {
+        'model.currentPrice': {$lt: +price[1]}
+      },)
+    }
+    if (_.isArray(subfilters) && subfilters.length > 0) {
+      query.$and.push({
+        $or: [
+          {
+            "filters.subFilter": {$in: subfilters}
+          },
+          {
+            "model.filters.subFilter": {$in: subfilters}
+          }
+        ]
       })
-      .populate({
-        path: "filters.filter",
-        select: "enabled _id type serviceName"
+    }
+
+    const Products = await Product.paginate(query,
+      {
+        page: _.isNumber(page) ? page : 1,
+        limit: _.isNumber(limit) ? limit : 9,
+        sort: _.isNumber(sort) ? 0 : sort === 0 ? {'date': 1} : {
+          'model.currentPrice': 1 ? 1 : -1
+        },
+        populate: [
+          {
+            path: "_idChildCategory",
+            select: "-filters",
+            populate: {
+              path: "parentId"
+            }
+          },
+          {
+            path: "filters.filter",
+            select: "enabled _id type serviceName"
+          },
+          {
+            path: "filters.subFilter"
+          },
+          {
+            path: "model.filters.filter",
+            select: "enabled _id type serviceName"
+          }, {
+            path: "model.filters.subFilter"
+          }, {
+            path: "filterImg._idFilter",
+            select: "enabled _id type serviceName"
+          },
+          {
+            path: "filterImg._idSubFilters",
+          }
+        ]
       })
-      .populate({
-        path: "filters.subFilter"
-      })
-      .populate({
-        path: "model.filters.filter",
-        select: "enabled _id type serviceName"
-      })
-      .populate({
-        path: "model.filters.subFilter"
-      });
+
 
     res.status(200).json(Products);
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: "Server Error!"
     });
@@ -705,10 +789,10 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
 exports.activateOrDeactivateProduct = async (req, res) => {
   try {
-    const { _idProduct, status } = req.body;
+    const {_idProduct, status} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
     if (!mongoose.Types.ObjectId.isValid(_idProduct)) {
@@ -739,10 +823,10 @@ exports.activateOrDeactivateProduct = async (req, res) => {
 
 exports.activateOrDeactivateProductModel = async (req, res) => {
   try {
-    const { _idProduct, status, modelNo } = req.body;
+    const {_idProduct, status, modelNo} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
     if (!mongoose.Types.ObjectId.isValid(_idProduct)) {

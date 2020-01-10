@@ -1,15 +1,24 @@
 import axios from 'axios';
 
 export default class CartAPI {
-  static async getCustomerCart(id) {
-    return await axios.get(`/cart/${id}`);
+  static async getCustomerCart() {
+    return await axios.get(`/api/cart`);
   }
 
-  static async addOrRemoveProduct(idCustomer, idProduct, modelNo, quantity) {
-    return await axios.put(`/cart/product`, { idCustomer, idProduct, modelNo, quantity });
+  static getCustomerCartUsingToken = token => {
+    const options = {
+      headers: {
+        Authorization: token
+      }
+    };
+    return axios.get('/api/cart', options).then(res => res.data);
+  };
+
+  static async addOrRemoveProduct(idProduct, modelNo, quantity) {
+    return await axios.put(`/api/cart/product`, { idProduct, modelNo, quantity });
   }
 
-  static async updateQuantity(idCustomer, idProduct, modelNo, quantity) {
-    return await axios.put(`/cart/product`, { idCustomer, idProduct, modelNo, quantity });
+  static async updateQuantity(idProduct, modelNo, quantity) {
+    return await axios.put(`/api/cart/product`, { idProduct, modelNo, quantity });
   }
 }

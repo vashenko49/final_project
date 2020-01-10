@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -12,24 +12,36 @@ import Modal from '@material-ui/core/Modal';
 
 import Carousel from './Carousel';
 import ProdcutHeader from './ProductHeader';
+import ProductColors from './ProductColors';
 import ProductSizes from './ProductSizes';
 import ProductReview from './ProductReview';
 import ProductCheckout from './ProductCheckout';
 
 import './ProductPage.scss';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Container } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
-    left: 23 + '%',
-    top: 23 + '%',
-    width: 50 + '%',
+    width: 82 + '%',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    [theme.breakpoints.up('sm')]: {
+      width: 49 + '%',
+      left: 23 + '%',
+      top: 21 + '%'
+    },
+    [theme.breakpoints.up('md')]: {
+      width: 33 + '%',
+      left: 33 + '%',
+      top: 22 + '%',
+      alignItems: 'center'
+    }
   }
 }));
 
@@ -45,7 +57,7 @@ const ProductPageF = ({
     description,
     itemNo,
     model,
-    filters,
+    filterImg,
     productUrlImg,
     _idChildCategory
   } = product;
@@ -56,16 +68,21 @@ const ProductPageF = ({
   const [currentModel, setCurrentModel] = useState({});
   const [currentColor, setCurrentColor] = useState('');
   const [currentSize, setCurrentSize] = useState('');
+  const [currentPhoto, setCurrentPhoto] = useState('');
 
-  const handleModel = color => {
+  const needed = 2;
+  const handleModel = size => {
     for (let i = 0; i < model.length; i++) {
+      let counter = 0;
       for (let j = 0; j < model[i].filters.length; j++) {
-        if (_.get(model[i], `filters[${j}].subFilter.name`) === color.toUpperCase()) {
-          setCurrentModel(model[i]);
-        } else if (_.get(model[i].filters[j], 'filter.type') === 'Sizes') {
-          setCurrentSize(model[i].filters[j].subFilter.name);
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === currentColor.toUpperCase()) {
+          ++counter;
+        }
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === size) {
+          ++counter;
         }
       }
+      if (counter === needed) setCurrentModel(model[i]);
     }
   };
 
@@ -81,7 +98,7 @@ const ProductPageF = ({
 
   const handleOpen = () => {
     setOpen(true);
-    addOrRemoveProduct(customerId, _id, currentModel.modelNo, 1);
+    addOrRemoveProduct(_id, currentModel.modelNo, 1);
   };
 
   const handleClose = () => {
@@ -89,9 +106,9 @@ const ProductPageF = ({
   };
 
   return (
-    <Fragment>
+    <Container>
       {loading === true ? (
-        <h1>preloader</h1>
+        <CircularProgress className="preloader-page" />
       ) : (
         <div className="product">
           <ProdcutHeader
@@ -101,32 +118,21 @@ const ProductPageF = ({
             model={model}
           />
           <div className="product-photo">
-            <Image cloudName="dxge5r7h2" publicId={productUrlImg[0]} crop="scale" />
+            <Image cloudName="dxge5r7h2" publicId={currentPhoto || productUrlImg[0]} crop="scale" />
           </div>
-          <div className="product-colors container">
-            {modelsFilters.map(v => {
-              if (v.filter.type === 'Color') {
-                return (
-                  <button
-                    key={v._id}
-                    className="product-select-color"
-                    name="currentColor"
-                    onClick={e => {
-                      setCurrentColor(e.target.value);
-                      handleModel(e.target.value);
-                    }}
-                    style={{ backgroundColor: v.subFilter.name.toLowerCase() }}
-                    value={v.subFilter.name.toLowerCase()}
-                  />
-                );
-              }
-              return [];
-            })}
-          </div>
-          <ProductSizes currentModel={currentModel} filters={filters} />
+          <ProductColors
+            modelsFilters={modelsFilters}
+            setCurrentColor={setCurrentColor}
+            handleModel={handleModel}
+          />
+          <ProductSizes
+            handleModel={handleModel}
+            currentColor={currentColor}
+            model={model}
+            setCurrentSize={setCurrentSize}
+          />
           <div className="product-buttons container">
-            <button className="black-btn" onClick={handleOpen}>
-              {/* parallel make request to add new product */}
+            <button className="black-btn" onClick={handleOpen} disabled={currentSize === ''}>
               Add to bag
             </button>
             <button className="grey-btn">Favourite</button>
@@ -142,6 +148,8 @@ const ProductPageF = ({
                 <h3 className="checkout-title">Added to Bag</h3>
 
                 <ProductCheckout
+                  customerId={customerId}
+                  parentId={_id}
                   productUrlImg={productUrlImg}
                   nameProduct={nameProduct}
                   _idChildCategory={_idChildCategory}
@@ -150,18 +158,23 @@ const ProductPageF = ({
                   currentSize={currentSize}
                 />
                 <div className="product-buttons container">
-                  <Link to={`/cart/${customerId}`}>
+                  <Link to={`/cart`}>
                     <button className="grey-btn">View bag</button>
                   </Link>
-                  <Link to={`/cart/${customerId}`}>
+                  <Link to={`/cart`}>
                     <button className="black-btn">Checkout</button>
                   </Link>
                 </div>
               </div>
             </Modal>
           </div>
-          <Carousel productUrlImg={productUrlImg} />
-          <ProductReview productId={match.params.id} />
+          <Carousel
+            productUrlImg={productUrlImg}
+            setCurrentPhoto={setCurrentPhoto}
+            filterImg={filterImg}
+            currentColor={currentColor}
+          />
+          <ProductReview customerId={customerId} productId={match.params.id} />
           <div className="product-discription container">
             <p className="short-description">{description}</p>
             <ul className="property-description">
@@ -171,7 +184,7 @@ const ProductPageF = ({
           </div>
         </div>
       )}
-    </Fragment>
+    </Container>
   );
 };
 

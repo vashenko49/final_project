@@ -1,10 +1,59 @@
 import React, { Component, Fragment } from 'react';
 
+import _ from 'lodash';
+
 import './ProductPage.scss';
 
 export default class ProductSizes extends Component {
   render() {
-    const { currentModel, filters } = this.props;
+    const { handleModel, model, currentColor, setCurrentSize } = this.props;
+
+    const handleClick = e => {
+      setCurrentSize(e.target.value);
+      handleModel(e.target.value);
+      Array.from(e.target.parentNode.children).forEach(child => {
+        if (child !== e.target) {
+          child.classList.remove('light-btn-active');
+        } else {
+          child.classList.add('light-btn-active');
+        }
+      });
+    };
+
+    const allSizes = [];
+    for (let i = 0; i < model.length; i++) {
+      for (let j = 0; j < model[i].filters.length; j++) {
+        if (_.get(model[i], `filters[${j}].filter.type`) === 'Sizes') {
+          allSizes.push(
+            <button key={model[i].filters[j].subFilter._id} className="light-btn">
+              US {_.get(model[i], `filters[${j}].subFilter.name`)}
+            </button>
+          );
+        }
+      }
+    }
+
+    const currentSizes = [];
+    for (let i = 0; i < model.length; i++) {
+      for (let j = 0; j < model[i].filters.length; j++) {
+        if (_.get(model[i], `filters[${j}].subFilter.name`) === currentColor.toUpperCase()) {
+          for (let k = 0; k < model[i].filters.length; k++) {
+            if (_.get(model[i], `filters[${k}].filter.type`) === 'Sizes') {
+              currentSizes.push(
+                <button
+                  key={model[i].filters[k].subFilter._id}
+                  className="light-btn"
+                  onClick={e => handleClick(e)}
+                  value={_.get(model[i], `filters[${k}].subFilter.name`)}
+                >
+                  US {_.get(model[i], `filters[${k}].subFilter.name`)}
+                </button>
+              );
+            }
+          }
+        }
+      }
+    }
 
     return (
       <Fragment>
@@ -17,27 +66,7 @@ export default class ProductSizes extends Component {
           </div>
         </div>
         <div className="product-sizes container">
-          {Object.entries(currentModel).length === 0
-            ? filters.map(v => {
-                if (v.filter.type === 'Sizes') {
-                  return (
-                    <button key={v.subFilter._id} className="light-btn">
-                      US {v.subFilter.name}
-                    </button>
-                  );
-                }
-                return [];
-              })
-            : currentModel.filters.map(v => {
-                if (v.filter.type === 'Sizes') {
-                  return (
-                    <button key={v.subFilter._id} className="light-btn">
-                      US {v.subFilter.name}
-                    </button>
-                  );
-                }
-                return [];
-              })}
+          {currentColor === '' ? allSizes : currentSizes}
         </div>
       </Fragment>
     );

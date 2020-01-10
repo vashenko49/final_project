@@ -1,0 +1,118 @@
+.grid-container{
+  display: grid;
+  grid-gap:25px 30px;
+  grid-template-areas: "currentNameCatalog currentNameCatalog params-filter params-filter"
+                        "filter product-mini product-mini product-mini"
+                        ". paginate paginate paginate";
+  grid-template-rows: auto;
+  grid-template-columns:  .8fr 1fr 1fr 1fr;
+  justify-items: start;
+  width: 100%;
+}
+.popover-filter-by{
+  z-index: 10;
+}
+.panel-open{
+  width: 100% !important;
+}
+.panel-close{
+  display: none;
+  justify-content: flex-end;
+  color: #fff;
+}
+.btn-close-panel{
+  padding: 12px 22px;
+  cursor: pointer;
+}
+
+.grid-container> .product-mini{
+  justify-content: start;
+}
+.mobile-btn{
+  display: none;
+  margin-bottom: 15px;
+}
+.mobile-btn>.panel-btn-left{
+  background: #33333A !important;
+}
+
+.product-mini{
+  grid-area: product-mini;
+}
+
+.preloader-catalog{
+  display: flex;
+  grid-column: 1/3;
+  justify-content: center;
+}
+.currentNameCatalog{
+  grid-area: currentNameCatalog;
+}
+
+.paginate{
+  grid-area:paginate;
+  justify-self: center;
+}
+.params-filter{
+  display: flex;
+  grid-area: params-filter;
+  justify-self: end;
+}
+  .params{
+    display: flex;
+  }
+
+.listGrow:first-child{
+  margin-right: 8px;
+}
+
+.filter{
+  grid-area: filter;
+}
+
+.popover-filter-by > .MuiPaper-root{
+  color:#FFFFFF ;
+  background-color: #33333A ;
+  border-radius: 4% ;
+}
+
+.MuiBreadcrumbs-li>a{
+  color:inherit;
+  font-weight: bold;
+}
+
+
+@media only screen and (max-width : 1085px) {
+  .grid-container{
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-btn{
+    display: flex;
+    justify-content: space-between;
+  }
+  .filter{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 0;
+    height: 100%;
+    overflow-x: hidden;
+    text-align:center;
+    background-color: rgba(0,0,0,.85);
+    transition: .5s;
+  }
+  .params-filter{
+    justify-content: space-between;
+  }
+  .paginate{
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+  }
+  .panel-close {
+    display: flex;
+  }
+}
+

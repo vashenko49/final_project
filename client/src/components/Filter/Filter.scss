@@ -1,0 +1,75 @@
+.filters-container{
+  display: flex;
+  flex-direction: column;
+  color:#FFFFFF;
+  background: #33333A;
+  border-radius: 25%;
+}
+.filters-container > .MuiExpansionPanel-root.Mui-expanded{
+  margin: 0 !important;
+}
+.filters-container > .MuiPaper-elevation1{
+  box-shadow: none !important;
+}
+.filters-container > .MuiPaper-elevation1:before{
+  display: none;
+}
+.filters-container > .MuiPaper-root{
+  color: inherit !important;
+  background: inherit !important;
+}
+.MuiButtonBase-root>.MuiIconButton-root{
+  color: #FFFFFF !important;
+}
+.price-filter-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.price-filter-input > label, .MuiChip-deleteIconOutlinedColorPrimary{
+  color:  #FFFFFF !important;
+}
+
+.price-filter-submit{
+  color: #FFFFFF !important;
+  background-color: #575B65 !important;
+}
+
+.price-filter-input > .MuiInputBase-root{
+  color:  #FFFFFF;
+}
+
+.PrivateValueLabel-label-439{
+  color: #111111 !important;
+}
+
+.filter-type{
+  margin-bottom: 7px !important;
+  cursor: pointer;
+}
+.filter-type:hover{
+  font-weight: bold;
+}
+.filter-type-select:after{
+  margin-left: 5px;
+  font-size: 9px;
+  vertical-align: middle;
+  content: '\2573';
+}
+.MuiChip-outlinedPrimary{
+  margin: 0px 4px 6px 0;
+  color: white !important;
+  border: 1px solid white !important;
+}
+
+.filter-color{
+  flex-direction: row !important;
+}
+.container-button-clear{
+  width: 100%;
+  margin-top: 8px;
+}
+
+.chooseTypeFilter{
+  flex-wrap: wrap;
+}

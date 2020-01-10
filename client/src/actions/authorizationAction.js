@@ -48,6 +48,22 @@ export function failSocial() {
   };
 }
 
+export function openWindowAuth() {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.OPEN_WINDOW_AUTH
+    });
+  };
+}
+
+export function closeWindowAuth() {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.CLOSE_WINDOW_AUTH
+    });
+  };
+}
+
 export function AuthorizationThroughLocalStorage(token) {
   return dispatch => {
     AuthorizationAPI.getCustomerUsingToken(token)
@@ -66,5 +82,64 @@ export function AuthorizationThroughLocalStorage(token) {
           type: AUTHORIZATION.LOG_IN_API_FAILED
         });
       });
+  };
+}
+
+export function updatePersonalData(data) {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_REQUEST
+    });
+    AuthorizationAPI.updatePersonalData(data)
+      .then(res => {
+        return dispatch({
+          type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_SUCCEEDED,
+          payload: res
+        });
+      })
+      .catch(err => {
+        return dispatch({
+          type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_ERROR,
+          payload: err.response.data.message
+        });
+      });
+  };
+}
+
+export function resetPassword(data) {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.RESET_PASSWORD_API_REQUEST
+    });
+    AuthorizationAPI.resetPassword(data)
+      .then(res => {
+        return dispatch({
+          type: AUTHORIZATION.RESET_PASSWORD_DATA_API_SUCCEEDED,
+          payload: res.message
+        });
+      })
+      .catch(err => {
+        return dispatch({
+          type: AUTHORIZATION.RESET_PASSWORD_DATA_API_ERROR,
+          payload: err.response.data.message
+        });
+      });
+  };
+}
+
+export function resetError() {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.RESET_ERROR
+    });
+  };
+}
+
+export function signOut() {
+  return dispatch => {
+    localStorage.removeItem('Authorization');
+    dispatch({
+      type: AUTHORIZATION.LOG_OUT
+    });
   };
 }

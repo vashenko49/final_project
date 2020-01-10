@@ -19,7 +19,6 @@
     padding: 8px 13px;
     background: #E6E6E6;
   }
-
   .search-icon {
     vertical-align: middle;
   }
@@ -37,3 +36,7 @@
   background-color: deepskyblue;
 }
 
+.avatar-user{
+  width: 25px;
+  object-fit: cover;
+}

@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { check } = require("express-validator");
+const passport = require("passport");
+const {check} = require("express-validator");
 
 //Import controllers
-const { updateCart, updateProductFromCart, cleanCart, getCart } = require("../controllers/cart");
+const {updateCart, updateProductFromCart, cleanCart, getCart} = require("../controllers/cart");
 
 // @route   PUT /cart
 // @desc    Update cart when adding / deleting products in cart
@@ -11,9 +12,7 @@ const { updateCart, updateProductFromCart, cleanCart, getCart } = require("../co
 router.put(
   "/",
   [
-    check("idCustomer", "idCustomer is require")
-      .not()
-      .isEmpty(),
+    passport.authenticate("jwt", {session: false}),
     check("products.*.idProduct", "idProduct is require")
       .not()
       .isEmpty(),
@@ -22,7 +21,7 @@ router.put(
       .isEmpty(),
     check("products.*.quantity", "cartQuantity is require")
       .isNumeric()
-      .isInt({ min: 0 })
+      .isInt({min: 0})
   ],
   updateCart
 );
@@ -33,9 +32,7 @@ router.put(
 router.put(
   "/product",
   [
-    check("idCustomer", "idCustomer is require")
-      .not()
-      .isEmpty(),
+    passport.authenticate("jwt", {session: false}),
     check("idProduct", "idProduct is require")
       .not()
       .isEmpty(),
@@ -44,7 +41,7 @@ router.put(
       .isEmpty(),
     check("quantity", "cartQuantity is require")
       .isNumeric()
-      .isInt({ min: 0 })
+      .isInt({min: 0})
   ],
   updateProductFromCart
 );
@@ -52,11 +49,11 @@ router.put(
 // @route   DELETE /cart/:idCustomer
 // @desc    clean cart
 // @access  Private
-router.delete("/:idCustomer", cleanCart);
+router.delete("/", passport.authenticate("jwt", {session: false}), cleanCart);
 
 // @route   GET /cart
 // @desc    Get cart for customer
 // @access  Private
-router.get("/:idCustomer", getCart);
+router.get("/", passport.authenticate('jwt', {session: false}), getCart);
 
 module.exports = router;

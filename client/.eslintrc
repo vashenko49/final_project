@@ -2,19 +2,15 @@
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
-        "jsx": true,
-        "modules": true
+      "jsx": true,
+      "modules": true
     }
   },
   "env": {
     "browser": true,
     "mocha": true
   },
-  "extends": [
-    "standard",
-    "react-app",
-    "prettier"
-  ],
+  "extends": ["standard", "react-app", "prettier"],
   "rules": {
     "prettier/prettier": "error",
     "no-trailing-spaces": [
@@ -23,14 +19,14 @@
         "skipBlankLines": true
       }
     ],
-    "jsx-quotes": [
-        1,
-        "prefer-double"
+    "jsx-quotes": [1, "prefer-double"],
+    "jsx-a11y/img-redundant-alt": [
+      2,
+      {
+        "components": ["Image"],
+        "words": ["Bild", "Foto"]
+      }
     ],
-    "jsx-a11y/img-redundant-alt": [ 2, {
-      "components": [ "Image" ],
-      "words": [ "Bild", "Foto" ]
-    }],
     "no-return-assign": 0,
     "eol-last": 0,
     "semi": 0,
@@ -41,10 +37,7 @@
     "no-debugger": 1,
     "no-alert": 1
   },
-  "plugins": [
-    "prettier",
-    "jsx-a11y"
-  ],
+  "plugins": ["prettier", "jsx-a11y"],
   "settings": {
     "react": {
       "createClass": "createReactClass",
@@ -52,8 +45,6 @@
       "version": "16.11.0",
       "flowVersion": "0.86"
     },
-    "propWrapperFunctions": [
-      "forbidExtraProps"
-    ]
+    "propWrapperFunctions": ["forbidExtraProps"]
   }
 }

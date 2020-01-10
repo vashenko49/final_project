@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import Buttons from './../Buttons' //waiting for component Buttons
 
 import LoadImage from '../ImageLoader/ImageLoader';
-import Rating from './../common/rating';
+import { Stars } from './../common/rating';
 import './Product.css';
 
 // create component Product
@@ -18,7 +18,7 @@ export default class Product extends Component {
             </div>
             <div className="center">
               <h5 className="product__header">Product</h5>
-              <Rating />
+              <Stars />
               <div className="cost">Cost</div>
             </div>
           </div>

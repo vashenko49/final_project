@@ -7,14 +7,14 @@ import { bindActionCreators } from 'redux';
 import { Image } from 'cloudinary-react';
 
 import { updateQuantity, addOrRemoveProduct } from '../../actions/cart';
-
+import _ from 'lodash';
 import './Cart.scss';
 
 class Item extends Component {
   render() {
-    const { updateQuantity, customerId, addOrRemoveProduct } = this.props;
+    const { updateQuantity, addOrRemoveProduct } = this.props;
 
-    const { items, loading } = this.props.cart;
+    const { items } = this.props.cart;
 
     const amount = [];
 
@@ -27,15 +27,12 @@ class Item extends Component {
     }
     return (
       <Fragment>
-        {loading ? (
-          <div>preloader</div>
-        ) : (
-          <div className="bag-item">
-            {items.map(v => {
+        <div className="bag-item">
+          {_.isArray(items) &&
+            items.map(v => {
               const { _id, filters: property, currentPrice, modelNo } = v.modelNo;
 
               const { _id: parentId, nameProduct, productUrlImg, _idChildCategory } = v.idProduct;
-
               let quantity = v.quantity;
               return (
                 <div className="sneaker-item" key={_id}>
@@ -46,7 +43,7 @@ class Item extends Component {
                     crop="scale"
                   />
                   <div className="sneaker-item-info">
-                    <Link to={`product/${_id}`} style={{ textDecoration: 'none' }}>
+                    <Link to={`../product/${parentId}`} style={{ textDecoration: 'none' }}>
                       <h2 className="info-title">{nameProduct}</h2>
                     </Link>
                     <p>{_idChildCategory.name}</p>
@@ -67,11 +64,11 @@ class Item extends Component {
                         return [];
                       })}
                     </p>
-                    <label htmlFor="quantity">Quantity</label>
+                    <label htmlFor="quantity">Quantity:</label>
                     <select
                       name="quantity"
                       onChange={e => {
-                        updateQuantity(customerId, parentId, modelNo, e.target.value);
+                        updateQuantity(parentId, modelNo, e.target.value);
                       }}
                       value={quantity}
                     >
@@ -84,14 +81,13 @@ class Item extends Component {
                   <div
                     className="close"
                     onClick={() => {
-                      addOrRemoveProduct(customerId, parentId, modelNo, 0);
+                      addOrRemoveProduct(parentId, modelNo, 0);
                     }}
                   ></div>
                 </div>
               );
             })}
-          </div>
-        )}
+        </div>
       </Fragment>
     );
   }

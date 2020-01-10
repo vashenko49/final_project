@@ -2,22 +2,22 @@ import axios from 'axios';
 
 export default class AdminProductAPI {
   static getProducts() {
-    return axios.get(`/products`);
+    return axios.get(`/api/products`);
   }
 
   static deleteProducts(id) {
-    return axios.delete(`/products/${id}`);
+    return axios.delete(`/api/products/${id}`);
   }
 
   static getProductsById(id) {
-    return axios.get(`/products/${id}`);
+    return axios.get(`/api/products/${id}`);
   }
 
   static createProducts(data) {
-    return axios.post(`/products`, data);
+    return axios.post(`/api/products`, data);
   }
 
   static updateProducts(data) {
-    return axios.put(`/products`, data);
+    return axios.put(`/api/products`, data);
   }
 }

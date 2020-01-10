@@ -1,6 +1,7 @@
-import { GET_COMMENTS, COMMENT_ERROR } from '../constants/comments';
+import { GET_COMMENTS, COMMENT_ERROR, ADD_COMMENT } from '../constants/comments';
 
 const initialState = {
+  comment: {},
   comments: [],
   loading: true,
   error: {}
@@ -13,6 +14,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         comments: payload,
+        loading: false
+      };
+    case ADD_COMMENT:
+      return {
+        ...state,
+        comment: payload,
         loading: false
       };
     case COMMENT_ERROR:

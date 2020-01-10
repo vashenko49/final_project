@@ -5,7 +5,7 @@ const Orders = require("../models/Order");
 const _ = require("lodash");
 const {validationResult} = require('express-validator');
 const mongoose = require('mongoose');
-
+const {generatorHTMLTableToOrder } = require("../common/generatorHTMLTableToOrder");
 
 exports.placeOrder = async (req, res) => {
   try {
@@ -14,32 +14,18 @@ exports.placeOrder = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const {idCustomer, delivery, email, mobile} = req.body;
-    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
-      return res.status(400).json({
-        message: `ID Customer is not valid ${idCustomer}`
-      })
-    }
+    const {delivery, email, name, mobile} = req.body;
+    const idCustomer = req.user._id;
 
     let response = {
       delivery: delivery,
       email: email,
       mobile: mobile,
+      name: name,
       canceled: false,
-      products: []
+      products: [],
+      idCustomer: idCustomer
     };
-
-
-    const customer = await Customer.findById(idCustomer);
-    if (!customer) {
-      return res.status(400).json({
-        message: "Customer not found"
-      })
-    }
-
-    if (_.isString(idCustomer)) {
-      response.idCustomer = idCustomer;
-    }
 
     let cart = JSON.parse(JSON.stringify(await Cart.findOne({"customerId": idCustomer})
       .populate('customerId')
@@ -69,10 +55,15 @@ exports.placeOrder = async (req, res) => {
     response.totalSum = _.sumBy(response.products, function (o) {
       return o.currentPrice * o.quantity;
     });
+
+    let isCart = await Cart.findOne({customerId: idCustomer});
+    isCart.products = [];
+    isCart = await isCart.save();
+
     response = await (new Orders(response)).save();
+    await generatorHTMLTableToOrder(response._id, email);
     res.status(200).json(response);
   } catch (e) {
-    console.log(e);
     res.status(400).json({
       message: `Server error ${e.message}`
     })
@@ -192,37 +183,18 @@ exports.deleteOrder = async (req, res) => {
 
 exports.getOrdersByCustomer = async (req, res) => {
   try {
-    const {idCustomer} = req.params;
-    if (!mongoose.Types.ObjectId.isValid(idCustomer)) {
-      return res.status(400).json({
-        message: `ID Customer is not valid ${idCustomer}`
-      })
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const customer = await Customer.findById(idCustomer);
-    if (!customer) {
-      return res.status(400).json({
-        message: "Customer not found"
-      })
-    }
+    const idCustomer = req.user._id;
+    const {page, limit} = req.body;
 
-    const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
-      .populate('idCustomer')
-      .populate({path: 'delivery.idShippingMethod', select: '-address'})
-      .populate('delivery.storeAddress')
-      .populate('products.productId')
-    ));
-
-    orders.forEach((element, index) => {
-      orders[index].products = element.products.map(element => {
-        let indexModel = _.findIndex(element.productId.model, function (o) {
-          return o.modelNo == element.modelNo;
-        });
-        element.modelNo = element.productId.model[indexModel];
-        return element;
-      });
+    const orders = await Orders.paginate({"idCustomer": idCustomer}, {
+      page: _.isNumber(page) ? page : 1,
+      limit: _.isNumber(limit) ? limit : 9,
     });
-
 
     res.status(200).json(orders);
   } catch (e) {
