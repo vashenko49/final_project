@@ -5,7 +5,7 @@ const Orders = require("../models/Order");
 const _ = require("lodash");
 const {validationResult} = require('express-validator');
 const mongoose = require('mongoose');
-
+const {generatorHTMLTableToOrder } = require("../common/generatorHTMLTableToOrder");
 
 exports.placeOrder = async (req, res) => {
   try {
@@ -14,14 +14,14 @@ exports.placeOrder = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const { delivery, email, name, mobile} = req.body;
-    const  idCustomer  = req.user._id;
+    const {delivery, email, name, mobile} = req.body;
+    const idCustomer = req.user._id;
 
     let response = {
       delivery: delivery,
       email: email,
       mobile: mobile,
-      name:name,
+      name: name,
       canceled: false,
       products: [],
       idCustomer: idCustomer
@@ -56,11 +56,12 @@ exports.placeOrder = async (req, res) => {
       return o.currentPrice * o.quantity;
     });
 
-    let isCart = await Cart.findOne({ customerId: idCustomer });
+    let isCart = await Cart.findOne({customerId: idCustomer});
     isCart.products = [];
     isCart = await isCart.save();
 
     response = await (new Orders(response)).save();
+    await generatorHTMLTableToOrder(response._id, email);
     res.status(200).json(response);
   } catch (e) {
     res.status(400).json({
@@ -187,10 +188,10 @@ exports.getOrdersByCustomer = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const  idCustomer  = req.user._id;
-    const {page, limit}  = req.body;
+    const idCustomer = req.user._id;
+    const {page, limit} = req.body;
 
-    const orders = await Orders.paginate({"idCustomer": idCustomer},{
+    const orders = await Orders.paginate({"idCustomer": idCustomer}, {
       page: _.isNumber(page) ? page : 1,
       limit: _.isNumber(limit) ? limit : 9,
     });
