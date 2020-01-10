@@ -5,7 +5,7 @@ import Preloader from '../../common/admin-panel/Preloader';
 import SnackBars from '../../common/admin-panel/SnackBars';
 import MaterialTable from 'material-table';
 import { tableIcons } from '../TableIcons';
-import ShippingMethodDetail from './ShippingMethodDetail';
+import ShippingMethodDetail from './ShippingMethodDetail/ShippingMethodDetail';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 
@@ -51,7 +51,7 @@ class ShippingMethod extends Component {
           }
         },
         {
-          title: 'Enabled',
+          title: 'Express delivery',
           field: 'isDeliveryAddress',
           disableClick: true,
           render: rowData => {
@@ -74,7 +74,8 @@ class ShippingMethod extends Component {
       sendDataStatus: 'success',
       sendDataMessage: '',
       isLoading: false,
-      openDialog: false
+      openDialog: false,
+      activeDetailPanel: ''
     };
   }
 
@@ -95,21 +96,29 @@ class ShippingMethod extends Component {
       });
   }
 
-  addMethod = () => {};
+  triggerDialogWindow = status => {
+    this.setState({ openDialog: status });
+  };
   onRefreshData = () => {};
   deleteMethod = () => {};
   updateMethod = () => {};
-  onCloseDialog = () => {};
   createNewMethod = () => {};
-
+  setLoad = status => {
+    this.setState({ load: status });
+  };
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+    this.setState({ sendDataMessage: '' });
+  };
   render() {
     const {
-      addMethod,
+      triggerDialogWindow,
       onRefreshData,
       deleteMethod,
       updateMethod,
-      onCloseDialog,
-      createNewMethod
+      createNewMethod,
+      setLoad,
+      handleCloseSnackBars
     } = this;
 
     const { columns, data, load, sendDataStatus, sendDataMessage, openDialog } = this.state;
@@ -130,14 +139,17 @@ class ShippingMethod extends Component {
               position: 'sticky',
               textAlign: 'center',
               top: 0
-            }
+            },
+            detailPanelType: 'single'
           }}
           actions={[
             {
               icon: tableIcons.Add,
               tooltip: 'Add User',
               isFreeAction: true,
-              onClick: addMethod
+              onClick: () => {
+                triggerDialogWindow(true);
+              }
             },
             {
               icon: tableIcons.Refresh,
@@ -153,19 +165,32 @@ class ShippingMethod extends Component {
             {
               tooltip: 'Detail',
               render: rowData => {
-                return <ShippingMethodDetail submit={updateMethod} />;
+                return (
+                  <ShippingMethodDetail
+                    setLoad={setLoad}
+                    load={load}
+                    rowData={rowData}
+                    submit={updateMethod}
+                  />
+                );
               }
             }
           ]}
         />
-        <Dialog open={openDialog} onClose={onCloseDialog} aria-labelledby="form-dialog-title">
+        <Dialog
+          open={openDialog}
+          onClose={() => {
+            triggerDialogWindow(false);
+          }}
+          aria-labelledby="form-dialog-title"
+        >
           <DialogContent>
-            <ShippingMethodDetail load={load} submit={createNewMethod} />
+            <ShippingMethodDetail setLoad={setLoad} load={load} submit={createNewMethod} />
           </DialogContent>
         </Dialog>
         <Preloader open={load} />
         <SnackBars
-          handleClose={this.handleCloseSnackBars}
+          handleClose={handleCloseSnackBars}
           variant={sendDataStatus}
           open={!!sendDataMessage}
           message={sendDataMessage}

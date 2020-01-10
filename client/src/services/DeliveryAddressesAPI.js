@@ -4,6 +4,9 @@ export default class DeliveryAddressesAPI {
   static getDeliveryAddressById = id => {
     return axios.get(`/api/deliveryaddresses/${id}`).then(value => value.data);
   };
+  static getActiveDeliveryAddresses = () => {
+    return axios.get('/api/deliveryaddresses/active').then(value => value.data);
+  };
   static getDeliveryAddresses = () => {
     return axios.get('/api/deliveryaddresses').then(value => value.data);
   };

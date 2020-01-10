@@ -171,7 +171,10 @@ class DeliveryAddresses extends Component {
 
   handleEnabled = (name, id, val) => {
     this.setState({ load: true });
-    DeliveryAddressesAPI.updateDeliveryAddresses({ idDeliveryAddress: id, enabled: val })
+    DeliveryAddressesAPI.activateOrDeactivateDeliveryAddresses({
+      idDeliveryAddress: id,
+      status: val
+    })
       .then(() => {
         this.setState({
           load: false,
