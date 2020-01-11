@@ -23,11 +23,8 @@ const styles = theme => ({
 const SliderDetailForm = ({
   classes,
   title,
-  titleError,
-  serviceName,
-  serviceNameError,
-  subFilters,
-  subFiltersError,
+  description,
+  product,
   onChangeValue,
   onSubmitForm,
   onSubmitFormDisabled
@@ -35,7 +32,7 @@ const SliderDetailForm = ({
   <form autoComplete="off" className={classes.form}>
     <FormControl margin="normal">
       <TextField
-        error={titleError}
+        error={!title.length}
         required
         id="title"
         label="Title"
@@ -47,23 +44,21 @@ const SliderDetailForm = ({
 
     <FormControl margin="normal">
       <TextField
-        error={serviceNameError}
+        error={!description.length}
         required
-        id="serviceName"
-        label="Service name"
+        id="description"
+        label="Description"
         variant="outlined"
-        value={serviceName}
+        value={description}
         onChange={e => onChangeValue(e.target.id, e.currentTarget.value)}
       />
     </FormControl>
 
     <FormControl margin="normal">
       <Autocomplete
-        multiple
-        id="subFilters"
-        freeSolo
-        value={subFilters}
-        onChange={(e, newValue) => onChangeValue('subFilters', newValue)}
+        id="product"
+        value={product}
+        onChange={(e, newValue) => onChangeValue('product', newValue)}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
             <Chip variant="outlined" label={option} {...getTagProps({ index })} />
@@ -71,12 +66,12 @@ const SliderDetailForm = ({
         }
         renderInput={params => (
           <TextField
-            required
-            error={subFiltersError}
             {...params}
+            required
+            error={product.length}
             variant="outlined"
-            label="Filters"
-            placeholder="Enter new sub filter"
+            label="Product"
+            placeholder="Enter product"
             fullWidth
           />
         )}
@@ -102,11 +97,8 @@ const SliderDetailForm = ({
 SliderDetailForm.propTypes = {
   classes: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  titleError: PropTypes.bool.isRequired,
-  serviceNameError: PropTypes.bool.isRequired,
-  serviceName: PropTypes.string.isRequired,
-  subFiltersError: PropTypes.bool.isRequired,
-  subFilters: PropTypes.array.isRequired,
+  description: PropTypes.string.isRequired,
+  product: PropTypes.string.isRequired,
   onChangeValue: PropTypes.func.isRequired,
   onSubmitForm: PropTypes.func.isRequired,
   onSubmitFormDisabled: PropTypes.bool.isRequired
@@ -115,11 +107,8 @@ SliderDetailForm.propTypes = {
 SliderDetailForm.defaultProps = {
   classes: {},
   title: '',
-  titleError: false,
-  serviceName: '',
-  serviceNameError: false,
-  subFilters: [],
-  subFiltersError: false,
+  description: '',
+  product: '',
   onChangeValue: () => {},
   onSubmitForm: () => {},
   onSubmitFormDisabled: true
