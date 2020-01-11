@@ -56,7 +56,6 @@ class PayMethod extends Component {
       load: false,
       sendDataStatus: 'success',
       sendDataMessage: '',
-      isLoading: false,
       openDialog: false
     };
   }

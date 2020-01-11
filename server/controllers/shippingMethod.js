@@ -3,6 +3,8 @@ const _ = require("lodash");
 const {validationResult} = require('express-validator');
 const cloudinary = require('cloudinary').v2;
 const mongoose = require('mongoose');
+const OrderSchema = require('../models/Order');
+
 
 exports.addShippingMethod = async (req, res) => {
   try {
@@ -124,11 +126,18 @@ exports.deleteShippingMethod = async (req, res) => {
       });
     }
 
+    let info = await OrderSchema.findOne({'delivery.idShippingMethod':idShippingMethod});
+    if(info){
+      return res.status(400).json({
+        message: `Shipping Method with an id "${idDeliveryAddress}" using in shipping method.`
+      });
+    }
+
     if(shippingMethod.imageUrl){
       await cloudinary.uploader.destroy(shippingMethod.imageUrl);
     }
 
-    const info = await shippingMethod.delete();
+    info = await shippingMethod.delete();
 
     res.status(200).json({
       message: `Shipping Method with an id "${idShippingMethod}" is successfully deleted from DB.`,
