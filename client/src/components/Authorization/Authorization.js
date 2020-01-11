@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import _ from 'lodash';
 
 import Login from './Login/Login';
 import * as AuthorizationActions from '../../actions/authorizationAction';
@@ -16,6 +17,7 @@ import './Authorization.scss';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
 import { getCurrentItems } from '../../actions/cart';
 import TabPanel from '../TabPanel/TabPanel';
+import { Typography } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
@@ -71,6 +73,7 @@ class Authorization extends Component {
   render() {
     const { value, tabs, isForgotPassword } = this.state;
     const { toggleForgotPassword, a11yProps, switchToRegistration } = this;
+    const { error } = this.props.authorization;
     return (
       <MuiThemeProvider theme={theme}>
         <Grid container direction={'column'} justify={'flex-start'} alignItems="stretch">
@@ -110,6 +113,13 @@ class Authorization extends Component {
             </Box>
           )}
         </Grid>
+        {_.isString(error) && error.length > 0 && (
+          <div>
+            <Typography variant={'h6'} align={'center'} color={'error'}>
+              {error}
+            </Typography>
+          </div>
+        )}
       </MuiThemeProvider>
     );
   }

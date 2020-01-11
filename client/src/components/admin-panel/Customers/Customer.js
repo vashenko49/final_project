@@ -72,7 +72,7 @@ class Customers extends Component {
               <Switch
                 checked={rowData.enabled}
                 onChange={(event, checked) => {
-                  this.handleSwitch(event.target.value, rowData._id, checked);
+                  this.handleSwitch(event.target.value, rowData.__id, checked);
                 }}
                 value="enabled"
                 color="primary"
@@ -99,17 +99,13 @@ class Customers extends Component {
     this.setState({ load: true });
     AuthorizationAPI.editStatusCustomer({ customerId: id, [`${name}`]: val })
       .then(() => {
-        this.setState({
-          load: false,
-          data: this.state.data.map(element => {
-            const { _id } = element;
-            if (id === _id) {
-              element[`${name}`] = val;
-            }
-            return element;
-          }),
-          sendDataStatus: 'success',
-          sendDataMessage: `Success ${val ? 'activated' : 'deactivated'}`
+        AuthorizationAPI.getCustomers().then(res => {
+          this.setState({
+            load: false,
+            data: this.transformData(res),
+            sendDataStatus: 'success',
+            sendDataMessage: `Success ${val ? 'activated' : 'deactivated'}`
+          });
         });
       })
       .catch(err => {

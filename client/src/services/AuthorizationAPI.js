@@ -79,4 +79,8 @@ export default class AuthorizationAPI {
   static editStatusCustomer = data => {
     return axios.put('/api/customers/editstatus', data).then(res => res.data);
   };
+
+  static enablesAccountCustom = () => {
+    return axios.get('/api/customers/enablesaccountcustom').then(res => res.data);
+  };
 }
