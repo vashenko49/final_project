@@ -71,4 +71,12 @@ export default class AuthorizationAPI {
   static checkInUse = data => {
     return axios.post('/api/customers/check', data).then(res => res.data);
   };
+
+  static getCustomers = () => {
+    return axios.get('/api/customers/all').then(res => res.data);
+  };
+
+  static editStatusCustomer = data => {
+    return axios.put('/api/customers/editstatus', data).then(res => res.data);
+  };
 }

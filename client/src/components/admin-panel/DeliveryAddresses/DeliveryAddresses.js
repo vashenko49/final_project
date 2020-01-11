@@ -240,7 +240,7 @@ class DeliveryAddresses extends Component {
     return (
       <>
         <MaterialTable
-          title="Delivery addresses"
+          title="Delivery Addresses"
           icons={tableIcons}
           columns={columns}
           data={data}
@@ -256,6 +256,11 @@ class DeliveryAddresses extends Component {
               top: 0
             }
           }}
+          editable={{
+            onRowAdd: createNewDeliveryMethod,
+            onRowUpdate: updateDeliveryMethod,
+            onRowDelete: deleteDeliveryMethod
+          }}
           actions={[
             {
               icon: tableIcons.Refresh,
@@ -264,11 +269,6 @@ class DeliveryAddresses extends Component {
               onClick: onRefreshData
             }
           ]}
-          editable={{
-            onRowAdd: createNewDeliveryMethod,
-            onRowUpdate: updateDeliveryMethod,
-            onRowDelete: deleteDeliveryMethod
-          }}
         />
         <Preloader open={load} />
         <SnackBars
