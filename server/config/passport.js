@@ -165,7 +165,6 @@ module.exports = async passport => {
         }
       });
 
-
       let fullname = response.data.name.split(' ');
 
       let customer = {

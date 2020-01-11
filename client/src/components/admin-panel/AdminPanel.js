@@ -33,6 +33,7 @@ import Box from '@material-ui/core/Box';
 import DeliveryAddresses from './DeliveryAddresses/DeliveryAddresses';
 import AdminPanelWelcome from './AdminPanelWelcome/AdminPanelWelcome';
 import Customers from './Customers/Customer';
+import CatalogOnMainPage from './CatalogOnMainPage/CatalogOnMainPage';
 
 const styles = {};
 
@@ -115,6 +116,11 @@ class AdminPanel extends Component {
                   <StyledLink to="/admin-panel/customers">Customers</StyledLink>
                 </ListItemText>
               </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/catalogonmainpage">Catalog On Main Page</StyledLink>
+                </ListItemText>
+              </ListItem>
             </List>
             <Divider />
           </Drawer>
@@ -138,6 +144,7 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/shippingmethod" component={ShippingMethod} />
               <Route exact path="/admin-panel/deliveryaddresses" component={DeliveryAddresses} />
               <Route exact path="/admin-panel/customers" component={Customers} />
+              <Route exact path="/admin-panel/catalogonmainpage" component={CatalogOnMainPage} />
               <Route component={NotFound} />
             </Switch>
           </Box>

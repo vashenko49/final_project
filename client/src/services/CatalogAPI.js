@@ -7,4 +7,10 @@ export default class CatalogAPI {
   static getCatalogById = idCatalog => {
     return axios.get(`/api/catalog/child/public/${idCatalog}`).then(value => value.data);
   };
+  static getChildCatalogs = () => {
+    return axios.get('/api/catalog/child/private').then(value => value.data);
+  };
+  static updateChildCatalog = data => {
+    return axios.put('/api/catalog/child', data).then(value => value.data);
+  };
 }
