@@ -31,6 +31,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
 import DeliveryAddresses from './DeliveryAddresses/DeliveryAddresses';
+import AdminPanelWelcome from './AdminPanelWelcome/AdminPanelWelcome';
 
 const styles = {};
 
@@ -114,7 +115,7 @@ class AdminPanel extends Component {
 
           <Box m={1}>
             <Switch>
-              <Route exact path="/admin-panel" component={Products} />
+              <Route exact path="/admin-panel" component={AdminPanelWelcome} />
               <Route exact path="/admin-panel/products" component={Products} />
               <Route exact path="/admin-panel/products/new" component={ProductsDetail} />
               <Route exact path="/admin-panel/products/:id" component={ProductsDetail} />
