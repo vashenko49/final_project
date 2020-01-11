@@ -156,7 +156,6 @@ module.exports = async passport => {
 
       let customersEmail = getUsersEmail.data[0].email;
 
-
       let response = await axios({
         method: 'get',
         url: `https://api.github.com/user`,
