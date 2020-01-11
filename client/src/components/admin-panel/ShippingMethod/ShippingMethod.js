@@ -23,7 +23,7 @@ class ShippingMethod extends Component {
             <Switch
               checked={rowData.default}
               onChange={(event, checked) => {
-                this.handleDefault(event.target.value, rowData._id, checked);
+                this.handleSwitch(event.target.value, rowData._id, checked);
               }}
               data-id={rowData._id}
               value="default"
@@ -59,7 +59,7 @@ class ShippingMethod extends Component {
               <Switch
                 checked={rowData.isDeliveryAddress}
                 onChange={(event, checked) => {
-                  this.handleEnabled(event.target.value, rowData._id, checked);
+                  this.handleSwitch(event.target.value, rowData._id, checked);
                 }}
                 value="isDeliveryAddress"
                 color="primary"
@@ -82,6 +82,60 @@ class ShippingMethod extends Component {
   componentDidMount() {
     this.onRefreshData();
   }
+
+  handleEnabled = (name, id, val) => {
+    this.setState({ load: true });
+    shippingMethodAPI
+      .activateOrDeactivateShippingMethod({ idShippingMethod: id, status: val })
+      .then(() => {
+        this.setState({
+          load: false,
+          data: this.state.data.map(element => {
+            const { _id } = element;
+            if (id === _id) {
+              element[`${name}`] = val;
+            }
+            return element;
+          }),
+          sendDataStatus: 'success',
+          sendDataMessage: `Success ${val ? 'activated' : 'deactivated'}`
+        });
+      })
+      .catch(err => {
+        this.setState({
+          load: false,
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
+        });
+      });
+  };
+
+  handleSwitch = (name, id, val) => {
+    this.setState({ load: true });
+    shippingMethodAPI
+      .updateShippingMethod({ idShippingMethod: id, [`${name}`]: val })
+      .then(() => {
+        this.setState({
+          load: false,
+          data: this.state.data.map(element => {
+            const { _id } = element;
+            if (id === _id) {
+              element[`${name}`] = val;
+            }
+            return element;
+          }),
+          sendDataStatus: 'success',
+          sendDataMessage: `Success ${val ? 'activated' : 'deactivated'}`
+        });
+      })
+      .catch(err => {
+        this.setState({
+          load: false,
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
+        });
+      });
+  };
 
   triggerDialogWindow = status => {
     this.setState({ openDialog: status });
