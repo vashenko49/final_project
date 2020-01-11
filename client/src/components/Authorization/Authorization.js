@@ -10,7 +10,6 @@ import Box from '@material-ui/core/Box';
 
 import Login from './Login/Login';
 import * as AuthorizationActions from '../../actions/authorizationAction';
-import ThroughSocialNetwork from './ThroughSocialNetwork/ThroughSocialNetwork';
 import SignUp from './SignUp/SignUp';
 
 import './Authorization.scss';
@@ -35,7 +34,7 @@ class Authorization extends Component {
     this.state = {
       isLogIn: true,
       value: 0,
-      tabs: ['Log in', 'Sing Up', 'Social Network'],
+      tabs: ['Log in', 'Sing Up'],
       isForgotPassword: false
     };
   }
@@ -93,7 +92,6 @@ class Authorization extends Component {
                 >
                   <Tab className="tab" label={tabs[0]} {...a11yProps(0)} />
                   <Tab className="tab" label={tabs[1]} {...a11yProps(1)} />
-                  <Tab className="tab" label={tabs[2]} {...a11yProps(2)} />
                 </Tabs>
               </AppBar>
               <TabPanel value={value} index={0}>
@@ -104,9 +102,6 @@ class Authorization extends Component {
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <SignUp />
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                <ThroughSocialNetwork />
               </TabPanel>
             </Grid>
           ) : (

@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import './Login.scss';
 import * as AuthorizationActions from '../../../actions/authorizationAction';
 import TypeLogIn from '../../../services/AuthorizationAPI';
+import ThroughSocialNetwork from '../ThroughSocialNetwork/ThroughSocialNetwork';
 
 class Login extends Component {
   constructor(props) {
@@ -108,6 +109,7 @@ class Login extends Component {
             </Grid>
           </Grid>
         </ValidatorForm>
+        <ThroughSocialNetwork />
       </div>
     );
   }

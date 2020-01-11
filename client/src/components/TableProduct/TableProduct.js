@@ -11,6 +11,7 @@ import cloudinary from 'cloudinary-core';
 import TableContainer from '@material-ui/core/TableContainer';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { Typography } from '@material-ui/core';
 
 class TableProduct extends Component {
   render() {
@@ -22,11 +23,10 @@ class TableProduct extends Component {
           <TableHead>
             <TableRow>
               <TableCell>Name product</TableCell>
-              <TableCell align="right">Image Product</TableCell>
-              <TableCell align="right">Product number</TableCell>
-              <TableCell align="right">Model number</TableCell>
-              <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Price USD</TableCell>
+              <TableCell>Product number</TableCell>
+              <TableCell>Model number</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Price USD</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -46,34 +46,34 @@ class TableProduct extends Component {
               return (
                 <TableRow key={_id + modelNo}>
                   <TableCell component="th" scope="row">
-                    {nameProduct}
+                    <div>
+                      {cloudinary_cloud_name.length <= 0 ? (
+                        <CircularProgress />
+                      ) : (
+                        <img
+                          className="img-check-table"
+                          alt="Not found"
+                          src={new cloudinary.Cloudinary({
+                            cloud_name: cloudinary_cloud_name
+                          }).url(currentImg)}
+                        />
+                      )}
+                      <Typography variant={'body2'}>{nameProduct}</Typography>
+                    </div>
                   </TableCell>
-                  <TableCell align="right">
-                    {cloudinary_cloud_name.length <= 0 ? (
-                      <CircularProgress />
-                    ) : (
-                      <img
-                        className="img-check-table"
-                        alt="Not found"
-                        src={new cloudinary.Cloudinary({
-                          cloud_name: cloudinary_cloud_name
-                        }).url(currentImg)}
-                      />
-                    )}
-                  </TableCell>
-                  <TableCell align="right">{itemNo}</TableCell>
-                  <TableCell align="right">{modelNo}</TableCell>
-                  <TableCell align="right">{quantity}</TableCell>
-                  <TableCell align="right">{currentPrice * quantity}</TableCell>
+                  <TableCell>{itemNo}</TableCell>
+                  <TableCell>{modelNo}</TableCell>
+                  <TableCell>{quantity}</TableCell>
+                  <TableCell>{currentPrice * quantity}</TableCell>
                 </TableRow>
               );
             })}
             <TableRow>
-              <TableCell colSpan={5}>Cost of delivery</TableCell>
+              <TableCell colSpan={4}>Cost of delivery</TableCell>
               <TableCell align="right">{freeDelivery ? '0' : costValue}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={5}>Total</TableCell>
+              <TableCell colSpan={4}>Total</TableCell>
               <TableCell align="right">{totalSum}</TableCell>
             </TableRow>
           </TableBody>

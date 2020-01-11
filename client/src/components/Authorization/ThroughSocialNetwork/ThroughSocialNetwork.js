@@ -4,8 +4,6 @@ import { bindActionCreators } from 'redux';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import GitHubLogin from 'react-github-login';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 
 import './ThroughSocialNetwork.scss';
 import * as AuthorizationActions from '../../../actions/authorizationAction';
@@ -41,47 +39,41 @@ class ThroughSocialNetwork extends Component {
         {errorConfig ? (
           <p>Oops, something went wrong</p>
         ) : loading ? (
-          <Grid container direction="column" justify="center" alignItems="center">
-            <Box m={3}>
-              <GoogleLogin
-                clientId={google_clientID}
-                buttonText="Login"
-                onSuccess={this.responseGoogle}
-                onFailure={failSocial}
-                render={renderProps => (
-                  <button
-                    className="ripple btn"
-                    onClick={renderProps.onClick}
-                    disabled={renderProps.disabled}
-                  >
-                    Google
-                  </button>
-                )}
-                cookiePolicy={'single_host_origin'}
-              />
-            </Box>
-            <Box m={3}>
-              <FacebookLogin
-                textButton="Facebook"
-                appId={facebook_clientID}
-                autoLoad={false}
-                onFailure={failSocial}
-                fields="picture, email, name"
-                callback={this.responseFacebook}
-                cssClass="ripple btn"
-              />
-            </Box>
-            <Box m={3}>
-              <GitHubLogin
-                clientId={github_clientID}
-                redirectUri=""
-                buttonText="GitHub"
-                onSuccess={this.responseGitHub}
-                onFailure={failSocial}
-                className="ripple btn"
-              />
-            </Box>
-          </Grid>
+          <div className="container-social-media">
+            <GoogleLogin
+              clientId={google_clientID}
+              buttonText="Login"
+              onSuccess={this.responseGoogle}
+              onFailure={failSocial}
+              render={renderProps => (
+                <button
+                  className="ripple btn"
+                  onClick={renderProps.onClick}
+                  disabled={renderProps.disabled}
+                >
+                  Google
+                </button>
+              )}
+              cookiePolicy={'single_host_origin'}
+            />
+            <FacebookLogin
+              textButton="Facebook"
+              appId={facebook_clientID}
+              autoLoad={false}
+              onFailure={failSocial}
+              fields="picture, email, name"
+              callback={this.responseFacebook}
+              cssClass="ripple btn"
+            />
+            <GitHubLogin
+              clientId={github_clientID}
+              redirectUri=""
+              buttonText="GitHub"
+              onSuccess={this.responseGitHub}
+              onFailure={failSocial}
+              className="ripple btn"
+            />
+          </div>
         ) : (
           <CircularProgress />
         )}
