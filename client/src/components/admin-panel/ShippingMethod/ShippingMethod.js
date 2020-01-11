@@ -80,6 +80,13 @@ class ShippingMethod extends Component {
   }
 
   componentDidMount() {
+    this.onRefreshData();
+  }
+
+  triggerDialogWindow = status => {
+    this.setState({ openDialog: status });
+  };
+  onRefreshData = () => {
     this.setState({ load: true });
     shippingMethodAPI
       .getShippingMethod()
@@ -94,15 +101,71 @@ class ShippingMethod extends Component {
           sendDataMessage: err.response.data.message
         });
       });
-  }
-
-  triggerDialogWindow = status => {
-    this.setState({ openDialog: status });
   };
-  onRefreshData = () => {};
-  deleteMethod = () => {};
-  updateMethod = () => {};
-  createNewMethod = () => {};
+  deleteMethod = oldData => {
+    const { _id } = oldData;
+    return new Promise((resolve, reject) => {
+      shippingMethodAPI
+        .removeShippingMethod(_id)
+        .then(() => {
+          this.setState({
+            sendDataStatus: 'success',
+            sendDataMessage: 'Success remove shipping method'
+          });
+          this.onRefreshData();
+          resolve();
+        })
+        .catch(err => {
+          this.setState({
+            sendDataStatus: 'error',
+            sendDataMessage: err.response.data.message
+          });
+          reject();
+        });
+    });
+  };
+  updateMethod = data => {
+    this.setState({ load: true });
+    shippingMethodAPI
+      .updateShippingMethod(data)
+      .then(() => {
+        this.setState({
+          openDialog: false,
+          sendDataStatus: 'success',
+          sendDataMessage: 'Success created a new shipping method'
+        });
+        this.onRefreshData();
+      })
+      .catch(err => {
+        this.setState({
+          openDialog: false,
+          load: false,
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
+        });
+      });
+  };
+  createNewMethod = data => {
+    this.setState({ load: true });
+    shippingMethodAPI
+      .createShippingMethod(data)
+      .then(() => {
+        this.setState({
+          openDialog: false,
+          sendDataStatus: 'success',
+          sendDataMessage: 'Success created a new shipping method'
+        });
+        this.onRefreshData();
+      })
+      .catch(err => {
+        this.setState({
+          load: false,
+          openDialog: false,
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
+        });
+      });
+  };
   setLoad = status => {
     this.setState({ load: status });
   };

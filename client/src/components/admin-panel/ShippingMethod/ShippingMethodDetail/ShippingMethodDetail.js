@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import CustomList from './СustomList/СustomList';
 
 import './ShippingMethodDetail.scss';
+import objectToFormData from 'object-to-formdata';
 
 class ShippingMethodDetail extends Component {
   constructor(props) {
@@ -38,9 +39,25 @@ class ShippingMethodDetail extends Component {
   };
 
   activateOrDeactivateDeliveryAddress = data => {
-    const { getDeliveryAddress } = this;
+    const { setLoad } = this.props;
+    setLoad(true);
     DeliveryAddressesAPI.activateOrDeactivateDeliveryAddresses(data).then(() => {
-      getDeliveryAddress();
+      const { idDeliveryAddress, status } = data;
+      this.setState({
+        activeAddress: this.state.activeAddress.map(item => {
+          if (item._id === idDeliveryAddress) {
+            item.enabled = status;
+          }
+          return item;
+        }),
+        address: this.state.address.map(item => {
+          if (item._id === idDeliveryAddress) {
+            item.enabled = status;
+          }
+          return item;
+        })
+      });
+      setLoad(false);
     });
   };
 
@@ -140,6 +157,42 @@ class ShippingMethodDetail extends Component {
     });
   };
 
+  moveToUp = () => {
+    this.setState({
+      activeAddress: this.state.activeAddress.filter(item => {
+        return !item.checked;
+      }),
+      address: this.state.address.concat(
+        this.state.activeAddress
+          .filter(item => {
+            return item.checked;
+          })
+          .map(item => {
+            item.checked = false;
+            return item;
+          })
+      )
+    });
+  };
+
+  moveToDown = () => {
+    this.setState({
+      address: this.state.address.filter(item => {
+        return !item.checked;
+      }),
+      activeAddress: this.state.activeAddress.concat(
+        this.state.address
+          .filter(item => {
+            return item.checked;
+          })
+          .map(item => {
+            item.checked = false;
+            return item;
+          })
+      )
+    });
+  };
+
   compareActiveAddress = otherArray => {
     return function(current) {
       return (
@@ -154,6 +207,33 @@ class ShippingMethodDetail extends Component {
     this.setState({ [`${event.target.value}`]: event.target.checked });
   };
 
+  submit = event => {
+    event.preventDefault();
+    const { submit } = this.props;
+
+    const options = {
+      indices: true,
+      nullsAsUndefineds: true
+    };
+
+    const newData = _.cloneDeep(this.state);
+    delete newData.newImgBase64;
+    delete newData.activeAddress;
+    delete newData.__v;
+    delete newData._id;
+
+    newData.address = newData.address.map(element => {
+      return element._id;
+    });
+
+    if (_.isObject(this.props.rowData)) {
+      newData.idShippingMethod = this.props.rowData._id;
+    }
+
+    const formData = objectToFormData(newData, options);
+    submit(formData);
+  };
+
   render() {
     const {
       onChange,
@@ -163,7 +243,10 @@ class ShippingMethodDetail extends Component {
       handleToggleAllTop,
       handleToggleAllBottom,
       handleCheckTop,
-      handleCheckButton
+      handleCheckButton,
+      moveToUp,
+      moveToDown,
+      submit
     } = this;
     const {
       name,
@@ -179,8 +262,7 @@ class ShippingMethodDetail extends Component {
       newImgBase64,
       activeAddress
     } = this.state;
-
-    const { submit, load } = this.props;
+    const { load } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
     return (
       <Container>
@@ -301,9 +383,10 @@ class ShippingMethodDetail extends Component {
                 accept="image/*"
                 id="raised-button-file"
                 type="file"
+                disabled={load}
               />
               <label htmlFor="raised-button-file">
-                <Button component="span">
+                <Button disabled={load} component="span">
                   {_.isString(imageUrl) && imageUrl.length > 0 ? 'Change logo' : 'Upload Logo'}
                 </Button>
               </label>
@@ -322,20 +405,22 @@ class ShippingMethodDetail extends Component {
               <Button
                 variant="outlined"
                 size="small"
+                onClick={moveToUp}
                 className="transfer-list-btn"
-                disabled={address.length === 0}
-                aria-label="move selected right"
+                disabled={activeAddress.filter(item => item.checked).length === 0 || load}
+                aria-label="move selected left"
               >
-                &gt;
+                &#8593;
               </Button>
               <Button
                 variant="outlined"
                 size="small"
+                onClick={moveToDown}
                 className="transfer-list-btn"
-                disabled={activeAddress.length === 0}
-                aria-label="move selected left"
+                disabled={address.filter(item => item.checked).length === 0 || load}
+                aria-label="move selected right"
               >
-                &lt;
+                &#8595;
               </Button>
             </div>
             <CustomList
@@ -346,6 +431,11 @@ class ShippingMethodDetail extends Component {
               handleToggleAll={handleToggleAllBottom}
               activateOrDeactivateDeliveryAddress={activateOrDeactivateDeliveryAddress}
             />
+          </div>
+          <div className="position-btn-submit">
+            <Button type="submit" disabled={load} variant="contained" color="primary">
+              {_.isObject(this.props.rowData) ? 'Save Changes' : 'Create'}
+            </Button>
           </div>
         </ValidatorForm>
       </Container>

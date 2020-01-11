@@ -11,7 +11,7 @@ export default class shippingMethodAPI {
     return axios.get(`/api//shippingmethods/${id}`).then(res => res.data);
   };
   static updateShippingMethod = data => {
-    return axios.put('/api/shippingmethods').then(res => res.data);
+    return axios.put('/api/shippingmethods', data).then(res => res.data);
   };
   static removeShippingMethod = id => {
     return axios.delete(`/api/shippingmethods/${id}`).then(res => res.data);

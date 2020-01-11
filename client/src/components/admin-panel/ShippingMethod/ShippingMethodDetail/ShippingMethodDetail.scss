@@ -17,12 +17,15 @@
 }
 .transfer-list-btn-container-shipping-method{
   display: flex;
-  flex-direction: column;
   flex-wrap: nowrap;
 }
 .transfer-list-btn{
-  margin: 10px 0;
+  margin: 0 10px !important;
 }
 .container-img{
   margin: 16px 0;
+}
+.position-btn-submit{
+  margin: 21px 0 15px 15px;
+  text-align: end;
 }

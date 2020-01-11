@@ -34,15 +34,15 @@ router.post(
   addShippingMethod
 );
 
-// @route   PUT /shipping-methods/:customId
+// @route   PUT /shipping-methods
 // @desc    Update existing shipping method
 // @access  Private
 router.put(
   "/",[
     passport.authenticate("jwt-admin", {session: false}),
-    check('idShippingMethod','idShippingMethod is require')
+    check('idShippingMethod', 'idShippingMethod is require')
       .not()
-      .isEmpty()
+      .isEmpty(),
   ],
   updateShippingMethod
 );
