@@ -35,9 +35,10 @@
 
 .product-photo {
   grid-area: photo;
+  text-align: center;
 
   img {
-    width: 100%;
+    width: 75%;
     height: 40%;
   }
 }
@@ -64,7 +65,7 @@
   padding: 10px 20px;
 
   .light-btn {
-    width: 44%;
+    width: 30%;
     margin: 10px;
     padding: 10px 0;
     color: black;
@@ -125,6 +126,7 @@
 
   img {
     width: 39%;
+    object-fit: cover;
   }
 
   .checkout-info {
@@ -132,6 +134,10 @@
     flex-direction: column;
     width: 47%;
     margin-left: 19px;
+
+    select {
+      width: 33px;
+    }
   }
 }
 

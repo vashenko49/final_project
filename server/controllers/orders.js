@@ -178,25 +178,34 @@ exports.deleteOrder = async (req, res) => {
 
 exports.getOrdersByCustomer = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({errors: errors.array()});
+    }
+
     const  idCustomer  = req.user._id;
+    const {page, limit}  = req.body;
+    // const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
+    //   .populate('idCustomer')
+    //   .populate({path: 'delivery.idShippingMethod', select: '-address'})
+    //   .populate('delivery.storeAddress')
+    //   .populate('products.productId')
+    // ));
+    //
+    // orders.forEach((element, index) => {
+    //   orders[index].products = element.products.map(element => {
+    //     let indexModel = _.findIndex(element.productId.model, function (o) {
+    //       return o.modelNo == element.modelNo;
+    //     });
+    //     element.modelNo = element.productId.model[indexModel];
+    //     return element;
+    //   });
+    // });
 
-    const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
-      .populate('idCustomer')
-      .populate({path: 'delivery.idShippingMethod', select: '-address'})
-      .populate('delivery.storeAddress')
-      .populate('products.productId')
-    ));
-
-    orders.forEach((element, index) => {
-      orders[index].products = element.products.map(element => {
-        let indexModel = _.findIndex(element.productId.model, function (o) {
-          return o.modelNo == element.modelNo;
-        });
-        element.modelNo = element.productId.model[indexModel];
-        return element;
-      });
+    const orders = await Orders.paginate({"idCustomer": idCustomer},{
+      page: _.isNumber(page) ? page : 1,
+      limit: _.isNumber(limit) ? limit : 9,
     });
-
 
     res.status(200).json(orders);
   } catch (e) {

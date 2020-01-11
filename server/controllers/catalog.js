@@ -2,7 +2,6 @@ const Product = require("../models/Product");
 
 const rootCatalog = require("../models/RootCatalog");
 const childCatalog = require("../models/ChildCatalog");
-const subFilterModel = require('../models/SubFilter');
 const commonCatalog = require('../common/commonCatalog');
 const productModel = require('../models/Product');
 const CommentSchema = require('../models/Comment');

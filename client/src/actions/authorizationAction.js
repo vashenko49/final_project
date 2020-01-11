@@ -85,6 +85,56 @@ export function AuthorizationThroughLocalStorage(token) {
   };
 }
 
+export function updatePersonalData(data) {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_REQUEST
+    });
+    AuthorizationAPI.updatePersonalData(data)
+      .then(res => {
+        return dispatch({
+          type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_SUCCEEDED,
+          payload: res
+        });
+      })
+      .catch(err => {
+        return dispatch({
+          type: AUTHORIZATION.UPDATE_PERSONAL_DATA_API_ERROR,
+          payload: err.response.data.message
+        });
+      });
+  };
+}
+
+export function resetPassword(data) {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.RESET_PASSWORD_API_REQUEST
+    });
+    AuthorizationAPI.resetPassword(data)
+      .then(res => {
+        return dispatch({
+          type: AUTHORIZATION.RESET_PASSWORD_DATA_API_SUCCEEDED,
+          payload: res.message
+        });
+      })
+      .catch(err => {
+        return dispatch({
+          type: AUTHORIZATION.RESET_PASSWORD_DATA_API_ERROR,
+          payload: err.response.data.message
+        });
+      });
+  };
+}
+
+export function resetError() {
+  return dispatch => {
+    dispatch({
+      type: AUTHORIZATION.RESET_ERROR
+    });
+  };
+}
+
 export function signOut() {
   return dispatch => {
     dispatch({

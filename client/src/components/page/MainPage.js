@@ -11,7 +11,7 @@ export default class MainPage extends Component {
         <ImageCarousel />
         <Partners />
         <CatalogOnMainPage />
-        <Link to={'checkout'}>checkout</Link>
+        <Link to={'/personaldata'}>personaldata</Link>
       </div>
     );
   }

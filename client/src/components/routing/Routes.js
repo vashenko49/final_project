@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import AdminPanel from '../admin-panel/AdminPanel';
 import FooterLinkPage from '../FooterLinkPage/FooterLinkPage';
@@ -25,7 +25,7 @@ class Routes extends Component {
         <Route exact exect path="/product/:id" component={ProductPageF} />
         <Route exact exect path="/catalog/:id" component={CatalogPage} />
         <Route exact exect path="/products/search" component={HeaderSearchProductPage} />
-        <Route exact exect path="/cart/:id" component={Cart} />
+        <Route exact exect path="/cart" component={Cart} />
         <Route exact exect path="/passwordrecovery/:token" component={PasswordRecovery} />
         <Route component={NotFound} />
       </Switch>
