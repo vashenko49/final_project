@@ -12,6 +12,9 @@ import Footer from './Footer';
 import FooterDetail from './FooterDetail';
 import Slider from './Slider';
 import SliderDetail from './SliderDetail';
+import PayMethod from './PayMethod/PayMethod';
+import NotFound from '../page/NotFound';
+import ShippingMethod from './ShippingMethod/ShippingMethod';
 
 import StyledLink from '../common/styled/StyledLink';
 
@@ -29,8 +32,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
-import NotFound from '../page/NotFound';
-import PayMethod from './PayMethod/PayMethod';
+import DeliveryAddresses from './DeliveryAddresses/DeliveryAddresses';
+import AdminPanelWelcome from './AdminPanelWelcome/AdminPanelWelcome';
 
 const styles = {};
 
@@ -103,13 +106,23 @@ class AdminPanel extends Component {
                   <StyledLink to="/admin-panel/paymethod">Pay method</StyledLink>
                 </ListItemText>
               </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/shippingmethod">Shipping method</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/deliveryaddresses">Delivery addresses</StyledLink>
+                </ListItemText>
+              </ListItem>
             </List>
             <Divider />
           </Drawer>
 
           <Box m={1}>
             <Switch>
-              <Route exact path="/admin-panel" component={Products} />
+              <Route exact path="/admin-panel" component={AdminPanelWelcome} />
               <Route exact path="/admin-panel/products" component={Products} />
               <Route exact path="/admin-panel/products/new" component={ProductsDetail} />
               <Route exact path="/admin-panel/products/:id" component={ProductsDetail} />
@@ -126,6 +139,8 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/slider/new" component={SliderDetail} />
               <Route exact path="/admin-panel/slider/:id" component={SliderDetail} />
               <Route exact path="/admin-panel/paymethod" component={PayMethod} />
+              <Route exact path="/admin-panel/shippingmethod" component={ShippingMethod} />
+              <Route exact path="/admin-panel/deliveryaddresses" component={DeliveryAddresses} />
               <Route component={NotFound} />
             </Switch>
           </Box>
