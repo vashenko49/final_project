@@ -156,7 +156,6 @@ module.exports = async passport => {
 
       let customersEmail = getUsersEmail.data[0].email;
 
-
       let response = await axios({
         method: 'get',
         url: `https://api.github.com/user`,
@@ -165,7 +164,6 @@ module.exports = async passport => {
         }
       });
 
-
       let fullname = response.data.name.split(' ');
 
       let customer = {
@@ -173,7 +171,7 @@ module.exports = async passport => {
         lastName: fullname[0],
         email: customersEmail,
         avatarUrl: response.data.avatar_url,
-        typeSocial: 3
+        typeSocial: 2
       };
 
       return done(null, customer);
