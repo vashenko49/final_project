@@ -6,7 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { RemoveRedEye, VisibilityOff } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import axios from 'axios';
+import Avatar from '@material-ui/core/Avatar';
 
 import SelectValidatorElemen from './SelectValidatorElemen';
 import * as AuthorizationActions from '../../../actions/authorizationAction';
@@ -28,7 +28,8 @@ class SignUp extends Component {
         userAvatar: null
       },
       passwordIsMasked: true,
-      repeatPasswordIsMasked: true
+      repeatPasswordIsMasked: true,
+      newImgBase64: ''
     };
   }
 
@@ -39,21 +40,39 @@ class SignUp extends Component {
     });
 
     ValidatorForm.addValidationRule('isLoginUse', async value => {
-      let result = await axios.post('/customers/check', {
+      let result = await TypeLogIn.isPassword({
         type: 'login',
         data: value
       });
-      return result.data.status;
+      return !result.status;
     });
 
     ValidatorForm.addValidationRule('isEmailUse', async value => {
-      let result = await axios.post('/customers/check', {
+      let result = await TypeLogIn.isPassword({
         type: 'email',
         data: value
       });
-      return result.data.status;
+      return !result.status;
     });
   }
+
+  handleNewPhoto = event => {
+    const reader = new FileReader();
+    const file = event.target.files[0];
+    reader.addEventListener(
+      'load',
+      () => {
+        this.setState({
+          newImgBase64: reader.result
+        });
+      },
+      false
+    );
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   componentWillUnmount() {
     ValidatorForm.removeValidationRule('isPasswordMatch');
@@ -102,7 +121,8 @@ class SignUp extends Component {
   };
 
   render() {
-    const { formData, passwordIsMasked, repeatPasswordIsMasked } = this.state;
+    const { handleChangeImg, handleNewPhoto } = this;
+    const { formData, passwordIsMasked, repeatPasswordIsMasked, newImgBase64 } = this.state;
     return (
       <ValidatorForm
         ref="form"
@@ -169,21 +189,29 @@ class SignUp extends Component {
             errorMessages={['This field is required']}
           />
         </Box>
-        <Box>
-          <input
-            multiple
-            className="upload-avatar"
-            onChange={this.handleChangeImg}
-            id="raised-button-file"
-            name="userAvatar"
-            type="file"
-          />
-          <label htmlFor="raised-button-file">
-            <Button variant="contained" color="primary" component="span">
-              Upload your avatar
-            </Button>
-          </label>
-        </Box>
+        <div className={newImgBase64.length > 0 ? 'container-upload' : ''}>
+          <Box>
+            <input
+              multiple
+              className="upload-avatar"
+              onChange={event => {
+                handleChangeImg(event);
+                handleNewPhoto(event);
+              }}
+              id="raised-button-file"
+              name="userAvatar"
+              type="file"
+            />
+            <label htmlFor="raised-button-file">
+              <Button variant="contained" color="primary" component="span">
+                Upload your avatar
+              </Button>
+            </label>
+          </Box>
+          {newImgBase64.length > 0 && (
+            <Avatar className={'avatar-upload'} alt="error" src={newImgBase64} />
+          )}
+        </div>
         <TextValidator
           type={passwordIsMasked ? 'password' : 'text'}
           margin="normal"

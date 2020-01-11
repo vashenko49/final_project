@@ -19,6 +19,7 @@ const {
 // @access  Private
 router.post(
   "/",
+  passport.authenticate("jwt-admin", {session: false}),
   check('title', 'Title is required')
     .not()
     .isEmpty(),
@@ -49,6 +50,7 @@ router.get(
 // @access  Private
 router.put(
   "/:id",
+  passport.authenticate("jwt-admin", {session: false}),
   check('title', 'Title is required')
     .not()
     .isEmpty(),
@@ -66,11 +68,11 @@ router.get("/", getLinks);
 // @route   DELETE /links/:id
 // @desc    Delete links group
 // @access  Private
-router.delete("/:id", deleteLinksGroup);
+router.delete("/:id",    passport.authenticate("jwt-admin", {session: false}), deleteLinksGroup);
 
 // @route   DELETE /links/delete/:id
 // @desc    Delete single link in group
 // @access  Private
-router.put("/delete/:id", deleteLink);
+router.put("/delete/:id",    passport.authenticate("jwt-admin", {session: false}), deleteLink);
 
 module.exports = router;

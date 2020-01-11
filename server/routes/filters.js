@@ -29,6 +29,7 @@ const {
 // @access Private
 router.post(
   "/main",[
+    passport.authenticate("jwt-admin", {session: false}),
   check('type', 'Type is required')
     .not()
     .isEmpty(),
@@ -43,6 +44,7 @@ router.post(
 // @access Private
 router.put(
   "/main", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_id', 'Filters id is required')
       .not()
       .isEmpty()],
@@ -54,6 +56,7 @@ router.put(
 router.put(
   '/main/activateordeactivate',
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idFilter', '_idFilter')
       .not()
       .isEmpty(),
@@ -94,6 +97,7 @@ router.get(
 // @access  Private
 router.delete(
   "/main/:_id",
+  passport.authenticate("jwt-admin", {session: false}),
   deleteFilter
 );
 
@@ -103,6 +107,7 @@ router.delete(
 // @access  Private
 router.put(
   "/main/many",
+  passport.authenticate("jwt-admin", {session: false}),
   check('_idFiltersForDeletion','_idFiltersForDeletion is require'),
   removeManyFilters
 );
@@ -115,6 +120,7 @@ router.put(
 // @access Private
 router.post(
   "/sub",[
+    passport.authenticate("jwt-admin", {session: false}),
     check('name', 'Name is required')
       .not()
       .isEmpty(),
@@ -126,6 +132,7 @@ router.post(
 // @access Private
 router.post(
   "/sub/many",[
+    passport.authenticate("jwt-admin", {session: false}),
     check('names', 'Name is required')
       .isArray(),
   ],
@@ -136,6 +143,7 @@ router.post(
 // @access Private
 router.put(
   "/sub",[
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idSubFilter', 'id SubFilter is required')
       .not()
       .isEmpty(),
@@ -173,6 +181,7 @@ router.get(
 // @access  Private
 router.delete(
   "/sub/:_idSubfilter",
+  passport.authenticate("jwt-admin", {session: false}),
   deleteSubFilter
 );
 
@@ -181,6 +190,7 @@ router.delete(
 // @access  Private
 router.put(
   "/sub/many",
+  passport.authenticate("jwt-admin", {session: false}),
   check('_idSubFiltersForDeletion','_idSubFiltersForDeletion is require')
     .not()
     .notEmpty(),

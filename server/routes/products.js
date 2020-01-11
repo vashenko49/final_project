@@ -10,6 +10,7 @@ const {
   updateProduct,
   updateModelForProduct,
   getProducts,
+  getProductsActive,
   deleteProduct,
   deleteModelProduct,
   getProductById,
@@ -25,6 +26,7 @@ const {
 // @access  Private
 router.post(
   "/", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('nameProduct', 'nameProduct is required')
       .not()
       .isEmpty(),
@@ -41,6 +43,7 @@ router.post(
 router.post(
   "/model",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idProduct', 'Id product is require')
       .not()
       .isEmpty(),
@@ -61,6 +64,7 @@ router.post(
 // @access  Private
 router.put(
   "/",
+  passport.authenticate("jwt-admin", {session: false}),
   check('_idProduct', '_idProduct is required')
     .not()
     .isEmpty(),
@@ -73,6 +77,7 @@ router.put(
 router.put(
   '/activateordeactivate',
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idProduct', '_idProduct is require')
       .not()
       .isEmpty(),
@@ -88,6 +93,7 @@ router.put(
 // @access  Private
 router.put(
   "/model", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idProduct', '_idProduct is required')
       .not()
       .isEmpty(),
@@ -105,6 +111,7 @@ router.put(
 router.put(
   '/model/activateordeactivate',
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idProduct', '_idProduct is require')
       .not()
       .isEmpty(),
@@ -153,18 +160,25 @@ router.get(
 
 // @route   GET /products
 // @desc    GET existing products
-// @access  Public
+// @access  Private
 router.get("/", getProducts);
+
+
+// @route   GET /products
+// @desc    GET existing products
+// @access  Public
+router.get("/", getProductsActive);
+
 
 // @route   DELETE /products/:id
 // @desc    Delete product
 // @access  Private
-router.delete("/:id", deleteProduct);
+router.delete("/:id",    passport.authenticate("jwt-admin", {session: false}), deleteProduct);
 
 // @route   DELETE /products/model/:id/:modelno
 // @desc    Delete product
 // @access  Private
-router.delete("/model/:id/:modelno", deleteModelProduct);
+router.delete("/model/:id/:modelno",    passport.authenticate("jwt-admin", {session: false}), deleteModelProduct);
 
 
 module.exports = router;

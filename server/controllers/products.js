@@ -539,6 +539,38 @@ exports.getProducts = async (req, res, next) => {
   }
 };
 
+exports.getProductsActive = async (req, res, next) => {
+  try {
+    let products = await Product.find({enabled:true})
+        .populate({
+          path: "_idChildCategory",
+          select: "-filters",
+          populate: {
+            path: "parentId"
+          }
+        })
+        .populate({
+          path: "filters.filter",
+          select: "enabled _id type serviceName"
+        })
+        .populate({
+          path: "filters.subFilter"
+        })
+        .populate({
+          path: "model.filters.filter",
+          select: "enabled _id type serviceName"
+        })
+        .populate({
+          path: "model.filters.subFilter"
+        });
+    res.status(200).json(products);
+  } catch (e) {
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
+};
+
 exports.getProductById = async (req, res, next) => {
   try {
     const {id} = req.params;
@@ -587,7 +619,7 @@ exports.getProductById = async (req, res, next) => {
 exports.searchProductsHeader = async (req, res, next) => {
   try {
     const {searchheader} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(searchheader)}})
+    const products = await Product.find({$and:[{"nameProduct": {$regex: decodeURI(searchheader)}},{enabled : true }]})
       .limit(5)
       .populate({
         path: "_idChildCategory",
@@ -626,7 +658,7 @@ exports.searchProductsHeader = async (req, res, next) => {
 exports.searchProducts = async (req, res, next) => {
   try {
     const {search} = req.params;
-    const products = await Product.find({"nameProduct": {$regex: decodeURI(search)}})
+    const products = await Product.find({ $and: [{"nameProduct": {$regex: decodeURI(search)}},{enabled : true } ]})
       .populate({
         path: "_idChildCategory",
         select: "-filters",
@@ -681,6 +713,9 @@ exports.getProductsFilterParams = async (req, res, next) => {
       $and: [
         {
           "_idChildCategory": idCatalog
+        },
+        {
+          "enabled" : true
         }
       ]
     };

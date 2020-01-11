@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {check} = require('express-validator');
-
+const passport = require("passport");
 
 const {
   addSlide,
@@ -19,6 +19,7 @@ const {
 router.post(
   "/",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('title','title is require')
       .not()
       .isEmpty(),
@@ -37,6 +38,7 @@ router.post(
 // @access  Private
 router.put(
   "/",[
+    passport.authenticate("jwt-admin", {session: false}),
     check("idSlides","idSlides is require")
       .not()
       .isEmpty()
@@ -49,6 +51,7 @@ router.put(
 // @access  Private
 router.put(
   "/activateordeactivate", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('idSlides', 'idSlides is require')
       .not()
       .isEmpty(),
@@ -63,13 +66,14 @@ router.put(
 // @access  Private
 router.delete(
   "/:idSlides",
+  passport.authenticate("jwt-admin", {session: false}),
   deleteSlide
 );
 
 // @route   GET /slides
 // @desc    GET existing slides
 // @access  Public
-router.get("/", getSlides);
+router.get("/",    passport.authenticate("jwt-admin", {session: false}), getSlides);
 
 // @route   GET /slides/active
 // @desc    GET active existing slides

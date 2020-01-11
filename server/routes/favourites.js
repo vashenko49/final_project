@@ -28,6 +28,7 @@ router.get(
   getFavourites
 );
 
+
 // @route   GET /favourites/:idProduct
 // @desc    Get favourites list  by user
 // @access  Public

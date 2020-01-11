@@ -2,30 +2,30 @@ import axios from 'axios';
 
 export default class AdminCategoriesAPI {
   static getCategories() {
-    return axios.get(`/catalog/hierarchy`);
+    return axios.get(`/api/catalog/hierarchy`);
   }
 
   static getCategoriesById(id) {
-    return axios.get(`/catalog/hierarchy/one/${id}`);
+    return axios.get(`/api/catalog/hierarchy/one/${id}`);
   }
 
   static createCategories(data) {
-    return axios.post(`/catalog/hierarchy`, data);
+    return axios.post(`/api/catalog/hierarchy`, data);
   }
 
   static updateCategories(data) {
-    return axios.put(`/catalog/hierarchy`, data);
+    return axios.put(`/api/catalog/hierarchy`, data);
   }
 
   static deleteRootCategory(id) {
-    return axios.delete(`/catalog/root/${id}`);
+    return axios.delete(`/api/catalog/root/${id}`);
   }
 
   static deleteSubCategory(id) {
-    return axios.delete(`/catalog/child/${id}`);
+    return axios.delete(`/api/catalog/child/${id}`);
   }
 
   static deleteFilter(idChildCatalog, idFilter) {
-    return axios.delete(`/catalog/child/filter/${idChildCatalog}/${idFilter}`);
+    return axios.delete(`/api/catalog/child/filter/${idChildCatalog}/${idFilter}`);
   }
 }

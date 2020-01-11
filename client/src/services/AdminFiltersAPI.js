@@ -2,11 +2,11 @@ import axios from 'axios';
 
 export default class AdminFiltersAPI {
   static getFilters() {
-    return axios.get(`/filters/main/all`);
+    return axios.get(`/api/filters/main/all`);
   }
 
   static getFiltersById(id) {
-    return axios.get(`/filters/main/one/${id}`);
+    return axios.get(`/api/filters/main/one/${id}`);
   }
 
   static createFilters(data) {
@@ -16,7 +16,7 @@ export default class AdminFiltersAPI {
       _idSubFilters: data.subFilters.map(item => ({ name: item }))
     };
 
-    return axios.post(`/filters/main`, sendData);
+    return axios.post(`/api/filters/main`, sendData);
   }
 
   static updateFilters(data) {
@@ -28,14 +28,14 @@ export default class AdminFiltersAPI {
       enabled: data.enabledFilter
     };
 
-    return axios.put(`/filters/main`, sendData);
+    return axios.put(`/api/filters/main`, sendData);
   }
 
   static deleteFilters(id) {
-    return axios.delete(`/filters/main/${id}`);
+    return axios.delete(`/api/filters/main/${id}`);
   }
 
   static deleteSubFilters(id) {
-    return axios.delete(`/filters/sub/${id}`);
+    return axios.delete(`/api/filters/sub/${id}`);
   }
 }
