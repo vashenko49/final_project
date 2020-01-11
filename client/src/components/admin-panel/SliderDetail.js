@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import AdminFooterAPI from '../../services/AdminFooterAPI';
+import AdminSliderAPI from '../../services/AdminSliderAPI';
 
 import SliderDetailForm from './SliderDetailForm.js';
 
@@ -26,8 +26,10 @@ const styles = theme => ({
 
 class SliderDetail extends Component {
   state = {
-    groupLink: '',
-    links: [],
+    title: '',
+    product: '',
+    productsList: [],
+    description: '',
     typeForm: 'create',
     idUpdate: null,
     sendDataStatus: 'success',
@@ -39,68 +41,35 @@ class SliderDetail extends Component {
     this.setState({ isLoading: state });
   };
 
-  newObjLink = () => ({
-    id: new Date().getTime().toString(),
-    description: '',
-    htmlPage: ''
-  });
-
-  onChangeValue = (name, val, idLink) => {
-    const { links } = this.state;
-
-    if (name === 'description' || name === 'htmlPage') {
-      this.setState({
-        links: links.map(i => (i.id === idLink ? { ...i, [name]: val } : i))
-      });
-    } else {
-      this.setState({ [name]: val });
-    }
-  };
-
-  onAddLink = () => {
-    this.setState({
-      links: [...this.state.links, this.newObjLink()]
-    });
-  };
-
-  onClickDelete = e => {
-    e.stopPropagation();
-
-    this.setState({
-      links: this.state.links.filter(i => i.id !== e.currentTarget.getAttribute('datakey'))
-    });
+  onChangeValue = (name, val) => {
+    this.setState({ [name]: val });
   };
 
   onSubmitForm = async () => {
     try {
       this.setIsLoading(true);
 
-      const { groupLink, links, idUpdate, typeForm } = this.state;
+      const { title, description, product, typeForm, idUpdate } = this.state;
 
       const sendData = {
-        title: groupLink,
-        enabled: true,
-        links: links.map(i => ({
-          enabled: true,
-          description: i.description,
-          customId: i.description.toLowerCase().replace(/\W|\d/gi, '_'),
-          url: `/links/content/${i.description.toLowerCase().replace(/\W|\d/gi, '_')}`,
-          htmlContent: i.htmlPage
-        }))
+        title,
+        description,
+        product,
+        enabled: true
       };
 
       if (typeForm === 'create') {
-        await AdminFooterAPI.createFooter(sendData);
+        await AdminSliderAPI.createSlider(sendData);
       }
-      if (typeForm === 'update') {
-        await AdminFooterAPI.updateFooter(idUpdate, sendData);
+      if (typeForm === 'updateSlider') {
+        await AdminSliderAPI.updateFooter(idUpdate, sendData);
       }
 
       this.setIsLoading(false);
 
       this.setState({
         sendDataStatus: 'success',
-        sendDataMessage: `${groupLink} link has been ${typeForm}!`
+        sendDataMessage: `${title} link has been ${typeForm}!`
       });
     } catch (err) {
       this.setIsLoading(false);
@@ -126,18 +95,9 @@ class SliderDetail extends Component {
       if (id) {
         this.setState({ typeForm: 'update', idUpdate: id });
 
-        const { data } = await AdminFooterAPI.getFooterById(id);
+        const { data } = await AdminSliderAPI.getSliderById(id);
 
-        this.setState({
-          groupLink: data.title,
-          links: data.links.map(i => ({
-            id: i._id,
-            description: i.description,
-            htmlPage: i.htmlContent
-          }))
-        });
-      } else {
-        this.setState({ links: [this.newObjLink()] });
+        this.setState({});
       }
 
       this.setIsLoading(false);
@@ -153,7 +113,15 @@ class SliderDetail extends Component {
 
   render() {
     const { classes } = this.props;
-    const { groupLink, links, sendDataStatus, sendDataMessage, isLoading } = this.state;
+    const {
+      title,
+      product,
+      productsList,
+      description,
+      sendDataStatus,
+      sendDataMessage,
+      isLoading
+    } = this.state;
 
     return (
       <Container maxWidth="md">
@@ -169,15 +137,13 @@ class SliderDetail extends Component {
             </Typography>
           </Button>
           <SliderDetailForm
-            groupLink={groupLink}
-            links={links}
+            title={title}
+            description={description}
+            product={product}
+            productsList={productsList}
             onChangeValue={this.onChangeValue}
-            onClickDelete={this.onClickDelete}
-            onAddLink={this.onAddLink}
             onSubmitForm={this.onSubmitForm}
-            onSubmitFormDisabled={
-              !!(links.find(i => !i.description || !i.htmlPage.length) || !groupLink)
-            }
+            onSubmitFormDisabled={!!(!title.length || !description.length || !product.length)}
           />
 
           <SnackBars

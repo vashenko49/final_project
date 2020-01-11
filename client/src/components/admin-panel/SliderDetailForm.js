@@ -25,6 +25,7 @@ const SliderDetailForm = ({
   title,
   description,
   product,
+  productsList,
   onChangeValue,
   onSubmitForm,
   onSubmitFormDisabled
@@ -58,6 +59,9 @@ const SliderDetailForm = ({
       <Autocomplete
         id="product"
         value={product}
+        options={productsList}
+        getOptionLabel={option => option}
+        defaultValue={product}
         onChange={(e, newValue) => onChangeValue('product', newValue)}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
@@ -68,7 +72,7 @@ const SliderDetailForm = ({
           <TextField
             {...params}
             required
-            error={product.length}
+            error={!product.length}
             variant="outlined"
             label="Product"
             placeholder="Enter product"
@@ -99,6 +103,7 @@ SliderDetailForm.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   product: PropTypes.string.isRequired,
+  productsList: PropTypes.array.isRequired,
   onChangeValue: PropTypes.func.isRequired,
   onSubmitForm: PropTypes.func.isRequired,
   onSubmitFormDisabled: PropTypes.bool.isRequired
@@ -109,6 +114,7 @@ SliderDetailForm.defaultProps = {
   title: '',
   description: '',
   product: '',
+  productsList: [],
   onChangeValue: () => {},
   onSubmitForm: () => {},
   onSubmitFormDisabled: true

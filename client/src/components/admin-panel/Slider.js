@@ -225,7 +225,7 @@ class Slider extends Component {
           ]}
           onRowClick={this.onRowClick}
         />
-        <BtnCreateAdmin to="/admin-panel/footer/new" />
+        <BtnCreateAdmin to="/admin-panel/slider/new" />
 
         <SnackBars
           handleClose={this.handleCloseSnackBars}
@@ -236,7 +236,7 @@ class Slider extends Component {
 
         <Preloader open={isLoading} />
 
-        {this.state.clickId ? <Redirect to={`/admin-panel/Footer/${clickId}`} push={true} /> : null}
+        {this.state.clickId ? <Redirect to={`/admin-panel/slider/${clickId}`} push={true} /> : null}
       </>
     );
   }

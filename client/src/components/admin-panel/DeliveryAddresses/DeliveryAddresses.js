@@ -240,7 +240,7 @@ class DeliveryAddresses extends Component {
     return (
       <>
         <MaterialTable
-          title="Pay Method"
+          title="Delivery addresses"
           icons={tableIcons}
           columns={columns}
           data={data}
