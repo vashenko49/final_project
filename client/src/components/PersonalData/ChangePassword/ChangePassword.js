@@ -10,6 +10,9 @@ import { connect } from 'react-redux';
 import DialogTextWindow from '../DialogTextWindow/DialogTextWindow';
 import AuthorizationAPI from '../../../services/AuthorizationAPI';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Typography } from '@material-ui/core';
+
+import './ChangePassword.scss';
 
 class ChangePassword extends Component {
   constructor(props) {
@@ -18,7 +21,8 @@ class ChangePassword extends Component {
       currentPassword: { data: '', status: true },
       newPasswordOne: { data: '', status: true },
       newPasswordTwo: { data: '', status: true },
-      isOldPassword: true
+      isOldPassword: true,
+      response: ''
     };
   }
   componentDidMount() {
@@ -72,117 +76,137 @@ class ChangePassword extends Component {
     });
   };
 
+  activeAccount = () => {
+    AuthorizationAPI.enablesAccountCustom()
+      .then(res => {
+        this.setState({ response: res.message });
+      })
+      .catch(err => {
+        this.setState({ response: err.response.data.message });
+      });
+  };
+
   render() {
-    const { submit, togglePasswordMask, handleChange } = this;
-    const { currentPassword, newPasswordOne, newPasswordTwo, isOldPassword } = this.state;
+    const { submit, togglePasswordMask, handleChange, activeAccount } = this;
+    const { currentPassword, newPasswordOne, newPasswordTwo, isOldPassword, response } = this.state;
     const { resetError } = this.props;
-    const { load, error } = this.props.authorization;
+    const { load, error, enabled } = this.props.authorization;
     return (
-      <ValidatorForm ref="form" onSubmit={submit}>
-        {isOldPassword && (
+      <div>
+        <ValidatorForm ref="form" onSubmit={submit}>
+          {isOldPassword && (
+            <TextValidator
+              type={currentPassword.status ? 'password' : 'text'}
+              margin="normal"
+              label="Current password"
+              onChange={handleChange}
+              name="currentPassword"
+              fullWidth
+              variant="outlined"
+              value={currentPassword.data}
+              disabled={load}
+              validators={['required']}
+              errorMessages={['This field is required']}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment
+                    position="end"
+                    data-name={'currentPassword'}
+                    onClick={togglePasswordMask}
+                    className="password-eyes"
+                  >
+                    {currentPassword.status ? <RemoveRedEye /> : <VisibilityOff />}
+                  </InputAdornment>
+                )
+              }}
+            />
+          )}
+
           <TextValidator
-            type={currentPassword.status ? 'password' : 'text'}
+            type={newPasswordOne.status ? 'password' : 'text'}
             margin="normal"
-            label="Current password"
+            label="New Password"
             onChange={handleChange}
-            name="currentPassword"
+            name="newPasswordOne"
             fullWidth
             variant="outlined"
-            value={currentPassword.data}
             disabled={load}
+            value={newPasswordOne.data}
             validators={['required']}
             errorMessages={['This field is required']}
             InputProps={{
               endAdornment: (
                 <InputAdornment
                   position="end"
-                  data-name={'currentPassword'}
+                  data-name={'newPasswordOne'}
                   onClick={togglePasswordMask}
                   className="password-eyes"
                 >
-                  {currentPassword.status ? <RemoveRedEye /> : <VisibilityOff />}
+                  {newPasswordOne.status ? <RemoveRedEye /> : <VisibilityOff />}
                 </InputAdornment>
               )
             }}
           />
+          <TextValidator
+            type={newPasswordTwo.status ? 'password' : 'text'}
+            margin="normal"
+            label="Confirm new password"
+            onChange={handleChange}
+            name="newPasswordTwo"
+            fullWidth
+            disabled={load}
+            variant="outlined"
+            value={newPasswordTwo.data}
+            validators={['required', 'isPasswordMatch']}
+            errorMessages={['This field is required', 'isPasswordMatch']}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  data-name={'newPasswordTwo'}
+                  onClick={togglePasswordMask}
+                  className="password-eyes"
+                >
+                  {newPasswordTwo.status ? <RemoveRedEye /> : <VisibilityOff />}
+                </InputAdornment>
+              )
+            }}
+          />
+          <Button
+            type="submit"
+            disabled={
+              !_.findKey(this.state, function(o) {
+                const { data } = o;
+                if (_.isString(data)) {
+                  return o.data.length > 0;
+                } else {
+                  return true;
+                }
+              }) || load
+            }
+            variant="contained"
+            color="primary"
+          >
+            Save Changes
+          </Button>
+          {load && <CircularProgress className="preloader" />}
+          <DialogTextWindow
+            open={error.length > 0}
+            onClose={() => {
+              resetError();
+            }}
+            error={error}
+          />
+        </ValidatorForm>
+        {!enabled && (
+          <div className="container-active-account">
+            {_.isString(response) && response.length > 0 && <Typography>{response}</Typography>}
+            <Button onClick={activeAccount} variant="contained" color="primary">
+              Active account
+            </Button>
+          </div>
         )}
-
-        <TextValidator
-          type={newPasswordOne.status ? 'password' : 'text'}
-          margin="normal"
-          label="New Password"
-          onChange={handleChange}
-          name="newPasswordOne"
-          fullWidth
-          variant="outlined"
-          disabled={load}
-          value={newPasswordOne.data}
-          validators={['required']}
-          errorMessages={['This field is required']}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                data-name={'newPasswordOne'}
-                onClick={togglePasswordMask}
-                className="password-eyes"
-              >
-                {newPasswordOne.status ? <RemoveRedEye /> : <VisibilityOff />}
-              </InputAdornment>
-            )
-          }}
-        />
-        <TextValidator
-          type={newPasswordTwo.status ? 'password' : 'text'}
-          margin="normal"
-          label="Confirm new password"
-          onChange={handleChange}
-          name="newPasswordTwo"
-          fullWidth
-          disabled={load}
-          variant="outlined"
-          value={newPasswordTwo.data}
-          validators={['required', 'isPasswordMatch']}
-          errorMessages={['This field is required', 'isPasswordMatch']}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                data-name={'newPasswordTwo'}
-                onClick={togglePasswordMask}
-                className="password-eyes"
-              >
-                {newPasswordTwo.status ? <RemoveRedEye /> : <VisibilityOff />}
-              </InputAdornment>
-            )
-          }}
-        />
-        <Button
-          type="submit"
-          disabled={
-            !_.findKey(this.state, function(o) {
-              const { data } = o;
-              if (_.isString(data)) {
-                return o.data.length > 0;
-              } else {
-                return true;
-              }
-            }) || load
-          }
-          variant="contained"
-          color="primary"
-        >
-          Save Changes
-        </Button>
-        {load && <CircularProgress className="preloader" />}
-        <DialogTextWindow
-          open={error.length > 0}
-          onClose={() => {
-            resetError();
-          }}
-          error={error}
-        />
-      </ValidatorForm>
+      </div>
     );
   }
 }

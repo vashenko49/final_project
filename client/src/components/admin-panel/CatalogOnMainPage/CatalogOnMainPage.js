@@ -60,6 +60,31 @@ class CatalogOnMainPage extends Component {
     this.onRefreshData();
   }
 
+  handleSwitch = (name, id, val) => {
+    this.setState({ load: true });
+    CatalogAPI.updateChildCatalog({ _id: id, [`${name}`]: val })
+      .then(() => {
+        this.setState({
+          load: false,
+          data: this.state.data.map(element => {
+            const { _id } = element;
+            if (id === _id) {
+              element[`${name}`] = val;
+            }
+            return element;
+          }),
+          sendDataStatus: 'success',
+          sendDataMessage: `Success ${val ? 'activated' : 'deactivated'}`
+        });
+      })
+      .catch(err => {
+        this.setState({
+          load: false,
+          sendDataStatus: 'error',
+          sendDataMessage: err.response.data.message
+        });
+      });
+  };
   onRefreshData = () => {
     this.setState({ load: true });
     CatalogAPI.getChildCatalogs()
@@ -116,7 +141,7 @@ class CatalogOnMainPage extends Component {
     return (
       <>
         <MaterialTable
-          title="Customers"
+          title="Catalog on main page"
           icons={tableIcons}
           columns={columns}
           data={data}

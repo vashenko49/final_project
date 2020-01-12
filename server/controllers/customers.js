@@ -90,6 +90,34 @@ exports.createCustomer = async (req, res) => {
   }
 };
 
+exports.enablesAccountCustom = async (req, res)=>{
+  try {
+    const {_id, firstName, enabled, email} = req.user;
+    let tokenEmailConfirmUser = await jwt.sign(
+      {_id: _id},
+      process.env.JWT_EMAIL_SECRET,
+      {
+        expiresIn: 1800
+      }
+    );
+
+    if(enabled){
+     return  res.status(400).json({
+       message: 'Your account is enabled'
+     });
+    }
+
+    let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
+
+    await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
+    res.status(200).json({message:"Checked your email"});
+  }catch (e) {
+    res.status(400).json({
+      message: e.message
+    });
+  }
+};
+
 exports.isPassword = async (req, res) => {
   try {
     const {_id} = req.user;
