@@ -34,6 +34,7 @@ import DeliveryAddresses from './DeliveryAddresses/DeliveryAddresses';
 import AdminPanelWelcome from './AdminPanelWelcome/AdminPanelWelcome';
 import Customers from './Customers/Customer';
 import CatalogOnMainPage from './CatalogOnMainPage/CatalogOnMainPage';
+import Partner from './Partner/Partner';
 
 const styles = {};
 
@@ -121,6 +122,11 @@ class AdminPanel extends Component {
                   <StyledLink to="/admin-panel/catalogonmainpage">Catalog On Main Page</StyledLink>
                 </ListItemText>
               </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/partner">Partner</StyledLink>
+                </ListItemText>
+              </ListItem>
             </List>
             <Divider />
           </Drawer>
@@ -145,6 +151,7 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/deliveryaddresses" component={DeliveryAddresses} />
               <Route exact path="/admin-panel/customers" component={Customers} />
               <Route exact path="/admin-panel/catalogonmainpage" component={CatalogOnMainPage} />
+              <Route exact path="/admin-panel/partner" component={Partner} />
               <Route component={NotFound} />
             </Switch>
           </Box>
