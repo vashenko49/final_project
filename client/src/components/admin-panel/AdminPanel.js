@@ -35,6 +35,7 @@ import AdminPanelWelcome from './AdminPanelWelcome/AdminPanelWelcome';
 import Customers from './Customers/Customer';
 import CatalogOnMainPage from './CatalogOnMainPage/CatalogOnMainPage';
 import Partner from './Partner/Partner';
+import ConfigSystem from './ConfigSystem/ConfigSystem';
 
 const styles = {};
 
@@ -127,6 +128,11 @@ class AdminPanel extends Component {
                   <StyledLink to="/admin-panel/partner">Partner</StyledLink>
                 </ListItemText>
               </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
+                  <StyledLink to="/admin-panel/config">Configuration system</StyledLink>
+                </ListItemText>
+              </ListItem>
             </List>
             <Divider />
           </Drawer>
@@ -152,6 +158,7 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/customers" component={Customers} />
               <Route exact path="/admin-panel/catalogonmainpage" component={CatalogOnMainPage} />
               <Route exact path="/admin-panel/partner" component={Partner} />
+              <Route exact path="/admin-panel/config" component={ConfigSystem} />
               <Route component={NotFound} />
             </Switch>
           </Box>
