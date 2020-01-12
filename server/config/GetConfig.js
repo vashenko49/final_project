@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 let ConfigSchema = require('../models/Config');
 let ConfigDataBAse = require('./ConfigDataBase');
 
-module.exports = (nameConfigFile) => {
+module.exports = () => {
   return new Promise((resolve, reject) => {
 
-    ConfigSchema.findOne({customId: nameConfigFile}).then(config => {
+    ConfigSchema.findOne({'active':true}).then(config => {
       if (!config) {
-        throw (`${nameConfigFile} configuration not found`);
+        throw (`The active configuration not found`);
       }
       let mode = 'development';
 

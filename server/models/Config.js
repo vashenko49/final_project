@@ -8,6 +8,11 @@ const ConfigSchema = new Schema({
     type: String,
     require: true
   },
+  active:{
+    type:Boolean,
+    require:true,
+    default: false
+  },
   development: {
     domen: {
       domenServer: {

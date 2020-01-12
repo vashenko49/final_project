@@ -531,6 +531,7 @@ exports.getProducts = async (req, res, next) => {
       .populate({
         path: "model.filters.subFilter"
       });
+
     res.status(200).json(products);
   } catch (e) {
     res.status(500).json({
