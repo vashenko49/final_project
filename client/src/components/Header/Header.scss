@@ -6,6 +6,14 @@
   margin: 0 10%;
   padding: 20px 0;
 
+  &-sidebar {
+    display: inherit;
+  }
+
+  &-navbar {
+    display: none;
+  }
+
   .header-logo {
     font-size: 26px;
   }
@@ -26,6 +34,14 @@
   .search-input {
     width: 300px;
   }
+
+  &-user-menu {
+    display: none;
+  }
+
+  &-navbar-buttons {
+    display: flex;
+  }
 }
 
 .search-popup-item {
@@ -39,4 +55,32 @@
 .avatar-user{
   width: 25px;
   object-fit: cover;
+}
+
+.sidebar-user-menu {
+  display: inherit;
+}
+
+@media screen and (min-width: 900px) {
+  .header {
+    &-user-menu {
+      display: inherit;
+    }
+  }
+
+  .sidebar-user-menu {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .header {
+    &-sidebar {
+      display: none;
+    }
+
+    &-navbar {
+      display: inherit;
+    }
+  }
 }
