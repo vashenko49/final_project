@@ -54,6 +54,7 @@ router.get(
 // @access  Public
 router.post(
   '/hierarchy', [
+    passport.authenticate("jwt-admin", {session: false}),
     check('nameRootCatalog', 'nameRootCatalog is require')
       .not()
       .isEmpty(),
@@ -68,6 +69,7 @@ router.post(
 // @access  Public
 router.put(
   '/hierarchy',
+  passport.authenticate("jwt-admin", {session: false}),
   updateRootChildCatalogAndAddFilterId
 );
 
@@ -77,6 +79,7 @@ router.put(
 // @access  Private
 router.post(
   "/root/", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('name', "Name is require")
       .not()
       .isEmpty()
@@ -90,6 +93,7 @@ router.post(
 router.put(
   '/root/activateordeactivate',
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idRootCatalog', '_idRootCatalog')
       .not()
       .isEmpty(),
@@ -105,6 +109,7 @@ router.put(
 router.put(
   "/root",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('name', "Name is require")
       .not()
       .isEmpty(),
@@ -120,6 +125,7 @@ router.put(
 // @access  Private
 router.delete(
   "/root/:_idrootcatalog",
+  passport.authenticate("jwt-admin", {session: false}),
   deleteROOTCatalog
 );
 
@@ -128,6 +134,7 @@ router.delete(
 // @access  Private
 router.get(
   "/root/private",
+  passport.authenticate("jwt-admin", {session: false}),
   getROOTCategories
 );
 
@@ -136,6 +143,7 @@ router.get(
 // @access  Private
 router.get(
   "/root/private/:_idrootcatalog",
+  passport.authenticate("jwt-admin", {session: false}),
   getROOTCategory
 );
 
@@ -162,6 +170,7 @@ router.get(
 // @access  Private
 router.post(
   "/child", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('name', "Name is require")
       .not()
       .isEmpty(),
@@ -177,6 +186,7 @@ router.post(
 // @access  Private
 router.put(
   "/child", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_id', "Id child catalog is require")
       .not()
       .isEmpty()
@@ -190,6 +200,7 @@ router.put(
 router.put(
   '/child/activateordeactivate',
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('_idChildCatalog', '_idChildCatalog')
       .not()
       .isEmpty(),
@@ -205,11 +216,13 @@ router.put(
 // @access  Private
 router.delete(
   "/child/:id",
+  passport.authenticate("jwt-admin", {session: false}),
   deleteChildCatalog
 );
 
 router.delete(
   '/child/filter/:_idChildCatalog/:_idFilter',
+  passport.authenticate("jwt-admin", {session: false}),
   deleteChildCatalogFilter
 );
 
@@ -218,6 +231,7 @@ router.delete(
 // @access  Private
 router.get(
   "/child/private",
+  passport.authenticate("jwt-admin", {session: false}),
   getChildCategories
 );
 
@@ -226,6 +240,7 @@ router.get(
 // @access  Private
 router.get(
   "/child/private/:_idchildcatalog",
+  passport.authenticate("jwt-admin", {session: false}),
   getChildCategory
 );
 
@@ -234,6 +249,7 @@ router.get(
 // @access  Private
 router.get(
   "/child/private/idparent/:_idrootcatalog",
+  passport.authenticate("jwt-admin", {session: false}),
   getChildCategoriesWithRootID
 );
 

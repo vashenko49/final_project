@@ -3,7 +3,7 @@ import axios from 'axios';
 export default class AuthorizationAPI {
   static responseGoogle = response => {
     return axios
-      .post('/customers/google', {
+      .post('/api/customers/google', {
         access_token: response.accessToken
       })
       .then(value => value.data);
@@ -11,7 +11,7 @@ export default class AuthorizationAPI {
 
   static responseFacebook = response => {
     return axios
-      .post('/customers/facebook', {
+      .post('/api/customers/facebook', {
         access_token: response.accessToken,
         client_id: response.id
       })
@@ -20,18 +20,18 @@ export default class AuthorizationAPI {
 
   static responseGitHub = response => {
     return axios
-      .post('/customers/github', {
+      .post('/api/customers/github', {
         code: response.code
       })
       .then(value => value.data);
   };
 
   static login = userData => {
-    return axios.post('/customers/login', userData).then(value => value.data);
+    return axios.post('/api/customers/login', userData).then(value => value.data);
   };
 
   static registration = userData => {
-    return axios.post('/customers', userData).then(value => value.data);
+    return axios.post('/api/customers', userData).then(value => value.data);
   };
 
   static getCustomerUsingToken = token => {
@@ -40,11 +40,11 @@ export default class AuthorizationAPI {
         Authorization: token
       }
     };
-    return axios.get('/customers', options).then(res => res.data);
+    return axios.get('/api/customers', options).then(res => res.data);
   };
 
   static forgotPassword = loginOrEmail => {
-    return axios.post('/customers/forgotpassword', { loginOrEmail: loginOrEmail });
+    return axios.post('/api/customers/forgotpassword', { loginOrEmail: loginOrEmail });
   };
 
   static recoveryPassword = (password, token) => {
@@ -54,17 +54,33 @@ export default class AuthorizationAPI {
       }
     };
 
-    return axios.put('/customers/forgotpassword', { password: password }, config);
+    return axios.put('/api/customers/forgotpassword', { password: password }, config);
   };
 
   static isPassword = () => {
-    return axios.get('/customers/ispassword').then(res => res.data);
+    return axios.get('/api/customers/ispassword').then(res => res.data);
   };
   static updatePersonalData = data => {
-    return axios.put('/customers', data).then(res => res.data);
+    return axios.put('/api/customers', data).then(res => res.data);
   };
 
   static resetPassword = data => {
-    return axios.put('/customers/password', data).then(res => res.data);
+    return axios.put('/api/customers/password', data).then(res => res.data);
+  };
+
+  static checkInUse = data => {
+    return axios.post('/api/customers/check', data).then(res => res.data);
+  };
+
+  static getCustomers = () => {
+    return axios.get('/api/customers/all').then(res => res.data);
+  };
+
+  static editStatusCustomer = data => {
+    return axios.put('/api/customers/editstatus', data).then(res => res.data);
+  };
+
+  static enablesAccountCustom = () => {
+    return axios.get('/api/customers/enablesaccountcustom').then(res => res.data);
   };
 }

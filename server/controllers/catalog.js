@@ -482,14 +482,22 @@ exports.getActiveChildCategories = async (req, res) => {
 exports.getActiveChildCategory = async (req, res) => {
   try {
     const {_idchildcatalog} = req.params;
-    const catalog = await childCatalog.find({
+    const catalog = await childCatalog.findOne({
       $and: [
         {
           "enabled": "true",
           "_id": _idchildcatalog
         }
       ]
-    });
+    }).populate({
+      path: 'parentId',
+      select: 'name'
+    })
+      .populate('filters.subfilters')
+      .populate({
+        path: 'filters.filter',
+        select: 'type'
+      });
     res.status(200).json(catalog);
   } catch (e) {
     res.status(500).json({
@@ -712,13 +720,13 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
 
 exports.getCatalogsAndProductForMainPage = async (req, res) => {
   try {
-    let childCatalogs = await Promise.all(JSON.parse(JSON.stringify(await childCatalog.find({"default": "true"}, '-filters'))).map(async element => {
+    let childCatalogs = await Promise.all(JSON.parse(JSON.stringify(await childCatalog.find({"default": "true", "enabled" : true}, '-filters'))).map(async element => {
       element.products = _.takeRight(
         _.orderBy(
           await Promise.all(
             JSON.parse(
               JSON.stringify(
-                await productModel.find({'_idChildCategory': element._id})
+                await productModel.find({'_idChildCategory': element._id, "enabled" : true})
                   .populate({
                     path: 'filterImg._idFilter',
                     select: '_id enabled type serviceName'
@@ -737,7 +745,7 @@ exports.getCatalogsAndProductForMainPage = async (req, res) => {
                 return prod;
               })), ['rating']), element.countProductMainPage);
       return element;
-    }));
+    }));;
 
     res.status(200).json(childCatalogs);
   } catch (e) {

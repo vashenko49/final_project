@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {check} = require('express-validator');
+const passport = require("passport");
 
 //Import controllers
 const {
@@ -19,6 +20,7 @@ const {
 router.post(
   "/",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('name','name is require')
       .not()
       .isEmpty(),
@@ -37,6 +39,7 @@ router.post(
 // @access  Private
 router.put(
   "/",[
+    passport.authenticate("jwt-admin", {session: false}),
     check('idPaymentMethod','idPaymentMethod is require')
       .not()
       .isEmpty()
@@ -49,6 +52,7 @@ router.put(
 router.put(
   "/activateordeactivate",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('idPaymentMethod', 'idPaymentMethod is require')
       .not()
       .isEmpty(),
@@ -63,13 +67,14 @@ router.put(
 // @access  Private
 router.delete(
   "/:idPaymentMethod",
+  passport.authenticate("jwt-admin", {session: false}),
   deletePaymentMethod
 );
 
 // @route   GET /payment-methods
 // @desc    GET existing payment methods
 // @access  Public
-router.get("/", getPaymentMethods);
+router.get("/",     passport.authenticate("jwt-admin", {session: false}), getPaymentMethods);
 
 // @route   GET /payment-methods
 // @desc    GET existing payment methods

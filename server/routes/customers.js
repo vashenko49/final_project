@@ -8,10 +8,13 @@ const {
   createCustomer,
   loginCustomer,
   getCustomer,
+  getCustomers,
   editCustomerInfo,
   updatePassword,
+  editStatusCustomer,
   createCustomerSocialNetwork,
   confirmCustomer,
+  enablesAccountCustom,
   forgotPassword,
   updatePasswordAfterConfirm,
   confirmForgotCustomer,
@@ -20,29 +23,28 @@ const {
 } = require("../controllers/customers");
 
 
-
 // @route   POST /customer
 // @desc    Register customer
 // @access  Public
 router.post(
   "/",
   [
-    check('firstName','firstName is require')
+    check('firstName', 'firstName is require')
       .not()
       .isEmpty(),
-    check('lastName','lastName is require')
+    check('lastName', 'lastName is require')
       .not()
       .isEmpty(),
-    check('login','login is require')
+    check('login', 'login is require')
       .not()
       .isEmpty(),
-    check('email','email is require')
+    check('email', 'email is require')
       .not()
       .isEmpty(),
-    check('password','password is require')
+    check('password', 'password is require')
       .not()
       .isEmpty(),
-    check('gender','gender is require')
+    check('gender', 'gender is require')
       .not()
       .isEmpty(),
   ],
@@ -50,32 +52,32 @@ router.post(
 
 
 // @route   POST /customer/confirm
-// @desc    confirm Customer
+// @desc    confirm Customers
 // @access  Public
 router.get('/confirm/:emailtoken', confirmCustomer);
 
 
 // @route   POST /customer/check
-// @desc    confirm Customer
+// @desc    confirm Customers
 // @access  Public
 router.post('/check', checkLoginOrEmail);
 
 // @route   POST /customer/login
-// @desc    Login Customer / Returning JWT Token
+// @desc    Login Customers / Returning JWT Token
 // @access  Public
 router.post("/login",
   [
-    check('email','email is require')
+    check('email', 'email is require')
       .not()
       .isEmpty(),
-    check('password','password is require')
+    check('password', 'password is require')
       .not()
       .isEmpty(),
   ],
   loginCustomer);
 
 // @route   POST /customer/google
-// @desc    Login Customer or SignUp / Returning JWT Token
+// @desc    Login Customers or SignUp / Returning JWT Token
 // @access  Public
 router.post("/google",
   passport.authenticate('google-local', {session: false}),
@@ -83,10 +85,8 @@ router.post("/google",
 );
 
 
-
-
 // @route   POST /customer/facebook
-// @desc    Login Customer or SignUp / Returning JWT Token
+// @desc    Login Customers or SignUp / Returning JWT Token
 // @access  Private
 router.post("/facebook",
   passport.authenticate('facebook-local', {session: false}),
@@ -95,7 +95,7 @@ router.post("/facebook",
 
 
 // @route   POST /customer/github
-// @desc    Login Customer or signUp / Returning JWT Token
+// @desc    Login Customers or signUp / Returning JWT Token
 // @access  Private
 router.post("/github",
   passport.authenticate('github-local', {session: false}),
@@ -111,6 +111,15 @@ router.get(
   getCustomer
 );
 
+// @route   GET /customer/all
+// @desc    Return current customer
+// @access  Private
+router.get(
+  "/all",
+  passport.authenticate("jwt-admin", {session: false}),
+  getCustomers
+);
+
 // @route   GET /ispassword
 // @desc    Return status password
 // @access  Private
@@ -118,6 +127,15 @@ router.get(
   "/ispassword",
   passport.authenticate("jwt", {session: false}),
   isPassword
+);
+
+// @route   GET /enablesaccountcustom
+// @desc   enables account custom
+// @access  Private
+router.get(
+  "/enablesaccountcustom",
+  passport.authenticate("jwt", {session: false}),
+  enablesAccountCustom
 );
 
 // @route   PUT /customer
@@ -128,6 +146,10 @@ router.put(
   passport.authenticate("jwt", {session: false}),
   editCustomerInfo
 );
+
+router.put('/editstatus',
+    passport.authenticate("jwt-admin", {session: false}),
+  editStatusCustomer);
 
 // @route   POST /customer/password
 // @desc    Обновить пароль

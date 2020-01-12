@@ -5,7 +5,7 @@ const Orders = require("../models/Order");
 const _ = require("lodash");
 const {validationResult} = require('express-validator');
 const mongoose = require('mongoose');
-
+const {generatorHTMLTableToOrder } = require("../common/generatorHTMLTableToOrder");
 
 exports.placeOrder = async (req, res) => {
   try {
@@ -14,18 +14,18 @@ exports.placeOrder = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const { delivery, email, name, mobile} = req.body;
-    const  idCustomer  = req.user._id;
+    const {delivery, email, name, mobile} = req.body;
+    const idCustomer = req.user._id;
 
     let response = {
       delivery: delivery,
       email: email,
       mobile: mobile,
-      name:name,
+      name: name,
       canceled: false,
       products: [],
       idCustomer: idCustomer
-    }
+    };
 
     let cart = JSON.parse(JSON.stringify(await Cart.findOne({"customerId": idCustomer})
       .populate('customerId')
@@ -55,10 +55,15 @@ exports.placeOrder = async (req, res) => {
     response.totalSum = _.sumBy(response.products, function (o) {
       return o.currentPrice * o.quantity;
     });
+
+    let isCart = await Cart.findOne({customerId: idCustomer});
+    isCart.products = [];
+    isCart = await isCart.save();
+
     response = await (new Orders(response)).save();
+    await generatorHTMLTableToOrder(response._id, email);
     res.status(200).json(response);
   } catch (e) {
-    console.log(e);
     res.status(400).json({
       message: `Server error ${e.message}`
     })
@@ -183,26 +188,10 @@ exports.getOrdersByCustomer = async (req, res) => {
       return res.status(422).json({errors: errors.array()});
     }
 
-    const  idCustomer  = req.user._id;
-    const {page, limit}  = req.body;
-    // const orders = JSON.parse(JSON.stringify(await Orders.find({"idCustomer": idCustomer})
-    //   .populate('idCustomer')
-    //   .populate({path: 'delivery.idShippingMethod', select: '-address'})
-    //   .populate('delivery.storeAddress')
-    //   .populate('products.productId')
-    // ));
-    //
-    // orders.forEach((element, index) => {
-    //   orders[index].products = element.products.map(element => {
-    //     let indexModel = _.findIndex(element.productId.model, function (o) {
-    //       return o.modelNo == element.modelNo;
-    //     });
-    //     element.modelNo = element.productId.model[indexModel];
-    //     return element;
-    //   });
-    // });
+    const idCustomer = req.user._id;
+    const {page, limit} = req.body;
 
-    const orders = await Orders.paginate({"idCustomer": idCustomer},{
+    const orders = await Orders.paginate({"idCustomer": idCustomer}, {
       page: _.isNumber(page) ? page : 1,
       limit: _.isNumber(limit) ? limit : 9,
     });

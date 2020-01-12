@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {check} = require('express-validator');
+const passport = require("passport");
 
 //Import controllers
 const {
@@ -19,14 +20,10 @@ const {
 // @access  Private
 router.post(
   "/",
-  [
+  [    passport.authenticate("jwt-admin", {session: false}),
     check('address', 'address is require')
       .not()
       .isEmpty(),
-    check('default', 'default is require')
-      .isBoolean(),
-    check('enabled', 'enabled is require')
-      .isBoolean(),
   ],
   addDeliveryAddress
 );
@@ -37,15 +34,12 @@ router.post(
 router.post(
   "/many",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('addresses', 'address is require')
       .isArray(),
     check('addresses.*.address', 'address is require')
       .not()
-      .isEmpty(),
-    check('addresses.*.default', 'default is require')
-      .isBoolean(),
-    check('addresses.*.enabled', 'enabled is require')
-      .isBoolean(),
+      .isEmpty()
   ],
   addManyDeliveryAddresses
 );
@@ -55,6 +49,7 @@ router.post(
 // @access  Private
 router.put(
   "/", [
+    passport.authenticate("jwt-admin", {session: false}),
     check('idDeliveryAddress', 'idDeliveryAddress is require')
       .not()
       .isEmpty()
@@ -67,6 +62,7 @@ router.put(
 router.put(
   "/activateordeactivate",
   [
+    passport.authenticate("jwt-admin", {session: false}),
     check('idDeliveryAddress', 'idDeliveryAddress is require')
       .not()
       .isEmpty(),
@@ -81,13 +77,14 @@ router.put(
 // @access  Private
 router.delete(
   "/:idDeliveryAddress",
+  passport.authenticate("jwt-admin", {session: false}),
   deleteDeliveryAddress
 );
 
 // @route   GET /deliveryaddresses
 // @desc    GET existing deliveryaddresses
 // @access  Public
-router.get("/", getDeliveryAddresses);
+router.get("/", passport.authenticate("jwt", {session: false}), getDeliveryAddresses);
 
 // @route   GET /deliveryaddresses/active
 // @desc    GET existing deliveryaddresses

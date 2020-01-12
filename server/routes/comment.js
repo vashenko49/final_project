@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {check} = require('express-validator');
+const passport = require("passport");
 
 const {
   createNewComment,
@@ -19,6 +20,7 @@ const {
 // @access  Private
 router.post(
   '/', [
+    passport.authenticate("jwt", {session: false}),
     check('authorId', 'authorId is require')
       .not()
       .isEmpty(),
@@ -40,6 +42,7 @@ router.post(
 // @access  Private
 router.put(
   '/', [
+    passport.authenticate("jwt", {session: false}),
     check('commentID', 'authorId is require')
       .not()
       .isEmpty()
@@ -53,6 +56,7 @@ router.put(
 // @access  Private
 router.delete(
   '/:idComment',
+  passport.authenticate("jwt", {session: false}),
   removeComment
 );
 

@@ -7,16 +7,17 @@ import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import _ from 'lodash';
 
 import Login from './Login/Login';
 import * as AuthorizationActions from '../../actions/authorizationAction';
-import ThroughSocialNetwork from './ThroughSocialNetwork/ThroughSocialNetwork';
 import SignUp from './SignUp/SignUp';
 
 import './Authorization.scss';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
 import { getCurrentItems } from '../../actions/cart';
 import TabPanel from '../TabPanel/TabPanel';
+import { Typography } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
@@ -35,7 +36,7 @@ class Authorization extends Component {
     this.state = {
       isLogIn: true,
       value: 0,
-      tabs: ['Log in', 'Sing Up', 'Social Network'],
+      tabs: ['Log in', 'Sing Up'],
       isForgotPassword: false
     };
   }
@@ -72,6 +73,7 @@ class Authorization extends Component {
   render() {
     const { value, tabs, isForgotPassword } = this.state;
     const { toggleForgotPassword, a11yProps, switchToRegistration } = this;
+    const { error } = this.props.authorization;
     return (
       <MuiThemeProvider theme={theme}>
         <Grid container direction={'column'} justify={'flex-start'} alignItems="stretch">
@@ -93,7 +95,6 @@ class Authorization extends Component {
                 >
                   <Tab className="tab" label={tabs[0]} {...a11yProps(0)} />
                   <Tab className="tab" label={tabs[1]} {...a11yProps(1)} />
-                  <Tab className="tab" label={tabs[2]} {...a11yProps(2)} />
                 </Tabs>
               </AppBar>
               <TabPanel value={value} index={0}>
@@ -105,9 +106,6 @@ class Authorization extends Component {
               <TabPanel value={value} index={1}>
                 <SignUp />
               </TabPanel>
-              <TabPanel value={value} index={2}>
-                <ThroughSocialNetwork />
-              </TabPanel>
             </Grid>
           ) : (
             <Box p={3}>
@@ -115,6 +113,13 @@ class Authorization extends Component {
             </Box>
           )}
         </Grid>
+        {_.isString(error) && error.length > 0 && (
+          <div>
+            <Typography variant={'h6'} align={'center'} color={'error'}>
+              {error}
+            </Typography>
+          </div>
+        )}
       </MuiThemeProvider>
     );
   }

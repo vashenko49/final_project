@@ -175,7 +175,7 @@ exports.getCart = async (req, res) => {
     const customer = await Customer.findById(idCustomer);
     if (!customer) {
       return res.status(400).json({
-        message: "Customer not found"
+        message: "Customers not found"
       });
     }
 

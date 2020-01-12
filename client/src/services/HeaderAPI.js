@@ -2,10 +2,10 @@ const axios = require('axios');
 
 export default class HeaderAPI {
   static async getRootCategories() {
-    return axios.get('/catalog/root/private');
+    return axios.get('/api/catalog/root/public');
   }
 
   static async getChildCategories() {
-    return axios.get('/catalog/child/private');
+    return axios.get('/api/catalog/child/public');
   }
 }

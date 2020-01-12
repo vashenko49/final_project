@@ -50,7 +50,7 @@ router.put(
 router.put(
   "/cancel",
   [
-    passport.authenticate("jwt", {session: false}),
+    passport.authenticate("jwt-admin", {session: false}),
     check('idOrder', 'idOrder is require')
       .not()
       .isEmpty()
@@ -63,7 +63,7 @@ router.put(
 // @access  Private
 router.delete(
   "/:idOrder",
-  passport.authenticate("jwt", {session: false}),
+  passport.authenticate("jwt-admin", {session: false}),
   deleteOrder
 );
 

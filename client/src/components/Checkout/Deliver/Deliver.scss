@@ -8,3 +8,11 @@
   display: flex;
   flex-direction: column;
 }
+
+.more-information{
+  font-weight: bold;
+  cursor: pointer;
+}
+.more-information:hover{
+  text-decoration: underline;
+}

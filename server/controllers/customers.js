@@ -6,7 +6,7 @@ const rand = uniqueRandom(100000, 999999);
 
 const sendEmail = require("../common/sendEmail");
 const CustomerModel = require("../models/Customer");
-const { validationResult } = require("express-validator");
+const {validationResult} = require("express-validator");
 const _ = require("lodash");
 
 // Controller for creating customer and saving to DB
@@ -14,28 +14,28 @@ exports.createCustomer = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
     const values = Object.values(req.files);
     const userAvatar =
       values.length > 0
-        ? await cloudinary.uploader.upload(values[0].path, { folder: "final-project/userAvatar" })
+        ? await cloudinary.uploader.upload(values[0].path, {folder: "final-project/userAvatar"})
         : null;
 
-    const { firstName, lastName, login, email, password, gender } = req.body;
+    const {firstName, lastName, login, email, password, gender} = req.body;
 
     let Customer = await CustomerModel.findOne({
-      $or: [{ email: email }, { login: login }]
+      $or: [{email: email}, {login: login}]
     });
 
     if (Customer) {
       if (Customer.email === email) {
-        return res.status(400).json({ message: `Email ${Customer.email} already exists"` });
+        return res.status(400).json({message: `Email ${Customer.email} already exists"`});
       }
 
       if (Customer.login === login) {
-        return res.status(400).json({ message: `Email ${Customer.login} already exists"` });
+        return res.status(400).json({message: `Email ${Customer.login} already exists"`});
       }
     }
 
@@ -47,7 +47,7 @@ exports.createCustomer = async (req, res) => {
       gender,
       avatarUrl: userAvatar ? userAvatar.public_id : "",
       customerNo: rand().toString(),
-      socialmedia: [4],
+      socialmedia: [3],
       isAdmin: false,
       enabled: false
     });
@@ -58,14 +58,14 @@ exports.createCustomer = async (req, res) => {
     Customer = await newCustomer.save();
 
     let tokenEmailConfirmUser = await jwt.sign(
-      { _id: newCustomer._id },
+      {_id: newCustomer._id},
       process.env.JWT_EMAIL_SECRET,
       {
         expiresIn: 1800
       }
     );
 
-    let url = `${process.env.domen}/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
+    let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
 
     await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
 
@@ -77,7 +77,7 @@ exports.createCustomer = async (req, res) => {
     }; // Create JWT Payload
 
     // Sign Token
-    jwt.sign({ data: payload }, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
+    jwt.sign({data: payload}, process.env.JWT_SECRET, {expiresIn: 36000}, (err, token) => {
       return res.json({
         success: true,
         token: "Bearer " + token
@@ -90,12 +90,40 @@ exports.createCustomer = async (req, res) => {
   }
 };
 
-exports.isPassword = async (req,res)=>{
+exports.enablesAccountCustom = async (req, res)=>{
+  try {
+    const {_id, firstName, enabled, email} = req.user;
+    let tokenEmailConfirmUser = await jwt.sign(
+      {_id: _id},
+      process.env.JWT_EMAIL_SECRET,
+      {
+        expiresIn: 1800
+      }
+    );
+
+    if(enabled){
+     return  res.status(400).json({
+       message: 'Your account is enabled'
+     });
+    }
+
+    let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
+
+    await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
+    res.status(200).json({message:"Checked your email"});
+  }catch (e) {
+    res.status(400).json({
+      message: e.message
+    });
+  }
+};
+
+exports.isPassword = async (req, res) => {
   try {
     const {_id} = req.user;
     const ispasword = await CustomerModel.findById(_id);
     res.status(200).json({
-      status: _.isString(ispasword.password)&&ispasword.password.length>0
+      status: _.isString(ispasword.password) && ispasword.password.length > 0
     })
   } catch (err) {
     res.status(500).json({
@@ -106,7 +134,7 @@ exports.isPassword = async (req,res)=>{
 // Controller for confirm customer
 exports.confirmCustomer = async (req, res) => {
   try {
-    let { emailtoken } = req.params;
+    let {emailtoken} = req.params;
     emailtoken = decodeURI(emailtoken);
     let idClient = jwt.verify(emailtoken, process.env.JWT_EMAIL_SECRET);
     let customer = await CustomerModel.findById(idClient._id);
@@ -122,20 +150,20 @@ exports.confirmCustomer = async (req, res) => {
 //check login or email in base
 exports.checkLoginOrEmail = async (req, res) => {
   try {
-    const { type, data } = req.body;
+    const {type, data} = req.body;
 
     if (!type || !data) {
-      return res.status(200).json({ status: false });
+      return res.status(200).json({status: false});
     }
-    let config = type === "login" ? { login: data } : { email: data };
+    let config = type === "login" ? {login: data} : {email: data};
 
     const customer = await CustomerModel.findOne(config);
 
     if (customer) {
-      return res.status(200).json({ status: false });
+      return res.status(200).json({status: false});
     }
 
-    return res.status(200).json({ status: true });
+    return res.status(200).json({status: true});
   } catch (e) {
     return res.status(500).json({
       message: `Server error ${e.message}`
@@ -149,7 +177,7 @@ exports.createCustomerSocialNetwork = async (req, res) => {
     let customer = req.user;
 
     //проверяем почту в базе данных
-    let Customer = await CustomerModel.findOne({ email: customer.email });
+    let Customer = await CustomerModel.findOne({email: customer.email});
 
     if (Customer) {
       console.log("Пользователь уже зареган ---->");
@@ -175,7 +203,7 @@ exports.createCustomerSocialNetwork = async (req, res) => {
         firstName: customer.firstName,
         lastName: customer.lastName,
         avatarUrl: userImg.public_id,
-        customerNo:  (rand()).toString(),
+        customerNo: (rand()).toString(),
         socialmedia: [customer.typeSocial],
         isAdmin: false,
         enabled: true
@@ -184,12 +212,12 @@ exports.createCustomerSocialNetwork = async (req, res) => {
     }
 
     await jwt.sign(
-      { data: Customer },
+      {data: Customer},
       process.env.JWT_SECRET,
       {
         expiresIn: 11750400
       },
-      function(err, token) {
+      function (err, token) {
         return res.status(200).json({
           success: true,
           token: "Bearer " + token
@@ -198,7 +226,7 @@ exports.createCustomerSocialNetwork = async (req, res) => {
     );
   } catch (e) {
     console.log(e);
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({message: e.message});
   }
 };
 
@@ -207,17 +235,17 @@ exports.loginCustomer = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
-    const { email, password } = req.body;
+    const {email, password} = req.body;
 
     // Find customer by email
     CustomerModel.findOne({
-      $or: [{ email: email }, { login: email }]
+      $or: [{email: email}, {login: email}]
     }).then(customer => {
       // Check for customer
       if (!customer) {
-        errors.loginOrEmail = "Customer not found";
+        errors.loginOrEmail = "Customers not found";
         return res.status(404).json(errors);
       }
       // Check Password
@@ -230,7 +258,7 @@ exports.loginCustomer = async (req, res) => {
 
       bcrypt.compare(password, customer.password).then(isMatch => {
         if (isMatch) {
-          // Customer Matched
+          // Customers Matched
           const payload = {
             _id: customer._id,
             firstName: customer.firstName,
@@ -240,9 +268,9 @@ exports.loginCustomer = async (req, res) => {
 
           // Sign Token
           jwt.sign(
-            { data: payload },
+            {data: payload},
             process.env.JWT_SECRET,
-            { expiresIn: 36000 },
+            {expiresIn: 36000},
             (err, token) => {
               res.json({
                 success: true,
@@ -257,7 +285,7 @@ exports.loginCustomer = async (req, res) => {
       });
     });
   } catch (e) {
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({message: e.message});
   }
 };
 
@@ -266,14 +294,27 @@ exports.getCustomer = (req, res) => {
   res.json(req.user);
 };
 
+// get customers for admin - panel
+exports.getCustomers = async (req, res) => {
+  try {
+    const customers = await CustomerModel.find({});
+    res.status(200).json(customers);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
+};
+
 // Controller for editing customer personal info
 exports.editCustomerInfo = async (req, res) => {
   try {
-    const { _id } = req.user;
+    const {_id} = req.user;
 
     const customer = await CustomerModel.findById(_id);
     if (!customer) {
-      errors.id = "Customer not found";
+      errors.id = "Customers not found";
       return res.status(404).json(errors);
     }
 
@@ -281,12 +322,12 @@ exports.editCustomerInfo = async (req, res) => {
     const currentLogin = customer.login;
 
     const deepClone = _.cloneDeep(req.body);
-    const { email, login } = deepClone;
-    const { avatarUrl } = req.files;
+    const {email, login} = deepClone;
+    const {avatarUrl} = req.files;
 
 
     if (_.isString(email) && currentEmail !== email) {
-      const isUseEmail = await CustomerModel.findOne({ email: email });
+      const isUseEmail = await CustomerModel.findOne({email: email});
       if (isUseEmail) {
         return res.status(400).json({
           message: `Email ${email} is already exists`
@@ -295,7 +336,7 @@ exports.editCustomerInfo = async (req, res) => {
       deepClone.email = email;
     }
     if (_.isString(login) && currentLogin !== login) {
-      const isUseLogin = await CustomerModel.findOne({ login: login });
+      const isUseLogin = await CustomerModel.findOne({login: login});
       if (isUseLogin) {
         return res.status(400).json({
           message: `Login ${login} is already exists`
@@ -306,7 +347,7 @@ exports.editCustomerInfo = async (req, res) => {
 
     //отвязываем соц сети от аккаунта так ка почта изменена
     if (_.isString(email)) {
-      deepClone.socialmedia = [4];
+      deepClone.socialmedia = [3];
     }
 
     if (_.isObject(avatarUrl)) {
@@ -332,6 +373,33 @@ exports.editCustomerInfo = async (req, res) => {
   }
 };
 
+//edit customer from admin
+exports.editStatusCustomer = async (req, res)=>{
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    const {customerId, enabled, isAdmin} = req.body;
+
+    if(!_.isBoolean(enabled) && !_.isBoolean(isAdmin)){
+      return res.status(500).json({
+        message: "Get me data"
+      });
+    }
+
+    let newData = await CustomerModel.findByIdAndUpdate(customerId, {$set: {[`${_.isBoolean(enabled)?"enabled":'isAdmin'}`]:_.isBoolean(enabled)?enabled:isAdmin}}, {new: true});
+    newData = await newData.save();
+    res.status(200).json(newData);
+  }catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
+};
+
 // Controller for editing customer password
 exports.updatePassword = (req, res) => {
   CustomerModel.findById(req.user._id, async (err, customer) => {
@@ -343,7 +411,7 @@ exports.updatePassword = (req, res) => {
       let newPassword = req.body.newPassword;
       let passwordValid;
 
-      if (_.isString(customer.password)&& customer.password>0) {
+      if (_.isString(customer.password) && customer.password > 0) {
         passwordValid = await bcrypt.compare(oldPassword, customer.password);
         if (!passwordValid) {
           return res.status(400).json({
@@ -355,13 +423,13 @@ exports.updatePassword = (req, res) => {
       newPassword = await bcrypt.hash(newPassword, salt);
 
       CustomerModel.findOneAndUpdate(
-        { _id: req.user._id },
+        {_id: req.user._id},
         {
           $set: {
             password: newPassword
           }
         },
-        { new: true }
+        {new: true}
       )
         .then(customer => {
           res.json({
@@ -387,12 +455,12 @@ exports.forgotPassword = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
-    const { loginOrEmail } = req.body;
+    const {loginOrEmail} = req.body;
 
     let customer = await CustomerModel.findOne({
-      $or: [{ email: loginOrEmail }, { login: loginOrEmail }]
+      $or: [{email: loginOrEmail}, {login: loginOrEmail}]
     });
 
     if (!customer) {
@@ -402,14 +470,14 @@ exports.forgotPassword = async (req, res) => {
     }
 
     let tokenChangePassword = await jwt.sign(
-      { _id: customer._id },
+      {_id: customer._id},
       process.env.JWT_FORGOT_PASSWORD,
       {
         expiresIn: 1800
       }
     );
 
-    let url = `${process.env.domen_client}/passwordrecovery/${encodeURI(tokenChangePassword)}`;
+    let url = `${process.env.domen_client}/api/passwordrecovery/${encodeURI(tokenChangePassword)}`;
 
     await sendEmail(
       customer.email,
@@ -430,7 +498,7 @@ exports.forgotPassword = async (req, res) => {
 // checking the token for password changes and redirecting to the password change page
 exports.confirmForgotCustomer = async (req, res) => {
   try {
-    let { token } = req.params;
+    let {token} = req.params;
     let decodeToken = decodeURI(token);
     let idClient = await jwt.verify(decodeToken, process.env.JWT_FORGOT_PASSWORD);
 
@@ -438,7 +506,7 @@ exports.confirmForgotCustomer = async (req, res) => {
       res.status(301).redirect(process.env.domen_client);
     }
 
-    res.status(301).redirect(`${process.env.domen_client}/passwordrecovery/${token}`);
+    res.status(301).redirect(`${process.env.domen_client}/api/passwordrecovery/${token}`);
   } catch (e) {
     res.status(301).redirect(process.env.domen_client);
   }
@@ -463,13 +531,13 @@ exports.updatePasswordAfterConfirm = async (req, res) => {
       newPassword = await bcrypt.hash(newPassword, salt);
 
       CustomerModel.findOneAndUpdate(
-        { _id: req.user.id },
+        {_id: req.user.id},
         {
           $set: {
             password: newPassword
           }
         },
-        { new: true }
+        {new: true}
       )
         .then(customer => {
           res.json({

@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -18,19 +18,30 @@ import ProductReview from './ProductReview';
 import ProductCheckout from './ProductCheckout';
 
 import './ProductPage.scss';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Container } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   paper: {
     position: 'absolute',
-    left: 30 + '%',
-    top: 20 + '%',
-    width: 37 + '%',
+    width: 82 + '%',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    [theme.breakpoints.up('sm')]: {
+      width: 49 + '%',
+      left: 23 + '%',
+      top: 21 + '%'
+    },
+    [theme.breakpoints.up('md')]: {
+      width: 33 + '%',
+      left: 33 + '%',
+      top: 22 + '%',
+      alignItems: 'center'
+    }
   }
 }));
 
@@ -46,7 +57,7 @@ const ProductPageF = ({
     description,
     itemNo,
     model,
-    // filters,
+    filterImg,
     productUrlImg,
     _idChildCategory
   } = product;
@@ -95,9 +106,9 @@ const ProductPageF = ({
   };
 
   return (
-    <Fragment>
+    <Container>
       {loading === true ? (
-        <h1>preloader</h1>
+        <CircularProgress className="preloader-page" />
       ) : (
         <div className="product">
           <ProdcutHeader
@@ -137,6 +148,8 @@ const ProductPageF = ({
                 <h3 className="checkout-title">Added to Bag</h3>
 
                 <ProductCheckout
+                  customerId={customerId}
+                  parentId={_id}
                   productUrlImg={productUrlImg}
                   nameProduct={nameProduct}
                   _idChildCategory={_idChildCategory}
@@ -145,17 +158,22 @@ const ProductPageF = ({
                   currentSize={currentSize}
                 />
                 <div className="product-buttons container">
-                  <Link to={`/cart/${customerId}`}>
+                  <Link to={`/cart`}>
                     <button className="grey-btn">View bag</button>
                   </Link>
-                  <Link to={`/cart/${customerId}`}>
+                  <Link to={`/cart`}>
                     <button className="black-btn">Checkout</button>
                   </Link>
                 </div>
               </div>
             </Modal>
           </div>
-          <Carousel productUrlImg={productUrlImg} setCurrentPhoto={setCurrentPhoto} />
+          <Carousel
+            productUrlImg={productUrlImg}
+            setCurrentPhoto={setCurrentPhoto}
+            filterImg={filterImg}
+            currentColor={currentColor}
+          />
           <ProductReview customerId={customerId} productId={match.params.id} />
           <div className="product-discription container">
             <p className="short-description">{description}</p>
@@ -166,7 +184,7 @@ const ProductPageF = ({
           </div>
         </div>
       )}
-    </Fragment>
+    </Container>
   );
 };
 

@@ -2,12 +2,12 @@ const axios = require('axios');
 
 export default class OrderAPI {
   static async createOrder(data) {
-    return axios.post('/orders', data);
+    return axios.post('/api/orders', data);
   }
   static async getOrdersByUser(option) {
-    return axios.post('/orders/customer', option).then(res => res.data);
+    return axios.post('/api/orders/customer', option).then(res => res.data);
   }
   static async getOrderById(id) {
-    return axios.get(`/orders/${id}`).then(res => res.data);
+    return axios.get(`/api/orders/${id}`).then(res => res.data);
   }
 }

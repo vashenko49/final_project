@@ -16,6 +16,7 @@ import './Deliver.scss';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import DialogWindowToPayShip from '../DialogWindowToPayShip/DialogWindowToPayShip';
 
 class Deliver extends Component {
   constructor(props) {
@@ -30,7 +31,11 @@ class Deliver extends Component {
       city: '',
       postal: '',
       street: '',
-      houseNumber: ''
+      houseNumber: '',
+      openDialog: false,
+      nameDialog: '',
+      descriptionDialog: '',
+      imageUrlDialog: ''
     };
   }
 
@@ -47,6 +52,7 @@ class Deliver extends Component {
       houseNumber
     } = this.props.checkout.order.delivery;
     ShippingMethodAPI.getActiveShippingMethod().then(res => {
+      console.log(res);
       this.setState({ deliver: res });
       if (res.length > 0) {
         this.setState({
@@ -130,8 +136,28 @@ class Deliver extends Component {
     }
   };
 
+  handleCloseDialog = () => {
+    this.setState({ openDialog: false });
+  };
+
+  handleOpenDialog = event => {
+    const id = event.target.dataset.id;
+    const { deliver } = this.state;
+    const select = _.findIndex(deliver, function(o) {
+      return o._id === id;
+    });
+    const { name, imageUrl, description } = deliver[select];
+
+    this.setState({
+      openDialog: true,
+      nameDialog: name,
+      descriptionDialog: description,
+      imageUrlDialog: imageUrl
+    });
+  };
+
   render() {
-    const { submit, handleChangeRadio } = this;
+    const { submit, handleChangeRadio, handleCloseDialog, handleOpenDialog } = this;
     const {
       chooseDeliveryMethod,
       deliver,
@@ -141,7 +167,11 @@ class Deliver extends Component {
       city,
       postal,
       street,
-      houseNumber
+      houseNumber,
+      openDialog,
+      nameDialog,
+      descriptionDialog,
+      imageUrlDialog
     } = this.state;
     return (
       <ValidatorForm ref="form" onSubmit={submit}>
@@ -164,6 +194,9 @@ class Deliver extends Component {
                     value={_id}
                     control={<Radio className="radio-color" />}
                   />
+                  <span className="more-information" onClick={handleOpenDialog} data-id={_id}>
+                    More
+                  </span>
                   {chooseDeliveryMethod === _id && (
                     <div className="type-delivery">
                       <FormControl component="fieldset">
@@ -285,6 +318,13 @@ class Deliver extends Component {
           </RadioGroup>
         </FormControl>
         <NavigationButton />
+        <DialogWindowToPayShip
+          name={nameDialog}
+          description={descriptionDialog}
+          handleClose={handleCloseDialog}
+          imageUrl={imageUrlDialog}
+          open={openDialog}
+        />
       </ValidatorForm>
     );
   }

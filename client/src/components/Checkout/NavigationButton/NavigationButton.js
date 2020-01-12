@@ -12,7 +12,7 @@ class NavigationButton extends Component {
     const { changeStep } = this.props;
     const { activeStep, statusNextStep, numberOfSteps } = this.props.checkout;
     const { items } = this.props.cart;
-    const { isAuthorization } = this.props.authorization;
+    const { enabled, isAuthorization } = this.props.authorization;
     return (
       <div className="NavigationButton-container">
         <Button
@@ -25,7 +25,9 @@ class NavigationButton extends Component {
         </Button>
         <Button
           type="submit"
-          disabled={items.length <= 0 || !_.isArray(items) || statusNextStep || !isAuthorization}
+          disabled={
+            items.length <= 0 || !_.isArray(items) || statusNextStep || !isAuthorization || !enabled
+          }
           variant="contained"
           color="primary"
         >

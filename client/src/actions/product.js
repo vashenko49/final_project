@@ -1,10 +1,9 @@
-import axios from 'axios';
-
 import { GET_PRODUCT, GET_PRODUCTS, PRODUCT_ERROR } from '../constants/product';
+import ProductAPI from '../services/ProductAPI';
 // Get current product
 export const getCurrentProduct = productId => async dispatch => {
   try {
-    const res = await axios.get(`/products/${productId}`);
+    const res = await ProductAPI.getCurrentProduct(productId);
 
     dispatch({
       type: GET_PRODUCT,
@@ -24,7 +23,7 @@ export const getCurrentProduct = productId => async dispatch => {
 // Get all products
 export const getProducts = () => async dispatch => {
   try {
-    const res = await axios.get('/products');
+    const res = await ProductAPI.getProducts();
 
     dispatch({
       type: GET_PRODUCTS,

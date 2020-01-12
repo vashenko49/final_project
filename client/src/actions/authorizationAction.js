@@ -137,6 +137,7 @@ export function resetError() {
 
 export function signOut() {
   return dispatch => {
+    localStorage.removeItem('Authorization');
     dispatch({
       type: AUTHORIZATION.LOG_OUT
     });

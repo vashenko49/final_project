@@ -11,7 +11,6 @@ const cloudinary = require("cloudinary").v2;
 const app = express();
 app.use(cors());
 
-
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -36,22 +35,22 @@ app.use(formData.parse());
 app.use(bodyParser.json());
 
 // Use Routes
-app.use("/customers", require("./routes/customers"));
-app.use("/configs", require("./routes/configs"));
-app.use("/filters", require("./routes/filters"));
-app.use("/catalog", require("./routes/catalog"));
-app.use("/products", require("./routes/products"));
-app.use("/subscriber", require("./routes/subscribers"));
-app.use("/comment", require("./routes/comment"));
-app.use("/cart", require("./routes/cart"));
-app.use("/links", require("./routes/links"));
-app.use("/shippingmethods", require("./routes/shippingMethod"));
-app.use("/paymentmethods", require("./routes/paymentMethods"));
-app.use("/deliveryaddresses", require("./routes/deliveryAddresses"));
-app.use("/slider", require("./routes/slides"));
-app.use("/partners", require("./routes/partner"));
-app.use("/orders", require("./routes/order"));
-app.use("/favourites", require("./routes/favourites"));
+app.use("/api/customers", require("./routes/customers"));
+app.use("/api/configs", require("./routes/configs"));
+app.use("/api/filters", require("./routes/filters"));
+app.use("/api/catalog", require("./routes/catalog"));
+app.use("/api/products", require("./routes/products"));
+app.use("/api/subscriber", require("./routes/subscribers"));
+app.use("/api/comment", require("./routes/comment"));
+app.use("/api/cart", require("./routes/cart"));
+app.use("/api/links", require("./routes/links"));
+app.use("/api/shippingmethods", require("./routes/shippingMethod"));
+app.use("/api/paymentmethods", require("./routes/paymentMethods"));
+app.use("/api/deliveryaddresses", require("./routes/deliveryAddresses"));
+app.use("/api/slider", require("./routes/slides"));
+app.use("/api/partners", require("./routes/partner"));
+app.use("/api/orders", require("./routes/order"));
+app.use("/api/favourites", require("./routes/favourites"));
 
 app.use(express.static("../client/build"));
 app.get("*", (req, res) => {
