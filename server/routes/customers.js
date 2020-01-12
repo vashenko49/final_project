@@ -14,6 +14,7 @@ const {
   editStatusCustomer,
   createCustomerSocialNetwork,
   confirmCustomer,
+  enablesAccountCustom,
   forgotPassword,
   updatePasswordAfterConfirm,
   confirmForgotCustomer,
@@ -128,6 +129,15 @@ router.get(
   isPassword
 );
 
+// @route   GET /enablesaccountcustom
+// @desc   enables account custom
+// @access  Private
+router.get(
+  "/enablesaccountcustom",
+  passport.authenticate("jwt", {session: false}),
+  enablesAccountCustom
+);
+
 // @route   PUT /customer
 // @desc    Edit current customer
 // @access  Private
@@ -138,12 +148,7 @@ router.put(
 );
 
 router.put('/editstatus',
-  [
     passport.authenticate("jwt-admin", {session: false}),
-    check('customerId', 'customerId is require')
-      .not()
-      .isEmpty()
-  ],
   editStatusCustomer);
 
 // @route   POST /customer/password

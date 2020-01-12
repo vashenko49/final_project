@@ -69,6 +69,7 @@ export default function(state = initialState, action) {
       return {
         ...initialState,
         loading: true,
+        openWindowLogIn: true,
         error: 'Failed to log in.'
       };
     case AUTHORIZATION.OPEN_WINDOW_AUTH:

@@ -77,7 +77,7 @@ class PersonalData extends Component {
   render() {
     const { submit, handleChange, usePersonalData } = this;
     const { openWindowAuth } = this.props;
-    const { isAuthorization } = this.props.authorization;
+    const { isAuthorization, enabled } = this.props.authorization;
     const { items } = this.props.cart;
     const {
       personalData: { name, email, telephone }
@@ -94,6 +94,10 @@ class PersonalData extends Component {
               </span>{' '}
               for the operation
             </Typography>
+          </div>
+        ) : !enabled ? (
+          <div className="unAuth">
+            <Typography variant="h5">Your account is not verified</Typography>
           </div>
         ) : !_.isArray(items) || items.length <= 0 ? (
           <div className="unAuth">
