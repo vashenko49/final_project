@@ -72,7 +72,7 @@ class Header extends Component {
       resetCart
     } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
-    const { openWindowLogIn, isAuthorization } = this.props.authorization;
+    const { openWindowLogIn, isAuthorization, isAdmin } = this.props.authorization;
     const { avatarUrl } = this.props.authorization.personalInfo;
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
 
@@ -95,10 +95,7 @@ class Header extends Component {
           />
         </div>
         <div className="header-navbar">
-          <NavBar
-            rootCategories={rootCategories}
-            childCategories={childCategories}
-          />
+          <NavBar rootCategories={rootCategories} childCategories={childCategories} />
         </div>
         <div className="search" id="header-search-input">
           <SearchIcon onClick={this.onSearchIconClick} className="search-icon" />
@@ -160,6 +157,8 @@ class Header extends Component {
             signOut={signOut}
             openWindowAuth={openWindowAuth}
             cart={cart}
+            resetCart={resetCart}
+            isAdmin={isAdmin}
             customerId={this.state.customerId}
           />
         </div>

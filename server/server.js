@@ -15,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //connect data base
-getConfig("configs-v1")
+getConfig()
   .then(() => {
     // connectDB();
     connectDB(process.env.urlDataBase);
