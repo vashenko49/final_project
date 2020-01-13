@@ -69,8 +69,8 @@ router.delete(
 
 // @route   GET /partners
 // @desc    GET existing partners
-// @access  Public
-router.get("/", getPartners);
+// @access  Private
+router.get("/", passport.authenticate("jwt-admin", {session: false}), getPartners);
 
 // @route   GET /partners
 // @desc    GET  existing active partners

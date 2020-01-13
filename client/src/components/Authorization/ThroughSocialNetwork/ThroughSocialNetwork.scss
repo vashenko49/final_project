@@ -1,6 +1,5 @@
 .btn{
   display:inline-block;
-  min-width: 182px;
   margin:auto;
   padding:15px 40px;
   color:#fff;
@@ -16,6 +15,11 @@
   overflow:hidden;
 }
 
+.container-social-media{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px
+}
 
 .ripple-effect{
   position: absolute;

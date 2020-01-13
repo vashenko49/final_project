@@ -221,7 +221,8 @@ class PayMethod extends Component {
       deleteMethod,
       updateMethod,
       onCloseDialog,
-      createNewMethod
+      createNewMethod,
+      handleCloseSnackBars
     } = this;
     const { columns, data, load, sendDataStatus, sendDataMessage, openDialog } = this.state;
     return (
@@ -271,7 +272,7 @@ class PayMethod extends Component {
         />
         <Preloader open={load} />
         <SnackBars
-          handleClose={this.handleCloseSnackBars}
+          handleClose={handleCloseSnackBars}
           variant={sendDataStatus}
           open={!!sendDataMessage}
           message={sendDataMessage}

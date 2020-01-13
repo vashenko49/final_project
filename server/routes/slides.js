@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {check} = require('express-validator');
+const { check } = require("express-validator");
 const passport = require("passport");
 
 const {
@@ -16,30 +16,16 @@ const {
 // @route   POST /slides
 // @desc    Create new slide
 // @access  Private
-router.post(
-  "/",
-  [
-    passport.authenticate("jwt-admin", {session: false}),
-    check('title','title is require')
-      .not()
-      .isEmpty(),
-    check('description','description is require')
-      .not()
-      .isEmpty(),
-    check('htmlContent','htmlContent is require')
-      .not()
-      .isEmpty()
-  ],
-  addSlide
-);
+router.post("/", [passport.authenticate("jwt-admin", { session: false })], addSlide);
 
 // @route   PUT /slides/:id
 // @desc    Update existing slide
 // @access  Private
 router.put(
-  "/",[
-    passport.authenticate("jwt-admin", {session: false}),
-    check("idSlides","idSlides is require")
+  "/",
+  [
+    passport.authenticate("jwt-admin", { session: false }),
+    check("idSlides", "idSlides is require")
       .not()
       .isEmpty()
   ],
@@ -50,13 +36,13 @@ router.put(
 // @desc    activateordeactivate existing slide
 // @access  Private
 router.put(
-  "/activateordeactivate", [
-    passport.authenticate("jwt-admin", {session: false}),
-    check('idSlides', 'idSlides is require')
+  "/activateordeactivate",
+  [
+    passport.authenticate("jwt-admin", { session: false }),
+    check("idSlides", "idSlides is require")
       .not()
       .isEmpty(),
-    check('status', 'status is require')
-      .isBoolean()
+    check("status", "status is require").isBoolean()
   ],
   activateOrDeactivateSlide
 );
@@ -64,16 +50,12 @@ router.put(
 // @route   DELETE /slides/:idSlides
 // @desc    Delete existing slide
 // @access  Private
-router.delete(
-  "/:idSlides",
-  passport.authenticate("jwt-admin", {session: false}),
-  deleteSlide
-);
+router.delete("/:idSlides", passport.authenticate("jwt-admin", { session: false }), deleteSlide);
 
 // @route   GET /slides
 // @desc    GET existing slides
 // @access  Public
-router.get("/",    passport.authenticate("jwt-admin", {session: false}), getSlides);
+router.get("/", passport.authenticate("jwt-admin", { session: false }), getSlides);
 
 // @route   GET /slides/active
 // @desc    GET active existing slides

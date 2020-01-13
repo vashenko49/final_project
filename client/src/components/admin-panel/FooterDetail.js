@@ -164,7 +164,7 @@ class FooterDetail extends Component {
           >
             <Typography component="span">
               <Box fontWeight={500} component="span" fontFamily="Monospace" fontSize="h7.fontSize">
-                Links
+                Footer
               </Box>
             </Typography>
           </Button>

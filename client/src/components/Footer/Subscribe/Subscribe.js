@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { addSubscriber, saveEmailToStore } from '../../../actions/footerSubscribeAction';
 
 import './Subscribe.scss';
+import { Typography } from '@material-ui/core';
 
 class Subscribe extends Component {
   state = {
@@ -45,7 +46,9 @@ class Subscribe extends Component {
 
     return (
       <div>
-        <p className="footer-menu-list-header">Subscribe to newsletter</p>
+        <Typography variant={'h6'} className="footer-menu-list-header">
+          Subscribe to newsletter
+        </Typography>
         <input
           className="subscribe-input"
           type="text"

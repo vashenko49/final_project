@@ -1,19 +1,11 @@
 import React, { Component, createRef } from 'react';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
-import Badge from '@material-ui/core/Badge';
-import SettingsIcon from '@material-ui/icons/Settings';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import _ from 'lodash';
 
-import cloudinary from 'cloudinary-core';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as headerAction from '../../actions/headerAction';
@@ -23,6 +15,8 @@ import * as AuthorizationActions from '../../actions/authorizationAction';
 import Authorization from '../Authorization/Authorization';
 import './Header.scss';
 import NavBar from './NavBar/NavBar';
+import SideBar from './SideBar/SideBar';
+import UserMenu from './UserMenu/UserMenu';
 import { Link, withRouter } from 'react-router-dom';
 
 class Header extends Component {
@@ -78,7 +72,7 @@ class Header extends Component {
       resetCart
     } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
-    const { openWindowLogIn, isAuthorization } = this.props.authorization;
+    const { openWindowLogIn, isAuthorization, isAdmin } = this.props.authorization;
     const { avatarUrl } = this.props.authorization.personalInfo;
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
 
@@ -87,11 +81,22 @@ class Header extends Component {
         <Link to="/" className="header-logo">
           CROSSY
         </Link>
-        <NavBar
-          className="header-navbar"
-          rootCategories={rootCategories}
-          childCategories={childCategories}
-        />
+        <div className="header-sidebar">
+          <SideBar
+            rootCategories={rootCategories}
+            childCategories={childCategories}
+            cloudinary_cloud_name={cloudinary_cloud_name}
+            isAuthorization={isAuthorization}
+            avatarUrl={avatarUrl}
+            signOut={signOut}
+            openWindowAuth={openWindowAuth}
+            cart={cart}
+            customerId={this.state.customerId}
+          />
+        </div>
+        <div className="header-navbar">
+          <NavBar rootCategories={rootCategories} childCategories={childCategories} />
+        </div>
         <div className="search" id="header-search-input">
           <SearchIcon onClick={this.onSearchIconClick} className="search-icon" />
           <InputBase
@@ -144,38 +149,19 @@ class Header extends Component {
             )}
           </Popover>
         </div>
-        <Box display="flex" className="header-navbar-buttons">
-          {isAuthorization ? (
-            <Box>
-              <img
-                className="avatar-user"
-                alt="Remy Sharp"
-                src={new cloudinary.Cloudinary({
-                  cloud_name: cloudinary_cloud_name
-                }).url(avatarUrl)}
-              />
-              <Button
-                onClick={() => {
-                  signOut();
-                  resetCart();
-                }}
-              >
-                Sign out
-              </Button>
-            </Box>
-          ) : (
-            <Button onClick={openWindowAuth}>Login</Button>
-          )}
-          <FavoriteBorderIcon />
-          <Link to={`/cart`}>
-            <Badge badgeContent={_.isArray(cart.items) ? cart.items.length : 0}>
-              <ShoppingBasketIcon />
-            </Badge>
-          </Link>
-          <Link to="/admin-panel">
-            <SettingsIcon />
-          </Link>
-        </Box>
+        <div className="header-user-menu">
+          <UserMenu
+            cloudinary_cloud_name={cloudinary_cloud_name}
+            isAuthorization={isAuthorization}
+            avatarUrl={avatarUrl}
+            signOut={signOut}
+            openWindowAuth={openWindowAuth}
+            cart={cart}
+            resetCart={resetCart}
+            isAdmin={isAdmin}
+            customerId={this.state.customerId}
+          />
+        </div>
         <Dialog
           open={openWindowLogIn}
           onClose={closeWindowAuth}
