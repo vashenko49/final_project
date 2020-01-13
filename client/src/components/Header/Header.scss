@@ -24,15 +24,14 @@
   }
 
   .search {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 40%;
     padding: 8px 13px;
     background: #E6E6E6;
   }
   .search-icon {
     vertical-align: middle;
-  }
-
-  .search-input {
-    width: 300px;
   }
 
   &-user-menu {

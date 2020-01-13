@@ -7,7 +7,6 @@ import cloudinary from 'cloudinary-core';
 
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import Badge from '@material-ui/core/Badge';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -19,29 +18,41 @@ export default class UserMenu extends Component {
         <Box className="header-navbar-buttons">
           {this.props.isAuthorization ? (
             <Box>
-              <img
-                className="avatar-user"
-                alt="Remy Sharp"
-                src={new cloudinary.Cloudinary({
-                  cloud_name: this.props.cloudinary_cloud_name
-                }).url(this.props.avatarUrl)}
-              />
-              <Button onClick={this.props.signOut}>Sign out</Button>
+              <Link to={'/personaldata'}>
+                <img
+                  className="avatar-user"
+                  alt="Remy Sharp"
+                  src={new cloudinary.Cloudinary({
+                    cloud_name: this.props.cloudinary_cloud_name
+                  }).url(this.props.avatarUrl)}
+                />
+              </Link>
+              <Button
+                onClick={() => {
+                  this.props.signOut();
+                  this.props.resetCart();
+                }}
+              >
+                Sign out
+              </Button>
             </Box>
           ) : (
             <Button onClick={this.props.openWindowAuth}>Login</Button>
           )}
-          <FavoriteBorderIcon />
-          <Link to={`/cart/${this.props.customerId}`}>
-            <Badge badgeContent={_.isArray(this.props.cart.items) ? this.props.cart.items.length : 0}>
+          <Link to={`/cart`}>
+            <Badge
+              badgeContent={_.isArray(this.props.cart.items) ? this.props.cart.items.length : 0}
+            >
               <ShoppingBasketIcon />
             </Badge>
           </Link>
-          <Link to="/admin-panel">
-            <SettingsIcon />
-          </Link>
+          {this.props.isAdmin && (
+            <Link to="/admin-panel">
+              <SettingsIcon />
+            </Link>
+          )}
         </Box>
       </div>
-    )
+    );
   }
 }
