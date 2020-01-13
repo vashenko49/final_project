@@ -25,15 +25,16 @@ export default class Filters extends Component {
         title: 'Enabled',
         field: 'enabled',
         disableClick: true,
-        render: rowData => (
-          <Switch
-            checked={rowData.enabled}
-            onChange={(e, val) => this.handleEnabled(val, rowData)}
-            value="enabled"
-            color="primary"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        )
+        render: rowData =>
+          !rowData.parentId && (
+            <Switch
+              checked={rowData.enabled}
+              onChange={(e, val) => this.handleEnabled(val, rowData)}
+              value="enabled"
+              color="primary"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          )
       }
     ],
     data: [],
@@ -137,14 +138,34 @@ export default class Filters extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      await AdminFiltersAPI.changeStatusFilter(id.id, val);
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `Change status enable success!`
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message || err.message
+      });
+    }
   };
 
   handleCloseSnackBars = (event, reason) => {

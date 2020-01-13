@@ -27,15 +27,16 @@ export default class Categories extends Component {
         title: 'Enabled',
         field: 'enabled',
         disableClick: true,
-        render: rowData => (
-          <Switch
-            checked={rowData.enabled}
-            onChange={(e, val) => this.handleEnabled(val, rowData)}
-            value="enabled"
-            color="primary"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        )
+        render: rowData =>
+          !rowData.hasOwnProperty('titleFilter') && (
+            <Switch
+              checked={rowData.enabled}
+              onChange={(e, val) => this.handleEnabled(val, rowData)}
+              value="enabled"
+              color="primary"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          )
       }
     ],
     data: [],
@@ -188,14 +189,38 @@ export default class Categories extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      if (id.parentId) {
+        await AdminCategoriesAPI.changeStatusSubCategory(id.id, val);
+      } else {
+        await AdminCategoriesAPI.changeStatusRootCategory(id.id, val);
+      }
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `Change status enable success!`
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message || err.message
+      });
+    }
   };
 
   render() {

@@ -150,14 +150,34 @@ class Products extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      await AdminProductsAPI.changeStatusProduct(id.id, val);
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `Change status enable success!`
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message || err.message
+      });
+    }
   };
 
   handleCloseSnackBars = (event, reason) => {

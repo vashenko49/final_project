@@ -20,4 +20,8 @@ export default class AdminProductAPI {
   static updateProducts(data) {
     return axios.put(`/api/products`, data);
   }
+
+  static changeStatusProduct(id, status) {
+    return axios.put(`/api/products/activateordeactivate`, { _idProduct: id, status });
+  }
 }
