@@ -138,14 +138,36 @@ export default class Footer extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      id.hasOwnProperty('parentId')
+        ? await AdminFooterAPI.changeStatusLinkChild(id.parentId, id.id, val)
+        : await AdminFooterAPI.changeStatusLink(id.id, val);
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `Change status enable success!`
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message || err.message
+      });
+    }
   };
 
   handleCloseSnackBars = (event, reason) => {
