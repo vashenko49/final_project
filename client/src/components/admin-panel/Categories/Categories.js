@@ -94,7 +94,7 @@ export default class Categories extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -155,7 +155,7 @@ export default class Categories extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };

@@ -82,7 +82,7 @@ class PayMethod extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -114,7 +114,7 @@ class PayMethod extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -151,7 +151,7 @@ class PayMethod extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -174,7 +174,7 @@ class PayMethod extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -199,7 +199,7 @@ class PayMethod extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };

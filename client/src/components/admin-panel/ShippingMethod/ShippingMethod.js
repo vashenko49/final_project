@@ -105,7 +105,7 @@ class ShippingMethod extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -132,7 +132,7 @@ class ShippingMethod extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -152,7 +152,7 @@ class ShippingMethod extends Component {
           data: [],
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -172,7 +172,7 @@ class ShippingMethod extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -195,7 +195,7 @@ class ShippingMethod extends Component {
           openDialog: false,
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -216,7 +216,7 @@ class ShippingMethod extends Component {
           load: false,
           openDialog: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };

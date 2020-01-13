@@ -131,7 +131,7 @@ class CategoriesDetail extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -182,7 +182,7 @@ class CategoriesDetail extends Component {
       this.setState({
         isOpenSnack: true,
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   }

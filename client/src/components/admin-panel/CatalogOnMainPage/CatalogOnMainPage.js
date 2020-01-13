@@ -81,7 +81,7 @@ class CatalogOnMainPage extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -96,7 +96,7 @@ class CatalogOnMainPage extends Component {
           data: [],
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -128,7 +128,7 @@ class CatalogOnMainPage extends Component {
           this.setState({
             load: false,
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });

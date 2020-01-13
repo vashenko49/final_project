@@ -92,7 +92,7 @@ class DeliveryAddresses extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -117,7 +117,7 @@ class DeliveryAddresses extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -141,7 +141,7 @@ class DeliveryAddresses extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -159,7 +159,7 @@ class DeliveryAddresses extends Component {
           data: [],
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -193,7 +193,7 @@ class DeliveryAddresses extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -219,7 +219,7 @@ class DeliveryAddresses extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
