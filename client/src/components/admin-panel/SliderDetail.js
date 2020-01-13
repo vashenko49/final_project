@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import AdminSliderAPI from '../../services/AdminSliderAPI';
+import AdminProductsAPI from './../../services/AdminProductsAPI';
+import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
 
 import SliderDetailForm from './SliderDetailForm.js';
 
@@ -18,6 +20,10 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { withStyles } from '@material-ui/core/styles';
 
+import objectToFormData from 'object-to-formdata';
+
+import { connect } from 'react-redux';
+
 const styles = theme => ({
   root: {
     padding: theme.spacing(2)
@@ -26,9 +32,14 @@ const styles = theme => ({
 
 class SliderDetail extends Component {
   state = {
+    custom: false,
+    htmlPage: '',
+    image: '',
     title: '',
-    product: '',
+    product: null,
     productsList: [],
+    category: null,
+    categoryList: [],
     description: '',
     typeForm: 'create',
     idUpdate: null,
@@ -49,27 +60,52 @@ class SliderDetail extends Component {
     try {
       this.setIsLoading(true);
 
-      const { title, description, product, typeForm, idUpdate } = this.state;
-
-      const sendData = {
+      const {
+        custom,
+        htmlPage,
+        image,
         title,
-        description,
         product,
-        enabled: true
+        category,
+        description,
+        typeForm,
+        idUpdate
+      } = this.state;
+
+      const sendData = custom
+        ? {
+            htmlContent: htmlPage,
+            imageUrl: image,
+            enabled: true
+          }
+        : {
+            title,
+            description,
+            product: product ? product._id : null,
+            childCatalogs: category ? category._id : null,
+            imageUrl: image,
+            enabled: true
+          };
+
+      const options = {
+        indices: true,
+        nullsAsUndefineds: true
       };
 
+      const formData = objectToFormData(sendData, options);
+
       if (typeForm === 'create') {
-        await AdminSliderAPI.createSlider(sendData);
+        await AdminSliderAPI.createSlider(formData);
       }
-      if (typeForm === 'updateSlider') {
-        await AdminSliderAPI.updateFooter(idUpdate, sendData);
+      if (typeForm === 'update') {
+        await AdminSliderAPI.updateSlider(idUpdate, formData);
       }
 
       this.setIsLoading(false);
 
       this.setState({
         sendDataStatus: 'success',
-        sendDataMessage: `${title} link has been ${typeForm}!`
+        sendDataMessage: `Slide has been ${typeForm}!`
       });
     } catch (err) {
       this.setIsLoading(false);
@@ -91,13 +127,40 @@ class SliderDetail extends Component {
     try {
       this.setIsLoading(true);
 
+      const dataProduct = await AdminProductsAPI.getProducts();
+      const dataCategory = await AdminCategoriesAPI.getCategories();
+
+      const newDataCategory = [];
+
+      dataCategory.data.forEach(main => {
+        main.childCatalog.forEach(sub => {
+          sub.parent = main;
+          newDataCategory.push(sub);
+        });
+      });
+
+      this.setState({
+        productsList: dataProduct.data,
+        categoryList: newDataCategory
+      });
+
       const { id } = this.props.match.params;
       if (id) {
-        this.setState({ typeForm: 'update', idUpdate: id });
-
         const { data } = await AdminSliderAPI.getSliderById(id);
 
-        this.setState({});
+        this.setState({
+          custom: !!data.htmlContent,
+          htmlPage: data.htmlContent || '',
+          image: data.imageUrl,
+          title: data.title || '',
+          description: data.description || '',
+          product: data.product ? dataProduct.data.find(i => i._id === data.product._id) : null,
+          category: data.categories
+            ? newDataCategory.filter(i => i._id === data.categories._id)
+            : null,
+          typeForm: 'update',
+          idUpdate: id
+        });
       }
 
       this.setIsLoading(false);
@@ -112,11 +175,16 @@ class SliderDetail extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, configuration } = this.props;
     const {
+      custom,
+      image,
+      htmlPage,
       title,
       product,
       productsList,
+      category,
+      categoryList,
       description,
       sendDataStatus,
       sendDataMessage,
@@ -132,18 +200,28 @@ class SliderDetail extends Component {
           >
             <Typography component="span">
               <Box fontWeight={500} component="span" fontFamily="Monospace" fontSize="h7.fontSize">
-                Links
+                Slider
               </Box>
             </Typography>
           </Button>
           <SliderDetailForm
+            custom={custom}
+            image={image}
+            htmlPage={htmlPage}
             title={title}
             description={description}
             product={product}
             productsList={productsList}
+            category={category}
+            categoryList={categoryList}
+            cloudinaryCloudName={configuration.cloudinary_cloud_name}
             onChangeValue={this.onChangeValue}
             onSubmitForm={this.onSubmitForm}
-            onSubmitFormDisabled={!!(!title.length || !description.length || !product.length)}
+            onSubmitFormDisabled={
+              custom
+                ? !!(!htmlPage.length || !image)
+                : !!(!image || !title.length || !description.length || (!product && !category))
+            }
           />
 
           <SnackBars
@@ -164,4 +242,10 @@ SliderDetail.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(SliderDetail);
+function mapStateToProps(state) {
+  return {
+    configuration: state.configuration
+  };
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(SliderDetail));

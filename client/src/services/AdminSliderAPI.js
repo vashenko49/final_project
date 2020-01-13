@@ -21,7 +21,7 @@ export default class AdminSliderAPI {
     return axios.delete(`/api/slider/${id}`);
   }
 
-  // static changeStatusSlider(id, body) {
-  //   return axios.put(`/slides/${id}`, body);
-  // }
+  static changeStatusSlider(id, status) {
+    return axios.put(`/activateordeactivate`, { idSlides: id, status });
+  }
 }

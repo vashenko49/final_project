@@ -58,6 +58,10 @@ class Slider extends Component {
   state = {
     columns: [
       {
+        title: 'Type slide',
+        field: 'type'
+      },
+      {
         title: 'Image',
         field: 'imageUrl',
         render: rowData =>
@@ -144,15 +148,15 @@ class Slider extends Component {
       this.setIsLoading(true);
 
       const { data } = await AdminSliderAPI.getSlider();
-      console.log(data);
 
       const preViewRes = data.map(i => ({
         _id: i._id,
-        imageUrl: i.imageUrl,
-        nameProduct: i.product.nameProduct,
-        childCatalogs: i.childCatalogs.name,
-        title: i.title,
-        description: i.description,
+        type: i.htmlContent ? 'custom' : 'constructor',
+        imageUrl: i.htmlContent ? '' : i.imageUrl,
+        nameProduct: i.htmlContent ? '' : i.product.nameProduct,
+        childCatalogs: i.htmlContent ? '' : i.childCatalogs ? i.childCatalogs.name : '',
+        title: i.htmlContent ? '' : i.title,
+        description: i.htmlContent ? '' : i.description,
         enabled: i.enabled
       }));
 
@@ -172,14 +176,29 @@ class Slider extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      await AdminSliderAPI.changeStatusSlider(id._id, val);
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message
+      });
+    }
   };
 
   handleCloseSnackBars = (event, reason) => {
