@@ -10,6 +10,8 @@ import Categories from './Categories';
 import CategoriesDetail from './CategoriesDetail';
 import Footer from './Footer';
 import FooterDetail from './FooterDetail';
+import Slider from './Slider';
+import SliderDetail from './SliderDetail';
 import PayMethod from './PayMethod/PayMethod';
 import NotFound from '../page/NotFound';
 import ShippingMethod from './ShippingMethod/ShippingMethod';
@@ -100,6 +102,11 @@ class AdminPanel extends Component {
               </ListItem>
               <ListItem button onClick={this.handleOpenMenu}>
                 <ListItemText>
+                  <StyledLink to="/admin-panel/slider">Slider</StyledLink>
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={this.handleOpenMenu}>
+                <ListItemText>
                   <StyledLink to="/admin-panel/paymethod">Pay method</StyledLink>
                 </ListItemText>
               </ListItem>
@@ -152,6 +159,9 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/footer" component={Footer} />
               <Route exact path="/admin-panel/footer/new" component={FooterDetail} />
               <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
+              <Route exact path="/admin-panel/slider" component={Slider} />
+              <Route exact path="/admin-panel/slider/new" component={SliderDetail} />
+              <Route exact path="/admin-panel/slider/:id" component={SliderDetail} />
               <Route exact path="/admin-panel/paymethod" component={PayMethod} />
               <Route exact path="/admin-panel/shippingmethod" component={ShippingMethod} />
               <Route exact path="/admin-panel/deliveryaddresses" component={DeliveryAddresses} />
