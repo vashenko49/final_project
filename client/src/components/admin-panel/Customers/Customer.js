@@ -3,7 +3,7 @@ import Switch from '@material-ui/core/Switch';
 import AuthorizationAPI from '../../../services/AuthorizationAPI';
 import Preloader from '../../common/admin-panel/Preloader';
 import SnackBars from '../../common/admin-panel/SnackBars';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
 import _ from 'lodash';

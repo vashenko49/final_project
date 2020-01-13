@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 
-import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+import BtnCreateAdmin from '../../common/admin-panel/BtnCreateAdmin';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
-import AdminFooterAPI from '../../services/AdminFooterAPI';
+import AdminFiltersAPI from '../../../services/AdminFiltersAPI';
 
 import MaterialTable from 'material-table';
 
@@ -14,14 +14,13 @@ import Switch from '@material-ui/core/Switch';
 
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
-import { tableIcons } from './TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 
-export default class Footer extends Component {
+export default class Filters extends Component {
   state = {
     columns: [
-      { title: 'Group link', field: 'title' },
-      { title: 'Link', field: 'description' },
-      { title: 'Url', field: 'url' },
+      { title: 'Filter', field: 'title' },
+      { title: 'Service name', field: 'serviceName' },
       {
         title: 'Enabled',
         field: 'enabled',
@@ -58,22 +57,22 @@ export default class Footer extends Component {
 
       delData.forEach(async item => {
         if (item.parentId) {
-          await AdminFooterAPI.deleteFooterLink(item.parentId, { _id: item.id });
+          await AdminFiltersAPI.deleteSubFilters(item.id);
 
           this.setIsLoading(false);
 
           this.setState({
             sendDataStatus: 'success',
-            sendDataMessage: `${item.title} group link has been remove!`
+            sendDataMessage: `${item.title} sub filter has been remove!`
           });
         } else {
-          await AdminFooterAPI.deleteFooterGroupLinks(item.id);
+          await AdminFiltersAPI.deleteFilters(item.id);
 
           this.setIsLoading(false);
 
           this.setState({
             sendDataStatus: 'success',
-            sendDataMessage: `${item.title} link has been remove!`
+            sendDataMessage: `${item.title} filter has been remove!`
           });
 
           this.setState(prevState => {
@@ -93,31 +92,31 @@ export default class Footer extends Component {
   };
 
   onRowClick = (evt, selectedRow) => {
-    this.setState({ clickId: selectedRow.parentId ? selectedRow.parentId : selectedRow.id });
+    this.setState({ clickId: selectedRow.id });
   };
 
   onRefreshData = async () => {
     try {
       this.setIsLoading(true);
 
-      const { data } = await AdminFooterAPI.getFooter();
+      const { data } = await AdminFiltersAPI.getFilters();
 
       const preViewRes = [];
 
-      data.forEach(group => {
+      data.forEach(item => {
         preViewRes.push({
-          id: group._id,
-          title: group.title,
-          enabled: group.enabled
+          id: item._id,
+          title: item.type,
+          serviceName: item.serviceName,
+          enabled: item.enabled
         });
 
-        group.links.forEach(link => {
+        item._idSubFilters.forEach(sub => {
           preViewRes.push({
-            id: link._id,
-            description: link.description,
-            url: link.url,
-            parentId: group._id,
-            enabled: link.enabled
+            id: sub._id,
+            title: sub.name,
+            parentId: item._id,
+            enabled: sub.enabled
           });
         });
       });
@@ -161,7 +160,7 @@ export default class Footer extends Component {
       <>
         <MaterialTable
           icons={tableIcons}
-          title="Footer"
+          title="Filters"
           columns={columns}
           data={data}
           parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
@@ -192,7 +191,7 @@ export default class Footer extends Component {
           ]}
           onRowClick={this.onRowClick}
         />
-        <BtnCreateAdmin to="/admin-panel/footer/new" />
+        <BtnCreateAdmin to="/admin-panel/filters/new" />
 
         <SnackBars
           handleClose={this.handleCloseSnackBars}
@@ -203,7 +202,9 @@ export default class Footer extends Component {
 
         <Preloader open={isLoading} />
 
-        {this.state.clickId ? <Redirect to={`/admin-panel/Footer/${clickId}`} push={true} /> : null}
+        {this.state.clickId ? (
+          <Redirect to={`/admin-panel/filters/${clickId}`} push={true} />
+        ) : null}
       </>
     );
   }

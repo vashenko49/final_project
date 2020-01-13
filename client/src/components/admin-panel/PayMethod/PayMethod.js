@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import MaterialTable from 'material-table';
 import Switch from '@material-ui/core/Switch';
 import _ from 'lodash';

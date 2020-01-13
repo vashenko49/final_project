@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Switch from '@material-ui/core/Switch';
 import MaterialTable from 'material-table';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import PartnerDetail from './PartnerDetail/PartnerDetail';
 import PartnerAPI from '../../../services/PartnerAPI';
 

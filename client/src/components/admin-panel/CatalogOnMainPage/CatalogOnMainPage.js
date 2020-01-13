@@ -3,7 +3,7 @@ import Switch from '@material-ui/core/Switch';
 import CatalogAPI from '../../../services/CatalogAPI';
 import Preloader from '../../common/admin-panel/Preloader';
 import SnackBars from '../../common/admin-panel/SnackBars';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import MaterialTable from 'material-table';
 
 class CatalogOnMainPage extends Component {

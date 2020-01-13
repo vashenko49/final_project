@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { Image } from 'cloudinary-react';
 
-import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+import BtnCreateAdmin from '../../common/admin-panel/BtnCreateAdmin';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
-import AdminProductsAPI from './../../services/AdminProductsAPI';
+import AdminProductsAPI from '../../../services/AdminProductsAPI';
 
 import MaterialTable from 'material-table';
 
@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
-import { tableIcons } from './TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 
 class Products extends Component {
   state = {

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import AdminSliderAPI from '../../services/AdminSliderAPI';
-import AdminProductsAPI from './../../services/AdminProductsAPI';
-import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
+import AdminSliderAPI from '../../../services/AdminSliderAPI';
+import AdminProductsAPI from '../../../services/AdminProductsAPI';
+import AdminCategoriesAPI from '../../../services/AdminCategoriesAPI';
 
 import SliderDetailForm from './SliderDetailForm.js';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';

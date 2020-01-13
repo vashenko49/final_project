@@ -4,7 +4,7 @@ import shippingMethodAPI from '../../../services/shippingMethodAPI';
 import Preloader from '../../common/admin-panel/Preloader';
 import SnackBars from '../../common/admin-panel/SnackBars';
 import MaterialTable from 'material-table';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import ShippingMethodDetail from './ShippingMethodDetail/ShippingMethodDetail';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';

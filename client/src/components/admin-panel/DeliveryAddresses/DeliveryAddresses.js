@@ -3,7 +3,7 @@ import Preloader from '../../common/admin-panel/Preloader';
 import SnackBars from '../../common/admin-panel/SnackBars';
 import Switch from '@material-ui/core/Switch';
 import MaterialTable from 'material-table';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import DeliveryAddressesAPI from '../../../services/DeliveryAddressesAPI';
 
 class DeliveryAddresses extends Component {
