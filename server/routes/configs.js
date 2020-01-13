@@ -14,6 +14,15 @@ const {
   getConfigForClient
 } = require("../controllers/Configs");
 
+// @route   GET /configs/use/:customId
+// @desc    use specified configuration
+// @access  Private
+router.get(
+  "/use",
+    passport.authenticate("jwt-admin", {session: false}),
+  useSpecifiedConfiguration
+);
+
 // @route   POST /configs
 // @desc    Create new config
 // @access  Private
@@ -144,6 +153,7 @@ router.post(
       .not()
       .isEmpty(),
   ],
+  passport.authenticate("jwt-admin", {session: false}),
   addConfig
 );
 
@@ -151,8 +161,12 @@ router.post(
 // @desc    Update existing config
 // @access  Private
 router.put(
-  "/:customId",
+  "/",[
   passport.authenticate("jwt-admin", {session: false}),
+  check('_id', '_id configuration is require')
+    .not()
+    .isEmpty(),
+  ],
   updateConfig
 );
 
@@ -170,6 +184,7 @@ router.delete(
 // @access  Private
 router.get(
   "/",
+  passport.authenticate("jwt-admin", {session: false}),
   getConfigs
 );
 
@@ -178,6 +193,7 @@ router.get(
 // @access  Private
 router.get(
   "/:customId",
+  passport.authenticate("jwt-admin", {session: false}),
   getConfigById
 );
 
@@ -190,13 +206,6 @@ router.get(
   getConfigForClient
 );
 
-// @route   GET /configs/use/:customId
-// @desc    use specified configuration
-// @access  Private
-router.get(
-  "/use/:customId",
-  useSpecifiedConfiguration
-);
 
 
 module.exports = router;
