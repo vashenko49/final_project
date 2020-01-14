@@ -112,7 +112,7 @@ export default class Categories extends Component {
 
   onSelectDelete = (event, delData) => {
     try {
-      // this.setIsLoading(true);
+      this.setIsLoading(true);
 
       delData.forEach(async item => {
         let nameItem = Object.keys(item);
