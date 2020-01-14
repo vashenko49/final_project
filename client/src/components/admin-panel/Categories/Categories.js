@@ -126,7 +126,10 @@ export default class Categories extends Component {
             sendDataStatus: 'success',
             sendDataMessage: `${item.titleCategory} has been remove!`
           });
-        } else if (nameItem.includes('titleSubCategory')) {
+        } else if (
+          nameItem.includes('titleSubCategory') &&
+          !delData.find(i => i.id === item.parentId)
+        ) {
           await AdminCategoriesAPI.deleteSubCategory(item.id);
 
           this.setIsLoading(false);
@@ -135,7 +138,7 @@ export default class Categories extends Component {
             sendDataStatus: 'success',
             sendDataMessage: `${item.titleSubCategory} filter has been remove!`
           });
-        } else if (nameItem.includes('titleFilter')) {
+        } else if (nameItem.includes('titleFilter') && !delData.find(i => i.id === item.parentId)) {
           await AdminCategoriesAPI.deleteFilter(item.parentId, item.id);
 
           this.setIsLoading(false);
