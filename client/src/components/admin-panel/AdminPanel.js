@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+import Orders from './Orders/Orders';
 import Filters from './Filters/Filters';
 import FiltersDetail from './Filters/FiltersDetail';
 import Products from './Products/Products';
@@ -80,6 +81,12 @@ class AdminPanel extends Component {
             </div>
             <Divider />
             <List>
+              <StyledLink to="/admin-panel/orders" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Orders</ListItemText>
+                </ListItem>
+              </StyledLink>
+
               <StyledLink to="/admin-panel/products" onClick={this.handleOpenMenu}>
                 <ListItem button>
                   <ListItemText>Products</ListItemText>
@@ -158,6 +165,7 @@ class AdminPanel extends Component {
           <Box m={1}>
             <Switch>
               <Route exact path="/admin-panel" component={AdminPanelWelcome} />
+              <Route exact path="/admin-panel/orders" component={Orders} />
               <Route exact path="/admin-panel/products" component={Products} />
               <Route exact path="/admin-panel/products/new" component={ProductsDetail} />
               <Route exact path="/admin-panel/products/:id" component={ProductsDetail} />
