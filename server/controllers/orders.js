@@ -241,3 +241,19 @@ exports.getOrderById = async (req, res) => {
     })
   }
 };
+
+exports.getOrders = async (req,res)=>{
+  try {
+    const orders = await Orders.find({})
+      .populate('idCustomer')
+      .populate({path: 'delivery.idShippingMethod', select: '-address'})
+      .populate('delivery.storeAddress')
+      .populate('products.productId');
+
+    res.status(200).json(orders);
+  }catch (e) {
+    res.status(400).json({
+      message: `Server error ${e.message}`
+    })
+  }
+};

@@ -11,7 +11,8 @@ const {
   cancelOrder,
   deleteOrder,
   getOrdersByCustomer,
-  getOrderById
+  getOrderById,
+  getOrders
 } = require("../controllers/orders");
 
 // @route   POST /orders
@@ -87,6 +88,12 @@ router.get(
   "/:idOrder",
   passport.authenticate("jwt", {session: false}),
   getOrderById
+);
+
+router.get(
+  "/",
+  passport.authenticate("jwt-admin", {session: false}),
+  getOrders
 );
 
 module.exports = router;

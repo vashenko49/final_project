@@ -14,6 +14,7 @@ import MaterialTable from 'material-table';
 import Switch from '@material-ui/core/Switch';
 
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
@@ -86,10 +87,9 @@ class Products extends Component {
         numberProduct: product.itemNo,
         categoryProduct: product._idChildCategory.name,
         priceProduct: Math.min(...product.model.map(i => i.currentPrice)),
-        quantityProduct:
-          product.model.length > 1
-            ? product.model.map(i => i.quantity).reduce((prev, curr) => prev + curr)
-            : product.model[0].quantity,
+        quantityProduct: _.sumBy(product.model, function(o) {
+          return o.quantity;
+        }),
         enabled: product.enabled
       }));
 
