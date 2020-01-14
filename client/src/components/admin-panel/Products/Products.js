@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { Image } from 'cloudinary-react';
 
-import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+import BtnCreateAdmin from '../../common/admin-panel/BtnCreateAdmin';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
-import AdminProductsAPI from './../../services/AdminProductsAPI';
+import AdminProductsAPI from '../../../services/AdminProductsAPI';
 
 import MaterialTable from 'material-table';
 
@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
-import { tableIcons } from './TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 
 class Products extends Component {
   state = {
@@ -103,7 +103,7 @@ class Products extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -136,7 +136,7 @@ class Products extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -150,14 +150,34 @@ class Products extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      await AdminProductsAPI.changeStatusProduct(id.id, val);
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `Change status enable success!`
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message || err.message
+      });
+    }
   };
 
   handleCloseSnackBars = (event, reason) => {

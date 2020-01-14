@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 
-import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+import BtnCreateAdmin from '../../common/admin-panel/BtnCreateAdmin';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
-import AdminFooterAPI from '../../services/AdminFooterAPI';
+import AdminFooterAPI from '../../../services/AdminFooterAPI';
 
 import MaterialTable from 'material-table';
 
@@ -14,7 +14,7 @@ import Switch from '@material-ui/core/Switch';
 
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
-import { tableIcons } from './TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 
 export default class Footer extends Component {
   state = {
@@ -87,7 +87,7 @@ export default class Footer extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -132,20 +132,42 @@ export default class Footer extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      id.hasOwnProperty('parentId')
+        ? await AdminFooterAPI.changeStatusLinkChild(id.parentId, id.id, val)
+        : await AdminFooterAPI.changeStatusLink(id.id, val);
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `Change status enable success!`
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message || err.message
+      });
+    }
   };
 
   handleCloseSnackBars = (event, reason) => {
