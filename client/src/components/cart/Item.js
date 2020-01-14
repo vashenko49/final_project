@@ -12,9 +12,37 @@ import './Cart.scss';
 
 class Item extends Component {
   render() {
-    const { updateQuantity, customerId, addOrRemoveProduct } = this.props;
+    const { isAuthorization, updateQuantity, addOrRemoveProduct } = this.props;
 
-    const { items } = this.props.cart;
+    let items = []
+    if(isAuthorization) {
+      items = this.props.cart.items;
+    } else {
+      items = JSON.parse(localStorage.getItem('items'))
+    }
+
+    const _addOrRemoveProduct = (parentId, modelNo) => {
+      if(isAuthorization) {
+        addOrRemoveProduct(parentId, modelNo, 0);
+      } else {
+        const index = items.findIndex(v => v.modelNo.modelNo === modelNo)
+        items.splice(index, 1);
+        localStorage.setItem('items', JSON.stringify(items))
+        window.location.reload(true)
+      }
+    }
+    
+    const _updateQuantity = (parentId, modelNo, e) => {
+      if(isAuthorization) {
+        updateQuantity(parentId, modelNo, e.target.value);
+      } else {
+        debugger
+        const index = items.filter(v => v.modelNo.modelNo === modelNo)[0]
+        index.quantity = e.target.value
+        localStorage.setItem('items', JSON.stringify(items))
+        window.location.reload(true)
+      }
+    }
 
     const amount = [];
 
@@ -25,11 +53,11 @@ class Item extends Component {
         </option>
       );
     }
+
     return (
       <Fragment>
         <div className="bag-item">
-          {_.isArray(items) &&
-            items.map(v => {
+            {items.map(v => {
               const { _id, filters: property, currentPrice, modelNo } = v.modelNo;
 
               const { _id: parentId, nameProduct, productUrlImg, _idChildCategory } = v.idProduct;
@@ -68,7 +96,7 @@ class Item extends Component {
                     <select
                       name="quantity"
                       onChange={e => {
-                        updateQuantity(parentId, modelNo, e.target.value);
+                        _updateQuantity(parentId, modelNo, e);
                       }}
                       value={quantity}
                     >
@@ -81,7 +109,7 @@ class Item extends Component {
                   <div
                     className="close"
                     onClick={() => {
-                      addOrRemoveProduct(parentId, modelNo, 0);
+                      _addOrRemoveProduct(parentId, modelNo);
                     }}
                   ></div>
                 </div>
