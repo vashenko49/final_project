@@ -246,6 +246,7 @@ class ProductsDetail extends Component {
         sendDataMessage: sendMessage
       });
     } catch (err) {
+      console.log(err);
       this.setIsLoading(false);
 
       this.setState({

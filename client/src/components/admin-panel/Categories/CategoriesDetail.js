@@ -27,6 +27,7 @@ const styles = theme => ({
 
 class CategoriesDetail extends Component {
   state = {
+    idRootCategory: '',
     rootCategoryError: false,
     rootCategory: '',
     childCategory: [],
@@ -97,11 +98,12 @@ class CategoriesDetail extends Component {
     try {
       this.setIsLoading(true);
 
-      const { rootCategory, childCategory, idUpdate, typeForm } = this.state;
+      const { idRootCategory, rootCategory, childCategory, typeForm } = this.state;
 
       const sendData = {
         nameRootCatalog: rootCategory,
         childCatalogs: childCategory.map(child => {
+          console.log(child);
           const childData = {
             nameChildCatalog: child.name,
             filters: child.filters.map(filter => filter.id)
@@ -116,7 +118,7 @@ class CategoriesDetail extends Component {
         await AdminCategoriesAPI.createCategories(sendData);
       }
       if (typeForm === 'update') {
-        sendData._id = idUpdate;
+        sendData._id = idRootCategory;
         await AdminCategoriesAPI.updateCategories(sendData);
       }
 
@@ -159,6 +161,7 @@ class CategoriesDetail extends Component {
 
         this.setState({
           rootCategory: data.name,
+          idRootCategory: data._id,
           childCategory: data.childCatalog.map(i => ({
             idOwner: i._id,
             id: i._id,

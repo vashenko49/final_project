@@ -34,6 +34,7 @@ getConfig()
 app.use(formData.parse());
 app.use(bodyParser.json());
 
+
 // Use Routes
 app.use("/api/customers", require("./routes/customers"));
 app.use("/api/configs", require("./routes/configs"));
