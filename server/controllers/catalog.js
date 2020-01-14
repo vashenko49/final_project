@@ -380,6 +380,7 @@ exports.deleteChildCatalogFilter = async (req, res) => {
     res.status(200).json(childcatalog);
 
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: 'Server Error!'
     })
@@ -583,7 +584,7 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()});
     }
-    const {nameRootCatalog, newchildCatalogs} = req.body;
+    const {nameRootCatalog, childCatalogs: newchildCatalogs} = req.body;
 
     let catalog = await rootCatalog.findOne({name: nameRootCatalog});
 
@@ -638,7 +639,7 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
 
     let response = {};
     response.childcatalog = [];
-    let {nameRootCatalog, editChildCatalogs, _idRootCatalog} = req.body;
+    let {nameRootCatalog, childCatalogs: editChildCatalogs, _id: _idRootCatalog} = req.body;
 
     if (_.isString(_idRootCatalog) && _.isString(nameRootCatalog)) {
       let rootcatalog = await rootCatalog.findById(_idRootCatalog);
@@ -655,7 +656,17 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
 
     if (_.isArray(editChildCatalogs)) {
       for (let i = 0; i < editChildCatalogs.length; i++) {
-        let {_idChildCatalog, filters, nameChildCatalog} = editChildCatalogs[i];
+        let {_id: _idChildCatalog, filters, nameChildCatalog} = editChildCatalogs[i];
+
+        if(_.isUndefined(_idChildCatalog)){
+          let newChildCatalog = new childCatalog({
+            name: nameChildCatalog,
+            parentId: _idRootCatalog,
+            filters: await commonCatalog.checkFilter(filters)
+          });
+
+          newChildCatalog = await newChildCatalog.save();
+        }
 
         if (_.isString(_idChildCatalog)) {
           let childcatalog = await childCatalog.findById(_idChildCatalog);

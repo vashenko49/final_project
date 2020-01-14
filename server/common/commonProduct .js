@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Product = require("../models/Product");
 const ChildCatalog = require('../models/ChildCatalog');
 
-exports.addNewSubFilterToCategory = (filter, childCatalog) => {
+exports.addNewSubFilterToCategory = async (filter, childCatalog) => {
   filter.forEach((filProd) => {
     let indexFilterInCatalog = _.findIndex(childCatalog.filters, (val) => {
       return val.filter.toString() === filProd.filter.toString();
@@ -20,27 +20,53 @@ exports.addNewSubFilterToCategory = (filter, childCatalog) => {
   });
 };
 
-exports.removeSubFilterFromChildCategoryCheckProduct = async (filterold, _idChildCategory) => {
-    for (let i = 0; i < filterold.length; i++) {
-      const {subFilter, filter} = filterold[i];
-      const isUseSubFilterInProduct = await Product.find({
-        $and: [
-          {
-            $or: [
-              {"filters.subFilter": subFilter},
-              {"model.filters.subFilter": subFilter}
-            ]
-          }, {"_id": mongoose.Types.ObjectId(_idChildCategory)}
-        ]
+exports.removeSubFilterFromChildCategoryCheckProduct = async (filterold, _idChildCategory, _idProduct) => {
+  for (let i = 0; i < filterold.length; i++) {
+    const {subFilter, filter} = filterold[i];
+    const isUseSubFilterInProduct = await Product.find({
+      $and: [
+        {
+          $or: [
+            {
+              $and: [
+                {"filters.subFilter": subFilter},
+                {'enabled': true},
+              ]
+            },
+            {
+              $and: [
+                {"model.filters.subFilter": subFilter},
+                {'model.enabled': true},
+              ],
+            }
+          ]
+        }, {
+          $and: [
+            {"_idChildCategory": _idChildCategory},
+            {'_id': {$ne: _idProduct}}
+          ]
+        }
+      ]
+    });
+    if (isUseSubFilterInProduct.length <= 0) {
+      const ChildCat = await ChildCatalog.findById(_idChildCategory);
+
+      let selectFilter = _.findIndex(ChildCat.filters, function (o) {
+        return o.filter.toString() === filter.toString();
       });
-      if (isUseSubFilterInProduct.length <= 0) {
-        await ChildCatalog
-          .updateMany(
-            {_id: mongoose.Types.ObjectId(filter)},
-            {$pull: {"filters.$[].subfilters": subFilter}},
-          )
+
+      if (selectFilter >= 0) {
+        let selectSubfilter = _.findIndex(ChildCat.filters[selectFilter].subfilters, function (o) {
+          return o.toString() === subFilter.toString();
+        });
+        if (selectSubfilter >= 0) {
+          ChildCat.filters[selectFilter].subfilters.splice(selectSubfilter, 1);
+        }
       }
+
+      await ChildCat.save();
     }
+  }
 };
 
 exports.comparer = (otherArray) => {
