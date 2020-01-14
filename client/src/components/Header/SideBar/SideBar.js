@@ -1,13 +1,11 @@
 import React from 'react';
 
 import UserMenu from '../UserMenu/UserMenu';
+import SideBarCategoriesMenu from './SideBarCategoriesMenu/SideBarCategoriesMenu';
 
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 
 export default function SideBar(props) {
   const [state, setState] = React.useState({
@@ -19,7 +17,13 @@ export default function SideBar(props) {
       return;
     }
 
-    setState({ ...state, [side]: open });
+    if (event.target === document.querySelector('#header-categories-menu .MuiButton-label')) {
+      setState({ ...state, [side]: open });
+    }
+
+    if (event.target === document.getElementsByClassName('MuiBackdrop-root')[0]) {
+      setState({ ...state, [side]: open });
+    }
   };
 
   const sideList = side => (
@@ -28,14 +32,15 @@ export default function SideBar(props) {
       onClick={toggleDrawer(side, false)}
       onKeyDown={toggleDrawer(side, false)}
     >
-      <List>
-        {props.rootCategories.map(elem => (
-          <ListItem button key={elem.name}>
-            <ListItemText primary={elem.name} />
-          </ListItem>
+      {props.rootCategories
+        .filter(item => item.enabled === true)
+        .map(elem => (
+          <SideBarCategoriesMenu
+            key={elem.name}
+            rootCategories={elem}
+            childCategories={props.childCategories}
+          />
         ))}
-      </List>
-      <Divider />
       <List className="sidebar-user-menu">
         <UserMenu
           cloudinary_cloud_name={props.cloudinary_cloud_name}
@@ -52,7 +57,7 @@ export default function SideBar(props) {
 
   return (
     <div>
-      <Button onClick={toggleDrawer('left', true)}>Menu</Button>
+      <Button id="header-categories-menu" onClick={toggleDrawer('left', true)}>Menu</Button>
       <SwipeableDrawer
         open={state.left}
         onClose={toggleDrawer('left', false)}
