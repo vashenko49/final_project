@@ -94,7 +94,7 @@ class Orders extends Component {
           name: order.name,
           mobile: order.mobile,
           email: order.email,
-          enabled: order.canceled
+          enabled: !order.canceled
         });
 
         order.products.forEach(product => {
