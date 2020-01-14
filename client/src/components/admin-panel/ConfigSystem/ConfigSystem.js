@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import ConfigSystemDetail from './ConfigSystemDetail/ConfigSystemDetail';
 import Switch from '@material-ui/core/Switch';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import MaterialTable from 'material-table';
 import ConfigurationAPI from '../../../services/ConfigurationAPI';
 import { Button, Typography } from '@material-ui/core';
@@ -65,7 +65,7 @@ class ConfigSystem extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -85,7 +85,7 @@ class ConfigSystem extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -106,7 +106,7 @@ class ConfigSystem extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -129,7 +129,7 @@ class ConfigSystem extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -166,7 +166,7 @@ class ConfigSystem extends Component {
           load: false,
           openDialog: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -188,7 +188,7 @@ class ConfigSystem extends Component {
           load: false,
           openDialog: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };

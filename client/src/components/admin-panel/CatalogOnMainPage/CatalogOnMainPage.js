@@ -3,7 +3,7 @@ import Switch from '@material-ui/core/Switch';
 import CatalogAPI from '../../../services/CatalogAPI';
 import Preloader from '../../common/admin-panel/Preloader';
 import SnackBars from '../../common/admin-panel/SnackBars';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import MaterialTable from 'material-table';
 
 class CatalogOnMainPage extends Component {
@@ -81,7 +81,7 @@ class CatalogOnMainPage extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -96,7 +96,7 @@ class CatalogOnMainPage extends Component {
           data: [],
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -128,7 +128,7 @@ class CatalogOnMainPage extends Component {
           this.setState({
             load: false,
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });

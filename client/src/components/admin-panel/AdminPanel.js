@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import Filters from './Filters';
-import FiltersDetail from './FiltersDetail';
-import Products from './Products';
-import ProductsDetail from './ProductsDetail';
-import Categories from './Categories';
-import CategoriesDetail from './CategoriesDetail';
-import Footer from './Footer';
-import FooterDetail from './FooterDetail';
+import Filters from './Filters/Filters';
+import FiltersDetail from './Filters/FiltersDetail';
+import Products from './Products/Products';
+import ProductsDetail from './Products/ProductsDetail';
+import Categories from './Categories/Categories';
+import CategoriesDetail from './Categories/CategoriesDetail';
+import Footer from './Footer/Footer';
+import FooterDetail from './Footer/FooterDetail';
+import Slider from './Slider/Slider';
+import SliderDetail from './Slider/SliderDetail';
 import PayMethod from './PayMethod/PayMethod';
 import NotFound from '../page/NotFound';
 import ShippingMethod from './ShippingMethod/ShippingMethod';
@@ -78,61 +80,77 @@ class AdminPanel extends Component {
             </div>
             <Divider />
             <List>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/products">Products</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/categories">Categories</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/filters">Filters</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/footer">Footer</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/paymethod">Pay method</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/shippingmethod">Shipping method</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/deliveryaddresses">Delivery addresses</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/customers">Customers</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/catalogonmainpage">Catalog On Main Page</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/partner">Partner</StyledLink>
-                </ListItemText>
-              </ListItem>
-              <ListItem button onClick={this.handleOpenMenu}>
-                <ListItemText>
-                  <StyledLink to="/admin-panel/config">Configuration system</StyledLink>
-                </ListItemText>
-              </ListItem>
+              <StyledLink to="/admin-panel/products" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Products</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/categories" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Categories</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/filters" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Filters</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/footer" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Footer</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/slider" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Slider</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/paymethod" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Pay method</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/shippingmethod" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Shipping method</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/deliveryaddresses" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Delivery addresses</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/customers" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Customers</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/catalogonmainpage" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Catalog On Main Page</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/partner" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Partner</ListItemText>
+                </ListItem>
+              </StyledLink>
+
+              <StyledLink to="/admin-panel/config" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Configuration system</ListItemText>
+                </ListItem>
+              </StyledLink>
             </List>
             <Divider />
           </Drawer>
@@ -152,6 +170,9 @@ class AdminPanel extends Component {
               <Route exact path="/admin-panel/footer" component={Footer} />
               <Route exact path="/admin-panel/footer/new" component={FooterDetail} />
               <Route exact path="/admin-panel/footer/:id" component={FooterDetail} />
+              <Route exact path="/admin-panel/slider" component={Slider} />
+              <Route exact path="/admin-panel/slider/new" component={SliderDetail} />
+              <Route exact path="/admin-panel/slider/:id" component={SliderDetail} />
               <Route exact path="/admin-panel/paymethod" component={PayMethod} />
               <Route exact path="/admin-panel/shippingmethod" component={ShippingMethod} />
               <Route exact path="/admin-panel/deliveryaddresses" component={DeliveryAddresses} />

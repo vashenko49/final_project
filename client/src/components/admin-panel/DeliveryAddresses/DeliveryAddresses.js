@@ -3,7 +3,7 @@ import Preloader from '../../common/admin-panel/Preloader';
 import SnackBars from '../../common/admin-panel/SnackBars';
 import Switch from '@material-ui/core/Switch';
 import MaterialTable from 'material-table';
-import { tableIcons } from '../TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 import DeliveryAddressesAPI from '../../../services/DeliveryAddressesAPI';
 
 class DeliveryAddresses extends Component {
@@ -92,7 +92,7 @@ class DeliveryAddresses extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -117,7 +117,7 @@ class DeliveryAddresses extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -141,7 +141,7 @@ class DeliveryAddresses extends Component {
         .catch(err => {
           this.setState({
             sendDataStatus: 'error',
-            sendDataMessage: err.response.data.message
+            sendDataMessage: err.response.data.message || err.message
           });
           reject();
         });
@@ -159,7 +159,7 @@ class DeliveryAddresses extends Component {
           data: [],
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -193,7 +193,7 @@ class DeliveryAddresses extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };
@@ -219,7 +219,7 @@ class DeliveryAddresses extends Component {
         this.setState({
           load: false,
           sendDataStatus: 'error',
-          sendDataMessage: err.response.data.message
+          sendDataMessage: err.response.data.message || err.message
         });
       });
   };

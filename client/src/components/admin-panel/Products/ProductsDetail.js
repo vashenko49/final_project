@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
-import AdminProductsAPI from '../../services/AdminProductsAPI';
+import AdminCategoriesAPI from '../../../services/AdminCategoriesAPI';
+import AdminProductsAPI from '../../../services/AdminProductsAPI';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
 import ProductsDetailBasicInfo from './ProductsDetailBasicInfo';
 import ProductsDetailMainImages from './ProductsDetailMainImages';
@@ -251,7 +251,7 @@ class ProductsDetail extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -278,7 +278,7 @@ class ProductsDetail extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -427,7 +427,7 @@ class ProductsDetail extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   }

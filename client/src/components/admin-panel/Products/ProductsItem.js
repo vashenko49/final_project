@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 
-import Link from '../common/styled/StyledLink';
+import Link from '../../common/styled/StyledLink';
 
 const styles = {
   btnColor: {
