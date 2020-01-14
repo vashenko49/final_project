@@ -28,7 +28,6 @@ class ImageCarousel extends Component {
 
   render() {
     const { slides } = this.props;
-    console.log(slides);
 
     return (
       <Carousel
