@@ -623,7 +623,8 @@ exports.getProductById = async (req, res, next) => {
         path: 'filterImg._idFilter',
         select: '_id enabled type serviceName'
       })
-      .populate('filterImg._idSubFilters');
+      .populate('filterImg._idSubFilters')
+      .populate('comments');
 
     if (!product) {
       return res.status(400).json({

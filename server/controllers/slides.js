@@ -40,7 +40,7 @@ exports.updateSlide = async (req, res) => {
     const data = _.cloneDeep(req.body);
     const folder = 'final-project/slider';
 
-    const {idSlides} = data;
+    const {idSlides, htmlContent} = data;
     if (!mongoose.Types.ObjectId.isValid(idSlides)) {
       return res.status(400).json({
         message: `ID is not valid ${idSlides}`
@@ -60,6 +60,11 @@ exports.updateSlide = async (req, res) => {
 
     if (imageUrl && _.isObject(imageUrl)) {
       data.imageUrl = (await cloudinary.uploader.upload(imageUrl.path, {folder: folder})).public_id;
+    }
+
+
+    if(!_.isString(htmlContent) || (_.isString(htmlContent) &&htmlContent.length>0)){
+      data.htmlContent= '';
     }
 
     let slider = await Slider.findByIdAndUpdate(idSlides, {$set: data}, {new: true});

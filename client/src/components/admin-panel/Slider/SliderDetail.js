@@ -86,7 +86,7 @@ class SliderDetail extends Component {
             imageUrl: image,
             enabled: true
           };
-
+      sendData.idSlides = idUpdate;
       const options = {
         indices: true,
         nullsAsUndefineds: true
@@ -98,7 +98,7 @@ class SliderDetail extends Component {
         await AdminSliderAPI.createSlider(formData);
       }
       if (typeForm === 'update') {
-        await AdminSliderAPI.updateSlider(idUpdate, formData);
+        await AdminSliderAPI.updateSlider(formData);
       }
 
       this.setIsLoading(false);

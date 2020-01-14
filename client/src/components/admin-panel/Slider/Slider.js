@@ -19,6 +19,7 @@ import { tableIcons } from '../../common/admin-panel/TableIcons';
 import { connect } from 'react-redux';
 
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import _ from 'lodash';
 
 class Slider extends Component {
   state = {
@@ -119,7 +120,11 @@ class Slider extends Component {
         _id: i._id,
         type: i.htmlContent ? 'custom' : 'constructor',
         imageUrl: i.htmlContent ? '' : i.imageUrl,
-        nameProduct: i.htmlContent ? '' : i.product.nameProduct,
+        nameProduct: i.htmlContent
+          ? ''
+          : _.isObject(i.product) && i.product.nameProduct
+          ? i.product.nameProduct
+          : '',
         childCatalogs: i.htmlContent ? '' : i.childCatalogs ? i.childCatalogs.name : '',
         title: i.htmlContent ? '' : i.title,
         description: i.htmlContent ? '' : i.description,
@@ -132,6 +137,7 @@ class Slider extends Component {
         data: preViewRes
       });
     } catch (err) {
+      console.log(err);
       this.setIsLoading(false);
 
       this.setState({
