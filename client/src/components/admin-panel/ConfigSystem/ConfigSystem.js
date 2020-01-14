@@ -231,7 +231,7 @@ class ConfigSystem extends Component {
           actions={[
             {
               icon: tableIcons.Add,
-              tooltip: 'Add User',
+              tooltip: 'Add Config System',
               isFreeAction: true,
               onClick: addConfig
             },

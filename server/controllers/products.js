@@ -1,3 +1,8 @@
+const Order =  require("../models/Order");
+const Cart = require('../models/Cart');
+const Favourites = require('../models/Favourites');
+const Slider = require('../models/Slider');
+
 const customCloudinaryInstrument = require("../common/customCloudinaryInstrument");
 
 const _ = require("lodash");
@@ -433,6 +438,32 @@ exports.deleteProduct = async (req, res, next) => {
       });
     }
 
+    const orders = await Order.find({'products.productId':id});
+    if(orders.length>0){
+      return res.status(400).json({
+        message: `Product with id ${id} use in order. You can deactivate product`
+      });
+    }
+    const carts = await Order.find({'products.idProduct':id});
+    if(carts.length>0){
+      return res.status(400).json({
+        message: `Product with id ${id} use in carts. You can deactivate product`
+      });
+    }
+
+    const favourites = await Favourites.find({'idProduct':id});
+    if(favourites.length>0){
+      return res.status(400).json({
+        message: `Product with id ${id} use in Favourites. You can deactivate product`
+      });
+    }
+    const slider = await Slider.find({'product':id});
+    if(slider.length>0){
+      return res.status(400).json({
+        message: `Product with id ${id} use in slider. You can deactivate product`
+      });
+    }
+
     let filter = product.filters;
     product.model.forEach(element => {
       filter = _.concat(filter, element.filters);
@@ -487,6 +518,19 @@ exports.deleteModelProduct = async (req, res) => {
     if (!product) {
       return res.status(400).json({
         message: `Product's model with id ${id} is not found`
+      });
+    }
+
+    const orders = await Order.find({'products.modelNo':modelno});
+    if(orders.length>0){
+      return res.status(400).json({
+        message: `Model with id ${id} use in order. You can deactivate product`
+      });
+    }
+    const carts = await Order.find({'products.modelNo':modelno});
+    if(carts.length>0){
+      return res.status(400).json({
+        message: `Modelno with id ${id} use in carts. You can deactivate product`
       });
     }
 

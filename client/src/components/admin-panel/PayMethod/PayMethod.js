@@ -255,7 +255,7 @@ class PayMethod extends Component {
           actions={[
             {
               icon: tableIcons.Add,
-              tooltip: 'Add User',
+              tooltip: 'Add Pay Method',
               isFreeAction: true,
               onClick: addMethod
             },

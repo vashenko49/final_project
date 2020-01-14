@@ -195,7 +195,7 @@ class Partner extends Component {
           actions={[
             {
               icon: tableIcons.Add,
-              tooltip: 'Add User',
+              tooltip: 'Add Partner',
               isFreeAction: true,
               onClick: addPartner
             },
