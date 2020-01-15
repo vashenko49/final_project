@@ -81,15 +81,14 @@ class AdminPanel extends Component {
             </div>
             <Divider />
             <List>
-              <StyledLink to="/admin-panel/orders" onClick={this.handleOpenMenu}>
-                <ListItem button>
-                  <ListItemText>Orders</ListItemText>
-                </ListItem>
-              </StyledLink>
-
               <StyledLink to="/admin-panel/products" onClick={this.handleOpenMenu}>
                 <ListItem button>
                   <ListItemText>Products</ListItemText>
+                </ListItem>
+              </StyledLink>
+              <StyledLink to="/admin-panel/orders" onClick={this.handleOpenMenu}>
+                <ListItem button>
+                  <ListItemText>Orders</ListItemText>
                 </ListItem>
               </StyledLink>
 

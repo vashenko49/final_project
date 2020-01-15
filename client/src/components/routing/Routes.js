@@ -17,11 +17,13 @@ import Checkout from '../Checkout/Checkout';
 import PersonalProfile from '../PersonalData/PersonalData';
 import Order from '../Order/Order';
 import PrivateRoute from './PrivateRoute';
+import AuthorizationPage from '../Authorization/AuthorizationPage/AuthorizationPage';
 
 class Routes extends Component {
   render() {
     return (
       <Switch>
+        <Route exact path="/authorization*" component={AuthorizationPage} />
         <PrivateRoute exact path="/admin-panel*" component={AdminPanel} />
         <Route exact path="/authorization" component={Authorization} />
         <Route exact path="/links/content/:customId" component={FooterLinkPage} />

@@ -13,8 +13,8 @@ export default class AdminSliderAPI {
     return axios.post(`/api/slider`, body);
   }
 
-  static updateSlider(id, body) {
-    return axios.put(`/api/slider/${id}`, body);
+  static updateSlider(body) {
+    return axios.put(`/api/slider`, body);
   }
 
   static deleteSlider(id) {
