@@ -54,7 +54,8 @@
     "react-slick": "^0.25.2",
     "redux": "^4.0.4",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^4.4.1"
+    "styled-components": "^4.4.1",
+    "redux-logger": "^3.0.6"
   },
   "scripts": {
     "start-js": "react-scripts start",
@@ -67,8 +68,7 @@
     "eslint-build": "eslint --fix src/**/*.js",
     "stylelint-dev": "stylelint --fix src/**/*.scss --cache --cache-location .stylelintcache",
     "stylelint-build": "stylelint --fix src/**/*.scss",
-    "watch-sass-js": "npm-watch",
-    "redux-logger": "^3.0.6"
+    "watch-sass-js": "npm-watch"
   },
   "author": "iWhiteN, iamr0man, khanbabaev, AlexRusanov, Vlad-Udovenko, vashenko49",
   "license": "ISC",
