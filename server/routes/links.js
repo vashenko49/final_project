@@ -11,7 +11,9 @@ const {
   deleteLinksGroup,
   deleteLink,
   getLinkById,
-  getLinkByCustomId
+  getLinkByCustomId,
+  activateOrDeactivateLink,
+  activateOrDeactivateLinkChild
 } = require("../controllers/links");
 
 // @route   POST /links
@@ -43,6 +45,41 @@ router.get(
 router.get(
   "/content/:customId",
   getLinkByCustomId
+);
+
+// @route   PUT /links/activateordeactivate
+// @desc    activate or deactivate existing model
+// @access  Private
+router.put(
+  '/activateordeactivate',
+  [
+    passport.authenticate("jwt-admin", {session: false}),
+    check('_idLink', '_idLink')
+      .not()
+      .isEmpty(),
+    check('status','status is require')
+      .isBoolean()
+  ],
+  activateOrDeactivateLink
+);
+
+// @route   PUT /links/child/activateordeactivate
+// @desc    activate or deactivate existing model
+// @access  Private
+router.put(
+  '/child/activateordeactivate',
+  [
+    passport.authenticate("jwt-admin", {session: false}),
+    check('_idLink', '_idLink')
+    .not()
+    .isEmpty(),
+    check('_idLinkChild', '_idLinkChild')
+      .not()
+      .isEmpty(),
+    check('status','status is require')
+      .isBoolean()
+  ],
+  activateOrDeactivateLinkChild
 );
 
 // @route   PUT /links/:id

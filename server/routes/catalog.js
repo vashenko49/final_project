@@ -69,7 +69,12 @@ router.post(
 // @access  Public
 router.put(
   '/hierarchy',
-  passport.authenticate("jwt-admin", {session: false}),
+  [
+    passport.authenticate("jwt-admin", {session: false}),
+    check('_id', "_id is require")
+      .not()
+      .isEmpty()
+  ],
   updateRootChildCatalogAndAddFilterId
 );
 
@@ -78,7 +83,7 @@ router.put(
 // @desc    Create new root category
 // @access  Private
 router.post(
-  "/root/", [
+  "/root", [
     passport.authenticate("jwt-admin", {session: false}),
     check('name', "Name is require")
       .not()
@@ -97,7 +102,7 @@ router.put(
     check('_idRootCatalog', '_idRootCatalog')
       .not()
       .isEmpty(),
-    check('status','status is require')
+    check('status', 'status is require')
       .isBoolean()
   ],
   activateOrDeactivateROOTCatalog
@@ -204,7 +209,7 @@ router.put(
     check('_idChildCatalog', '_idChildCatalog')
       .not()
       .isEmpty(),
-    check('status','status is require')
+    check('status', 'status is require')
       .isBoolean()
   ],
   activateOrDeactivateChildCatalog

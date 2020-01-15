@@ -28,4 +28,12 @@ export default class AdminCategoriesAPI {
   static deleteFilter(idChildCatalog, idFilter) {
     return axios.delete(`/api/catalog/child/filter/${idChildCatalog}/${idFilter}`);
   }
+
+  static changeStatusRootCategory(id, status) {
+    return axios.put(`/api/catalog/root/activateordeactivate`, { _idRootCatalog: id, status });
+  }
+
+  static changeStatusSubCategory(id, status) {
+    return axios.put(`/api/catalog/child/activateordeactivate`, { _idChildCatalog: id, status });
+  }
 }

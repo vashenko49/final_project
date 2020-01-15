@@ -38,4 +38,8 @@ export default class AdminFiltersAPI {
   static deleteSubFilters(id) {
     return axios.delete(`/api/filters/sub/${id}`);
   }
+
+  static changeStatusFilter(id, status) {
+    return axios.put(`/api/filters/main/activateordeactivate`, { _idFilter: id, status });
+  }
 }

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import AdminFiltersAPI from '../../services/AdminFiltersAPI';
-import AdminCategoriesAPI from '../../services/AdminCategoriesAPI';
+import AdminFiltersAPI from '../../../services/AdminFiltersAPI';
+import AdminCategoriesAPI from '../../../services/AdminCategoriesAPI';
 
 import CategoriesDetailForm from './CategoriesDetailForm.js';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -27,6 +27,7 @@ const styles = theme => ({
 
 class CategoriesDetail extends Component {
   state = {
+    idRootCategory: '',
     rootCategoryError: false,
     rootCategory: '',
     childCategory: [],
@@ -97,11 +98,12 @@ class CategoriesDetail extends Component {
     try {
       this.setIsLoading(true);
 
-      const { rootCategory, childCategory, idUpdate, typeForm } = this.state;
+      const { idRootCategory, rootCategory, childCategory, typeForm } = this.state;
 
       const sendData = {
         nameRootCatalog: rootCategory,
         childCatalogs: childCategory.map(child => {
+          console.log(child);
           const childData = {
             nameChildCatalog: child.name,
             filters: child.filters.map(filter => filter.id)
@@ -116,7 +118,7 @@ class CategoriesDetail extends Component {
         await AdminCategoriesAPI.createCategories(sendData);
       }
       if (typeForm === 'update') {
-        sendData._id = idUpdate;
+        sendData._id = idRootCategory;
         await AdminCategoriesAPI.updateCategories(sendData);
       }
 
@@ -131,7 +133,7 @@ class CategoriesDetail extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -159,6 +161,7 @@ class CategoriesDetail extends Component {
 
         this.setState({
           rootCategory: data.name,
+          idRootCategory: data._id,
           childCategory: data.childCatalog.map(i => ({
             idOwner: i._id,
             id: i._id,
@@ -182,7 +185,7 @@ class CategoriesDetail extends Component {
       this.setState({
         isOpenSnack: true,
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   }

@@ -25,7 +25,18 @@ export default class AdminFooterAPI {
     return axios.put(`/api/links/delete/${idGroupLink}`, body);
   }
 
-  // static changeStatusFooter(idGroupLink, body) {
-  //   return axios.put(`/links/${idGroupLink}`, body);
-  // }
+  static changeStatusLink(id, status) {
+    return axios.put(`/api/links/activateordeactivate`, {
+      _idLink: id,
+      status
+    });
+  }
+
+  static changeStatusLinkChild(id, idChild, status) {
+    return axios.put(`/api/links/child/activateordeactivate`, {
+      _idLink: id,
+      _idLinkChild: idChild,
+      status
+    });
+  }
 }

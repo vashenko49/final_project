@@ -2,22 +2,23 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { Image } from 'cloudinary-react';
 
-import BtnCreateAdmin from './../common/admin-panel/BtnCreateAdmin';
+import BtnCreateAdmin from '../../common/admin-panel/BtnCreateAdmin';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
-import AdminProductsAPI from './../../services/AdminProductsAPI';
+import AdminProductsAPI from '../../../services/AdminProductsAPI';
 
 import MaterialTable from 'material-table';
 
 import Switch from '@material-ui/core/Switch';
 
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 
-import { tableIcons } from './TableIcons';
+import { tableIcons } from '../../common/admin-panel/TableIcons';
 
 class Products extends Component {
   state = {
@@ -42,6 +43,9 @@ class Products extends Component {
       { title: 'Category', field: 'categoryProduct' },
       { title: 'Min Price', field: 'priceProduct' },
       { title: 'Sum Quantity', field: 'quantityProduct' },
+      { title: 'Model number', field: 'modelNumber' },
+      { title: 'Model quantity', field: 'modelQuantity' },
+      { title: 'Model price', field: 'modelPrice' },
       {
         title: 'Enabled',
         field: 'enabled',
@@ -75,23 +79,35 @@ class Products extends Component {
 
       const { data } = await AdminProductsAPI.getProducts();
 
-      const preViewRes = data.map(product => ({
-        id: product._id,
-        imgProduct: product.productUrlImg.length
-          ? product.productUrlImg[0]
-          : product.filterImg.length
-          ? product.filterImg[0].urlImg[0]
-          : '',
-        nameProduct: product.nameProduct,
-        numberProduct: product.itemNo,
-        categoryProduct: product._idChildCategory.name,
-        priceProduct: Math.min(...product.model.map(i => i.currentPrice)),
-        quantityProduct:
-          product.model.length > 1
-            ? product.model.map(i => i.quantity).reduce((prev, curr) => prev + curr)
-            : product.model[0].quantity,
-        enabled: product.enabled
-      }));
+      const preViewRes = [];
+
+      data.forEach(product => {
+        preViewRes.push({
+          id: product._id,
+          imgProduct: product.productUrlImg.length
+            ? product.productUrlImg[0]
+            : product.filterImg.length
+            ? product.filterImg[0].urlImg[0]
+            : '',
+          nameProduct: product.nameProduct,
+          numberProduct: product.itemNo,
+          categoryProduct: product._idChildCategory.name,
+          priceProduct: Math.min(...product.model.map(i => i.currentPrice)),
+          quantityProduct: _.sumBy(product.model, 'currentPrice'),
+          enabled: product.enabled
+        });
+
+        product.model.forEach(model => {
+          preViewRes.push({
+            id: model._id,
+            parentId: product._id,
+            modelNumber: model.modelNo,
+            modelQuantity: model.quantity,
+            modelPrice: model.currentPrice,
+            enabled: model.enabled
+          });
+        });
+      });
 
       this.setIsLoading(false);
 
@@ -103,7 +119,7 @@ class Products extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -116,8 +132,12 @@ class Products extends Component {
     try {
       this.setIsLoading(true);
 
-      delData.forEach(async i => {
-        await AdminProductsAPI.deleteProducts(i.id);
+      delData.forEach(async item => {
+        if (item.parentId && !delData.find(i => i.id === item.parentId)) {
+          await AdminProductsAPI.deleteProductsModel(item.parentId, item.modelNumber);
+        } else if (!item.parentId) {
+          await AdminProductsAPI.deleteProducts(item.id);
+        }
       });
 
       this.setIsLoading(false);
@@ -128,7 +148,9 @@ class Products extends Component {
           ...prevState,
           data,
           sendDataStatus: 'success',
-          sendDataMessage: `${delData.map(i => i.nameProduct).toString()} has been remove!`
+          sendDataMessage: `${delData
+            .map(i => i.nameProduct || i.modelNumber)
+            .toString()} has been remove!`
         };
       });
     } catch (err) {
@@ -136,7 +158,7 @@ class Products extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -150,14 +172,38 @@ class Products extends Component {
   };
 
   handleEnabled = async (val, id) => {
-    this.setState({
-      data: this.state.data.map(i => {
-        if (id.id === i.id) {
-          i.enabled = val;
-        }
-        return i;
-      })
-    });
+    try {
+      this.setIsLoading(true);
+
+      if (id.parentId) {
+        await AdminProductsAPI.changeStatusProductModel(id.parentId, id.modelNumber, val);
+      } else {
+        await AdminProductsAPI.changeStatusProduct(id.id, val);
+      }
+
+      this.setState({
+        data: this.state.data.map(i => {
+          if (id.id === i.id) {
+            i.enabled = val;
+          }
+          return i;
+        })
+      });
+
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'success',
+        sendDataMessage: `Change status enable success!`
+      });
+    } catch (err) {
+      this.setIsLoading(false);
+
+      this.setState({
+        sendDataStatus: 'error',
+        sendDataMessage: err.response.data.message || err.message
+      });
+    }
   };
 
   handleCloseSnackBars = (event, reason) => {
@@ -176,6 +222,7 @@ class Products extends Component {
           title="Products"
           columns={columns}
           data={data}
+          parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
           options={{
             selection: true,
             exportButton: true,

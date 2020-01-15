@@ -17,8 +17,9 @@
 
 .container-social-media{
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 15px
+  margin-top: 15px;
 }
 
 .ripple-effect{
@@ -42,3 +43,8 @@
   }
 }
 
+@media only screen and (max-width : 800px) {
+  .btn{
+    padding: 15px 13px;
+  }
+}

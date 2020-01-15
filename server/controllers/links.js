@@ -1,8 +1,8 @@
 const Links = require("../models/Links");
 
 const _ = require("lodash");
-
 const { validationResult } = require('express-validator');
+const mongoose = require("mongoose");
 
 exports.addLink = async (req, res, next) => {
 
@@ -53,7 +53,7 @@ exports.updateLink = async (req, res, next) => {
       { _id: req.params.id },
       { $set: linkFields },
       { new: true }
-    )
+    );
 
     res.status(200).json({ isUpdated: true })
   } catch (err) {
@@ -154,5 +154,87 @@ exports.getLinkByCustomId = async (req, res, next) => {
     res.status(500).json({
       message: `Error happened on server: "${err}" `
     })
+  }
+};
+
+exports.activateOrDeactivateLink = async (req, res) => {
+  try {
+    const { _idLink, status } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idLink)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idLink}`
+      });
+    }
+
+    let link = await Links.findById(_idLink);
+
+    if (!link) {
+      return res.status(400).json({
+        message: `Link with id ${_idLink} is not found`
+      });
+    }
+
+    link.enabled = status;
+
+    link = await link.save();
+
+    res.status(200).json(link);
+  } catch (e) {
+    res.status(500).json({
+      message: e.message
+    });
+  }
+};
+
+exports.activateOrDeactivateLinkChild = async (req, res) => {
+  try {
+    const { _idLink, _idLinkChild, status } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(_idLinkChild)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idLinkChild}`
+      });
+    }
+    if (!mongoose.Types.ObjectId.isValid(_idLink)) {
+      return res.status(400).json({
+        message: `ID is not valid ${_idLink}`
+      });
+    }
+
+    let link = await Links.findById(_idLink);
+
+    link.links.forEach(child => {
+      if(child._id.toString() === _idLinkChild.toString()) {
+        child.enabled = status;
+      }
+    });
+
+    if (!link) {
+      return res.status(400).json({
+        message: `Link with id ${_idLink} is not found`
+      });
+    }
+    if (!link.links.find(child => child._id.toString() === _idLinkChild.toString())) {
+      return res.status(400).json({
+        message: `Link with id ${_idLinkChild} is not found`
+      });
+    }
+
+    link = await link.save();
+
+    res.status(200).json(link);
+  } catch (e) {
+    res.status(500).json({
+      message: e.message
+    });
   }
 };

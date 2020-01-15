@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import AdminFooterAPI from '../../services/AdminFooterAPI';
+import AdminFooterAPI from '../../../services/AdminFooterAPI';
 
 import FooterDetailForm from './FooterDetailForm.js';
 
-import SnackBars from '../common/admin-panel/SnackBars';
-import Preloader from '../common/admin-panel/Preloader';
+import SnackBars from '../../common/admin-panel/SnackBars';
+import Preloader from '../../common/admin-panel/Preloader';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -107,7 +107,7 @@ class FooterDetail extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   };
@@ -146,7 +146,7 @@ class FooterDetail extends Component {
 
       this.setState({
         sendDataStatus: 'error',
-        sendDataMessage: err.response.data.message
+        sendDataMessage: err.response.data.message || err.message
       });
     }
   }
