@@ -8,7 +8,8 @@ import './Cart.scss';
 class Bag extends Component {
   render() {
     let items = []
-    const { isAuthorization } = this.props;
+    const { isAuthorization } = this.props.authorization
+
     if(isAuthorization) {
       items = this.props.cart.items
     } else {
@@ -40,6 +41,7 @@ class Bag extends Component {
 
 function mapStateToProps(state) {
   return {
+    authorization: state.authorization,
     cart: state.cart
   };
 }

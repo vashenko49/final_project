@@ -13,16 +13,18 @@ import './Cart.scss';
 
 class Item extends Component {
   render() {
-    const { isAuthorization, updateQuantity, addOrRemoveProduct } = this.props;
+    const { updateQuantity, addOrRemoveProduct } = this.props;
+    const { isAuthorization } = this.props.authorization
+  
 
-    let items = JSON.parse(localStorage.getItem('items')) || []
+    let items = JSON.parse(localStorage.getItem('items'))
     if(isAuthorization) {
       if(items.length > 0) {
         const isRewrite = window.confirm('Do you want add your item from local cart?')
         if(isRewrite){
           for (let i = 0; i < items.length; i++) {
             addOrRemoveProduct(items[i].idProduct._id, items[i].modelNo.modelNo, items[i].quantity)
-            localStorage.removeItem('items')
+            localStorage.setItem('items', JSON.stringify([]))
           }
         } 
       }
@@ -130,6 +132,7 @@ class Item extends Component {
 
 function mapStateToProps(state) {
   return {
+    authorization: state.authorization,
     cart: state.cart
   };
 }
