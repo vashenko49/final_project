@@ -125,7 +125,6 @@ router.get(
 // @access  Private
 router.get(
   "/ispassword",
-  passport.authenticate("jwt", {session: false}),
   isPassword
 );
 
