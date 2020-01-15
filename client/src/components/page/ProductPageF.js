@@ -49,6 +49,7 @@ const ProductPageF = ({
   getCurrentProduct,
   addOrRemoveProduct,
   product: { product, loading },
+  authorization: { isAuthorization },
   match
 }) => {
   const {
@@ -98,7 +99,18 @@ const ProductPageF = ({
 
   const handleOpen = () => {
     setOpen(true);
-    addOrRemoveProduct(_id, currentModel.modelNo, 1);
+    if(isAuthorization) {
+      addOrRemoveProduct(_id, currentModel.modelNo, 1);
+    } else {
+      debugger
+      let items = JSON.parse(localStorage.getItem('items'));
+      if(!items){
+        localStorage.setItem('items', JSON.stringify([]))
+        items = JSON.parse(localStorage.getItem('items'))
+      }
+      items.push({idProduct: product, modelNo: currentModel, quantity: 1})
+      localStorage.setItem('items', JSON.stringify(items))
+    }
   };
 
   const handleClose = () => {
@@ -148,7 +160,7 @@ const ProductPageF = ({
                 <h3 className="checkout-title">Added to Bag</h3>
 
                 <ProductCheckout
-                  customerId={customerId}
+                  isAuthorization={isAuthorization}
                   parentId={_id}
                   productUrlImg={productUrlImg}
                   nameProduct={nameProduct}
@@ -189,7 +201,8 @@ const ProductPageF = ({
 };
 
 const mapStateToProps = state => ({
-  product: state.product
+  product: state.product,
+  authorization: state.authorization,
 });
 
 const mapDispatchToProps = {
