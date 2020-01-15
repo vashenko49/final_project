@@ -60,6 +60,11 @@ export default class AuthorizationAPI {
   static isPassword = () => {
     return axios.get('/api/customers/ispassword').then(res => res.data);
   };
+
+  static checkLoginOrEmail = data => {
+    return axios.post('/api/customers/check', data).then(res => res.data);
+  };
+
   static updatePersonalData = data => {
     return axios.put('/api/customers', data).then(res => res.data);
   };

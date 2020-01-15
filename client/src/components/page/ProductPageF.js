@@ -99,17 +99,17 @@ const ProductPageF = ({
 
   const handleOpen = () => {
     setOpen(true);
-    if(isAuthorization) {
+    if (isAuthorization) {
       addOrRemoveProduct(_id, currentModel.modelNo, 1);
     } else {
-      debugger
+      debugger;
       let items = JSON.parse(localStorage.getItem('items'));
-      if(!items){
-        localStorage.setItem('items', JSON.stringify([]))
-        items = JSON.parse(localStorage.getItem('items'))
+      if (!items) {
+        localStorage.setItem('items', JSON.stringify([]));
+        items = JSON.parse(localStorage.getItem('items'));
       }
-      items.push({idProduct: product, modelNo: currentModel, quantity: 1})
-      localStorage.setItem('items', JSON.stringify(items))
+      items.push({ idProduct: product, modelNo: currentModel, quantity: 1 });
+      localStorage.setItem('items', JSON.stringify(items));
     }
   };
 
@@ -202,7 +202,7 @@ const ProductPageF = ({
 
 const mapStateToProps = state => ({
   product: state.product,
-  authorization: state.authorization,
+  authorization: state.authorization
 });
 
 const mapDispatchToProps = {

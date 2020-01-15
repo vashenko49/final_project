@@ -50,7 +50,7 @@ class Customers extends Component {
               <Switch
                 checked={rowData.isAdmin}
                 onChange={(event, checked) => {
-                  this.handleSwitch(event.target.value, rowData._id, checked);
+                  this.handleSwitch(event.target.value, rowData.__id, checked);
                 }}
                 data-id={rowData._id}
                 value="isAdmin"

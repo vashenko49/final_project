@@ -40,19 +40,19 @@ class SignUp extends Component {
     });
 
     ValidatorForm.addValidationRule('isLoginUse', async value => {
-      let result = await TypeLogIn.isPassword({
+      let result = await TypeLogIn.checkLoginOrEmail({
         type: 'login',
         data: value
       });
-      return !result.status;
+      return result.status;
     });
 
     ValidatorForm.addValidationRule('isEmailUse', async value => {
-      let result = await TypeLogIn.isPassword({
+      let result = await TypeLogIn.checkLoginOrEmail({
         type: 'email',
         data: value
       });
-      return !result.status;
+      return result.status;
     });
   }
 
