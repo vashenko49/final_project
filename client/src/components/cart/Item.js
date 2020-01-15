@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 
 import { Image } from 'cloudinary-react';
 
+// import _ from 'lodash';
 import { updateQuantity,addOrRemoveProduct } from '../../actions/cart';
 
 import './Cart.scss';
@@ -14,11 +15,18 @@ class Item extends Component {
   render() {
     const { isAuthorization, updateQuantity, addOrRemoveProduct } = this.props;
 
-    let items = []
+    let items = JSON.parse(localStorage.getItem('items')) || []
     if(isAuthorization) {
+      if(items.length > 0) {
+        const isRewrite = window.confirm('Do you want add your item from local cart?')
+        if(isRewrite){
+          for (let i = 0; i < items.length; i++) {
+            addOrRemoveProduct(items[i].idProduct._id, items[i].modelNo.modelNo, items[i].quantity)
+            localStorage.removeItem('items')
+          }
+        } 
+      }
       items = this.props.cart.items;
-    } else {
-      items = JSON.parse(localStorage.getItem('items'))
     }
 
     const _addOrRemoveProduct = (parentId, modelNo) => {
@@ -36,7 +44,6 @@ class Item extends Component {
       if(isAuthorization) {
         updateQuantity(parentId, modelNo, e.target.value);
       } else {
-        debugger
         const index = items.filter(v => v.modelNo.modelNo === modelNo)[0]
         index.quantity = e.target.value
         localStorage.setItem('items', JSON.stringify(items))

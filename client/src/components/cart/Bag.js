@@ -7,7 +7,13 @@ import './Cart.scss';
 
 class Bag extends Component {
   render() {
-    const { items } = this.props.cart;
+    let items = []
+    const { isAuthorization } = this.props;
+    if(isAuthorization) {
+      items = this.props.cart.items
+    } else {
+      items = JSON.parse(localStorage.getItem('items'))
+    }
 
     const bagPrice = () => {
       let price = 0;

@@ -97,14 +97,19 @@ const ProductPageF = ({
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
-  const [item] = useState([])
   const handleOpen = () => {
     setOpen(true);
     if(isAuthorization) {
       addOrRemoveProduct(_id, currentModel.modelNo, 1);
     } else {
-      item.push({idProduct: product, modelNo: currentModel, quantity: 1})
-      localStorage.setItem('items', JSON.stringify(item))
+      debugger
+      let items = JSON.parse(localStorage.getItem('items'));
+      if(!items){
+        localStorage.setItem('items', JSON.stringify([]))
+        items = JSON.parse(localStorage.getItem('items'))
+      }
+      items.push({idProduct: product, modelNo: currentModel, quantity: 1})
+      localStorage.setItem('items', JSON.stringify(items))
     }
   };
 
@@ -155,6 +160,7 @@ const ProductPageF = ({
                 <h3 className="checkout-title">Added to Bag</h3>
 
                 <ProductCheckout
+                  isAuthorization={isAuthorization}
                   parentId={_id}
                   productUrlImg={productUrlImg}
                   nameProduct={nameProduct}
