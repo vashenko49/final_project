@@ -44,7 +44,7 @@ class SignUp extends Component {
         type: 'login',
         data: value
       });
-      return !result.status;
+      return result.status;
     });
 
     ValidatorForm.addValidationRule('isEmailUse', async value => {
@@ -52,7 +52,7 @@ class SignUp extends Component {
         type: 'email',
         data: value
       });
-      return !result.status;
+      return result.status;
     });
   }
 
