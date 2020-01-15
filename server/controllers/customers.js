@@ -391,12 +391,12 @@ exports.editStatusCustomer = async (req, res)=>{
     }
 
     let newData = await CustomerModel.findByIdAndUpdate(customerId, {$set: {[`${_.isBoolean(enabled)?"enabled":'isAdmin'}`]:_.isBoolean(enabled)?enabled:isAdmin}}, {new: true});
+    newData = await newData.save();
     res.status(200).json(newData);
   }catch (e) {
     console.log(e);
     res.status(500).json({
-      message: "Server Error!",
-      err:e
+      message: "Server Error!"
     });
   }
 };
