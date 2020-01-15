@@ -9,7 +9,7 @@
     "installAll": "yarn install && yarn --cwd ./server install && yarn --cwd ./client install",
     "start-dev": "concurrently \"yarn --cwd ./server run server\" \"yarn --cwd ./client run start\"",
     "start-dev2": "concurrently \"yarn --cwd ./server run server\" \"yarn --cwd ./client run start-js\"",
-    "heroku-postbuild": "set NODE_ENV=production && npm install && npm --prefix ./client install ./client && npm --prefix ./server install ./server && npm run heroku-cli --prefix client"
+    "heroku-postbuild": "npm install && npm --prefix ./client install ./client && npm --prefix ./server install ./server && npm heroku-cli --prefix client"
   },
   "repository": {
     "type": "git",
