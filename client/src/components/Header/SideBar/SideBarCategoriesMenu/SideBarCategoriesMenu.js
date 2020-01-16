@@ -69,8 +69,8 @@ export default function SideBarCategoriesMenu(props) {
             {props.childCategories
               .filter(elem => elem.parentId === props.rootCategories._id)
               .map(elem => (
-              <ListItem key={elem.name}>
-                <Link to="/">
+              <ListItem key={elem.name} className="sidebar-categories-link">
+                <Link to={{pathname:`/catalog/${elem._id}`}}>
                   {elem.name}
                 </Link>
               </ListItem>

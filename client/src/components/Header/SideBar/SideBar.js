@@ -24,6 +24,12 @@ export default function SideBar(props) {
     if (event.target === document.getElementsByClassName('MuiBackdrop-root')[0]) {
       setState({ ...state, [side]: open });
     }
+
+    let sidebarLinks = Array.prototype.slice.call(document.querySelectorAll('.sidebar-categories-link a')).concat(Array.prototype.slice.call(document.querySelectorAll('.sidebar-user-menu .header-navbar-buttons *')));
+
+    if (sidebarLinks.includes(event.target)) {
+      setState({ ...state, [side]: open });
+    }
   };
 
   const sideList = side => (
@@ -43,12 +49,6 @@ export default function SideBar(props) {
         ))}
       <List className="sidebar-user-menu">
         <UserMenu
-          cloudinary_cloud_name={props.cloudinary_cloud_name}
-          isAuthorization={props.isAuthorization}
-          avatarUrl={props.avatarUrl}
-          signOut={props.signOut}
-          openWindowAuth={props.openWindowAuth}
-          cart={props.cart}
           customerId={props.customerId}
         />
       </List>

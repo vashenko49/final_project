@@ -1,52 +1,66 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import _ from 'lodash';
 
 import cloudinary from 'cloudinary-core';
 
-import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import Badge from '@material-ui/core/Badge';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-export default class UserMenu extends Component {
+import * as cartAction from '../../../actions/cart';
+import * as AuthorizationActions from '../../../actions/authorizationAction';
+
+class UserMenu extends Component {
   render() {
+    const {
+      signOut,
+      cart,
+      resetCart
+    } = this.props;
+    const { cloudinary_cloud_name } = this.props.configuration;
+    const { isAuthorization, isAdmin } = this.props.authorization;
+    const { avatarUrl } = this.props.authorization.personalInfo;
+
     return (
       <div>
         <Box className="header-navbar-buttons">
-          {this.props.isAuthorization ? (
+          {isAuthorization ? (
             <Box>
               <Link to={'/personaldata'}>
                 <img
                   className="avatar-user"
                   alt="Remy Sharp"
                   src={new cloudinary.Cloudinary({
-                    cloud_name: this.props.cloudinary_cloud_name
-                  }).url(this.props.avatarUrl)}
+                    cloud_name: cloudinary_cloud_name
+                  }).url(avatarUrl)}
                 />
               </Link>
-              <Button
+              <Link
+                to={'/'}
                 onClick={() => {
-                  this.props.signOut();
-                  this.props.resetCart();
+                  signOut();
+                  resetCart();
                 }}
               >
                 Sign out
-              </Button>
+              </Link>
             </Box>
           ) : (
-            <Button onClick={this.props.openWindowAuth}>Login</Button>
+            <Link to={'/authorization'}>Login</Link>
           )}
           <Link to={`/cart`}>
             <Badge
-              badgeContent={_.isArray(this.props.cart.items) ? this.props.cart.items.length : 0}
+              badgeContent={_.isArray(cart.items) ? cart.items.length : 0}
             >
               <ShoppingBasketIcon />
             </Badge>
           </Link>
-          {this.props.isAdmin && (
+          {isAdmin && (
             <Link to="/admin-panel">
               <SettingsIcon />
             </Link>
@@ -56,3 +70,22 @@ export default class UserMenu extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    cart: state.cart,
+    authorization: state.authorization,
+    configuration: state.configuration
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    resetCart: bindActionCreators(cartAction.resetCart, dispatch),
+    openWindowAuth: bindActionCreators(AuthorizationActions.openWindowAuth, dispatch),
+    closeWindowAuth: bindActionCreators(AuthorizationActions.closeWindowAuth, dispatch),
+    signOut: bindActionCreators(AuthorizationActions.signOut, dispatch),
+  };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserMenu));

@@ -9,7 +9,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as headerAction from '../../actions/headerAction';
-import * as cartAction from '../../actions/cart';
 import * as headerSearchAction from '../../actions/headerSearchAction';
 import * as AuthorizationActions from '../../actions/authorizationAction';
 import Authorization from '../Authorization/Authorization';
@@ -66,14 +65,9 @@ class Header extends Component {
       childCategories,
       foundProducts,
       openWindowAuth,
-      closeWindowAuth,
-      signOut,
-      cart,
-      resetCart
+      closeWindowAuth
     } = this.props;
-    const { cloudinary_cloud_name } = this.props.configuration;
-    const { openWindowLogIn, isAuthorization, isAdmin } = this.props.authorization;
-    const { avatarUrl } = this.props.authorization.personalInfo;
+    const { openWindowLogIn } = this.props.authorization;
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
 
     return (
@@ -85,17 +79,14 @@ class Header extends Component {
           <SideBar
             rootCategories={rootCategories}
             childCategories={childCategories}
-            cloudinary_cloud_name={cloudinary_cloud_name}
-            isAuthorization={isAuthorization}
-            avatarUrl={avatarUrl}
-            signOut={signOut}
-            openWindowAuth={openWindowAuth}
-            cart={cart}
             customerId={this.state.customerId}
           />
         </div>
         <div className="header-navbar">
-          <NavBar rootCategories={rootCategories} childCategories={childCategories} />
+          <NavBar
+            rootCategories={rootCategories}
+            childCategories={childCategories}
+          />
         </div>
         <div className="search" id="header-search-input">
           <SearchIcon onClick={this.onSearchIconClick} className="search-icon" />
@@ -151,14 +142,6 @@ class Header extends Component {
         </div>
         <div className="header-user-menu">
           <UserMenu
-            cloudinary_cloud_name={cloudinary_cloud_name}
-            isAuthorization={isAuthorization}
-            avatarUrl={avatarUrl}
-            signOut={signOut}
-            openWindowAuth={openWindowAuth}
-            cart={cart}
-            resetCart={resetCart}
-            isAdmin={isAdmin}
             customerId={this.state.customerId}
           />
         </div>
@@ -184,7 +167,6 @@ function mapStateToProps(state) {
     childCategories: state.header.childCategories,
     foundProducts: state.headerSearch.data,
     foundProductsError: state.headerSearch.error,
-    cart: state.cart,
     authorization: state.authorization,
     configuration: state.configuration
   };
@@ -194,7 +176,6 @@ function mapDispatchToProps(dispatch) {
   return {
     getRootCategories: bindActionCreators(headerAction.getRootCategories, dispatch),
     getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch),
-    resetCart: bindActionCreators(cartAction.resetCart, dispatch),
     openWindowAuth: bindActionCreators(AuthorizationActions.openWindowAuth, dispatch),
     closeWindowAuth: bindActionCreators(AuthorizationActions.closeWindowAuth, dispatch),
     signOut: bindActionCreators(AuthorizationActions.signOut, dispatch),
