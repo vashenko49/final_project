@@ -13,6 +13,15 @@ import './PersonalInformation.scss';
 import * as AuthorizationActions from '../../../actions/authorizationAction';
 import SelectValidatorElemen from '../../Authorization/SignUp/SelectValidatorElemen';
 import DialogTextWindow from '../DialogTextWindow/DialogTextWindow';
+import TableContainer from '@material-ui/core/TableContainer';
+import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+import { Box, Typography } from '@material-ui/core';
+import AdminProductAPI from '../../../services/AdminProductsAPI';
 
 class PersonalInformation extends Component {
   constructor(props) {
@@ -25,9 +34,40 @@ class PersonalInformation extends Component {
       telephone: { data: '', changed: false },
       gender: { data: '', changed: false },
       avatarUrl: { data: '', changed: false },
-      newImgBase64: ''
+      newImgBase64: '',
+      isLocalCart: false,
+      itemCart: []
     };
   }
+
+  componentDidMount() {
+    let localCart = JSON.parse(localStorage.getItem('localCart'));
+    if (_.isArray(localCart) && localCart.length > 0) {
+      this.getLocalCart(localCart).then(res => {
+        this.setState({ itemCart: res });
+      });
+      this.setState({ isLocalCart: true });
+    }
+  }
+
+  getLocalCart = async localCart => {
+    return await Promise.all(
+      localCart.map(async item => {
+        let { idProduct, modelNo, quantity } = item;
+        idProduct = (await AdminProductAPI.getProductsById(idProduct)).data;
+        idProduct.model.forEach(mod => {
+          if (modelNo === mod.modelNo.toString()) {
+            modelNo = mod;
+          }
+        });
+        return {
+          idProduct,
+          modelNo,
+          quantity
+        };
+      })
+    );
+  };
 
   handleChange = event => {
     this.setState({ [event.target.name]: { data: event.target.value, changed: true } });
@@ -85,9 +125,14 @@ class PersonalInformation extends Component {
     }
   };
 
+  replaceWithOnlineCart = () => {
+    this.setState({ isLocalCart: false });
+    this.props.replaceWithOnlineCart();
+  };
+
   render() {
-    const { submit, handleChange, getData, handleNewPhoto } = this;
-    const { newImgBase64 } = this.state;
+    const { submit, handleChange, getData, handleNewPhoto, replaceWithOnlineCart } = this;
+    const { newImgBase64, isLocalCart, itemCart } = this.state;
     const { resetError } = this.props;
     const { load, error } = this.props.authorization;
     const { cloudinary_cloud_name } = this.props.configuration;
@@ -196,6 +241,68 @@ class PersonalInformation extends Component {
             </div>
           </ValidatorForm>
         </div>
+        {isLocalCart && (
+          <Box mt={2}>
+            <Typography variant={'h5'}>You local cart</Typography>
+            <Box my={2}>
+              <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name product</TableCell>
+                      <TableCell>Product number</TableCell>
+                      <TableCell>Model number</TableCell>
+                      <TableCell>Quantity</TableCell>
+                      <TableCell>Price USD</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {itemCart.map(item => {
+                      const {
+                        quantity,
+                        idProduct: { _id, nameProduct, itemNo, productUrlImg, filterImg },
+                        modelNo: { modelNo, currentPrice }
+                      } = item;
+                      const currentImg =
+                        productUrlImg.length > 0
+                          ? productUrlImg[0]
+                          : filterImg.length > 0
+                          ? filterImg[0]
+                          : 'final-project/products/product_without_photo_sample/product_without_phot_ldw3px';
+                      return (
+                        <TableRow key={_id + modelNo}>
+                          <TableCell component="th" scope="row">
+                            <div>
+                              {cloudinary_cloud_name.length <= 0 ? (
+                                <CircularProgress />
+                              ) : (
+                                <img
+                                  className="img-check-table"
+                                  alt="Not found"
+                                  src={new cloudinary.Cloudinary({
+                                    cloud_name: cloudinary_cloud_name
+                                  }).url(currentImg)}
+                                />
+                              )}
+                              <Typography variant={'body2'}>{nameProduct}</Typography>
+                            </div>
+                          </TableCell>
+                          <TableCell>{itemNo}</TableCell>
+                          <TableCell>{modelNo}</TableCell>
+                          <TableCell>{quantity}</TableCell>
+                          <TableCell>{currentPrice * quantity}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+            <Button onClick={replaceWithOnlineCart} variant="contained" color="primary">
+              Replace the online cart with the local cart
+            </Button>
+          </Box>
+        )}
         <DialogTextWindow
           open={error.length > 0}
           onClose={() => {
@@ -215,7 +322,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updatePersonalData: bindActionCreators(AuthorizationActions.updatePersonalData, dispatch),
-    resetError: bindActionCreators(AuthorizationActions.resetError, dispatch)
+    resetError: bindActionCreators(AuthorizationActions.resetError, dispatch),
+    replaceWithOnlineCart: bindActionCreators(AuthorizationActions.replaceWithOnlineCart, dispatch)
   };
 }
 

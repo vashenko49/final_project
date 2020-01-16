@@ -7,7 +7,9 @@ import './Cart.scss';
 
 class Bag extends Component {
   render() {
-    const { items } = this.props.cart;
+    const {
+      cart: { items }
+    } = this.props.authorization;
 
     const bagPrice = () => {
       let price = 0;
@@ -34,7 +36,7 @@ class Bag extends Component {
 
 function mapStateToProps(state) {
   return {
-    cart: state.cart
+    authorization: state.authorization
   };
 }
 

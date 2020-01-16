@@ -14,6 +14,7 @@ app.use(cors());
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
 //connect data base
 getConfig()
   .then(() => {

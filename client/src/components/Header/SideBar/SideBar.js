@@ -44,7 +44,6 @@ export default function SideBar(props) {
           signOut={props.signOut}
           openWindowAuth={props.openWindowAuth}
           cart={props.cart}
-          customerId={props.customerId}
         />
       </List>
     </div>

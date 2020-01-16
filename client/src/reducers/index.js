@@ -8,7 +8,6 @@ import footerSubscribe from './footerSubscribe';
 import adminBrands from './adminBrands';
 import adminFilters from './adminFilters';
 import product from './product';
-import cart from './cart';
 import comments from './comments';
 import slides from './slides';
 import header from './header';
@@ -20,7 +19,6 @@ import checkout from './checkout';
 export default combineReducers({
   adminProducts,
   product,
-  cart,
   comments,
   authorization,
   footerLinks,

@@ -1,4 +1,5 @@
 import * as AUTHORIZATION from '../constants/authorization';
+import * as CART from '../constants/cart';
 
 const initialState = {
   loading: true,
@@ -8,6 +9,11 @@ const initialState = {
   enabled: false,
   jwt: '',
   error: '',
+  cart: {
+    items: [],
+    loading: false,
+    isLocalCart: true
+  },
   personalInfo: {
     _id: '',
     customerNo: '',
@@ -52,6 +58,12 @@ export default function(state = initialState, action) {
         error: '',
         jwt: payload.token,
         openWindowLogIn: false,
+        cart: {
+          items: [],
+          loading: false,
+          isLocalCart: true,
+          error: {}
+        },
         personalInfo: {
           customerNo: payload.customerNo,
           firstName: payload.firstName,
@@ -117,6 +129,33 @@ export default function(state = initialState, action) {
       return {
         ...state,
         error: ''
+      };
+    case CART.UPDATE_ITEM:
+    case CART.GET_ITEMS:
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          items: payload.products,
+          isLocalCart: payload.isLocalCart,
+          loading: false
+        }
+      };
+    case CART.ITEMS_ERROR:
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          items: [],
+          isLocalCart: true
+        }
+      };
+    case CART.RESET_ITEM:
+      return {
+        ...state,
+        cart: {
+          ...initialState.cart
+        }
       };
     default:
       return state;

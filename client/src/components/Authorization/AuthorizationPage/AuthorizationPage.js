@@ -5,7 +5,6 @@ import Authorization from '../Authorization';
 import Button from '@material-ui/core/Button';
 import { bindActionCreators } from 'redux';
 import * as AuthorizationActions from '../../../actions/authorizationAction';
-import * as cartAction from '../../../actions/cart';
 import Box from '@material-ui/core/Box';
 
 class AuthorizationPage extends Component {
@@ -45,7 +44,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     signOut: bindActionCreators(AuthorizationActions.signOut, dispatch),
-    resetCart: bindActionCreators(cartAction.resetCart, dispatch)
+    resetCart: bindActionCreators(AuthorizationActions.resetCart, dispatch)
   };
 }
 

@@ -30,7 +30,6 @@ export default class UserMenu extends Component {
               <Button
                 onClick={() => {
                   this.props.signOut();
-                  this.props.resetCart();
                 }}
               >
                 Sign out

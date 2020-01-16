@@ -11,8 +11,11 @@ class NavigationButton extends Component {
   render() {
     const { changeStep } = this.props;
     const { activeStep, statusNextStep, numberOfSteps } = this.props.checkout;
-    const { items } = this.props.cart;
-    const { enabled, isAuthorization } = this.props.authorization;
+    const {
+      enabled,
+      isAuthorization,
+      cart: { items }
+    } = this.props.authorization;
     return (
       <div className="NavigationButton-container">
         <Button
@@ -41,8 +44,7 @@ class NavigationButton extends Component {
 function mapStateToProps(state) {
   return {
     checkout: state.checkout,
-    authorization: state.authorization,
-    cart: state.cart
+    authorization: state.authorization
   };
 }
 
