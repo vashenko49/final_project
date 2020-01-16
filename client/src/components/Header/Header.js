@@ -87,17 +87,8 @@ class Header extends Component {
   render() {
     const { agreeReplaceWithOnline, degreeReplaceWithOnline } = this;
     const { isLocalCart } = this.state;
-    const {
-      rootCategories,
-      childCategories,
-      foundProducts,
-      openWindowAuth,
-      closeWindowAuth,
-      signOut
-    } = this.props;
-    const { cloudinary_cloud_name } = this.props.configuration;
-    const { openWindowLogIn, isAuthorization, isAdmin, cart } = this.props.authorization;
-    const { avatarUrl } = this.props.authorization.personalInfo;
+    const { rootCategories, childCategories, foundProducts, closeWindowAuth } = this.props;
+    const { openWindowLogIn, isAuthorization } = this.props.authorization;
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
 
     return (
@@ -106,16 +97,7 @@ class Header extends Component {
           CROSSY
         </Link>
         <div className="header-sidebar">
-          <SideBar
-            rootCategories={rootCategories}
-            childCategories={childCategories}
-            cloudinary_cloud_name={cloudinary_cloud_name}
-            isAuthorization={isAuthorization}
-            avatarUrl={avatarUrl}
-            signOut={signOut}
-            openWindowAuth={openWindowAuth}
-            cart={cart}
-          />
+          <SideBar rootCategories={rootCategories} childCategories={childCategories} />
         </div>
         <div className="header-navbar">
           <NavBar rootCategories={rootCategories} childCategories={childCategories} />
@@ -173,15 +155,7 @@ class Header extends Component {
           </Popover>
         </div>
         <div className="header-user-menu">
-          <UserMenu
-            cloudinary_cloud_name={cloudinary_cloud_name}
-            isAuthorization={isAuthorization}
-            avatarUrl={avatarUrl}
-            signOut={signOut}
-            openWindowAuth={openWindowAuth}
-            cart={cart}
-            isAdmin={isAdmin}
-          />
+          <UserMenu />
         </div>
         <Dialog
           open={openWindowLogIn}

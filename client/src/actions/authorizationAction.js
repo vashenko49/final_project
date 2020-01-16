@@ -258,7 +258,7 @@ export function updateQuantity(productId, modelNo, quantity) {
           } else {
             if (quantity <= 0) {
               localCart = localCart.filter(item => {
-                return item.modelNo.toString() === modelNo.toString();
+                return item.modelNo.toString() !== modelNo.toString();
               });
             } else {
               const selectItem = _.findIndex(localCart, function(o) {
