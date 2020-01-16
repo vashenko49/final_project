@@ -11,7 +11,6 @@ import { updateQuantity } from '../../actions/cart';
 class ProductCheckout extends Component {
   render() {
     const {
-      isAuthorization,
       parentId,
       productUrlImg,
       nameProduct,
@@ -21,18 +20,6 @@ class ProductCheckout extends Component {
       currentSize,
       updateQuantity
     } = this.props;
-
-    //need to remove!
-    const _updateQuantity = (parentId, modelNo, quantity) => {
-      if(isAuthorization) {
-        updateQuantity(parentId, modelNo, quantity);
-      } else {
-        const items = JSON.parse(localStorage.getItem('items'))
-        const index = items.filter(v => v.modelNo.modelNo === modelNo)[0]
-        index.quantity = quantity
-        localStorage.setItem('items', JSON.stringify(items))
-      }
-    }
 
     const amount = [];
 
@@ -69,7 +56,7 @@ class ProductCheckout extends Component {
             <select
               name="quantity"
               onChange={e => {
-                _updateQuantity(parentId, currentModel.modelNo, e.target.value);
+                updateQuantity(parentId, currentModel.modelNo, e.target.value);
               }}
             >
               {amount}

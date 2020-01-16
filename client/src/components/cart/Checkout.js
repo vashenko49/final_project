@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import { bindActionCreators } from 'redux';
-
-// import { getCurrentItems } from '../../actions/cart';
 
 class Checkout extends Component {
   constructor(props) {
@@ -24,11 +21,5 @@ class Checkout extends Component {
     );
   }
 }
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     getCurrentItems: bindActionCreators(getCurrentItems, dispatch)
-//   };
-// };
 
 export default connect()(Checkout);
