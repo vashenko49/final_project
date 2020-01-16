@@ -9,7 +9,7 @@ import AdminOrdersAPI from '../../../services/AdminOrdersAPI';
 import MaterialTable from 'material-table';
 
 import Switch from '@material-ui/core/Switch';
-
+import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { tableIcons } from '../../common/admin-panel/TableIcons';
@@ -102,12 +102,14 @@ class Orders extends Component {
             id: product._id,
             parentId: order._id,
             productUrlImg: product.productId.productUrlImg[0],
-            modelNo: product.modelNo.modelNo,
+            modelNo: _.isObject(product.modelNo) ? product.modelNo.modelNo : '',
             nameProduct: product.productId.nameProduct,
-            filters: product.modelNo.filters
-              .map(i => `${i.filter.type}: ${i.subFilter.name}`)
-              .toString()
-              .replace(',', ', '),
+            filters: _.isObject(product.modelNo)
+              ? product.modelNo.filters
+                  .map(i => `${i.filter.type}: ${i.subFilter.name}`)
+                  .toString()
+                  .replace(',', ', ')
+              : '',
             currentPrice: product.currentPrice,
             quantity: product.quantity
           });
@@ -120,6 +122,7 @@ class Orders extends Component {
         data: preViewRes
       });
     } catch (err) {
+      console.log(err);
       this.setIsLoading(false);
 
       this.setState({

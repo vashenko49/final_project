@@ -658,7 +658,7 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
       for (let i = 0; i < editChildCatalogs.length; i++) {
         let {_id: _idChildCatalog, filters, nameChildCatalog} = editChildCatalogs[i];
 
-        if(_.isUndefined(_idChildCatalog)){
+        if (_.isUndefined(_idChildCatalog)) {
           let newChildCatalog = new childCatalog({
             name: nameChildCatalog,
             parentId: _idRootCatalog,
@@ -731,32 +731,46 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
 
 exports.getCatalogsAndProductForMainPage = async (req, res) => {
   try {
-    let childCatalogs = await Promise.all(JSON.parse(JSON.stringify(await childCatalog.find({"default": "true", "enabled" : true}, '-filters'))).map(async element => {
-      element.products = _.takeRight(
-        _.orderBy(
-          await Promise.all(
-            JSON.parse(
-              JSON.stringify(
-                await productModel.find({'_idChildCategory': element._id, "enabled" : true})
-                  .populate({
-                    path: 'filterImg._idFilter',
-                    select: '_id enabled type serviceName'
-                  })
-                  .populate('filterImg._idSubFilters')
-              ))
-              .map(async prod => {
-                const comments = await CommentSchema.find({productID: prod._id});
-                if (comments.length > 0) {
-                  prod.rating = (_.sumBy(comments, function (o) {
-                    return o.score;
-                  })) / comments.length;
-                } else {
-                  prod.rating = 0;
-                }
-                return prod;
-              })), ['rating']), element.countProductMainPage);
-      return element;
-    }));;
+
+
+    let childCatalogs = await JSON.parse(JSON.stringify(await childCatalog.find({
+      "default": "true",
+      "enabled": true
+    }, '-filters')));
+
+    childCatalogs = await Promise.all(childCatalogs.map(async element => {
+      const {_id, countProductMainPage} = element;
+      let products = JSON.parse(JSON.stringify((await productModel.find({
+        '_idChildCategory': _id,
+        "enabled": true
+      })
+        .populate({
+          path: 'filterImg._idFilter',
+          select: '_id enabled type serviceName'
+        })
+        .populate('filterImg._idSubFilters'))))
+        .filter(prod => {
+          return _.isArray(prod.comments) && prod.comments.length > 0;
+        }).map(prod => {
+          let rating = 0;
+          const {comments} = prod;
+          if (comments.length > 0) {
+            comments.forEach(item => {
+              rating += item.score;
+            });
+            rating = rating / comments.length;
+          }
+          prod.rating = rating;
+          return prod;
+        });
+      products = _.takeRight(_.orderBy(products, ['rating']), countProductMainPage);
+      element.products = products;
+      return element
+    }));
+
+    childCatalogs = childCatalogs.filter(catal=>{
+      return _.isArray(catal.products) && catal.products.length >0
+    });
 
     res.status(200).json(childCatalogs);
   } catch (e) {

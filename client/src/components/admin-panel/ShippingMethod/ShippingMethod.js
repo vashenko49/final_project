@@ -262,7 +262,7 @@ class ShippingMethod extends Component {
           actions={[
             {
               icon: tableIcons.Add,
-              tooltip: 'Add User',
+              tooltip: 'Add Shipping Method',
               isFreeAction: true,
               onClick: () => {
                 triggerDialogWindow(true);

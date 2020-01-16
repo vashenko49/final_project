@@ -296,10 +296,14 @@ exports.getOrders = async (req, res) => {
     );
 
     orders = orders.map(order => {
-      order.products = order.products.map(element => {
+      order.products = order.products.filter(item=>{
+        return _.isObject(item.productId) && !_.isNull(item.productId)
+      }).map(element => {
         let indexModel = _.findIndex(element.productId.model, function(o) {
           return o.modelNo == element.modelNo;
         });
+        console.log(indexModel);
+        console.log(element);
         element.modelNo = element.productId.model[indexModel];
         return element;
       });
@@ -307,6 +311,7 @@ exports.getOrders = async (req, res) => {
     });
     res.status(200).json(orders);
   } catch (e) {
+    console.log(e);
     res.status(400).json({
       message: `Server error ${e.message}`
     });

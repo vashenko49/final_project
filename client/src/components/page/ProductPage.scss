@@ -44,7 +44,7 @@
   text-align: center;
 
   img {
-    width: 75%;
+    width: 320px;
     height: 40%;
   }
 }
@@ -71,7 +71,7 @@
   padding: 10px 20px;
 
   .light-btn {
-    width: 30%;
+    width: 29%;
     margin: 10px;
     padding: 10px 0;
     color: black;
@@ -281,6 +281,17 @@
   }
 }
 
+@media screen and (min-width: 600px){
+  .product-photo img {
+    width: 444px;
+  }
+
+  .product-reviews .review-header .arrow{
+    width: 3vw;
+    height: 3vw;
+  }
+}
+
 @media screen and (min-width: 1000px) {
   .product {
     display: grid;
@@ -311,6 +322,8 @@
   }
 
   .product-photo img {
+    width: 555px;
+    height: 100%;
     object-fit: contain;
   }
 
@@ -320,9 +333,17 @@
   }
 
   .slick-slide img {
-    width: 182px;
-    height: 156px;
+    width: 135px;
+    height: 138px;
     margin-right: 20px;
     object-fit: cover;
   }
+}
+
+button {
+  outline: none;
+}
+
+div {
+  outline: none;
 }
