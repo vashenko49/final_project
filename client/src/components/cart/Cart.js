@@ -14,26 +14,29 @@ class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isAuthorization: this.props.authorization.isAuthorization
+      _id: '5df3e7aeace3e149fcc94957'
     };
   }
 
   componentDidMount() {
-    if(this.state.isAuthorization){
-      this.props.getCurrentItems();
-    }
+    this.props.getCurrentItems();
   }
 
   render() {
+    const { isAuthorization } = this.props.authorization;
     const { loading } = this.props.cart;
     return (
       <div className="cart">
-        {loading ?
-        ( <img src={preloader} className="preloader" alt="Загрузка..." /> )
-        : (
+        {loading ? (
+          !isAuthorization ? (
+            <div>Cart only for authorzation user, sorry bro</div>
+          ) : (
+            <img src={preloader} className="preloader" alt="Загрузка..." />
+          )
+        ) : (
           <Fragment>
-            <Bag isAuthorization={this.state.isAuthorization}/>
-            <Item isAuthorization={this.state.isAuthorization}/>
+            <Bag user={this.state._id} />
+            <Item customerId={this.state._id} />
             <Checkout />
           </Fragment>
         )}
