@@ -56,7 +56,9 @@ class CheckOrder extends Component {
     const { changeStep, triggerModalOrder, resetCart } = this.props;
     const { statusAgree, totalSum } = this.state;
     if (statusAgree) {
-      const { items } = this.props.cart;
+      const {
+        cart: { items }
+      } = this.props.authorization;
       const {
         order: {
           personalData: { name, email, telephone },

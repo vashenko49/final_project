@@ -18,9 +18,9 @@ export default class ProductAPI {
     return axios.post('/api/products/filter', data).then(value => value.data);
   };
   static getCurrentProduct = productId => {
-    return axios.get(`/api/products/${productId}`);
+    return axios.get(`/api/products/${productId}`).then(value => value.data);
   };
-  static getProducts = () => {
-    return axios.get('/api/products');
+  static getMeanRatingProductByProductId = productId => {
+    return axios.get(`/api/comment/rating/${productId}`).then(value => value.data);
   };
 }

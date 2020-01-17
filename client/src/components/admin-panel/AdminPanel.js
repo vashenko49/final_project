@@ -14,7 +14,7 @@ import FooterDetail from './Footer/FooterDetail';
 import Slider from './Slider/Slider';
 import SliderDetail from './Slider/SliderDetail';
 import PayMethod from './PayMethod/PayMethod';
-import NotFound from '../page/NotFound';
+import NotFound from '../NotFound/NotFound';
 import ShippingMethod from './ShippingMethod/ShippingMethod';
 
 import StyledLink from '../common/styled/StyledLink';

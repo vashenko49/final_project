@@ -12,8 +12,8 @@ exports.createNewComment = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-
-    const { authorId, productID, score, text } = req.body;
+    const { _id : authorId } = req.user;
+    const {  productID, score, text } = req.body;
 
     if (score > 5 || score < 0) {
       res.status(400).json({
@@ -57,7 +57,7 @@ exports.editComment = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-
+    const { _id : authorId } = req.user;
     const { commentID, score, text } = req.body;
 
     let comment = await CommentSchema.findById(commentID);
@@ -65,6 +65,12 @@ exports.editComment = async (req, res) => {
     if (_.isEmpty(comment)) {
       res.status(400).json({
         message: `Not found a comment with ID ${commentID}`
+      });
+    }
+
+    if (authorId.toString() !==comment.authorId.toString()){
+      res.status(400).json({
+        message: `You cannot edit comment other customer`
       });
     }
 
@@ -90,11 +96,18 @@ exports.removeComment = async (req, res) => {
         message: `ID is not valid ${idComment}`
       });
     }
+    const { _id : authorId } = req.user;
     let comment = await CommentSchema.findById(idComment);
 
     if (_.isEmpty(comment)) {
       return res.status(400).json({
         message: `Not found a comment with ID ${idComment}`
+      });
+    }
+
+    if (authorId.toString() !==comment.authorId.toString()){
+      res.status(400).json({
+        message: `You cannot edit comment other customer`
       });
     }
 

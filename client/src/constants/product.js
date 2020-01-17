@@ -1,3 +1,6 @@
 export const GET_PRODUCT = 'GET_PRODUCT';
-export const GET_PRODUCTS = 'GET_PRODUCTS';
+export const REQUEST_PRODUCT = 'REQUEST_PRODUCT';
 export const PRODUCT_ERROR = 'PRODUCT_ERROR';
+
+export const GET_COMMENT = 'GET_COMMENT';
+export const COMMENT_ERROR = 'COMMENT_ERROR';

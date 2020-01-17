@@ -12,6 +12,7 @@
 .popover-filter-by{
   z-index: 10;
 }
+
 .panel-open{
   width: 100% !important;
 }
@@ -38,6 +39,7 @@
 
 .product-mini{
   grid-area: product-mini;
+  align-content: flex-start;
 }
 
 .preloader-catalog{

@@ -7,12 +7,12 @@ import Pagination from 'material-ui-flat-pagination';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 
-import MiniProduct from '../../MiniProduct/MiniProduct';
-import ProductAPI from '../../../services/ProductAPI';
-import CatalogAPI from '../../../services/CatalogAPI';
-import Filter from '../../Filter/Filter';
+import MiniProduct from '../MiniProduct/MiniProduct';
+import ProductAPI from '../../services/ProductAPI';
+import CatalogAPI from '../../services/CatalogAPI';
+import Filter from '../Filter/Filter';
 import './CatalogPage.scss';
-import ListGrow from '../../common/listGrow/listGrow';
+import ListGrow from '../common/listGrow/listGrow';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
@@ -39,57 +39,85 @@ class CatalogPage extends Component {
       error: false
     };
   }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { id: newId } = this.props.match.params;
+    const { id: oldId } = prevProps.match.params;
+    if (newId !== oldId) {
+      this.setState({
+        id: newId,
+        load: false,
+        loadProduct: false,
+        breadcrumbs: ['Home'],
+        currentNameCatalog: '',
+        sortBy: 0,
+        filters: [],
+        products: [],
+        totalDocs: 0,
+        limit: 9,
+        page: 1,
+        offset: 0,
+        priceCurrentCatalog: [0, 0],
+        price: [0, 0],
+        subfilters: [],
+        panel: false,
+        error: false
+      });
+      this.getProductAndFilter(newId, 9, 1).then(() => {});
+    }
+  }
 
   componentDidMount() {
-    const { id, limit, page } = this.state;
     this.setState({ load: false, loadProduct: false });
-    CatalogAPI.getCatalogById(id)
-      .then(res => {
-        this.setState(prevState => {
-          return {
-            load: true,
-            breadcrumbs: [...prevState.breadcrumbs, res.parentId.name],
-            currentNameCatalog: res.name,
-            filters: res.filters.map(element => {
-              return {
-                ...element,
-                subfilters: element.subfilters.map(sub => {
-                  return {
-                    ...sub,
-                    choose: false
-                  };
-                })
-              };
-            })
-          };
-        });
-        ProductAPI.getProductProductByFilter(id, limit, page, 0)
-          .then(res => {
-            const { docs, totalDocs, page } = res;
-            const price = docs.length > 0 ? this.getMaxMinPrice(docs) : [0, 0];
-            this.setState({
-              products: docs,
-              totalDocs: totalDocs,
-              page: page,
-              price: price,
-              priceCurrentCatalog: price,
-              loadProduct: true
-            });
-          })
-          .catch(e => {
-            this.setState({
-              loadProduct: true,
-              products: [],
-              totalDocs: 0,
-              page: 0,
-              price: [0, 0],
-              priceCurrentCatalog: [0, 0],
-              error: true
-            });
-          });
-      })
-      .catch(() => {});
+    const { id, limit, page } = this.state;
+    this.getProductAndFilter(id, limit, page).then(() => {});
   }
+
+  getProductAndFilter = (id, limit, page) => {
+    return CatalogAPI.getCatalogById(id).then(res => {
+      this.setState(prevState => {
+        return {
+          load: true,
+          breadcrumbs: [...prevState.breadcrumbs, res.parentId.name],
+          currentNameCatalog: res.name,
+          filters: res.filters.map(element => {
+            return {
+              ...element,
+              subfilters: element.subfilters.map(sub => {
+                return {
+                  ...sub,
+                  choose: false
+                };
+              })
+            };
+          })
+        };
+      });
+      ProductAPI.getProductProductByFilter(id, limit, page, 0)
+        .then(res => {
+          const { docs, totalDocs, page } = res;
+          const price = docs.length > 0 ? this.getMaxMinPrice(docs) : [0, 0];
+          this.setState({
+            products: docs,
+            totalDocs: totalDocs,
+            page: page,
+            price: price,
+            priceCurrentCatalog: price,
+            loadProduct: true
+          });
+        })
+        .catch(e => {
+          this.setState({
+            loadProduct: true,
+            products: [],
+            totalDocs: 0,
+            page: 0,
+            price: [0, 0],
+            priceCurrentCatalog: [0, 0],
+            error: true
+          });
+        });
+    });
+  };
 
   changePrice = newValue => {
     this.setState({ price: newValue });
@@ -219,9 +247,9 @@ class CatalogPage extends Component {
               );
             } else {
               return (
-                <Link key={index} color="inherit" to="/authorization">
+                <Typography key={index} color="inherit" variant={'caption'}>
                   {element}
-                </Link>
+                </Typography>
               );
             }
           })}

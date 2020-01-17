@@ -3,14 +3,16 @@ import ImageCarousel from '../ImageCarousel/ImageCarousel';
 import Partners from '../Partners/Partners';
 import CatalogOnMainPage from '../CatagoryOnMainPage/CatalogOnMainPage';
 
-export default class MainPage extends Component {
+class MainPage extends Component {
   render() {
     return (
-      <div>
+      <>
         <ImageCarousel />
         <Partners />
         <CatalogOnMainPage />
-      </div>
+      </>
     );
   }
 }
+
+export default MainPage;
