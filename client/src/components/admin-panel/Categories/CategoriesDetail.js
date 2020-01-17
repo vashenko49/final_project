@@ -103,7 +103,6 @@ class CategoriesDetail extends Component {
       const sendData = {
         nameRootCatalog: rootCategory,
         childCatalogs: childCategory.map(child => {
-          console.log(child);
           const childData = {
             nameChildCatalog: child.name,
             filters: child.filters.map(filter => filter.id)
@@ -119,7 +118,23 @@ class CategoriesDetail extends Component {
       }
       if (typeForm === 'update') {
         sendData._id = idRootCategory;
-        await AdminCategoriesAPI.updateCategories(sendData);
+        const { data } = await AdminCategoriesAPI.updateCategories(sendData);
+
+        this.setState({
+          rootCategory: data.name,
+          idRootCategory: data._id,
+          childCategory: data.childCatalog.map(i => ({
+            idOwner: i._id,
+            id: i._id,
+            childCategoryError: false,
+            filtersError: false,
+            name: i.name,
+            filters: i.filters.map(k => ({
+              id: k.filter._id,
+              serviceName: k.filter.serviceName
+            }))
+          }))
+        });
       }
 
       this.setIsLoading(false);
