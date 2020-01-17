@@ -247,9 +247,9 @@ class CatalogPage extends Component {
               );
             } else {
               return (
-                <Typography key={index} color="inherit" variant={'caption'}>
+                <Link color="inherit" to="/">
                   {element}
-                </Typography>
+                </Link>
               );
             }
           })}

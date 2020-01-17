@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+import { Typography } from '@material-ui/core';
 
 class ShortDescription extends Component {
   render() {
-    return <div></div>;
+    const { description } = this.props.product.product;
+    const { className } = this.props;
+    return (
+      <div className={`${_.isString(className) && className.length > 0 ? className : ''}`}>
+        <Typography variant={'body2'}>{description}</Typography>
+      </div>
+    );
   }
 }
 
-ShortDescription.propTypes = {};
+function mapStateToProps(state) {
+  return {
+    product: state.product
+  };
+}
 
-export default ShortDescription;
+export default connect(mapStateToProps, null)(ShortDescription);

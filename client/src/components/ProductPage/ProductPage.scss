@@ -1,3 +1,43 @@
 .product-page-container{
   display: grid;
+  grid-gap:17px 10px;
+  grid-template-areas: "BreadCrumbsProducts BreadCrumbsProducts"
+                        "SelectedImg NameProduct"
+                        "SelectedImg ShortDescription"
+                        "SelectedImg FilterModel"
+                        "ImageCarouselProduct ImageCarouselProduct"
+                        "DetailInfoProduct DetailInfoProduct"
+                        "LastViewProduct LastViewProduct"
+                        "ReviewProduct ReviewProduct";
+  grid-template-rows: auto;
+  grid-template-columns:  1fr 1fr;
+  justify-items: start;
+  width: 100%;
+}
+.BreadCrumbsProducts{
+  grid-area: BreadCrumbsProducts;
+}
+.NameProduct{
+  grid-area: NameProduct;
+}
+.SelectedImg{
+  grid-area: SelectedImg;
+}
+.ShortDescription{
+  grid-area: ShortDescription;
+}
+.FilterModel{
+  grid-area: FilterModel;
+}
+.ImageCarouselProduct{
+  grid-area: ImageCarouselProduct;
+}
+.DetailInfoProduct{
+  grid-area: DetailInfoProduct;
+}
+.LastViewProduct{
+  grid-area: LastViewProduct;
+}
+.ReviewProduct{
+  grid-area: ReviewProduct;
 }

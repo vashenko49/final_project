@@ -43,6 +43,7 @@
     "react-form-validator-core": "^0.6.4",
     "react-github-login": "^1.0.3",
     "react-google-login": "^5.0.7",
+    "react-items-carousel": "^2.8.0",
     "react-material-ui-carousel": "^1.1.1",
     "react-material-ui-form-validator": "^2.0.9",
     "react-rater": "^5.1.1",
@@ -53,11 +54,11 @@
     "react-scripts": "^3.3.0",
     "react-slick": "^0.25.2",
     "redux": "^4.0.4",
-    "slick-carousel": "^1.8.1",
-    "styled-components": "^4.4.1",
-    "redux-logger": "^3.0.6",
     "redux-devtools-extension": "^2.13.8",
-    "redux-thunk": "^2.3.0"
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "slick-carousel": "^1.8.1",
+    "styled-components": "^4.4.1"
   },
   "scripts": {
     "start-js": "react-scripts start",

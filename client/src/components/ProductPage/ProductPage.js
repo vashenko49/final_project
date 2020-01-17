@@ -38,15 +38,15 @@ class ProductPage extends Component {
     return (
       <Container>
         <div className="product-page-container">
-          <BreadCrumbsProducts />
-          <NameProduct />
-          <SelectedImg />
-          <ShortDescription />
-          <FilterModel />
-          <ImageCarouselProduct />
-          <DetailInfoProduct />
-          <LastViewProduct />
-          <ReviewProduct />
+          <BreadCrumbsProducts className="BreadCrumbsProducts" />
+          <NameProduct className="NameProduct" />
+          <SelectedImg className="SelectedImg" />
+          <ShortDescription className="ShortDescription" />
+          <FilterModel className="FilterModel" />
+          <ImageCarouselProduct className="ImageCarouselProduct" />
+          <DetailInfoProduct className="DetailInfoProduct" />
+          <LastViewProduct className="LastViewProduct" />
+          <ReviewProduct className="ReviewProduct" />
         </div>
       </Container>
     );

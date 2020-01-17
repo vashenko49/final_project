@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
 
 class LastViewProduct extends Component {
   render() {
-    return <div></div>;
+    const { className } = this.props;
+    return (
+      <div className={`${_.isString(className) && className.length > 0 ? className : ''}`}></div>
+    );
   }
 }
+function mapStateToProps(state) {
+  return {
+    product: state.product
+  };
+}
 
-export default LastViewProduct;
+export default connect(mapStateToProps, null)(LastViewProduct);

@@ -3,9 +3,11 @@ import {
   PRODUCT_ERROR,
   REQUEST_PRODUCT,
   COMMENT_ERROR,
-  GET_COMMENT
+  GET_COMMENT,
+  EDIT_SELECTED_IMG
 } from '../constants/product';
 import ProductAPI from '../services/ProductAPI';
+import _ from 'lodash';
 
 export const getCurrentProduct = productId => async dispatch => {
   try {
@@ -14,7 +16,7 @@ export const getCurrentProduct = productId => async dispatch => {
     dispatch({
       type: REQUEST_PRODUCT
     });
-
+    const massImg = [];
     const {
       enabled,
       description,
@@ -23,6 +25,7 @@ export const getCurrentProduct = productId => async dispatch => {
       nameProduct,
       _idChildCategory: {
         name: nameChildCatalog,
+        _id: _idChildCategory,
         parentId: { name: nameRootCatalog }
       },
       filters,
@@ -32,6 +35,11 @@ export const getCurrentProduct = productId => async dispatch => {
       htmlPage
     } = res;
 
+    filterImg.forEach(item => {
+      massImg.push(...item.urlImg);
+    });
+    massImg.push(...productUrlImg);
+
     dispatch({
       type: GET_PRODUCT,
       payload: {
@@ -39,6 +47,7 @@ export const getCurrentProduct = productId => async dispatch => {
         description,
         comments,
         productUrlImg,
+        _idChildCategory,
         nameProduct,
         nameChildCatalog,
         nameRootCatalog,
@@ -46,7 +55,18 @@ export const getCurrentProduct = productId => async dispatch => {
         filterImg,
         model,
         itemNo,
-        htmlPage
+        htmlPage,
+        price: `${
+          _.minBy(model, function(o) {
+            return o.currentPrice;
+          }).currentPrice
+        } - ${
+          _.maxBy(model, function(o) {
+            return o.currentPrice;
+          }).currentPrice
+        }`,
+        selectedIndexImg: 0,
+        massImg
       }
     });
   } catch (err) {
@@ -70,4 +90,13 @@ export const getMeanRatingProductByProductId = productId => async dispatch => {
       type: COMMENT_ERROR
     });
   }
+};
+
+export const changeImg = selectedIndexImg => dispatch => {
+  dispatch({
+    type: EDIT_SELECTED_IMG,
+    payload: {
+      selectedIndexImg: selectedIndexImg
+    }
+  });
 };

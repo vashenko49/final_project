@@ -3,7 +3,8 @@ import {
   PRODUCT_ERROR,
   REQUEST_PRODUCT,
   GET_COMMENT,
-  COMMENT_ERROR
+  COMMENT_ERROR,
+  EDIT_SELECTED_IMG
 } from '../constants/product';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
     description: '',
     comments: [],
     productUrlImg: [],
+    _idChildCategory: '',
     nameProduct: '',
     nameChildCatalog: '',
     nameRootCatalog: '',
@@ -19,7 +21,10 @@ const initialState = {
     filterImg: [],
     model: [],
     itemNo: [],
-    rating: 5
+    rating: 5,
+    price: '',
+    massImg: [],
+    selectedIndexImg: 0
   },
   loading: false,
   error: ''
@@ -62,6 +67,14 @@ export default function(state = initialState, action) {
         product: {
           ...state.product,
           rating: 0
+        }
+      };
+    case EDIT_SELECTED_IMG:
+      return {
+        ...state,
+        product: {
+          ...state.product,
+          selectedIndexImg: payload.selectedIndexImg
         }
       };
     default:

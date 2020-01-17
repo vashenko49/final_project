@@ -10,6 +10,6 @@ export default class CartAPI {
   }
 
   static updateCart = data => {
-    return axios.put('api/cart', data).then(res => res.data);
+    return axios.put('/api/cart', data).then(res => res.data);
   };
 }

@@ -4,3 +4,4 @@ export const PRODUCT_ERROR = 'PRODUCT_ERROR';
 
 export const GET_COMMENT = 'GET_COMMENT';
 export const COMMENT_ERROR = 'COMMENT_ERROR';
+export const EDIT_SELECTED_IMG = 'EDIT_SELECTED_IMG';
