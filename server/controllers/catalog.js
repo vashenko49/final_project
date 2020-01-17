@@ -7,18 +7,18 @@ const productModel = require("../models/Product");
 const CommentSchema = require("../models/Comment");
 const _ = require("lodash");
 
-const { validationResult } = require("express-validator");
+const {validationResult} = require("express-validator");
 const mongoose = require("mongoose");
 
 exports.addROOTCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
-    const { name } = req.body;
-    let catalog = await rootCatalog.findOne({ name: name });
+    const {name} = req.body;
+    let catalog = await rootCatalog.findOne({name: name});
 
     if (catalog) {
       return res.status(400).json({
@@ -44,10 +44,10 @@ exports.updateROOTCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
-    const { name, _idRootCatalog, enabled = false } = req.body;
+    const {name, _idRootCatalog, enabled = false} = req.body;
 
     const catalog = await rootCatalog.findById(_idRootCatalog);
 
@@ -57,7 +57,7 @@ exports.updateROOTCatalog = async (req, res) => {
       });
     }
 
-    const isFilterExists = await rootCatalog.findOne({ name: name });
+    const isFilterExists = await rootCatalog.findOne({name: name});
     if (isFilterExists) {
       return res.status(400).json({
         message: `Root catalog ${name} already exists`
@@ -77,10 +77,10 @@ exports.updateROOTCatalog = async (req, res) => {
 
 exports.activateOrDeactivateROOTCatalog = async (req, res) => {
   try {
-    const { _idRootCatalog, status } = req.body;
+    const {_idRootCatalog, status} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
     if (!mongoose.Types.ObjectId.isValid(_idRootCatalog)) {
@@ -111,7 +111,7 @@ exports.activateOrDeactivateROOTCatalog = async (req, res) => {
 
 exports.deleteROOTCatalog = async (req, res) => {
   try {
-    const { _idrootcatalog } = req.params;
+    const {_idrootcatalog} = req.params;
     const catalog = await rootCatalog.findById(_idrootcatalog);
     if (!catalog) {
       return res.status(400).json({
@@ -119,7 +119,7 @@ exports.deleteROOTCatalog = async (req, res) => {
       });
     }
 
-    let childCatalogy = await childCatalog.find({ parentId: catalog._id });
+    let childCatalogy = await childCatalog.find({parentId: catalog._id});
 
     if (childCatalogy.length > 0) {
       return res.status(400).json({
@@ -142,7 +142,7 @@ exports.deleteROOTCatalog = async (req, res) => {
 
 exports.getActiveROOTCategories = async (req, res) => {
   try {
-    const category = await rootCatalog.find({ enabled: "true" });
+    const category = await rootCatalog.find({enabled: "true"});
     res.status(200).json(category);
   } catch (e) {
     res.status(500).json({
@@ -153,7 +153,7 @@ exports.getActiveROOTCategories = async (req, res) => {
 
 exports.getActiveROOTCategory = async (req, res) => {
   try {
-    const { _idrootcatalog } = req.params;
+    const {_idrootcatalog} = req.params;
     const catalog = await rootCatalog.find({
       $and: [
         {
@@ -183,7 +183,7 @@ exports.getROOTCategories = async (req, res) => {
 
 exports.getROOTCategory = async (req, res) => {
   try {
-    const { _idrootcatalog } = req.params;
+    const {_idrootcatalog} = req.params;
     const catalog = await rootCatalog.findById(_idrootcatalog);
     res.status(200).json(catalog);
   } catch (e) {
@@ -198,9 +198,9 @@ exports.addChildCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
-    const { name, parentId, filters = [] } = req.body;
+    const {name, parentId, filters = []} = req.body;
 
     let catalog = new childCatalog({
       name: name,
@@ -221,10 +221,10 @@ exports.updateChildCatalog = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
-    const { _id } = req.body;
+    const {_id} = req.body;
 
     const catalog = await childCatalog.findById(_id);
 
@@ -235,7 +235,7 @@ exports.updateChildCatalog = async (req, res) => {
     }
 
     let data = _.cloneDeep(req.body);
-    let updateCatalog = await childCatalog.findByIdAndUpdate(_id, { $set: data }, { new: true });
+    let updateCatalog = await childCatalog.findByIdAndUpdate(_id, {$set: data}, {new: true});
 
     updateCatalog = await updateCatalog.save();
 
@@ -250,10 +250,10 @@ exports.updateChildCatalog = async (req, res) => {
 
 exports.activateOrDeactivateChildCatalog = async (req, res) => {
   try {
-    const { _idChildCatalog, status } = req.body;
+    const {_idChildCatalog, status} = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({errors: errors.array()});
     }
 
     if (!mongoose.Types.ObjectId.isValid(_idChildCatalog)) {
@@ -284,7 +284,7 @@ exports.activateOrDeactivateChildCatalog = async (req, res) => {
 
 exports.deleteChildCatalog = async (req, res) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     const catalog = await childCatalog.findById(id);
     if (!catalog) {
       return res.status(400).json({
@@ -292,7 +292,7 @@ exports.deleteChildCatalog = async (req, res) => {
       });
     }
 
-    const product = await Product.find({ _idChildCategory: id });
+    const product = await Product.find({_idChildCategory: id});
 
     if (product.length > 0) {
       return res.status(400).json({
@@ -316,7 +316,7 @@ exports.deleteChildCatalog = async (req, res) => {
 
 exports.deleteChildCatalogFilter = async (req, res) => {
   try {
-    const { _idChildCatalog, _idFilter } = req.params;
+    const {_idChildCatalog, _idFilter} = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(_idChildCatalog)) {
       return res.status(400).json({
@@ -370,7 +370,7 @@ exports.deleteChildCatalogFilter = async (req, res) => {
 
 exports.getActiveChildCategoryForClientSelectSubfilter = async (req, res) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const catalog = await childCatalog
       .findById(id)
@@ -388,7 +388,7 @@ exports.getActiveChildCategoryForClientSelectSubfilter = async (req, res) => {
 
 exports.getActiveChildCategoryForClientAnySubfilter = async (req, res) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
 
     const catalog = await childCatalog
       .findById(id)
@@ -421,7 +421,7 @@ exports.getChildCategories = async (req, res) => {
 
 exports.getChildCategory = async (req, res) => {
   try {
-    const { _idchildcatalog } = req.params;
+    const {_idchildcatalog} = req.params;
     const catalog = await childCatalog
       .findById(_idchildcatalog)
       .populate({
@@ -443,8 +443,8 @@ exports.getChildCategory = async (req, res) => {
 
 exports.getChildCategoriesWithRootID = async (req, res) => {
   try {
-    const { _idrootcatalog } = req.params;
-    const catalog = await childCatalog.find({ parentId: _idrootcatalog });
+    const {_idrootcatalog} = req.params;
+    const catalog = await childCatalog.find({parentId: _idrootcatalog});
     res.status(200).json(catalog);
   } catch (e) {
     res.status(500).json({
@@ -455,7 +455,7 @@ exports.getChildCategoriesWithRootID = async (req, res) => {
 
 exports.getActiveChildCategories = async (req, res) => {
   try {
-    const category = await childCatalog.find({ enabled: "true" });
+    const category = await childCatalog.find({enabled: "true"});
     res.status(200).json(category);
   } catch (e) {
     res.status(500).json({
@@ -466,7 +466,7 @@ exports.getActiveChildCategories = async (req, res) => {
 
 exports.getActiveChildCategory = async (req, res) => {
   try {
-    const { _idchildcatalog } = req.params;
+    const {_idchildcatalog} = req.params;
     const catalog = await childCatalog
       .findOne({
         $and: [
@@ -495,7 +495,7 @@ exports.getActiveChildCategory = async (req, res) => {
 
 exports.getActiveChildCategoriesWithRootID = async (req, res) => {
   try {
-    const { _idrootcatalog } = req.params;
+    const {_idrootcatalog} = req.params;
     const catalog = await childCatalog.find({
       $and: [
         {
@@ -518,7 +518,7 @@ exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
 
     for (let i = 0; i < root.length; i++) {
       root[i].childCatalog = await childCatalog
-        .find({ parentId: root[i]._id })
+        .find({parentId: root[i]._id})
         .select("-filters.subfilters")
         .populate({
           path: "filters.filter",
@@ -535,7 +535,7 @@ exports.getHierarchyRootChildCatalogFilter = async (req, res) => {
 
 exports.getHierarchyRootChildCatalogFilterByRootCatalogID = async (req, res) => {
   try {
-    const { _idRootCatalog } = req.params;
+    const {_idRootCatalog} = req.params;
     if (!mongoose.Types.ObjectId.isValid(_idRootCatalog)) {
       return res.status(400).json({
         message: `ID is not valid ${_idRootCatalog}`
@@ -553,7 +553,7 @@ exports.getHierarchyRootChildCatalogFilterByRootCatalogID = async (req, res) => 
     root = JSON.parse(JSON.stringify(root));
 
     root.childCatalog = await childCatalog
-      .find({ parentId: root._id })
+      .find({parentId: root._id})
       .select("-filters.subfilters")
       .populate("filters.filter");
 
@@ -569,11 +569,11 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
-    const { nameRootCatalog, childCatalogs: newchildCatalogs } = req.body;
+    const {nameRootCatalog, childCatalogs: newchildCatalogs} = req.body;
 
-    let catalog = await rootCatalog.findOne({ name: nameRootCatalog });
+    let catalog = await rootCatalog.findOne({name: nameRootCatalog});
 
     if (catalog) {
       return res.status(400).json({
@@ -590,7 +590,7 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
     let AllNewChildCatalog = [];
 
     for (let i = 0; i < newchildCatalogs.length; i++) {
-      const { nameChildCatalog, filters } = newchildCatalogs[i];
+      const {nameChildCatalog, filters} = newchildCatalogs[i];
 
       let newChildCatalog = new childCatalog({
         name: nameChildCatalog,
@@ -617,13 +617,13 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      return res.status(422).json({errors: errors.array()});
     }
 
     let response = {};
 
     response.childcatalog = [];
-    let { nameRootCatalog, childCatalogs: editChildCatalogs, _id: _idRootCatalog } = req.body;
+    let {nameRootCatalog, childCatalogs: editChildCatalogs, _id: _idRootCatalog} = req.body;
 
     let childCatalogOld;
 
@@ -637,96 +637,92 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
       rootcatalog.name = nameRootCatalog;
 
       // Check delete childCatalog
-      childCatalogOld = await childCatalog.find({ parentId: _idRootCatalog });
+      childCatalogOld = await childCatalog.find({parentId: _idRootCatalog});
 
       await rootcatalog.save();
       response["rootcatalog"] = rootcatalog;
     }
 
     if (_.isArray(editChildCatalogs)) {
-      // Check delete childCatalog
-      const delChildCatalog = childCatalogOld.filter(
-        i => !editChildCatalogs.map(k => k._id).includes(i._id)
-      );
-      // delChildCatalog.forEach(async i => {
-      //   await childCatalog.findById(i._id);
-      // });
-      console.log(delChildCatalog);
-    }
+      for (let i = 0; i < editChildCatalogs.length; i++) {
+        let {_id: _idChildCatalog, isRemove, filters, nameChildCatalog} = editChildCatalogs[i];
 
-    for (let i = 0; i < editChildCatalogs.length; i++) {
-      let { _id: _idChildCatalog, filters, nameChildCatalog } = editChildCatalogs[i];
-
-      if (_.isUndefined(_idChildCatalog)) {
-        let newChildCatalog = new childCatalog({
-          name: nameChildCatalog,
-          parentId: _idRootCatalog,
-          filters: await commonCatalog.checkFilter(filters)
-        });
-
-        newChildCatalog = await newChildCatalog.save();
-        response["childcatalog"].push(newChildCatalog);
-      }
-
-      if (_.isString(_idChildCatalog)) {
-        let childcatalog = await childCatalog.findById(_idChildCatalog);
-
-        if (!childcatalog) {
-          return res.status(400).json({
-            message: `Catalog with id "${_idChildCatalog}" is not found.`
-          });
+        if (_.isBoolean(isRemove) && isRemove) {
+          const cat = await childCatalog.findById(_idChildCatalog);
+          await cat.delete();
         }
-        if (_.isString(nameChildCatalog)) {
-          childcatalog.name = nameChildCatalog;
-        }
-        if (_.isArray(filters)) {
-          filters = filters.map(elemen => {
-            return {
-              filter: elemen
-            };
+
+
+        if (_.isUndefined(_idChildCatalog)) {
+          let newChildCatalog = new childCatalog({
+            name: nameChildCatalog,
+            parentId: _idRootCatalog,
+            filters: await commonCatalog.checkFilter(filters)
           });
 
-          await Promise.all(
-            childcatalog.filters.map(async element => {
-              if (element) {
-                const { filter: filterProd } = element;
-                let productUse = await Product.findOne({
-                  $and: [
-                    { _idChildCategory: _idChildCatalog },
-                    {
-                      $or: [
-                        { "filters.filter": filterProd },
-                        { "model.filters.filter": filterProd }
-                      ]
-                    }
-                  ]
-                });
-                if (productUse) {
-                  filters.push({
-                    filter: filterProd
+          newChildCatalog = await newChildCatalog.save();
+          response["childcatalog"].push(newChildCatalog);
+        }
+
+        if (_.isString(_idChildCatalog) && !_.isBoolean(isRemove) && !isRemove) {
+          let childcatalog = await childCatalog.findById(_idChildCatalog);
+
+          if (!childcatalog) {
+            return res.status(400).json({
+              message: `Catalog with id "${_idChildCatalog}" is not found.`
+            });
+          }
+          if (_.isString(nameChildCatalog)) {
+            childcatalog.name = nameChildCatalog;
+          }
+          if (_.isArray(filters)) {
+            filters = filters.map(elemen => {
+              return {
+                filter: elemen
+              };
+            });
+
+            await Promise.all(
+              childcatalog.filters.map(async element => {
+                if (element) {
+                  const {filter: filterProd} = element;
+                  let productUse = await Product.findOne({
+                    $and: [
+                      {_idChildCategory: _idChildCatalog},
+                      {
+                        $or: [
+                          {"filters.filter": filterProd},
+                          {"model.filters.filter": filterProd}
+                        ]
+                      }
+                    ]
                   });
+                  if (productUse) {
+                    filters.push({
+                      filter: filterProd
+                    });
+                  }
                 }
-              }
-            })
-          );
-
-          filters = _.map(
-            _.uniq(
-              _.map(filters, function(obj) {
-                return JSON.stringify(obj);
               })
-            ),
-            function(obj) {
-              return JSON.parse(obj);
-            }
-          );
-          childcatalog.filters = filters;
+            );
+
+            filters = _.map(
+              _.uniq(
+                _.map(filters, function (obj) {
+                  return JSON.stringify(obj);
+                })
+              ),
+              function (obj) {
+                return JSON.parse(obj);
+              }
+            );
+            childcatalog.filters = filters;
+          }
+          await childcatalog.save();
+          response["childcatalog"].push(childcatalog);
         }
-        await childcatalog.save();
-        response["childcatalog"].push(childcatalog);
       }
     }
-
     // Detailer response for admin
     let root = await rootCatalog.findById(_idRootCatalog);
 
@@ -739,7 +735,7 @@ exports.updateRootChildCatalogAndAddFilterId = async (req, res) => {
     responseDetail = JSON.parse(JSON.stringify(root));
 
     responseDetail.childCatalog = await childCatalog
-      .find({ parentId: responseDetail._id })
+      .find({parentId: responseDetail._id})
       .select("-filters.subfilters")
       .populate("filters.filter");
 
@@ -769,7 +765,7 @@ exports.getCatalogsAndProductForMainPage = async (req, res) => {
 
     childCatalogs = await Promise.all(
       childCatalogs.map(async element => {
-        const { _id, countProductMainPage } = element;
+        const {_id, countProductMainPage} = element;
         let products = JSON.parse(
           JSON.stringify(
             await productModel
@@ -789,7 +785,7 @@ exports.getCatalogsAndProductForMainPage = async (req, res) => {
           })
           .map(prod => {
             let rating = 0;
-            const { comments } = prod;
+            const {comments} = prod;
             if (comments.length > 0) {
               comments.forEach(item => {
                 rating += item.score;

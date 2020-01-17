@@ -37,7 +37,8 @@ class CategoriesDetail extends Component {
     isOpenSnack: false,
     sendDataStatus: 'success',
     sendDataMessage: '',
-    isLoading: false
+    isLoading: false,
+    listRemove:[]
   };
 
   setIsLoading = state => {
@@ -86,7 +87,9 @@ class CategoriesDetail extends Component {
 
   onClickDelete = e => {
     e.stopPropagation();
-
+    const {listRemove} = this.state;
+    listRemove.push(e.currentTarget.getAttribute('datakey'));
+    this.setState({listRemove:listRemove});
     this.setState({
       childCategory: this.state.childCategory.filter(
         i => i.id !== e.currentTarget.getAttribute('datakey')
@@ -98,20 +101,31 @@ class CategoriesDetail extends Component {
     try {
       this.setIsLoading(true);
 
-      const { idRootCategory, rootCategory, childCategory, typeForm } = this.state;
+      const { idRootCategory, rootCategory, childCategory, typeForm, listRemove } = this.state;
 
       const sendData = {
         nameRootCatalog: rootCategory,
         childCatalogs: childCategory.map(child => {
+
           const childData = {
             nameChildCatalog: child.name,
             filters: child.filters.map(filter => filter.id)
           };
+
           if (child.idOwner) childData._id = child.idOwner;
 
           return childData;
         })
       };
+
+
+      sendData.childCatalogs.push(...listRemove.map(item=>{
+        return{
+          _id:item,
+          isRemove: true
+        }
+      }));
+
 
       if (typeForm === 'create') {
         await AdminCategoriesAPI.createCategories(sendData);
