@@ -6,7 +6,7 @@ import { Image } from 'cloudinary-react';
 
 import './ProductPage.scss';
 
-import { updateQuantity } from '../../actions/cart';
+import { updateQuantity } from '../../actions/authorizationAction';
 
 class ProductCheckout extends Component {
   render() {

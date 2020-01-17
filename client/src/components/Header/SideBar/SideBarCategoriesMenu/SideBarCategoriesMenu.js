@@ -15,16 +15,16 @@ const ExpansionPanel = withStyles({
     border: '1px solid rgba(0, 0, 0, .125)',
     boxShadow: 'none',
     '&:not(:last-child)': {
-      borderBottom: 0,
+      borderBottom: 0
     },
     '&:before': {
-      display: 'none',
+      display: 'none'
     },
     '&$expanded': {
-      margin: 'auto',
-    },
+      margin: 'auto'
+    }
   },
-  expanded: {},
+  expanded: {}
 })(MuiExpansionPanel);
 
 const ExpansionPanelSummary = withStyles({
@@ -34,21 +34,21 @@ const ExpansionPanelSummary = withStyles({
     marginBottom: -1,
     minHeight: 56,
     '&$expanded': {
-      minHeight: 56,
-    },
+      minHeight: 56
+    }
   },
   content: {
     '&$expanded': {
-      margin: '12px 0',
-    },
+      margin: '12px 0'
+    }
   },
-  expanded: {},
+  expanded: {}
 })(MuiExpansionPanelSummary);
 
 const ExpansionPanelDetails = withStyles(theme => ({
   root: {
-    padding: theme.spacing(0),
-  },
+    padding: theme.spacing(0)
+  }
 }))(MuiExpansionPanelDetails);
 
 export default function SideBarCategoriesMenu(props) {
@@ -60,7 +60,11 @@ export default function SideBarCategoriesMenu(props) {
 
   return (
     <div>
-      <ExpansionPanel square expanded={expanded === props.rootCategories.name} onChange={handleChange(props.rootCategories.name)}>
+      <ExpansionPanel
+        square
+        expanded={expanded === props.rootCategories.name}
+        onChange={handleChange(props.rootCategories.name)}
+      >
         <ExpansionPanelSummary id={props.rootCategories.name}>
           <Typography>{props.rootCategories.name}</Typography>
         </ExpansionPanelSummary>
@@ -69,12 +73,10 @@ export default function SideBarCategoriesMenu(props) {
             {props.childCategories
               .filter(elem => elem.parentId === props.rootCategories._id)
               .map(elem => (
-              <ListItem key={elem.name} className="sidebar-categories-link">
-                <Link to={{pathname:`/catalog/${elem._id}`}}>
-                  {elem.name}
-                </Link>
-              </ListItem>
-            ))}
+                <ListItem key={elem.name} className="sidebar-categories-link">
+                  <Link to={{ pathname: `/catalog/${elem._id}` }}>{elem.name}</Link>
+                </ListItem>
+              ))}
           </List>
         </ExpansionPanelDetails>
       </ExpansionPanel>

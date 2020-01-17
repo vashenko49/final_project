@@ -77,8 +77,11 @@ class PersonalData extends Component {
   render() {
     const { submit, handleChange, usePersonalData } = this;
     const { openWindowAuth } = this.props;
-    const { isAuthorization, enabled } = this.props.authorization;
-    const { items } = this.props.cart;
+    const {
+      isAuthorization,
+      enabled,
+      cart: { items }
+    } = this.props.authorization;
     const {
       personalData: { name, email, telephone }
     } = this.state;
@@ -154,8 +157,7 @@ class PersonalData extends Component {
 function mapStateToProps(state) {
   return {
     authorization: state.authorization,
-    checkout: state.checkout,
-    cart: state.cart
+    checkout: state.checkout
   };
 }
 

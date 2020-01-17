@@ -15,7 +15,6 @@ import SignUp from './SignUp/SignUp';
 
 import './Authorization.scss';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
-import { getCurrentItems } from '../../actions/cart';
 import TabPanel from '../TabPanel/TabPanel';
 import { Typography } from '@material-ui/core';
 
@@ -64,11 +63,6 @@ class Authorization extends Component {
       isForgotPassword: !prevState.isForgotPassword
     }));
   };
-
-  componentWillUnmount() {
-    const { getCurrentItems } = this.props;
-    getCurrentItems();
-  }
 
   render() {
     const { value, tabs, isForgotPassword } = this.state;
@@ -131,8 +125,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loginInSystem: bindActionCreators(AuthorizationActions.loginInSystem, dispatch),
-    getCurrentItems: bindActionCreators(getCurrentItems, dispatch)
+    loginInSystem: bindActionCreators(AuthorizationActions.loginInSystem, dispatch)
   };
 }
 

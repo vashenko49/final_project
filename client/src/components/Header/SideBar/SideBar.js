@@ -25,7 +25,13 @@ export default function SideBar(props) {
       setState({ ...state, [side]: open });
     }
 
-    let sidebarLinks = Array.prototype.slice.call(document.querySelectorAll('.sidebar-categories-link a')).concat(Array.prototype.slice.call(document.querySelectorAll('.sidebar-user-menu .header-navbar-buttons *')));
+    let sidebarLinks = Array.prototype.slice
+      .call(document.querySelectorAll('.sidebar-categories-link a'))
+      .concat(
+        Array.prototype.slice.call(
+          document.querySelectorAll('.sidebar-user-menu .header-navbar-buttons *')
+        )
+      );
 
     if (sidebarLinks.includes(event.target)) {
       setState({ ...state, [side]: open });
@@ -48,16 +54,16 @@ export default function SideBar(props) {
           />
         ))}
       <List className="sidebar-user-menu">
-        <UserMenu
-          customerId={props.customerId}
-        />
+        <UserMenu />
       </List>
     </div>
   );
 
   return (
     <div>
-      <Button id="header-categories-menu" onClick={toggleDrawer('left', true)}>Menu</Button>
+      <Button id="header-categories-menu" onClick={toggleDrawer('left', true)}>
+        Menu
+      </Button>
       <SwipeableDrawer
         open={state.left}
         onClose={toggleDrawer('left', false)}

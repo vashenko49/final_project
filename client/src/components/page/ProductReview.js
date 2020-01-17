@@ -69,7 +69,7 @@ const ProductReview = ({
         <div className="title" type="button">
           Reviews
         </div>
-        <div className="arrow"></div>
+        <div className="arrow" />
       </div>
       <div className={active ? 'review-content container active' : 'review-content container'}>
         {comments.map(v => {
@@ -116,7 +116,7 @@ const ProductReview = ({
                 cols="46"
                 placeholder="Write your review here. It must be 5 characters long. Consider whether you would recommend this product"
                 onChange={e => setReview(e.target.value)}
-              ></textarea>
+              />
               <div className="product-buttons container">
                 <button
                   type="submit"

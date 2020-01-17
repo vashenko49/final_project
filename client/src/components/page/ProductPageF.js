@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { getCurrentProduct } from '../../actions/product';
-import { getCurrentItems, addOrRemoveProduct } from '../../actions/cart';
+import { getCurrentItems, updateQuantity } from '../../actions/authorizationAction';
 
 import { Image } from 'cloudinary-react';
 
@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 
 const ProductPageF = ({
   getCurrentProduct,
-  addOrRemoveProduct,
+  updateQuantity,
   product: { product, loading },
   match
 }) => {
@@ -98,7 +98,7 @@ const ProductPageF = ({
 
   const handleOpen = () => {
     setOpen(true);
-    addOrRemoveProduct(_id, currentModel.modelNo, 1);
+    updateQuantity(_id, currentModel.modelNo, 1);
   };
 
   const handleClose = () => {
@@ -195,7 +195,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   getCurrentProduct,
   getCurrentItems,
-  addOrRemoveProduct
+  updateQuantity
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPageF);

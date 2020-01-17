@@ -12,18 +12,13 @@ import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import Badge from '@material-ui/core/Badge';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import * as cartAction from '../../../actions/cart';
 import * as AuthorizationActions from '../../../actions/authorizationAction';
 
 class UserMenu extends Component {
   render() {
-    const {
-      signOut,
-      cart,
-      resetCart
-    } = this.props;
+    const { signOut } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
-    const { isAuthorization, isAdmin } = this.props.authorization;
+    const { isAuthorization, isAdmin, cart } = this.props.authorization;
     const { avatarUrl } = this.props.authorization.personalInfo;
 
     return (
@@ -44,7 +39,6 @@ class UserMenu extends Component {
                 to={'/'}
                 onClick={() => {
                   signOut();
-                  resetCart();
                 }}
               >
                 Sign out
@@ -54,9 +48,7 @@ class UserMenu extends Component {
             <Link to={'/authorization'}>Login</Link>
           )}
           <Link to={`/cart`}>
-            <Badge
-              badgeContent={_.isArray(cart.items) ? cart.items.length : 0}
-            >
+            <Badge badgeContent={_.isArray(cart.items) ? cart.items.length : 0}>
               <ShoppingBasketIcon />
             </Badge>
           </Link>
@@ -73,7 +65,6 @@ class UserMenu extends Component {
 
 function mapStateToProps(state) {
   return {
-    cart: state.cart,
     authorization: state.authorization,
     configuration: state.configuration
   };
@@ -81,10 +72,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    resetCart: bindActionCreators(cartAction.resetCart, dispatch),
     openWindowAuth: bindActionCreators(AuthorizationActions.openWindowAuth, dispatch),
     closeWindowAuth: bindActionCreators(AuthorizationActions.closeWindowAuth, dispatch),
-    signOut: bindActionCreators(AuthorizationActions.signOut, dispatch),
+    signOut: bindActionCreators(AuthorizationActions.signOut, dispatch)
   };
 }
 

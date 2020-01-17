@@ -6,15 +6,17 @@ import { bindActionCreators } from 'redux';
 
 import { Image } from 'cloudinary-react';
 
-import { updateQuantity, addOrRemoveProduct } from '../../actions/cart';
+import { updateQuantity } from '../../actions/authorizationAction';
 import _ from 'lodash';
 import './Cart.scss';
 
 class Item extends Component {
   render() {
-    const { updateQuantity, addOrRemoveProduct } = this.props;
+    const { updateQuantity } = this.props;
 
-    const { items } = this.props.cart;
+    const {
+      cart: { items }
+    } = this.props.authorization;
 
     const amount = [];
 
@@ -81,9 +83,9 @@ class Item extends Component {
                   <div
                     className="close"
                     onClick={() => {
-                      addOrRemoveProduct(parentId, modelNo, 0);
+                      updateQuantity(parentId, modelNo, 0);
                     }}
-                  ></div>
+                  />
                 </div>
               );
             })}
@@ -95,14 +97,13 @@ class Item extends Component {
 
 function mapStateToProps(state) {
   return {
-    cart: state.cart
+    authorization: state.authorization
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateQuantity: bindActionCreators(updateQuantity, dispatch),
-    addOrRemoveProduct: bindActionCreators(addOrRemoveProduct, dispatch)
+    updateQuantity: bindActionCreators(updateQuantity, dispatch)
   };
 }
 

@@ -13,7 +13,7 @@ import OrderAPI from '../../../services/OrderAPI';
 import './CheckOrder.scss';
 import TableProduct from '../../TableProduct/TableProduct';
 import TableAboutOrder from '../../Order/TableAboutOrder/TableAboutOrder';
-import * as cartAction from '../../../actions/cart';
+import * as cartAction from '../../../actions/authorizationAction';
 
 class CheckOrder extends Component {
   constructor(props) {
@@ -26,7 +26,9 @@ class CheckOrder extends Component {
   }
 
   componentDidMount() {
-    const { items } = this.props.cart;
+    const {
+      cart: { items }
+    } = this.props.authorization;
     const {
       order: { delivery: costValue, freeShippingOrderSum }
     } = this.props.checkout;
@@ -117,7 +119,9 @@ class CheckOrder extends Component {
 
   render() {
     const { submit, handleAgree } = this;
-    const { items } = this.props.cart;
+    const {
+      cart: { items }
+    } = this.props.authorization;
     const { totalSum, freeDelivery, statusAgree } = this.state;
     const {
       order: {
@@ -210,7 +214,7 @@ class CheckOrder extends Component {
 function mapStateToProps(state) {
   return {
     checkout: state.checkout,
-    cart: state.cart
+    authorization: state.authorization
   };
 }
 

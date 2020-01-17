@@ -5,7 +5,7 @@ import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as headerAction from '../../actions/headerAction';
@@ -17,6 +17,7 @@ import NavBar from './NavBar/NavBar';
 import SideBar from './SideBar/SideBar';
 import UserMenu from './UserMenu/UserMenu';
 import { Link, withRouter } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 
 class Header extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class Header extends Component {
     this.state = {
       searchInput: '',
       anchorEl: false,
-      customerId: '5df3e7aeace3e149fcc94957'
+      isLocalCart: false
     };
     this.onSearchInputChange = this.onSearchInputChange.bind(this);
     this.onSearchIconClick = this.onSearchIconClick.bind(this);
@@ -54,20 +55,40 @@ class Header extends Component {
     }
   }
 
+  agreeReplaceWithOnline = () => {
+    this.props.replaceWithOnlineCart();
+    this.setState({ isLocalCart: false });
+  };
+
+  degreeReplaceWithOnline = () => {
+    this.setState({ isLocalCart: false });
+  };
+
   componentDidMount() {
+    const localCart = JSON.parse(localStorage.getItem('localCart'));
+    if (_.isArray(localCart) && localCart.length > 0) {
+      this.setState({ isLocalCart: true });
+    }
     this.props.getRootCategories();
     this.props.getChildCategories();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { isAuthorization: isAuthorizationOld } = prevProps.authorization;
+    const { isAuthorization: isAuthorizationNew } = this.props.authorization;
+    if (isAuthorizationOld === false && isAuthorizationNew !== isAuthorizationOld) {
+      const localCart = JSON.parse(localStorage.getItem('localCart'));
+      if (_.isArray(localCart) && localCart.length > 0) {
+        this.setState({ isLocalCart: true });
+      }
+    }
+  }
+
   render() {
-    const {
-      rootCategories,
-      childCategories,
-      foundProducts,
-      openWindowAuth,
-      closeWindowAuth
-    } = this.props;
-    const { openWindowLogIn } = this.props.authorization;
+    const { agreeReplaceWithOnline, degreeReplaceWithOnline } = this;
+    const { isLocalCart } = this.state;
+    const { rootCategories, childCategories, foundProducts, closeWindowAuth } = this.props;
+    const { openWindowLogIn, isAuthorization } = this.props.authorization;
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
 
     return (
@@ -76,17 +97,10 @@ class Header extends Component {
           CROSSY
         </Link>
         <div className="header-sidebar">
-          <SideBar
-            rootCategories={rootCategories}
-            childCategories={childCategories}
-            customerId={this.state.customerId}
-          />
+          <SideBar rootCategories={rootCategories} childCategories={childCategories} />
         </div>
         <div className="header-navbar">
-          <NavBar
-            rootCategories={rootCategories}
-            childCategories={childCategories}
-          />
+          <NavBar rootCategories={rootCategories} childCategories={childCategories} />
         </div>
         <div className="search" id="header-search-input">
           <SearchIcon onClick={this.onSearchIconClick} className="search-icon" />
@@ -141,9 +155,7 @@ class Header extends Component {
           </Popover>
         </div>
         <div className="header-user-menu">
-          <UserMenu
-            customerId={this.state.customerId}
-          />
+          <UserMenu />
         </div>
         <Dialog
           open={openWindowLogIn}
@@ -152,6 +164,20 @@ class Header extends Component {
         >
           <DialogContent>
             <Authorization />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={isLocalCart && isAuthorization}
+          onClose={degreeReplaceWithOnline}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            <Typography variant={'h3'}>
+              You have the local cart. Do you want replace with the online cart?
+            </Typography>
+            <Typography variant={'body2'}>You can see the local cart in personal data</Typography>
+            <Button onClick={degreeReplaceWithOnline}>Degree</Button>
+            <Button onClick={agreeReplaceWithOnline}>Agree</Button>
           </DialogContent>
         </Dialog>
       </header>
@@ -178,6 +204,7 @@ function mapDispatchToProps(dispatch) {
     getChildCategories: bindActionCreators(headerAction.getChildCategories, dispatch),
     openWindowAuth: bindActionCreators(AuthorizationActions.openWindowAuth, dispatch),
     closeWindowAuth: bindActionCreators(AuthorizationActions.closeWindowAuth, dispatch),
+    replaceWithOnlineCart: bindActionCreators(AuthorizationActions.replaceWithOnlineCart, dispatch),
     signOut: bindActionCreators(AuthorizationActions.signOut, dispatch),
     findProductsBySearchIconClick: bindActionCreators(
       headerSearchAction.findProductsBySearchIconClick,
