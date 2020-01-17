@@ -38,7 +38,7 @@ class CategoriesDetail extends Component {
     sendDataStatus: 'success',
     sendDataMessage: '',
     isLoading: false,
-    listRemove:[]
+    listRemove: []
   };
 
   setIsLoading = state => {
@@ -87,9 +87,9 @@ class CategoriesDetail extends Component {
 
   onClickDelete = e => {
     e.stopPropagation();
-    const {listRemove} = this.state;
+    const { listRemove } = this.state;
     listRemove.push(e.currentTarget.getAttribute('datakey'));
-    this.setState({listRemove:listRemove});
+    this.setState({ listRemove: listRemove });
     this.setState({
       childCategory: this.state.childCategory.filter(
         i => i.id !== e.currentTarget.getAttribute('datakey')
@@ -106,7 +106,6 @@ class CategoriesDetail extends Component {
       const sendData = {
         nameRootCatalog: rootCategory,
         childCatalogs: childCategory.map(child => {
-
           const childData = {
             nameChildCatalog: child.name,
             filters: child.filters.map(filter => filter.id)
@@ -118,14 +117,14 @@ class CategoriesDetail extends Component {
         })
       };
 
-
-      sendData.childCatalogs.push(...listRemove.map(item=>{
-        return{
-          _id:item,
-          isRemove: true
-        }
-      }));
-
+      sendData.childCatalogs.push(
+        ...listRemove.map(item => {
+          return {
+            _id: item,
+            isRemove: true
+          };
+        })
+      );
 
       if (typeForm === 'create') {
         await AdminCategoriesAPI.createCategories(sendData);
