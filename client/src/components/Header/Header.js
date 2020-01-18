@@ -1,23 +1,29 @@
 import React, { Component, createRef } from 'react';
+
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
+
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link, withRouter } from 'react-router-dom';
+
 import * as headerAction from '../../actions/headerAction';
 import * as headerSearchAction from '../../actions/headerSearchAction';
 import * as AuthorizationActions from '../../actions/authorizationAction';
 import Authorization from '../Authorization/Authorization';
-import './Header.scss';
+import SnackBars from '../common/admin-panel/SnackBars';
 import NavBar from './NavBar/NavBar';
 import SideBar from './SideBar/SideBar';
 import UserMenu from './UserMenu/UserMenu';
-import { Link, withRouter } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+
+import './Header.scss';
+
 
 class Header extends Component {
   constructor(props) {
@@ -25,13 +31,23 @@ class Header extends Component {
     this.state = {
       searchInput: '',
       anchorEl: false,
-      isLocalCart: false
+      isLocalCart: false,
+      sendDataStatus: 'success',
+      sendDataMessage: ''
     };
+
+    this.handleCloseSnackBars = this.handleCloseSnackBars.bind(this);
     this.onSearchInputChange = this.onSearchInputChange.bind(this);
     this.onSearchIconClick = this.onSearchIconClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onSearchResultsClick = this.onSearchResultsClick.bind(this);
   }
+
+  handleCloseSnackBars = (event, reason) => {
+    if (reason === 'clickaway') return;
+
+    this.setState({ sendDataMessage: '' });
+  };
 
   onSearchResultsClick(event) {
     this.props.history.push(`/product/${event.target.id}`);
@@ -44,8 +60,20 @@ class Header extends Component {
   timerHandler = createRef();
 
   async onSearchInputChange() {
-    await this.props.findProductsBySearchInput(this.state.searchInput);
-    this.setState(state => ({ anchorEl: true }));
+    if (this.state.searchInput) {
+      await this.props.findProductsBySearchInput(this.state.searchInput);
+
+      if (this.props.foundProducts.length !== 0) {
+        this.setState(state => ({ anchorEl: true }));
+      } else {
+        this.setState({
+          sendDataStatus: 'error',
+          sendDataMessage: this.props.foundProductsError === ''
+            ? 'Такого товара в магазине нет'
+            : this.props.foundProductsError
+        })
+      }
+    }
   }
 
   async onSearchIconClick() {
@@ -90,6 +118,7 @@ class Header extends Component {
     const { rootCategories, childCategories, foundProducts, closeWindowAuth } = this.props;
     const { openWindowLogIn, isAuthorization } = this.props.authorization;
     const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
+    const { sendDataStatus, sendDataMessage } = this.state;
 
     return (
       <header className="header">
@@ -134,13 +163,7 @@ class Header extends Component {
               horizontal: 'center'
             }}
           >
-            {this.props.foundProducts.length === 0 ? (
-              <Typography>
-                {this.props.foundProductsError === ''
-                  ? 'Такого товара в магазине нет'
-                  : this.props.foundProductsError}
-              </Typography>
-            ) : (
+            {
               foundProducts.map(elem => (
                 <Typography
                   className="search-popup-item"
@@ -151,8 +174,14 @@ class Header extends Component {
                   {elem.nameProduct}
                 </Typography>
               ))
-            )}
+            }
           </Popover>
+          <SnackBars
+            handleClose={this.handleCloseSnackBars}
+            variant={sendDataStatus}
+            open={!!sendDataMessage}
+            message={sendDataMessage}
+          />
         </div>
         <div className="header-user-menu">
           <UserMenu />

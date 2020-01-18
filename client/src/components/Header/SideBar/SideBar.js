@@ -17,44 +17,26 @@ export default function SideBar(props) {
       return;
     }
 
-    if (event.target === document.querySelector('#header-categories-menu .MuiButton-label')) {
-      setState({ ...state, [side]: open });
-    }
-
-    if (event.target === document.getElementsByClassName('MuiBackdrop-root')[0]) {
-      setState({ ...state, [side]: open });
-    }
-
-    let sidebarLinks = Array.prototype.slice
-      .call(document.querySelectorAll('.sidebar-categories-link a'))
-      .concat(
-        Array.prototype.slice.call(
-          document.querySelectorAll('.sidebar-user-menu .header-navbar-buttons *')
-        )
-      );
-
-    if (sidebarLinks.includes(event.target)) {
-      setState({ ...state, [side]: open });
-    }
+    setState({ ...state, [side]: open });
   };
 
   const sideList = side => (
     <div
       role="presentation"
-      onClick={toggleDrawer(side, false)}
-      onKeyDown={toggleDrawer(side, false)}
     >
       {props.rootCategories
         .filter(item => item.enabled === true)
         .map(elem => (
           <SideBarCategoriesMenu
             key={elem.name}
+            toggleDrawer={toggleDrawer}
             rootCategories={elem}
             childCategories={props.childCategories}
           />
         ))}
-      <List className="sidebar-user-menu">
-        <UserMenu />
+      <List onClick={toggleDrawer('left', false)} className="sidebar-user-menu">
+        <UserMenu
+        />
       </List>
     </div>
   );
