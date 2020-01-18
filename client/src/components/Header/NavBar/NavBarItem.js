@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -45,7 +47,7 @@ export default class NavBarItem extends Component {
             .map((child, index) =>
               item._id === child.parentId ? (
                 <MenuItem key={index} onClick={this.handleRequestClose}>
-                  {child.name}
+                  <Link className="header-navbar-links" to={{ pathname: `/catalog/${child._id}` }}>{child.name}</Link>
                 </MenuItem>
               ) : null
             )}

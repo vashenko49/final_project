@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
+import './SideBarCategoriesMenu.scss';
+
 const ExpansionPanel = withStyles({
   root: {
     border: '1px solid rgba(0, 0, 0, .125)',
@@ -74,7 +76,7 @@ export default function SideBarCategoriesMenu(props) {
               .filter(elem => elem.parentId === props.rootCategories._id)
               .map(elem => (
                 <ListItem key={elem.name} className="sidebar-categories-link">
-                  <Link to={{ pathname: `/catalog/${elem._id}` }}>{elem.name}</Link>
+                  <Link className="sidebar-categories-link-item" onClick={props.toggleDrawer('left', false)} to={{ pathname: `/catalog/${elem._id}` }}>{elem.name}</Link>
                 </ListItem>
               ))}
           </List>
