@@ -58,7 +58,7 @@ router.post(
     check('nameRootCatalog', 'nameRootCatalog is require')
       .not()
       .isEmpty(),
-    check('newchildCatalogs', 'childCatalog id require')
+    check('childCatalogs', 'childCatalog id require')
       .isArray()
   ],
   createRootChildCatalogAndAddFilterId
