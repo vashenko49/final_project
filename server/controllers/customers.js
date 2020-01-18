@@ -64,10 +64,11 @@ exports.createCustomer = async (req, res) => {
         expiresIn: 1800
       }
     );
-
     let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
 
-    await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
+    const letter = `<!DOCTYPE html><html lang=en><title>Crossy</title><style>table{border-collapse:collapse;width:100%}td,tr{text-align:center}</style><body style=font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif><table><tr><td><a href="${process.env.domen_client}"><img alt="Not Found"src=https://res.cloudinary.com/dxge5r7h2/image/upload/v1578589379/final-project/logo/favicon_xmo9ml.jpg style=height:192px;object-fit:cover></a></table><table><tr style="border-bottom:1px solid #ccc"><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#000">Thank you for registering in our store.<a href="${url}">Confirm your account</a></table><table><tr><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#595959">Have questions? You will receive the most prompt response by replying to this email.</table>`
+
+    await sendEmail(email, `Hi ${firstName}!`, letter);
 
     const payload = {
       _id: Customer._id,
@@ -109,7 +110,10 @@ exports.enablesAccountCustom = async (req, res)=>{
 
     let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
 
-    await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
+    const letter = `<!DOCTYPE html><html lang=en><title>Crossy</title><style>table{border-collapse:collapse;width:100%}td,tr{text-align:center}</style><body style=font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif><table><tr><td><a href="${process.env.domen_client}"><img alt="Not Found"src=https://res.cloudinary.com/dxge5r7h2/image/upload/v1578589379/final-project/logo/favicon_xmo9ml.jpg style=height:192px;object-fit:cover></a></table><table><tr style="border-bottom:1px solid #ccc"><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#000">Thank you for registering in our store.<a href="${url}">Confirm your account</a></table><table><tr><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#595959">Have questions? You will receive the most prompt response by replying to this email.</table>`
+
+
+    await sendEmail(email, `Hi ${firstName}!`, letter);
     res.status(200).json({message:"Checked your email"});
   }catch (e) {
     res.status(400).json({
@@ -478,12 +482,15 @@ exports.forgotPassword = async (req, res) => {
       }
     );
 
-    let url = `${process.env.domen_client}/api/passwordrecovery/${encodeURI(tokenChangePassword)}`;
+    let url = `${process.env.domen_client}/passwordrecovery/${encodeURI(tokenChangePassword)}`;
+
+
+    const letter =`<!DOCTYPE html><html lang=en><title>Crossy</title><style>table{border-collapse:collapse;width:100%}td,tr{text-align:center}</style><body style=font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif><table><tr><td><a href="${process.env.domen_client}"><img alt="Not Found"src=https://res.cloudinary.com/dxge5r7h2/image/upload/v1578589379/final-project/logo/favicon_xmo9ml.jpg style=height:192px;object-fit:cover></a></table><table><tr style="border-bottom:1px solid #ccc"><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#000">Password change request. To change the password, follow the link.<a href="${url}">Confirm your account</a></table><table><tr><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#595959">Have questions? You will receive the most prompt response by replying to this email.</table>`
 
     await sendEmail(
       customer.email,
       `Hi ${customer.firstName}! Change password`,
-      `<a href=${url}>Confirm</a>`
+      letter
     );
 
     return res.status(200).json({
@@ -507,7 +514,7 @@ exports.confirmForgotCustomer = async (req, res) => {
       res.status(301).redirect(process.env.domen_client);
     }
 
-    res.status(301).redirect(`${process.env.domen_client}/api/passwordrecovery/${token}`);
+    res.status(301).redirect(`${process.env.domen_client}/passwordrecovery/${token}`);
   } catch (e) {
     res.status(301).redirect(process.env.domen_client);
   }

@@ -8,7 +8,7 @@ import './FilterModel.scss';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import { bindActionCreators } from 'redux';
-import * as ProductAction from '../../../actions/product';
+import * as ProductAction from '../../../actions/productAction';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import * as authorizationAction from '../../../actions/authorizationAction';

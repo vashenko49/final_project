@@ -10,7 +10,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import { bindActionCreators } from 'redux';
-import * as ProductAction from '../../../actions/product';
+import * as ProductAction from '../../../actions/productAction';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';

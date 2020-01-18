@@ -11,7 +11,7 @@ import ShortDescription from './ShortDescription/ShortDescription';
 import LastViewProduct from './LastViewProduct/LastViewProduct';
 import ReviewProduct from './ReviewProduct/ReviewProduct';
 import { bindActionCreators } from 'redux';
-import * as ProductAction from '../../actions/product';
+import * as ProductAction from '../../actions/productAction';
 import { connect } from 'react-redux';
 
 class ProductPage extends Component {

@@ -9,8 +9,6 @@ class SelectedImg extends Component {
   render() {
     const { className } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
-    const notFound =
-      'final-project/products/product_without_photo_sample/product_without_phot_ldw3px';
     const { selectedIndexImg, massImg } = this.props.product.product;
     return (
       <div
@@ -18,18 +16,14 @@ class SelectedImg extends Component {
           _.isString(className) && className.length > 0 ? className : ''
         }`}
       >
-        {!cloudinary_cloud_name ? (
+        {!cloudinary_cloud_name.length > 0 || !_.isArray(massImg) || !massImg.length > 0 ? (
           <CircularProgress />
         ) : (
           <img
             className="img-selected"
             src={new cloudinary.Cloudinary({
               cloud_name: cloudinary_cloud_name
-            }).url(
-              massImg.length > 0 && selectedIndexImg <= massImg.length
-                ? massImg[selectedIndexImg]
-                : notFound
-            )}
+            }).url(massImg[selectedIndexImg])}
             alt={'not found'}
           />
         )}

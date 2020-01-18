@@ -4,7 +4,7 @@ import cloudinary from 'cloudinary-core';
 import _ from 'lodash';
 import './ImageCarouselProductItem.scss';
 import { bindActionCreators } from 'redux';
-import * as ProductAction from '../../../../actions/product';
+import * as ProductAction from '../../../../actions/productAction';
 
 class ImageCarouselProductItem extends Component {
   changeImg = e => {
