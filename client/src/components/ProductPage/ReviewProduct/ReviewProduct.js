@@ -11,11 +11,42 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import { bindActionCreators } from 'redux';
 import * as ProductAction from '../../../actions/product';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import AddCommentIcon from '@material-ui/icons/AddComment';
+import Box from '@material-ui/core/Box';
 
 class ReviewProduct extends Component {
-  createNewComment = () => {
-    const { selectFilter } = this.props;
-    const { productId } = this.props.product.product;
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpenWindowAddComment: false,
+      score: 5,
+      text: '',
+      isCreated: false
+    };
+  }
+
+  setRating = (event, newValue) => {
+    this.setState({ score: newValue });
+  };
+
+  triggerCreateCommentWindow = () => {
+    this.setState({ isOpenWindowAddComment: !this.state.isOpenWindowAddComment, isCreated: false });
+  };
+
+  createNewComment = event => {
+    event.preventDefault();
+    const { score, text } = this.state;
+    const { createComment } = this.props;
+    const { productId, comments } = this.props.product.product;
+    this.setState({ isCreated: true, text: '' });
+    createComment(productId, score, text, comments);
+  };
+
+  onChangeComment = event => {
+    this.setState({ [`${event.target.name}`]: event.target.value });
   };
 
   getSimpleDate = date => {
@@ -23,7 +54,14 @@ class ReviewProduct extends Component {
   };
 
   render() {
-    const { getSimpleDate } = this;
+    const {
+      getSimpleDate,
+      createNewComment,
+      triggerCreateCommentWindow,
+      setRating,
+      onChangeComment
+    } = this;
+    const { isOpenWindowAddComment, score, text, isCreated } = this.state;
     const { className } = this.props;
     const { rating, comments } = this.props.product.product;
     return (
@@ -32,18 +70,20 @@ class ReviewProduct extends Component {
           _.isString(className) && className.length > 0 ? className : ''
         }`}
       >
+        <Button
+          onClick={triggerCreateCommentWindow}
+          className={'subfilter-button-selected button-add-review'}
+          variant="contained"
+        >
+          <RateReviewIcon /> ADD A REVIEW
+        </Button>
         <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary>
-            <div className="title-add-review">
-              <div className="rating-title-container">
-                <Typography variant={'h2'}>
-                  <span className="rating-title">{`Reviews   ${rating}/`}</span>5
-                </Typography>
-                <Rating className="rating-product" size={'large'} value={rating} readOnly />
-              </div>
-              <Button className={'subfilter-button-selected button-add-review'} variant="contained">
-                <RateReviewIcon /> ADD A REVIEW
-              </Button>
+            <div className="rating-title-container">
+              <Typography variant={'h2'}>
+                <span className="rating-title">{`Reviews   ${parseInt(rating)}/`}</span>5
+              </Typography>
+              <Rating className="rating-product" size={'large'} value={rating} readOnly />
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
@@ -72,6 +112,45 @@ class ReviewProduct extends Component {
             </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
+        <Dialog
+          open={isOpenWindowAddComment}
+          onClose={triggerCreateCommentWindow}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogContent>
+            {isCreated ? (
+              <Typography variant={'h6'}>Your comment has been created</Typography>
+            ) : (
+              <>
+                <Typography variant={'h6'}>Enter your comment</Typography>
+                <ValidatorForm
+                  className="form-window-checkout"
+                  ref="form"
+                  onSubmit={createNewComment}
+                >
+                  <Rating name="simple-controlled" value={score} onChange={setRating} />
+                  <TextValidator
+                    margin="normal"
+                    label="Your comments"
+                    onChange={onChangeComment}
+                    name="text"
+                    fullWidth
+                    multiline={true}
+                    value={text}
+                    variant="outlined"
+                    validators={['required']}
+                    errorMessages={['This field is required']}
+                  />
+                  <Box mt={1} display={'flex'} justifyContent="flex-end">
+                    <Button type="submit" className="subfilter-button-selected" variant="contained">
+                      <AddCommentIcon /> Add comment
+                    </Button>
+                  </Box>
+                </ValidatorForm>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
@@ -82,9 +161,10 @@ function mapStateToProps(state) {
     product: state.product
   };
 }
+
 function mapDispatchToProps(dispatch) {
   return {
-    selectFilter: bindActionCreators(ProductAction.createComment, dispatch)
+    createComment: bindActionCreators(ProductAction.createComment, dispatch)
   };
 }
 

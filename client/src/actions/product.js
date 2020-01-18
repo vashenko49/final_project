@@ -329,7 +329,7 @@ export const removeFromFavourites = productId => async dispatch => {
 };
 
 export const createComment = (productId, score, text, comments) => async dispatch => {
-  CommentAPI.createComment(productId, score.text)
+  CommentAPI.createComment(productId, score, text)
     .then(res => {
       dispatch({
         type: ADD_NEW_COMMENT,

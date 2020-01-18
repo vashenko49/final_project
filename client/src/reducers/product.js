@@ -33,7 +33,8 @@ const initialState = {
     selectedIndexImg: 0,
     filtersByUser: [],
     selectedFilter: [],
-    isFavourites: false
+    isFavourites: false,
+    htmlPage: ''
   },
   loading: false,
   error: ''

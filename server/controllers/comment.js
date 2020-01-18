@@ -35,6 +35,7 @@ exports.createNewComment = async (req, res) => {
       });
     }
 
+
     let newComment = await CommentSchema({
       authorId: authorId,
       productID: productID,
@@ -43,6 +44,8 @@ exports.createNewComment = async (req, res) => {
     });
 
     newComment = await newComment.save();
+    product.comments.push(newComment._id);
+    await product.save();
     const com = await CommentSchema.findById(newComment._id)
       .populate('authorId');
     res.status(200).json(com);

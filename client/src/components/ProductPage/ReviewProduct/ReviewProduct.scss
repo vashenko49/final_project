@@ -1,9 +1,12 @@
 .review-container{
+  display: flex;
+  flex-direction: column;
   width: 100%;
   margin-bottom: 10px;
 }
 .rating-title-container, .title-comment{
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
 }
 .rating-title{
@@ -23,7 +26,8 @@
   margin-bottom: 15px;
 }
 .button-add-review{
-  padding: 0 52px !important;
+  margin-bottom: 10px !important;
+  padding: 10px 52px !important;
 }
 .comment-container{
   margin-bottom: 25px;

@@ -683,6 +683,8 @@ exports.getProductById = async (req, res, next) => {
       });
     }
 
+    product.comments = _.reverse(product.comments);
+
     res.status(200).json(product);
   } catch (e) {
     res.status(500).json({
