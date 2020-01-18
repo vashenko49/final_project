@@ -21,9 +21,7 @@ export default function SideBar(props) {
   };
 
   const sideList = side => (
-    <div
-      role="presentation"
-    >
+    <div role="presentation">
       {props.rootCategories
         .filter(item => item.enabled === true)
         .map(elem => (
@@ -35,8 +33,7 @@ export default function SideBar(props) {
           />
         ))}
       <List onClick={toggleDrawer('left', false)} className="sidebar-user-menu">
-        <UserMenu
-        />
+        <UserMenu />
       </List>
     </div>
   );

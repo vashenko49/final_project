@@ -4,6 +4,7 @@ import * as partnerAction from '../../actions/partnerAction';
 import { connect } from 'react-redux';
 import PartnersItem from './PartnersItem';
 import './Partners.scss';
+import { Container } from '@material-ui/core';
 
 class Partners extends Component {
   componentDidMount() {
@@ -14,11 +15,13 @@ class Partners extends Component {
     const { partners } = this.props;
 
     return (
-      <section className="partners">
-        {partners.map((item, index) => (
-          <PartnersItem item={item} key={index} />
-        ))}
-      </section>
+      <Container>
+        <section className="partners">
+          {partners.map((item, index) => (
+            <PartnersItem item={item} key={index} />
+          ))}
+        </section>
+      </Container>
     );
   }
 }

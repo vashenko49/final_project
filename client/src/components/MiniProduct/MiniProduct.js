@@ -85,16 +85,16 @@ class MiniProduct extends Component {
             })}
           </Box>
         )}
-        <CardMedia
-          component="img"
-          src={new cloudinary.Cloudinary({
-            cloud_name: cloudinary_cloud_name
-          }).url(currentImg)}
-          height="200"
-          className="CardMedia"
-        />
-        <CardActionArea>
-          <Link to={`/product/${_id}`}>
+        <Link to={`/product/${_id}`}>
+          <CardMedia
+            component="img"
+            src={new cloudinary.Cloudinary({
+              cloud_name: cloudinary_cloud_name
+            }).url(currentImg)}
+            height="200"
+            className="CardMedia"
+          />
+          <CardActionArea>
             <CardContent>
               <Box display="flex" flexDirection="column" justifyContent="space-between">
                 <Typography
@@ -111,8 +111,8 @@ class MiniProduct extends Component {
                 </Typography>
               </Box>
             </CardContent>
-          </Link>
-        </CardActionArea>
+          </CardActionArea>
+        </Link>
       </Card>
     );
   }

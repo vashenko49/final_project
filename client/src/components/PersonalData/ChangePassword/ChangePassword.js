@@ -13,6 +13,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Typography } from '@material-ui/core';
 
 import './ChangePassword.scss';
+import Box from '@material-ui/core/Box';
 
 class ChangePassword extends Component {
   constructor(props) {
@@ -199,12 +200,15 @@ class ChangePassword extends Component {
           />
         </ValidatorForm>
         {!enabled && (
-          <div className="container-active-account">
+          <Box mt={1}>
             {_.isString(response) && response.length > 0 && <Typography>{response}</Typography>}
-            <Button onClick={activeAccount} variant="contained" color="primary">
-              Active account
-            </Button>
-          </div>
+            <Typography variant={'h6'}>Your account is nor activate</Typography>
+            <div className="container-active-account">
+              <Button onClick={activeAccount} variant="contained" color="primary">
+                Active account
+              </Button>
+            </div>
+          </Box>
         )}
       </div>
     );

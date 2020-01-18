@@ -13,23 +13,24 @@ import Badge from '@material-ui/core/Badge';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import * as AuthorizationActions from '../../../actions/authorizationAction';
+import Avatar from '@material-ui/core/Avatar';
 
 class UserMenu extends Component {
   render() {
     const { signOut } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
     const { isAuthorization, isAdmin, cart } = this.props.authorization;
-    const { avatarUrl } = this.props.authorization.personalInfo;
+    const { avatarUrl, firstName } = this.props.authorization.personalInfo;
 
     return (
       <div>
         <Box className="header-navbar-buttons">
           {isAuthorization ? (
-            <Box>
+            <Box display="flex" alignItems="center">
               <Link to={'/personaldata'}>
-                <img
+                <Avatar
                   className="avatar-user"
-                  alt="Remy Sharp"
+                  alt={firstName}
                   src={new cloudinary.Cloudinary({
                     cloud_name: cloudinary_cloud_name
                   }).url(avatarUrl)}

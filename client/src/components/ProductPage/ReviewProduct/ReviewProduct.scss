@@ -1,0 +1,42 @@
+.review-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.rating-title-container, .title-comment{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.rating-title{
+  color: #33333A !important;
+  font-weight: 400 !important;
+}
+.MuiRating-root{
+  color: #33333A !important;
+}
+.rating-product{
+  margin-left: 16px !important;
+}
+.title-add-review{
+  display: flex ;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 15px;
+}
+.button-add-review{
+  margin-bottom: 10px !important;
+  padding: 10px 52px !important;
+}
+.comment-container{
+  margin-bottom: 25px;
+  padding: 10px 15px;
+  background-color: #E6E6E6 !important;
+}
+
+@media only screen and (max-width : 700px) {
+  .rating-product {
+    margin-left: 0 !important;
+  }
+}

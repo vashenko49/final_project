@@ -668,13 +668,22 @@ exports.getProductById = async (req, res, next) => {
         select: '_id enabled type serviceName'
       })
       .populate('filterImg._idSubFilters')
-      .populate('comments');
+      .populate({
+        path:'comments',
+        populate: {
+          path: "authorId",
+          select: 'firstName lastName'
+        }
+      })
+
 
     if (!product) {
       return res.status(400).json({
         message: `Product with id ${id} is not found`
       });
     }
+
+    product.comments = _.reverse(product.comments);
 
     res.status(200).json(product);
   } catch (e) {

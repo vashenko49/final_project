@@ -14,7 +14,6 @@ app.use(cors());
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
 //connect data base
 getConfig()
   .then(() => {
@@ -36,6 +35,7 @@ app.use(formData.parse());
 app.use(bodyParser.json());
 
 
+
 // Use Routes
 app.use("/api/customers", require("./routes/customers"));
 app.use("/api/configs", require("./routes/configs"));
@@ -53,6 +53,7 @@ app.use("/api/slider", require("./routes/slides"));
 app.use("/api/partners", require("./routes/partner"));
 app.use("/api/orders", require("./routes/order"));
 app.use("/api/favourites", require("./routes/favourites"));
+
 
 app.use(express.static("../client/build"));
 app.get("*", (req, res) => {

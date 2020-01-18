@@ -4,7 +4,7 @@ import cloudinary from 'cloudinary-core';
 import { connect } from 'react-redux';
 import parse from 'html-react-parser';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
+import StyledLink from '../common/styled/StyledLink';
 
 class ImageCarouselItem extends Component {
   render() {
@@ -27,7 +27,7 @@ class ImageCarouselItem extends Component {
         ) : (
           <div className="caption">
             <h2 className="caption__text">{title}</h2>
-            <Link
+            <StyledLink
               to={
                 _.isObject(childCatalogs)
                   ? `/catalog/${childCatalogs._id}`
@@ -35,7 +35,7 @@ class ImageCarouselItem extends Component {
               }
             >
               <Button className="caption__btn">Show more</Button>
-            </Link>
+            </StyledLink>
           </div>
         )}
       </Paper>

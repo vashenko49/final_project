@@ -10,6 +10,7 @@ import AuthorizationAPI from '../../../services/AuthorizationAPI';
 import Grid from '@material-ui/core/Grid';
 import '../Authorization.scss';
 import Typography from '@material-ui/core/Typography';
+import { Container } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
@@ -95,77 +96,85 @@ class PasswordRecovery extends Component {
     const { handleSubmit, togglePasswordMask, handleChange, toggleRepeatPasswordMask } = this;
     return (
       <MuiThemeProvider theme={theme}>
-        <Grid container direction={'column'} justify={'flex-start'} alignItems="stretch">
-          <Grid>
-            <h2 className="title-login-singup">Reset Password</h2>
+        <Container>
+          <Grid container direction={'column'} justify={'flex-start'} alignItems="stretch">
+            <Grid>
+              <h2 className="title-login-singup">Reset Password</h2>
+            </Grid>
+            <Box p={3}>
+              <ValidatorForm
+                ref="form"
+                onSubmit={handleSubmit}
+                onError={errors => console.log(errors)}
+              >
+                {response && (
+                  <Grid item xs>
+                    <Typography align={'center'} variant="body2">
+                      {response}
+                    </Typography>
+                  </Grid>
+                )}
+                <TextValidator
+                  type={passwordIsMasked ? 'password' : 'text'}
+                  margin="normal"
+                  label="Password"
+                  onChange={handleChange}
+                  name="password"
+                  fullWidth
+                  variant="outlined"
+                  value={formData.password}
+                  validators={['required']}
+                  errorMessages={['This field is required']}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment
+                        position="end"
+                        onClick={togglePasswordMask}
+                        className="password-eyes"
+                      >
+                        {passwordIsMasked ? <RemoveRedEye /> : <VisibilityOff />}
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <TextValidator
+                  type={repeatPasswordIsMasked ? 'password' : 'text'}
+                  margin="normal"
+                  label="Repeat password"
+                  onChange={handleChange}
+                  name="repeatPassword"
+                  fullWidth
+                  variant="outlined"
+                  validators={['isPasswordMatch', 'required']}
+                  errorMessages={['Password mismatch', 'This field is required']}
+                  value={formData.repeatPassword}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment
+                        position="end"
+                        onClick={toggleRepeatPasswordMask}
+                        className="password-eyes"
+                      >
+                        {repeatPasswordIsMasked ? <RemoveRedEye /> : <VisibilityOff />}
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Box mt={1}>
+                  <Button
+                    disabled={send}
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                  >
+                    Restore
+                  </Button>
+                </Box>
+              </ValidatorForm>
+            </Box>
           </Grid>
-          <Box p={3}>
-            <ValidatorForm
-              ref="form"
-              onSubmit={handleSubmit}
-              onError={errors => console.log(errors)}
-            >
-              {response && (
-                <Grid item xs>
-                  <Typography align={'center'} variant="body2">
-                    {response}
-                  </Typography>
-                </Grid>
-              )}
-              <TextValidator
-                type={passwordIsMasked ? 'password' : 'text'}
-                margin="normal"
-                label="Password"
-                onChange={handleChange}
-                name="password"
-                fullWidth
-                variant="outlined"
-                value={formData.password}
-                validators={['required']}
-                errorMessages={['This field is required']}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment
-                      position="end"
-                      onClick={togglePasswordMask}
-                      className="password-eyes"
-                    >
-                      {passwordIsMasked ? <RemoveRedEye /> : <VisibilityOff />}
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <TextValidator
-                type={repeatPasswordIsMasked ? 'password' : 'text'}
-                margin="normal"
-                label="Repeat password"
-                onChange={handleChange}
-                name="repeatPassword"
-                fullWidth
-                variant="outlined"
-                validators={['isPasswordMatch', 'required']}
-                errorMessages={['Password mismatch', 'This field is required']}
-                value={formData.repeatPassword}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment
-                      position="end"
-                      onClick={toggleRepeatPasswordMask}
-                      className="password-eyes"
-                    >
-                      {repeatPasswordIsMasked ? <RemoveRedEye /> : <VisibilityOff />}
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <Box mt={1}>
-                <Button disabled={send} type="submit" fullWidth variant="contained" color="primary">
-                  Restore
-                </Button>
-              </Box>
-            </ValidatorForm>
-          </Box>
-        </Grid>
+        </Container>
       </MuiThemeProvider>
     );
   }

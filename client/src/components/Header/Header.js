@@ -24,7 +24,6 @@ import UserMenu from './UserMenu/UserMenu';
 
 import './Header.scss';
 
-
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -68,10 +67,11 @@ class Header extends Component {
       } else {
         this.setState({
           sendDataStatus: 'error',
-          sendDataMessage: this.props.foundProductsError === ''
-            ? 'Такого товара в магазине нет'
-            : this.props.foundProductsError
-        })
+          sendDataMessage:
+            this.props.foundProductsError === ''
+              ? 'Такого товара в магазине нет'
+              : this.props.foundProductsError
+        });
       }
     }
   }
@@ -163,18 +163,16 @@ class Header extends Component {
               horizontal: 'center'
             }}
           >
-            {
-              foundProducts.map(elem => (
-                <Typography
-                  className="search-popup-item"
-                  key={elem._id}
-                  id={elem._id}
-                  onClick={this.onSearchResultsClick}
-                >
-                  {elem.nameProduct}
-                </Typography>
-              ))
-            }
+            {foundProducts.map(elem => (
+              <Typography
+                className="search-popup-item"
+                key={elem._id}
+                id={elem._id}
+                onClick={this.onSearchResultsClick}
+              >
+                {elem.nameProduct}
+              </Typography>
+            ))}
           </Popover>
           <SnackBars
             handleClose={this.handleCloseSnackBars}

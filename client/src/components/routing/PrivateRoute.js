@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import AccessDenied from '../page/AccessDenied/AccessDenied';
+import AccessDenied from '../AccessDenied/AccessDenied';
 
 class PrivateRoute extends Component {
   render() {

@@ -1,4 +1,0 @@
-export const GET_COMMENTS = 'GET_COMMENTS';
-export const ADD_COMMENT = 'ADD_COMMENTS';
-export const UPDATE_COMMENT = 'UPDATE_COMMENT';
-export const COMMENT_ERROR = 'COMMENT_ERROR';

@@ -21,9 +21,6 @@ const {
 router.post(
   '/', [
     passport.authenticate("jwt", {session: false}),
-    check('authorId', 'authorId is require')
-      .not()
-      .isEmpty(),
     check('productID', 'productID is require')
       .not()
       .isEmpty(),
