@@ -37,6 +37,7 @@ class ProductPage extends Component {
   }
 
   render() {
+    const { id } = this.state;
     return (
       <Container>
         <div className="product-page-container">
@@ -47,7 +48,7 @@ class ProductPage extends Component {
           <FilterModel className="FilterModel" />
           <ImageCarouselProduct className="ImageCarouselProduct" />
           <DetailInfoProduct className="DetailInfoProduct" />
-          <LastViewProduct className="LastViewProduct" />
+          <LastViewProduct id={id} className="LastViewProduct" />
           <ReviewProduct className="ReviewProduct" />
         </div>
       </Container>

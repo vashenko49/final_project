@@ -56,7 +56,7 @@ class CatalogOnMainPage extends Component {
                   container
                   spacing={3}
                   direction="row"
-                  justify="space-between"
+                  justify="flex-start"
                   alignItems="center"
                 >
                   {products.map(product => {

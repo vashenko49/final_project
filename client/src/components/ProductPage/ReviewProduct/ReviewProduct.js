@@ -64,26 +64,38 @@ class ReviewProduct extends Component {
     const { isOpenWindowAddComment, score, text, isCreated } = this.state;
     const { className } = this.props;
     const { rating, comments } = this.props.product.product;
+    const { isAuthorization } = this.props.authorization;
     return (
       <div
         className={`review-container ${
           _.isString(className) && className.length > 0 ? className : ''
         }`}
       >
-        <Button
-          onClick={triggerCreateCommentWindow}
-          className={'subfilter-button-selected button-add-review'}
-          variant="contained"
-        >
-          <RateReviewIcon /> ADD A REVIEW
-        </Button>
+        {isAuthorization && (
+          <Button
+            onClick={triggerCreateCommentWindow}
+            className={'subfilter-button-selected button-add-review'}
+            variant="contained"
+          >
+            <RateReviewIcon /> ADD A REVIEW
+          </Button>
+        )}
+
         <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary>
             <div className="rating-title-container">
               <Typography variant={'h2'}>
-                <span className="rating-title">{`Reviews   ${parseInt(rating)}/`}</span>5
+                <span className="rating-title">{`Reviews   ${
+                  !_.isNaN(parseInt(rating)) ? parseInt(rating) : 5
+                }/`}</span>
+                5
               </Typography>
-              <Rating className="rating-product" size={'large'} value={rating} readOnly />
+              <Rating
+                className="rating-product"
+                size={'large'}
+                value={!_.isNaN(parseInt(rating)) ? parseInt(rating) : 5}
+                readOnly
+              />
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
@@ -158,7 +170,8 @@ class ReviewProduct extends Component {
 
 function mapStateToProps(state) {
   return {
-    product: state.product
+    product: state.product,
+    authorization: state.authorization
   };
 }
 

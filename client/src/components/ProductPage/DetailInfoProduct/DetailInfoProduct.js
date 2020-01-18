@@ -20,7 +20,6 @@ class DetailInfoProduct extends Component {
   render() {
     const { className } = this.props;
     const { filters, htmlPage } = this.props.product.product;
-    console.log(filters);
     return (
       <div
         className={`detail-info-product ${
