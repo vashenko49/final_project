@@ -47,7 +47,9 @@ export default class NavBarItem extends Component {
             .map((child, index) =>
               item._id === child.parentId ? (
                 <MenuItem key={index} onClick={this.handleRequestClose}>
-                  <Link className="header-navbar-links" to={{ pathname: `/catalog/${child._id}` }}>{child.name}</Link>
+                  <Link className="header-navbar-links" to={{ pathname: `/catalog/${child._id}` }}>
+                    {child.name}
+                  </Link>
                 </MenuItem>
               ) : null
             )}

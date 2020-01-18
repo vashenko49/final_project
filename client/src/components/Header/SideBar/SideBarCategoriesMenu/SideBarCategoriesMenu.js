@@ -76,7 +76,13 @@ export default function SideBarCategoriesMenu(props) {
               .filter(elem => elem.parentId === props.rootCategories._id)
               .map(elem => (
                 <ListItem key={elem.name} className="sidebar-categories-link">
-                  <Link className="sidebar-categories-link-item" onClick={props.toggleDrawer('left', false)} to={{ pathname: `/catalog/${elem._id}` }}>{elem.name}</Link>
+                  <Link
+                    className="sidebar-categories-link-item"
+                    onClick={props.toggleDrawer('left', false)}
+                    to={{ pathname: `/catalog/${elem._id}` }}
+                  >
+                    {elem.name}
+                  </Link>
                 </ListItem>
               ))}
           </List>
