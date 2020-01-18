@@ -84,7 +84,7 @@ class ReviewProduct extends Component {
         <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary>
             <div className="rating-title-container">
-              <Typography variant={'h2'}>
+              <Typography variant={'h4'}>
                 <span className="rating-title">{`Reviews   ${
                   !_.isNaN(parseInt(rating)) ? parseInt(rating) : 5
                 }/`}</span>

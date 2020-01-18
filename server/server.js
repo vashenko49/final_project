@@ -54,6 +54,7 @@ app.use("/api/partners", require("./routes/partner"));
 app.use("/api/orders", require("./routes/order"));
 app.use("/api/favourites", require("./routes/favourites"));
 
+
 app.use(express.static("../client/build"));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../", "client/build/index.html"));

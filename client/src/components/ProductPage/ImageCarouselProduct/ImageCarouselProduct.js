@@ -36,6 +36,8 @@ class ImageCarouselProduct extends Component {
             leftChevron={<ArrowBackIosIcon fontSize={'large'} />}
             chevronWidth={1}
             outsideChevron
+            infiniteLoop={true}
+            alwaysShowChevrons={true}
             children={massImg.map((item, index) => (
               <ImageCarouselProductItem
                 className="image-carousel-image"
