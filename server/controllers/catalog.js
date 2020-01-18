@@ -574,7 +574,6 @@ exports.createRootChildCatalogAndAddFilterId = async (req, res) => {
     const {nameRootCatalog, childCatalogs: newchildCatalogs} = req.body;
 
     let catalog = await rootCatalog.findOne({name: nameRootCatalog});
-
     if (catalog) {
       return res.status(400).json({
         message: `Root catalog ${catalog.name} already exists`
