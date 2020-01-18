@@ -1,7 +1,7 @@
 .header {
   display: flex;
   flex-direction: row;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-evenly;
   margin: 0 10%;
   padding: 20px 0;
@@ -30,8 +30,9 @@
     padding: 8px 13px;
     background: #E6E6E6;
   }
+
   .search-icon {
-    vertical-align: middle;
+    margin-right: 10px;
   }
 
   &-user-menu {
@@ -43,8 +44,13 @@
   }
 }
 
+#header-search-input {
+  align-items: center;
+}
+
 .search-popup-item {
   padding: 5px;
+  cursor: pointer;
 }
 
 .search-popup-item:hover {
