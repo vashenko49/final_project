@@ -247,7 +247,7 @@ class CatalogPage extends Component {
               );
             } else {
               return (
-                <Link color="inherit" to="/">
+                <Link key={index} color="inherit" to="/">
                   {element}
                 </Link>
               );

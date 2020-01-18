@@ -18,7 +18,6 @@ class ImageCarouselProduct extends Component {
     const { className } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
     const { massImg } = this.props.product.product;
-    console.log('--->');
     return (
       <div
         className={`image-carousel-product ${
@@ -33,8 +32,8 @@ class ImageCarouselProduct extends Component {
             numberOfCards={4}
             activeItemIndex={this.state.activeItemIndex}
             requestToChangeActive={this.onChange}
-            rightChevron={<ArrowBackIosIcon fontSize={'large'} />}
-            leftChevron={<ArrowForwardIosIcon fontSize={'large'} />}
+            rightChevron={<ArrowForwardIosIcon fontSize={'large'} />}
+            leftChevron={<ArrowBackIosIcon fontSize={'large'} />}
             chevronWidth={1}
             outsideChevron
             children={massImg.map((item, index) => (

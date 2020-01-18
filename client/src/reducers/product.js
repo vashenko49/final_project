@@ -4,7 +4,8 @@ import {
   REQUEST_PRODUCT,
   GET_COMMENT,
   COMMENT_ERROR,
-  EDIT_SELECTED_IMG
+  EDIT_SELECTED_IMG,
+  SELECT_FILTER
 } from '../constants/product';
 
 const initialState = {
@@ -24,7 +25,11 @@ const initialState = {
     rating: 5,
     price: '',
     massImg: [],
-    selectedIndexImg: 0
+    pretenderModel: '',
+    fitModelCount: 0,
+    selectedIndexImg: 0,
+    filtersByUser: [],
+    selectedFilter: []
   },
   loading: false,
   error: ''
@@ -75,6 +80,19 @@ export default function(state = initialState, action) {
         product: {
           ...state.product,
           selectedIndexImg: payload.selectedIndexImg
+        }
+      };
+    case SELECT_FILTER:
+      return {
+        ...state,
+        product: {
+          ...state.product,
+          massImg: payload.massImg,
+          filtersByUser: payload.filtersByUser,
+          selectedFilter: payload.selectedFilter,
+          selectedIndexImg: 0,
+          fitModelCount: payload.fitModelCount,
+          pretenderModel: payload.pretenderModel
         }
       };
     default:
