@@ -35,15 +35,17 @@ exports.createNewComment = async (req, res) => {
       });
     }
 
-    const newComment = await CommentSchema({
+    let newComment = await CommentSchema({
       authorId: authorId,
       productID: productID,
       score: score,
       text: text
     });
 
-    await newComment.save();
-    res.status(200).json(newComment);
+    newComment = await newComment.save();
+    const com = await CommentSchema.findById(newComment._id)
+      .populate('authorId');
+    res.status(200).json(com);
   } catch (e) {
     res.status(500).json({
       message: `Server error ${e.message}`

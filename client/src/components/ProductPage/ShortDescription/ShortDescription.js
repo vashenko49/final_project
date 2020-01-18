@@ -9,7 +9,7 @@ class ShortDescription extends Component {
     const { className } = this.props;
     return (
       <div className={`${_.isString(className) && className.length > 0 ? className : ''}`}>
-        <Typography variant={'body2'}>{description}</Typography>
+        <Typography variant={'subtitle1'}>{description}</Typography>
       </div>
     );
   }

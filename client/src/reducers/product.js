@@ -6,7 +6,8 @@ import {
   COMMENT_ERROR,
   EDIT_SELECTED_IMG,
   SELECT_FILTER,
-  IS_PRODUCT_FAVOURITE
+  IS_PRODUCT_FAVOURITE,
+  ADD_NEW_COMMENT
 } from '../constants/product';
 
 const initialState = {
@@ -105,6 +106,14 @@ export default function(state = initialState, action) {
           fitModelCount: payload.fitModelCount,
           pretenderModel: payload.pretenderModel,
           price: payload.price
+        }
+      };
+    case ADD_NEW_COMMENT:
+      return {
+        ...state,
+        product: {
+          ...state.product,
+          comments: payload.comments
         }
       };
     default:

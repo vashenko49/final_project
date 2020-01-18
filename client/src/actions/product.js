@@ -6,11 +6,13 @@ import {
   GET_COMMENT,
   EDIT_SELECTED_IMG,
   SELECT_FILTER,
-  IS_PRODUCT_FAVOURITE
+  IS_PRODUCT_FAVOURITE,
+  ADD_NEW_COMMENT
 } from '../constants/product';
 import ProductAPI from '../services/ProductAPI';
 import _ from 'lodash';
 import FavouritesAPI from '../services/FavouritesAPI';
+import CommentAPI from '../services/CommentAPI';
 
 export const getCurrentProduct = productId => async dispatch => {
   try {
@@ -324,4 +326,24 @@ export const removeFromFavourites = productId => async dispatch => {
       }
     });
   });
+};
+
+export const createComment = (productId, score, text, comments) => async dispatch => {
+  CommentAPI.createComment(productId, score.text)
+    .then(res => {
+      dispatch({
+        type: ADD_NEW_COMMENT,
+        payload: {
+          comments: [res, ...comments]
+        }
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: ADD_NEW_COMMENT,
+        payload: {
+          comments: comments
+        }
+      });
+    });
 };

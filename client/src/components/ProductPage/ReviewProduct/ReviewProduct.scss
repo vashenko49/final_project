@@ -1,0 +1,32 @@
+.review-container{
+  width: 100%;
+  margin-bottom: 10px;
+}
+.rating-title-container, .title-comment{
+  display: flex;
+  align-items: baseline;
+}
+.rating-title{
+  color: #33333A !important;
+  font-weight: 400 !important;
+}
+.MuiRating-root{
+  color: #33333A !important;
+}
+.rating-product{
+  margin-left: 16px !important;
+}
+.title-add-review{
+  display: flex ;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 15px;
+}
+.button-add-review{
+  padding: 0 52px !important;
+}
+.comment-container{
+  margin-bottom: 25px;
+  padding: 10px 15px;
+  background-color: #E6E6E6 !important;
+}
