@@ -26,12 +26,14 @@ class ProductPage extends Component {
     const { id } = this.state;
     this.props.getCurrentProduct(id);
     this.props.getMeanRatingProductByProductId(id);
+    this.props.getIsFavourites(id);
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { id: newId } = this.props.match.params;
     this.setState({ id: newId });
     this.props.getCurrentProduct(newId);
     this.props.getMeanRatingProductByProductId(newId);
+    this.props.getIsFavourites(newId);
   }
 
   render() {
@@ -56,6 +58,7 @@ class ProductPage extends Component {
 function mapDispatchToProps(dispatch) {
   return {
     getCurrentProduct: bindActionCreators(ProductAction.getCurrentProduct, dispatch),
+    getIsFavourites: bindActionCreators(ProductAction.getIsFavourites, dispatch),
     getMeanRatingProductByProductId: bindActionCreators(
       ProductAction.getMeanRatingProductByProductId,
       dispatch

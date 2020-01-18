@@ -5,10 +5,12 @@ import {
   COMMENT_ERROR,
   GET_COMMENT,
   EDIT_SELECTED_IMG,
-  SELECT_FILTER
+  SELECT_FILTER,
+  IS_PRODUCT_FAVOURITE
 } from '../constants/product';
 import ProductAPI from '../services/ProductAPI';
 import _ from 'lodash';
+import FavouritesAPI from '../services/FavouritesAPI';
 
 export const getCurrentProduct = productId => async dispatch => {
   try {
@@ -69,9 +71,17 @@ export const getCurrentProduct = productId => async dispatch => {
       });
     });
 
+    const minPrice = _.minBy(model, function(o) {
+      return o.currentPrice;
+    }).currentPrice;
+    const maxPrice = _.maxBy(model, function(o) {
+      return o.currentPrice;
+    }).currentPrice;
+
     dispatch({
       type: GET_PRODUCT,
       payload: {
+        productId,
         enabled,
         description,
         comments,
@@ -85,15 +95,7 @@ export const getCurrentProduct = productId => async dispatch => {
         model,
         itemNo,
         htmlPage,
-        price: `${
-          _.minBy(model, function(o) {
-            return o.currentPrice;
-          }).currentPrice
-        } - ${
-          _.maxBy(model, function(o) {
-            return o.currentPrice;
-          }).currentPrice
-        }`,
+        price: `${maxPrice === minPrice ? minPrice : `${minPrice}-${maxPrice}`}`,
         selectedIndexImg: 0,
         massImg,
         filtersByUser
@@ -217,6 +219,13 @@ export const selectFilter = (
     });
     newMassImg.push(...productUrlImg);
 
+    const minPrice = _.minBy(model, function(o) {
+      return o.currentPrice;
+    }).currentPrice;
+    const maxPrice = _.maxBy(model, function(o) {
+      return o.currentPrice;
+    }).currentPrice;
+
     dispatch({
       type: SELECT_FILTER,
       payload: {
@@ -224,7 +233,8 @@ export const selectFilter = (
         filtersByUser: filtersByUser,
         selectedFilter: selectedFilter,
         fitModelCount: model.length,
-        pretenderModel: model.length === 1 ? model[0].modelNo : ''
+        pretenderModel: model.length === 1 ? model[0] : {},
+        price: `${maxPrice === minPrice ? minPrice : `${minPrice}-${maxPrice}`}`
       }
     });
   } else {
@@ -253,6 +263,13 @@ export const selectFilter = (
     });
     newMassImg.push(...productUrlImg);
 
+    const minPrice = _.minBy(model, function(o) {
+      return o.currentPrice;
+    }).currentPrice;
+    const maxPrice = _.maxBy(model, function(o) {
+      return o.currentPrice;
+    }).currentPrice;
+
     dispatch({
       type: SELECT_FILTER,
       payload: {
@@ -260,8 +277,51 @@ export const selectFilter = (
         filtersByUser: filtersByUser,
         selectedFilter: [],
         fitModelCount: 0,
-        pretenderModel: ''
+        pretenderModel: {},
+        price: `${maxPrice === minPrice ? minPrice : `${minPrice}-${maxPrice}`}`
       }
     });
   }
+};
+
+export const getIsFavourites = productId => async dispatch => {
+  FavouritesAPI.productIsFavourites(productId)
+    .then(res => {
+      dispatch({
+        type: IS_PRODUCT_FAVOURITE,
+        payload: {
+          isFavourites: res.status
+        }
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: IS_PRODUCT_FAVOURITE,
+        payload: {
+          isFavourites: false
+        }
+      });
+    });
+};
+
+export const addToFavourites = productId => async dispatch => {
+  FavouritesAPI.addToFavourites(productId).finally(() => {
+    dispatch({
+      type: IS_PRODUCT_FAVOURITE,
+      payload: {
+        isFavourites: true
+      }
+    });
+  });
+};
+
+export const removeFromFavourites = productId => async dispatch => {
+  FavouritesAPI.removeFromFavourites(productId).finally(() => {
+    dispatch({
+      type: IS_PRODUCT_FAVOURITE,
+      payload: {
+        isFavourites: false
+      }
+    });
+  });
 };

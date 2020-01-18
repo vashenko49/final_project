@@ -5,11 +5,13 @@ import {
   GET_COMMENT,
   COMMENT_ERROR,
   EDIT_SELECTED_IMG,
-  SELECT_FILTER
+  SELECT_FILTER,
+  IS_PRODUCT_FAVOURITE
 } from '../constants/product';
 
 const initialState = {
   product: {
+    productId: '',
     enabled: false,
     description: '',
     comments: [],
@@ -20,7 +22,7 @@ const initialState = {
     nameRootCatalog: '',
     filters: [],
     filterImg: [],
-    model: [],
+    model: {},
     itemNo: [],
     rating: 5,
     price: '',
@@ -29,7 +31,8 @@ const initialState = {
     fitModelCount: 0,
     selectedIndexImg: 0,
     filtersByUser: [],
-    selectedFilter: []
+    selectedFilter: [],
+    isFavourites: false
   },
   loading: false,
   error: ''
@@ -74,6 +77,14 @@ export default function(state = initialState, action) {
           rating: 0
         }
       };
+    case IS_PRODUCT_FAVOURITE:
+      return {
+        ...state,
+        product: {
+          ...state.product,
+          isFavourites: payload.isFavourites
+        }
+      };
     case EDIT_SELECTED_IMG:
       return {
         ...state,
@@ -92,7 +103,8 @@ export default function(state = initialState, action) {
           selectedFilter: payload.selectedFilter,
           selectedIndexImg: 0,
           fitModelCount: payload.fitModelCount,
-          pretenderModel: payload.pretenderModel
+          pretenderModel: payload.pretenderModel,
+          price: payload.price
         }
       };
     default:

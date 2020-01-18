@@ -23,3 +23,44 @@
 .select-color-disable{
   cursor: not-allowed;
 }
+
+.form-window-checkout{
+  margin-bottom: 16px;
+}
+
+.addedToBag{
+  display: grid;
+  grid-gap:15px 17px;
+  grid-template-areas: "CloseIcon CloseIcon"
+  "Typography-add-to-bag Typography-add-to-bag"
+  "img-checkout-window information-about-product-window"
+  "buttons-about-product-window buttons-about-product-window";
+  grid-template-rows: auto;
+  grid-template-columns:  1fr 1fr;
+  justify-items: start;
+}
+
+.CloseIcon{
+  grid-area: CloseIcon;
+  justify-self: end;
+  cursor: pointer;
+}
+.Typography-add-to-bag{
+  grid-area: Typography-add-to-bag;
+}
+.img-checkout-window{
+  grid-area: img-checkout-window;
+  max-width: 183px;
+}
+.information-about-product-window{
+  grid-area: information-about-product-window;
+}
+.buttons-about-product-window{
+  display: flex;
+  grid-area: buttons-about-product-window;
+  justify-content: space-around;
+}
+
+.button-about-product-window{
+  padding: 17px 52px !important;
+}
