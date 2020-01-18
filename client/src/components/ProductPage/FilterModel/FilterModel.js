@@ -96,7 +96,11 @@ class FilterModel extends Component {
     } = this.props.product.product;
     const { isAuthorization } = this.props.authorization;
     return (
-      <div className={`${_.isString(className) && className.length > 0 ? className : ''}`}>
+      <div
+        className={`filter-model-container ${
+          _.isString(className) && className.length > 0 ? className : ''
+        }`}
+      >
         {filtersByUser.map(item => {
           const { nameFilter, idFilter, subFilters } = item;
           return (

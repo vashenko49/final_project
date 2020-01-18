@@ -39,6 +39,9 @@
   grid-template-columns:  1fr 1fr;
   justify-items: start;
 }
+.filter-model-container{
+  width: 100%;
+}
 
 .CloseIcon{
   grid-area: CloseIcon;
@@ -63,4 +66,8 @@
 
 .button-about-product-window{
   padding: 17px 52px !important;
+}
+
+@media only screen and (max-width : 1085px) {
+
 }

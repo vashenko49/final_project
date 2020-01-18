@@ -10,3 +10,34 @@
 .gQCiHJ {
   left: -12px !important;
 }
+
+@media (min-width: 1085px) and (max-width: 700px) {
+  .image-carousel-product{
+    width: 97%;
+    margin-bottom: 35px;
+  }
+  .gQCiHJ {
+    top: 77% !important;
+    left: 44% !important;
+  }
+  .jpVtxU {
+    top: 77% !important;
+    right: 39% !important;
+  }
+}
+
+@media only screen and (max-width : 700px) {
+  .image-carousel-product{
+    width: 97%;
+    margin-bottom: 35px;
+  }
+  .gQCiHJ {
+    top: 65% !important;
+    left: 44% !important;
+  }
+  .jpVtxU {
+    top: 65% !important;
+    right: 39% !important;
+  }
+
+}

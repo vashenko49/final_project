@@ -1,9 +1,14 @@
 .product-page-container{
   display: grid;
-  grid-gap:17px 10px;
+  grid-gap:17px 23px;
   grid-template-areas: "BreadCrumbsProducts BreadCrumbsProducts"
                         "SelectedImg NameProduct"
                         "SelectedImg ShortDescription"
+                        "SelectedImg FilterModel"
+                        "SelectedImg FilterModel"
+                        "SelectedImg FilterModel"
+                        "SelectedImg FilterModel"
+                        "SelectedImg FilterModel"
                         "SelectedImg FilterModel"
                         "ImageCarouselProduct ImageCarouselProduct"
                         "DetailInfoProduct DetailInfoProduct"
@@ -28,7 +33,6 @@
 }
 .FilterModel{
   grid-area: FilterModel;
-  min-height: 400px;
 }
 .ImageCarouselProduct{
   grid-area: ImageCarouselProduct;
@@ -41,4 +45,19 @@
 }
 .ReviewProduct{
   grid-area: ReviewProduct;
+}
+
+
+@media only screen and (max-width : 1085px) {
+  .product-page-container{
+    grid-template-areas: "BreadCrumbsProducts BreadCrumbsProducts"
+    "NameProduct NameProduct"
+    "SelectedImg SelectedImg"
+    "ShortDescription ShortDescription"
+    "FilterModel FilterModel"
+    "ImageCarouselProduct ImageCarouselProduct"
+    "DetailInfoProduct DetailInfoProduct"
+    "LastViewProduct LastViewProduct"
+    "ReviewProduct ReviewProduct";
+  }
 }

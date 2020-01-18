@@ -14,7 +14,6 @@ app.use(cors());
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
 //connect data base
 getConfig()
   .then(() => {
@@ -34,6 +33,7 @@ getConfig()
 
 app.use(formData.parse());
 app.use(bodyParser.json());
+
 
 
 // Use Routes

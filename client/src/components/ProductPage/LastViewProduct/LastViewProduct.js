@@ -19,6 +19,17 @@ class LastViewProduct extends Component {
   }
 
   componentDidMount() {
+    this.loadLastProduct();
+  }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { id: newId } = this.props;
+    const { id: oldId } = prevProps;
+    if (newId.toString() !== oldId.toString()) {
+      this.loadLastProduct();
+    }
+  }
+
+  loadLastProduct = () => {
     const { getProductsById } = this;
     const { id } = this.props;
     let lastView = JSON.parse(localStorage.getItem('lastView'));
@@ -35,6 +46,9 @@ class LastViewProduct extends Component {
           this.setState({ lastProduct: res });
         });
         lastView.push(id);
+        if (lastView.length > 5) {
+          lastView.shift();
+        }
         localStorage.setItem('lastView', JSON.stringify(lastView));
       } else {
         lastView.splice(selectProduct, 1);
@@ -43,7 +57,7 @@ class LastViewProduct extends Component {
         });
       }
     }
-  }
+  };
 
   getProductsById = array => {
     return Promise.all(

@@ -28,12 +28,16 @@ class ProductPage extends Component {
     this.props.getMeanRatingProductByProductId(id);
     this.props.getIsFavourites(id);
   }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { id: newId } = this.props.match.params;
-    this.setState({ id: newId });
-    this.props.getCurrentProduct(newId);
-    this.props.getMeanRatingProductByProductId(newId);
-    this.props.getIsFavourites(newId);
+    const { id: oldId } = prevProps.match.params;
+    if (newId.toString() !== oldId.toString()) {
+      this.setState({ id: newId });
+      this.props.getCurrentProduct(newId);
+      this.props.getMeanRatingProductByProductId(newId);
+      this.props.getIsFavourites(newId);
+    }
   }
 
   render() {

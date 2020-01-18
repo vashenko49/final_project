@@ -13,7 +13,7 @@ class NameProduct extends Component {
         <Box display="flex" mt={1} flexDirection="row">
           <Typography variant={'subtitle1'}>{itemNo}</Typography>
           <Box ml={5}>
-            <Typography variant={'subtitle2'}>$ {price}</Typography>
+            <Typography variant={'subtitle2'}>{`$ ${price}`}</Typography>
           </Box>
         </Box>
       </div>

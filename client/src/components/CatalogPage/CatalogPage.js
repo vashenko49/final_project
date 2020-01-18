@@ -42,7 +42,7 @@ class CatalogPage extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { id: newId } = this.props.match.params;
     const { id: oldId } = prevProps.match.params;
-    if (newId !== oldId) {
+    if (newId.toString() !== oldId.toString()) {
       this.setState({
         id: newId,
         load: false,
