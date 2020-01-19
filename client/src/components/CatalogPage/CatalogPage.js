@@ -319,13 +319,13 @@ class CatalogPage extends Component {
               </Grid>
             ) : products.length <= 0 || error ? (
               error ? (
-                <Box>
+                <div>
                   <Typography>Error</Typography>
-                </Box>
+                </div>
               ) : (
-                <Box>
+                <div>
                   <Typography>No found</Typography>
-                </Box>
+                </div>
               )
             ) : (
               products.map(element => {

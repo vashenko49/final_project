@@ -54,9 +54,12 @@ class MiniProduct extends Component {
 
   render() {
     const { cloudinary_cloud_name } = this.props.configuration;
-    const { model, nameProduct, _id } = this.props;
+    let { model, nameProduct, _id } = this.props;
     let { currentImg, filterImg, selectedColor } = this.state;
     const { chooseColor } = this;
+    model = model.filter(itwm => {
+      return itwm.enabled;
+    });
     const minPrice = Math.min.apply(
       null,
       model.map(element => element.currentPrice)
