@@ -44,16 +44,16 @@ class Header extends Component {
 
   handleClose = () => {
     this.setState(state => ({ anchorEl: null }));
-  }
+  };
 
-  onSearchResultsClick = (event) => {
+  onSearchResultsClick = event => {
     this.props.history.push(`/product/${event.target.id}`);
     this.handleClose();
-  }
+  };
 
   timerHandler = createRef();
 
-  onSearchInputChange = async (searchInput) => {
+  onSearchInputChange = async searchInput => {
     if (this.state.searchInput) {
       await this.props.findProductsBySearchInput(this.state.searchInput);
 
@@ -69,14 +69,14 @@ class Header extends Component {
         });
       }
     }
-  }
+  };
 
   onSearchIconClick = async () => {
     if (this.state.searchInput) {
       await this.props.findProductsBySearchIconClick(this.state.searchInput);
       this.props.history.push('/products/search');
     }
-  }
+  };
 
   agreeReplaceWithOnline = () => {
     const {
