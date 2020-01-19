@@ -11,13 +11,16 @@ import Box from '@material-ui/core/Box';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import Badge from '@material-ui/core/Badge';
 import SettingsIcon from '@material-ui/icons/Settings';
+import Button from '@material-ui/core/Button';
 
 import * as AuthorizationActions from '../../../actions/authorizationAction';
 import Avatar from '@material-ui/core/Avatar';
 
+import './UserMenu.scss';
+
 class UserMenu extends Component {
   render() {
-    const { signOut } = this.props;
+    const { signOut, openWindowAuth } = this.props;
     const { cloudinary_cloud_name } = this.props.configuration;
     const { isAuthorization, isAdmin, cart } = this.props.authorization;
     const { avatarUrl, firstName } = this.props.authorization.personalInfo;
@@ -46,7 +49,10 @@ class UserMenu extends Component {
               </Link>
             </Box>
           ) : (
-            <Link to={'/authorization'}>Login</Link>
+            <div>
+              <Link className="sidebar-login-link" to={'/authorization'}>Login</Link>
+              <Button className="header-login-button" onClick={openWindowAuth}>Login</Button>
+            </div>
           )}
           <Link to={`/cart`}>
             <Badge badgeContent={_.isArray(cart.items) ? cart.items.length : 0}>
