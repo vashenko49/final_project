@@ -148,8 +148,6 @@ class ProductsDetail extends Component {
         idUpdate
       } = this.state;
 
-      console.log(filtersImage);
-
       // получаем все уникальные id фильтров которые выбраны в форме
       const uniqueCategoryForm = [
         ...new Set([
@@ -248,7 +246,6 @@ class ProductsDetail extends Component {
         sendDataMessage: sendMessage
       });
     } catch (err) {
-      console.log(err);
       this.setIsLoading(false);
 
       this.setState({
