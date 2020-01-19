@@ -15,6 +15,7 @@ import './CatalogPage.scss';
 import ListGrow from '../common/listGrow/listGrow';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 
 class CatalogPage extends Component {
   constructor(props) {
@@ -318,13 +319,13 @@ class CatalogPage extends Component {
               </Grid>
             ) : products.length <= 0 || error ? (
               error ? (
-                <Grid item lg={12} md={12} sm={12} xs={12} className="preloader">
+                <Box>
                   <Typography>Error</Typography>
-                </Grid>
+                </Box>
               ) : (
-                <Grid item lg={12} md={12} sm={12} xs={12} className="preloader">
+                <Box>
                   <Typography>No found</Typography>
-                </Grid>
+                </Box>
               )
             ) : (
               products.map(element => {
