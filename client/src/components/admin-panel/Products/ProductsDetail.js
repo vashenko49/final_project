@@ -148,6 +148,8 @@ class ProductsDetail extends Component {
         idUpdate
       } = this.state;
 
+      console.log(filtersImage);
+
       // получаем все уникальные id фильтров которые выбраны в форме
       const uniqueCategoryForm = [
         ...new Set([
@@ -390,11 +392,20 @@ class ProductsDetail extends Component {
         const filtersImage = [];
 
         data.filterImg.forEach(item => {
+          const {
+            _idFilter: { _id: parentId, type: parentType, serviceName: parentServiceName },
+            _idSubFilters
+          } = item;
           item.urlImg.forEach(img => {
             filtersImage.push({
               id: (~~(Math.random() * 1e8)).toString(16),
               image: [img],
-              subFilter: dataFilters.filter(i => i._id === item._idSubFilters)[0]
+              subFilter: {
+                ..._idSubFilters,
+                parentId: parentId,
+                parentType: parentType,
+                parentServiceName: parentServiceName
+              }
             });
           });
         });
