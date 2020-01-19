@@ -423,6 +423,7 @@ class ProductsDetail extends Component {
 
       this.setIsLoading(false);
     } catch (err) {
+      console.log(err);
       this.setIsLoading(false);
 
       this.setState({

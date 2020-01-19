@@ -126,8 +126,11 @@ class PersonalInformation extends Component {
   };
 
   replaceWithOnlineCart = () => {
+    const {
+      cart: { items }
+    } = this.props.authorization;
     this.setState({ isLocalCart: false });
-    this.props.replaceWithOnlineCart();
+    this.props.replaceWithOnlineCart(items);
   };
 
   render() {
@@ -299,7 +302,7 @@ class PersonalInformation extends Component {
               </TableContainer>
             </Box>
             <Button onClick={replaceWithOnlineCart} variant="contained" color="primary">
-              Replace the online cart with the local cart
+              Merge the online cart with the local cart
             </Button>
           </Box>
         )}

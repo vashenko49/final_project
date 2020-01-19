@@ -84,7 +84,10 @@ class Header extends Component {
   }
 
   agreeReplaceWithOnline = () => {
-    this.props.replaceWithOnlineCart();
+    const {
+      cart: { items }
+    } = this.props.authorization;
+    this.props.replaceWithOnlineCart(items);
     this.setState({ isLocalCart: false });
   };
 
@@ -200,7 +203,7 @@ class Header extends Component {
         >
           <DialogContent>
             <Typography variant={'h3'}>
-              You have the local cart. Do you want replace with the online cart?
+              You have the local cart. Do you want merge with the online cart?
             </Typography>
             <Typography variant={'body2'}>You can see the local cart in personal data</Typography>
             <Button onClick={degreeReplaceWithOnline}>Degree</Button>

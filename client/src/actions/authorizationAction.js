@@ -160,10 +160,46 @@ export function signOut() {
   };
 }
 
-export function replaceWithOnlineCart() {
+export function replaceWithOnlineCart(onlineCart) {
   return dispatch => {
     let localCart = JSON.parse(localStorage.getItem('localCart'));
     if (_.isArray(localCart) && localCart.length > 0) {
+      localCart.push(
+        ...onlineCart
+          .filter(item => {
+            const {
+              idProduct: { _id: idProduct },
+              modelNo: { modelNo }
+            } = item;
+            const selectProduct = _.findIndex(localCart, function(o) {
+              return (
+                o.idProduct.toString() === idProduct.toString() &&
+                o.modelNo.toString() === modelNo.toString()
+              );
+            });
+            return selectProduct < 0;
+          })
+          .map(item => {
+            const {
+              idProduct: { _id: idProduct },
+              modelNo: { modelNo },
+              quantity
+            } = item;
+            return {
+              idProduct,
+              modelNo,
+              quantity
+            };
+          })
+      );
+
+      localCart = localCart.map(item => {
+        const { quantity } = item;
+        return {
+          ...item,
+          quantity: +quantity
+        };
+      });
       localStorage.removeItem('localCart');
       CartAPI.updateCart({ products: localCart }).then(() => {
         getCurrentCart(dispatch);
