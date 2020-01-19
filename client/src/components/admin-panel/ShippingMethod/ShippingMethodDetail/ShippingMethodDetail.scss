@@ -1,0 +1,31 @@
+.transfer-list-container-shipping-method{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+.transfer-list-custom{
+  width: 100%;
+}
+.transfer-list-custom:first-child{
+  margin-bottom: 17px;
+}
+.transfer-list-custom:last-child{
+  margin-top: 17px;
+}
+.transfer-list-btn-container-shipping-method{
+  display: flex;
+  flex-wrap: nowrap;
+}
+.transfer-list-btn{
+  margin: 0 10px !important;
+}
+.container-img{
+  margin: 16px 0;
+}
+.position-btn-submit{
+  margin: 21px 0 15px 15px;
+  text-align: end;
+}

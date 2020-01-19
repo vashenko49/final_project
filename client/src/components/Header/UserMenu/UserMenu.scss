@@ -1,0 +1,17 @@
+.sidebar-login-link {
+  display: inherit;
+}
+
+.header-login-button {
+  display: none !important;
+}
+
+@media screen and (min-width: 900px) {
+  .sidebar-login-link {
+    display: none;
+  }
+
+  .header-login-button {
+    display: inherit !important;
+  }
+}

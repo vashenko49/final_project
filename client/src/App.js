@@ -1,36 +1,34 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
-import Login from './components/auth/Login';
-import Registration from './components/auth/Registration';
+import Routes from './components/routing/Routes';
 
-import PrivateRoute from './components/routing/PrivateRoute';
+import { configureStore } from './store';
+import Footer from './components/Footer/Footer';
+import Header from './components/Header/Header';
+import './font/Varta/Varta-font.css';
+import './font/Proxima_Nova/Proxima_Nova-font.css';
+import './font/Roboto/Roboto-font.css';
 
 import './App.scss';
-import PasswordRecovery from './components/auth/PasswordRecovery';
 
-function App() {
-  return (
-    <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/subscribe">Subscribe</Link>
-            </li>
-          </ul>
-        </nav>
+const store = configureStore();
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-        <Switch>
-          <Route exact path="/" component={Registration} />
-          <Route exact path="/passwordrecovery/:token" component={PasswordRecovery} />
-          <PrivateRoute exact path="/subscribe" component={Login} />
-        </Switch>
-      </div>
-    </Router>
-  );
+class App extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <Router>
+          <Header />
+          <Switch>
+            <Routes />
+          </Switch>
+          <Footer />
+        </Router>
+      </Provider>
+    );
+  }
 }
 
 export default App;

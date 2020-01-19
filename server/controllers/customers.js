@@ -1,26 +1,29 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const customerid = require('order-id')(process.env.usersIdSecret);
+const cloudinary = require("cloudinary").v2;
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
-
-const sendEmail = require('../config/sendEmail');
-const CustomerModel = require('../models/Customer');
-
-// Load validation helper to validate all received fields
-const validateRegistrationForm = require("../validation/validationHelper");
+const sendEmail = require("../common/sendEmail");
+const CustomerModel = require("../models/Customer");
+const {validationResult} = require("express-validator");
+const _ = require("lodash");
 
 // Controller for creating customer and saving to DB
 exports.createCustomer = async (req, res) => {
   try {
-
-    const {errors, isValid} = validateRegistrationForm(req.body);
-
-    if (!isValid) {
-      return res.status(400).json(errors);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
     }
 
+    const values = Object.values(req.files);
+    const userAvatar =
+      values.length > 0
+        ? await cloudinary.uploader.upload(values[0].path, {folder: "final-project/userAvatar"})
+        : null;
 
-    const {firstName, lastName, login, email, password, telephone, gender} = req.body;
+    const {firstName, lastName, login, email, password, gender} = req.body;
 
     let Customer = await CustomerModel.findOne({
       $or: [{email: email}, {login: login}]
@@ -28,15 +31,11 @@ exports.createCustomer = async (req, res) => {
 
     if (Customer) {
       if (Customer.email === email) {
-        return res
-          .status(400)
-          .json({message: `Email ${Customer.email} already exists"`});
+        return res.status(400).json({message: `Email ${Customer.email} already exists"`});
       }
 
       if (Customer.login === login) {
-        return res
-          .status(400)
-          .json({message: `Email ${Customer.login} already exists"`});
+        return res.status(400).json({message: `Email ${Customer.login} already exists"`});
       }
     }
 
@@ -46,9 +45,9 @@ exports.createCustomer = async (req, res) => {
       lastName,
       login,
       gender,
-      telephone,
-      customerNo: customerid.generate(),
-      socialmedia: [4],
+      avatarUrl: userAvatar ? userAvatar.public_id : "",
+      customerNo: rand().toString(),
+      socialmedia: [3],
       isAdmin: false,
       enabled: false
     });
@@ -58,28 +57,84 @@ exports.createCustomer = async (req, res) => {
 
     Customer = await newCustomer.save();
 
-
     let tokenEmailConfirmUser = await jwt.sign(
       {_id: newCustomer._id},
-      process.env.JWT_EMAIL_SECRET, {
+      process.env.JWT_EMAIL_SECRET,
+      {
         expiresIn: 1800
+      }
+    );
+    let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
+
+    const letter = `<!DOCTYPE html><html lang=en><title>Crossy</title><style>table{border-collapse:collapse;width:100%}td,tr{text-align:center}</style><body style=font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif><table><tr><td><a href="${process.env.domen_client}"><img alt="Not Found"src=https://res.cloudinary.com/dxge5r7h2/image/upload/v1578589379/final-project/logo/favicon_xmo9ml.jpg style=height:192px;object-fit:cover></a></table><table><tr style="border-bottom:1px solid #ccc"><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#000">Thank you for registering in our store.<a href="${url}">Confirm your account</a></table><table><tr><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#595959">Have questions? You will receive the most prompt response by replying to this email.</table>`
+
+    await sendEmail(email, `Hi ${firstName}!`, letter);
+
+    const payload = {
+      _id: Customer._id,
+      firstName: Customer.firstName,
+      lastName: Customer.lastName,
+      isAdmin: Customer.isAdmin
+    }; // Create JWT Payload
+
+    // Sign Token
+    jwt.sign({data: payload}, process.env.JWT_SECRET, {expiresIn: 36000}, (err, token) => {
+      return res.json({
+        success: true,
+        token: "Bearer " + token
       });
-
-
-    let url = `${process.env.domen}/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
-
-    await sendEmail(email, `Hi ${firstName}!`, `<a href=${url}>Confirm</a>`);
-
-    res.status(200).json(Customer);
-
-
+    });
   } catch (e) {
     res.status(400).json({
       message: e.message
-    })
+    });
   }
 };
 
+exports.enablesAccountCustom = async (req, res)=>{
+  try {
+    const {_id, firstName, enabled, email} = req.user;
+    let tokenEmailConfirmUser = await jwt.sign(
+      {_id: _id},
+      process.env.JWT_EMAIL_SECRET,
+      {
+        expiresIn: 1800
+      }
+    );
+
+    if(enabled){
+     return  res.status(400).json({
+       message: 'Your account is enabled'
+     });
+    }
+
+    let url = `${process.env.domen}/api/customers/confirm/${encodeURI(tokenEmailConfirmUser)}`;
+
+    const letter = `<!DOCTYPE html><html lang=en><title>Crossy</title><style>table{border-collapse:collapse;width:100%}td,tr{text-align:center}</style><body style=font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif><table><tr><td><a href="${process.env.domen_client}"><img alt="Not Found"src=https://res.cloudinary.com/dxge5r7h2/image/upload/v1578589379/final-project/logo/favicon_xmo9ml.jpg style=height:192px;object-fit:cover></a></table><table><tr style="border-bottom:1px solid #ccc"><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#000">Thank you for registering in our store.<a href="${url}">Confirm your account</a></table><table><tr><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#595959">Have questions? You will receive the most prompt response by replying to this email.</table>`
+
+
+    await sendEmail(email, `Hi ${firstName}!`, letter);
+    res.status(200).json({message:"Checked your email"});
+  }catch (e) {
+    res.status(400).json({
+      message: e.message
+    });
+  }
+};
+
+exports.isPassword = async (req, res) => {
+  try {
+    const {_id} = req.user;
+    const ispasword = await CustomerModel.findById(_id);
+    res.status(200).json({
+      status: _.isString(ispasword.password) && ispasword.password.length > 0
+    })
+  } catch (err) {
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
+};
 // Controller for confirm customer
 exports.confirmCustomer = async (req, res) => {
   try {
@@ -94,43 +149,65 @@ exports.confirmCustomer = async (req, res) => {
   } catch (e) {
     res.status(400).redirect(process.env.domen_client);
   }
+};
 
+//check login or email in base
+exports.checkLoginOrEmail = async (req, res) => {
+  try {
+    const {type, data} = req.body;
 
+    if (!type || !data) {
+      return res.status(200).json({status: false});
+    }
+    let config = type === "login" ? {login: data} : {email: data};
+
+    const customer = await CustomerModel.findOne(config);
+
+    if (customer) {
+      return res.status(200).json({status: false});
+    }
+
+    return res.status(200).json({status: true});
+  } catch (e) {
+    return res.status(500).json({
+      message: `Server error ${e.message}`
+    });
+  }
 };
 
 //controller for creating customer through social network
 exports.createCustomerSocialNetwork = async (req, res) => {
-
   try {
-
     let customer = req.user;
 
     //проверяем почту в базе данных
     let Customer = await CustomerModel.findOne({email: customer.email});
 
     if (Customer) {
-
-      console.log('Пользователь уже зареган ---->');
+      console.log("Пользователь уже зареган ---->");
       let isinThisSocialNetwork = Customer.socialmedia.some(typeSicoalNetwork => {
         return typeSicoalNetwork === customer.typeSocial;
       });
 
-
       if (!isinThisSocialNetwork) {
-        console.log('Регаем новую социальную сеть ---->');
+        console.log("Регаем новую социальную сеть ---->");
         //добавляем новый тип регестрации
         Customer.socialmedia.push(customer.typeSocial);
         await Customer.save();
       }
     } else {
-      console.log('новый пользователь ---->');
+      console.log("новый пользователь ---->");
       //регестрируем пользователя
-      const Customer = new CustomerModel({
+      const userImg = await cloudinary.uploader.upload(customer.avatarUrl, {
+        folder: "final-project/userAvatar"
+      });
+
+      Customer = new CustomerModel({
         email: customer.email,
         firstName: customer.firstName,
         lastName: customer.lastName,
-        avatarUrl: customer.avatarUrl,
-        customerNo: customerid.generate(),
+        avatarUrl: userImg.public_id,
+        customerNo: (rand()).toString(),
         socialmedia: [customer.typeSocial],
         isAdmin: false,
         enabled: true
@@ -138,87 +215,82 @@ exports.createCustomerSocialNetwork = async (req, res) => {
       await Customer.save();
     }
 
-    await jwt.sign({data: Customer}, process.env.JWT_SECRET, {
-      expiresIn: 11750400
-    }, function (err, token) {
-      return res.status(200).json({
-        success: true,
-        token: "Bearer " + token
-      });
-    });
-
+    await jwt.sign(
+      {data: Customer},
+      process.env.JWT_SECRET,
+      {
+        expiresIn: 11750400
+      },
+      function (err, token) {
+        return res.status(200).json({
+          success: true,
+          token: "Bearer " + token
+        });
+      }
+    );
   } catch (e) {
+    console.log(e);
     return res.status(400).json({message: e.message});
   }
-
-
 };
 
 // Controller for customer login
 exports.loginCustomer = async (req, res) => {
   try {
-    const {errors, isValid} = validateRegistrationForm(req.body);
-
-    const {loginOrEmail, password} = req.body;
-
-    // Check Validation
-    if (!isValid) {
-      return res.status(400).json(errors);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
     }
+    const {email, password} = req.body;
 
     // Find customer by email
     CustomerModel.findOne({
-      $or: [{email: loginOrEmail}, {login: loginOrEmail}]
-    })
-      .then(customer => {
-        // Check for customer
-        if (!customer) {
-          errors.loginOrEmail = "Customer not found";
-          return res.status(404).json(errors);
-        }
-        // Check Password
+      $or: [{email: email}, {login: email}]
+    }).then(customer => {
+      // Check for customer
+      if (!customer) {
+        errors.loginOrEmail = "Customers not found";
+        return res.status(404).json(errors);
+      }
+      // Check Password
 
-        if (!customer.password) {
-          return res.status(400).json({
-            message: "You are registered through social networks"
-          });
-        }
-
-        bcrypt.compare(password, customer.password).then(isMatch => {
-          if (isMatch) {
-            // Customer Matched
-            const payload = {
-              _id: customer.id,
-              firstName: customer.firstName,
-              lastName: customer.lastName,
-              isAdmin: customer.isAdmin
-            }; // Create JWT Payload
-
-            // Sign Token
-            jwt.sign(
-              {data: payload},
-              process.env.JWT_SECRET,
-              {expiresIn: 36000},
-              (err, token) => {
-                res.json({
-                  success: true,
-                  token: "Bearer " + token
-                });
-              }
-            );
-          } else {
-            errors.password = "Password incorrect";
-            return res.status(400).json(errors);
-          }
+      if (!customer.password) {
+        return res.status(400).json({
+          message: "You are registered through social networks"
         });
-      })
+      }
 
+      bcrypt.compare(password, customer.password).then(isMatch => {
+        if (isMatch) {
+          // Customers Matched
+          const payload = {
+            _id: customer._id,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            isAdmin: customer.isAdmin
+          }; // Create JWT Payload
 
+          // Sign Token
+          jwt.sign(
+            {data: payload},
+            process.env.JWT_SECRET,
+            {expiresIn: 36000},
+            (err, token) => {
+              res.json({
+                success: true,
+                token: "Bearer " + token
+              });
+            }
+          );
+        } else {
+          errors.password = "Password incorrect";
+          return res.status(400).json(errors);
+        }
+      });
+    });
   } catch (e) {
     return res.status(400).json({message: e.message});
   }
-
-
 };
 
 // Controller for getting current customer
@@ -226,62 +298,111 @@ exports.getCustomer = (req, res) => {
   res.json(req.user);
 };
 
+// get customers for admin - panel
+exports.getCustomers = async (req, res) => {
+  try {
+    const customers = await CustomerModel.find({});
+    res.status(200).json(customers);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
+};
+
 // Controller for editing customer personal info
-exports.editCustomerInfo = (req, res) => {
-  CustomerModel.findById(req.user._id)
-    .then(customer => {
-      if (!customer) {
-        errors.id = "Customer not found";
-        return res.status(404).json(errors);
-      }
+exports.editCustomerInfo = async (req, res) => {
+  try {
+    const {_id} = req.user;
+
+    const customer = await CustomerModel.findById(_id);
+    if (!customer) {
+      errors.id = "Customers not found";
+      return res.status(404).json(errors);
+    }
+
+    const currentEmail = customer.email;
+    const currentLogin = customer.login;
+
+    const deepClone = _.cloneDeep(req.body);
+    const {email, login} = deepClone;
+    const {avatarUrl} = req.files;
 
 
-      const currentEmail = customer.email;
-      const currentLogin = customer.login;
-      const newEmail = req.body.email;
-      const newLogin = req.body.login;
-
-      if (currentEmail !== newEmail) {
-        CustomerModel.findOne({email: newEmail}).then(customer => {
-          if (customer) {
-            errors.email = `Email ${newEmail} is already exists`;
-            res.status(400).json(errors);
-          }
-        });
-
-      }
-      if (currentLogin !== newLogin) {
-        CustomerModel.findOne({login: newLogin}).then(customer => {
-          if (customer) {
-            errors.login = `Login ${newLogin} is already exists`;
-            res.status(400).json(errors);
-          }
+    if (_.isString(email) && currentEmail !== email) {
+      const isUseEmail = await CustomerModel.findOne({email: email});
+      if (isUseEmail) {
+        return res.status(400).json({
+          message: `Email ${email} is already exists`
         });
       }
+      deepClone.email = email;
+    }
+    if (_.isString(login) && currentLogin !== login) {
+      const isUseLogin = await CustomerModel.findOne({login: login});
+      if (isUseLogin) {
+        return res.status(400).json({
+          message: `Login ${login} is already exists`
+        });
+      }
+      deepClone.login = login;
+    }
 
-      //отвязываем соц сети от аккаунта так ка почта изменена
-      if (newEmail) {
-        req.body.socialmedia = [4];
+    //отвязываем соц сети от аккаунта так ка почта изменена
+    if (_.isString(email)) {
+      deepClone.socialmedia = [3];
+    }
+
+    if (_.isObject(avatarUrl)) {
+      if (_.isString(customer.avatarUrl)) {
+        await cloudinary.uploader.destroy(customer.avatarUrl);
       }
 
-      CustomerModel.findOneAndUpdate(
-        {_id: req.user.id},
-        {$set: req.body},
-        {new: true}
-      )
-        .then(customer => res.json(customer))
-        .catch(err =>
-          res.status(400).json({
-            message: `Error happened on server: "${err}" `
-          })
-        );
+      const photo = await cloudinary.uploader.upload(avatarUrl.path, {
+        folder: "final-project/userAvatar"
+      });
+      deepClone.avatarUrl = photo.public_id;
+    }
 
-    })
-    .catch(err =>
-      res.status(400).json({
-        message: `Error happened on server:"${err}" `
-      })
-    );
+    let newData = await CustomerModel.findByIdAndUpdate(_id, {$set: deepClone}, {new: true});
+    newData = await newData.save();
+
+    res.status(200).json(newData);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Server Error!",
+      err:e
+    });
+  }
+};
+
+//edit customer from admin
+exports.editStatusCustomer = async (req, res)=>{
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
+
+    const {customerId, enabled, isAdmin} = req.body;
+
+    if(!_.isBoolean(enabled) && !_.isBoolean(isAdmin)){
+      return res.status(500).json({
+        message: "Get me data"
+      });
+    }
+
+    let newData = await CustomerModel.findByIdAndUpdate(customerId, {$set: {[`${_.isBoolean(enabled)?"enabled":'isAdmin'}`]:_.isBoolean(enabled)?enabled:isAdmin}}, {new: true});
+    newData = await newData.save();
+    res.status(200).json(newData);
+  }catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Server Error!"
+    });
+  }
 };
 
 // Controller for editing customer password
@@ -294,20 +415,20 @@ exports.updatePassword = (req, res) => {
       let oldPassword = req.body.password;
       let newPassword = req.body.newPassword;
       let passwordValid;
-      if (customer.password) {
+
+      if (_.isString(customer.password) && customer.password > 0) {
         passwordValid = await bcrypt.compare(oldPassword, customer.password);
         if (!passwordValid) {
           return res.status(400).json({
             message: "Password does not match"
-          })
+          });
         }
       }
-
       const salt = await bcrypt.genSalt(10);
       newPassword = await bcrypt.hash(newPassword, salt);
 
       CustomerModel.findOneAndUpdate(
-        {_id: req.user.id},
+        {_id: req.user._id},
         {
           $set: {
             password: newPassword
@@ -318,7 +439,6 @@ exports.updatePassword = (req, res) => {
         .then(customer => {
           res.json({
             message: "Password successfully changed",
-            customer: customer
           });
         })
         .catch(err =>
@@ -326,11 +446,11 @@ exports.updatePassword = (req, res) => {
             message: `Error happened on server: "${err}" `
           })
         );
-
     } catch (e) {
+      console.log(e);
       res.status(400).json({
         message: `Error happened on server: "${e}" `
-      })
+      });
     }
   });
 };
@@ -338,7 +458,10 @@ exports.updatePassword = (req, res) => {
 // controller for sending tokens to the user’s mail to change the password
 exports.forgotPassword = async (req, res) => {
   try {
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({errors: errors.array()});
+    }
     const {loginOrEmail} = req.body;
 
     let customer = await CustomerModel.findOne({
@@ -347,29 +470,37 @@ exports.forgotPassword = async (req, res) => {
 
     if (!customer) {
       return res.status(400).json({
-        message: `user no found by ${loginOrEmail}`
-      })
+        message: `User by ${loginOrEmail} not found`
+      });
     }
 
     let tokenChangePassword = await jwt.sign(
       {_id: customer._id},
-      process.env.JWT_FORGOT_PASSWORD, {
+      process.env.JWT_FORGOT_PASSWORD,
+      {
         expiresIn: 1800
-      });
+      }
+    );
 
-    let url = `${process.env.domen}/customers/forgotpassword/${encodeURI(tokenChangePassword)}`;
+    let url = `${process.env.domen_client}/passwordrecovery/${encodeURI(tokenChangePassword)}`;
 
-    await sendEmail(customer.email, `Hi ${customer.firstName}! Change password`, `<a href=${url}>Confirm</a>`);
+
+    const letter =`<!DOCTYPE html><html lang=en><title>Crossy</title><style>table{border-collapse:collapse;width:100%}td,tr{text-align:center}</style><body style=font-family:Roboto,RobotoDraft,Helvetica,Arial,sans-serif><table><tr><td><a href="${process.env.domen_client}"><img alt="Not Found"src=https://res.cloudinary.com/dxge5r7h2/image/upload/v1578589379/final-project/logo/favicon_xmo9ml.jpg style=height:192px;object-fit:cover></a></table><table><tr style="border-bottom:1px solid #ccc"><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#000">Password change request. To change the password, follow the link.<a href="${url}">Confirm your account</a></table><table><tr><td><p style="font-size:16px;font-family:arial,'helvetica neue',helvetica,sans-serif;line-height:32px;color:#595959">Have questions? You will receive the most prompt response by replying to this email.</table>`
+
+    await sendEmail(
+      customer.email,
+      `Hi ${customer.firstName}! Change password`,
+      letter
+    );
 
     return res.status(200).json({
-      message: "Email sent"
+      message: "Email sent, check email"
     });
   } catch (e) {
     return res.status(400).json({
-      message: `Error happened on server: "${e}" `
+      message: `Oops, something went wrong" `
     });
   }
-
 };
 
 // checking the token for password changes and redirecting to the password change page
@@ -384,7 +515,6 @@ exports.confirmForgotCustomer = async (req, res) => {
     }
 
     res.status(301).redirect(`${process.env.domen_client}/passwordrecovery/${token}`);
-
   } catch (e) {
     res.status(301).redirect(process.env.domen_client);
   }
@@ -392,7 +522,7 @@ exports.confirmForgotCustomer = async (req, res) => {
 
 // controller for changing the password through the token forgot password
 exports.updatePasswordAfterConfirm = async (req, res) => {
-  let token = req.headers.authorization.split(' ');
+  let token = req.headers.authorization.split(" ");
   token = token[1];
 
   let idClient = await jwt.verify(token, process.env.JWT_FORGOT_PASSWORD);
@@ -419,20 +549,18 @@ exports.updatePasswordAfterConfirm = async (req, res) => {
       )
         .then(customer => {
           res.json({
-            message: "Password successfully changed",
-            customer: customer
+            message: "Password successfully changed"
           });
         })
         .catch(err =>
           res.status(400).json({
-            message: `Error happened on server: "${err}" `
+            message: `Oops, something went wrong" `
           })
         );
-
     } catch (e) {
       res.status(400).json({
-        message: `Error happened on server: "${e}" `
-      })
+        message: `Oops, something went wrong `
+      });
     }
   });
 };

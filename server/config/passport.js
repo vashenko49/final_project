@@ -4,6 +4,7 @@ const LocalStrategy = require('passport-custom').Strategy;
 const Customer = require('../models/Customer');
 const axios = require('axios');
 const {google} = require('googleapis');
+const mongoose = require('mongoose');
 
 
 module.exports = async passport => {
@@ -19,6 +20,9 @@ module.exports = async passport => {
     new JwtStrategy(optsJWT, async (jwt_payload, done) => {
       try {
         const {_id} = jwt_payload.data;
+        if (!mongoose.Types.ObjectId.isValid(_id)) {
+          return done(null, false);
+        }
         let customer = await Customer.findById(_id);
         if (customer) {
           return done(null, customer);
@@ -56,8 +60,9 @@ module.exports = async passport => {
     new JwtStrategy(optsJWT, async (jwt_payload, done) => {
       try {
         const {_id} = jwt_payload.data;
-        let customer = Customer.findById(_id);
-        if (customer) {
+        let customer = await Customer.findById(_id);
+        const {isAdmin} = customer;
+        if (isAdmin) {
           return done(null, customer);
         }
         return done(null, false);
@@ -151,7 +156,6 @@ module.exports = async passport => {
 
       let customersEmail = getUsersEmail.data[0].email;
 
-
       let response = await axios({
         method: 'get',
         url: `https://api.github.com/user`,
@@ -160,7 +164,6 @@ module.exports = async passport => {
         }
       });
 
-
       let fullname = response.data.name.split(' ');
 
       let customer = {
@@ -168,7 +171,7 @@ module.exports = async passport => {
         lastName: fullname[0],
         email: customersEmail,
         avatarUrl: response.data.avatar_url,
-        typeSocial: 3
+        typeSocial: 2
       };
 
       return done(null, customer);

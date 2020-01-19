@@ -1,0 +1,34 @@
+.product {
+  font-weight: bold;
+  text-decoration: none;
+
+  &-name {
+    overflow: hidden;
+    color: #111111;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &-price {
+    color: #505050;
+  }
+}
+.CardMedia{
+  height: 250px;
+}
+
+.icon-choose-color{
+  margin-right: 2px;
+  margin-left: 2px;
+  border-radius: 100%;
+  cursor: pointer;
+}
+.card{
+ position: relative;
+}
+.chooseColor{
+  position: absolute;
+  top:10px;
+  right:10px;
+
+}

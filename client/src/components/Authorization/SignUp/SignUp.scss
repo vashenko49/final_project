@@ -1,0 +1,21 @@
+.select-gender {
+  width: 100%;
+}
+.MuiFormHelperText-root {
+  color: red !important;
+}
+.upload-avatar{
+  display: none;
+}
+.avatar-upload{
+  width: 240px !important;
+  height: 240px !important;
+  margin-bottom: 15px;
+}
+
+.container-upload{
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  margin-top: 7px;
+}

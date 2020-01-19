@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const uniqueRandom = require("unique-random");
+const rand = uniqueRandom(100000, 999999);
 
 const bcrypt = require("bcryptjs");
 
 const CustomerSchema = new Schema({
   customerNo: {
     type: String,
-    required: true
+    default: rand().toString()
   },
   firstName: {
     type: String,
@@ -17,23 +19,23 @@ const CustomerSchema = new Schema({
     required: true
   },
   login: {
-    type: String,
+    type: String
   },
   email: {
     type: String,
     required: true
   },
   password: {
-    type: String,
+    type: String
   },
   telephone: {
     type: String
   },
-  socialmedia:{
+  socialmedia: {
     type: Array,
-    default:[]  /*0-google, 1-facebook, 2-github, 3-local*/
+    default: [] /*0-google, 1-facebook, 2-github, 3-local*/
   },
-  birthdate: {
+  birthday: {
     type: String
   },
   gender: {
@@ -65,4 +67,4 @@ CustomerSchema.methods.comparePassword = function(candidatePassword, cb) {
   });
 };
 
-module.exports = Customer = mongoose.model("customer", CustomerSchema);
+module.exports = Customer = mongoose.model("customer", CustomerSchema, "customer");
