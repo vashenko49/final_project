@@ -158,7 +158,7 @@ FooterDetailForm.propTypes = {
   onClickDelete: PropTypes.func.isRequired,
   onAddLink: PropTypes.func.isRequired,
   onSubmitForm: PropTypes.func.isRequired,
-  onSubmitFormDisabled: PropTypes.func.isRequired
+  onSubmitFormDisabled: PropTypes.bool.isRequired
 };
 
 FooterDetailForm.defaultProps = {
@@ -169,7 +169,7 @@ FooterDetailForm.defaultProps = {
   onClickDelete: () => {},
   onAddLink: () => {},
   onSubmitForm: () => {},
-  onSubmitFormDisabled: () => {}
+  onSubmitFormDisabled: false
 };
 
 export default withStyles(styles)(FooterDetailForm);
