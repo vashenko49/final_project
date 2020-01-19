@@ -22,7 +22,7 @@ export const getCurrentProduct = productId => async dispatch => {
       type: REQUEST_PRODUCT
     });
     const massImg = [];
-    const filtersByUser = [];
+    let filtersByUser = [];
     const {
       enabled,
       description,
@@ -71,6 +71,15 @@ export const getCurrentProduct = productId => async dispatch => {
           statusDisable: false
         });
       });
+    });
+
+    filtersByUser = filtersByUser.map(item => {
+      let { subFilters } = item;
+      subFilters = _.uniqBy(subFilters, 'idSubFilter');
+      return {
+        ...item,
+        subFilters: subFilters
+      };
     });
 
     const minPrice = _.minBy(model, function(o) {
@@ -156,8 +165,8 @@ export const selectFilter = (
   if (selectedFilter.length > 0) {
     model = model.filter(mod => {
       const { filters } = mod;
-      return _.xor(
-        selectedFilter.map(selectedItem => {
+      return selectedFilter
+        .map(selectedItem => {
           let tempResponse = false;
           filters.forEach(filterModel => {
             if (selectedItem.toString() === filterModel.subFilter._id) {
@@ -166,7 +175,7 @@ export const selectFilter = (
           });
           return tempResponse;
         })
-      )[0];
+        .every(item => item === true);
     });
 
     const fitSubfilter = [];
@@ -200,6 +209,7 @@ export const selectFilter = (
           ...itemSubFilter
         };
       });
+
       return {
         ...item,
         subFilters: subFilters
@@ -220,6 +230,8 @@ export const selectFilter = (
       }
     });
     newMassImg.push(...productUrlImg);
+
+    console.log(model);
 
     const minPrice = _.minBy(model, function(o) {
       return o.currentPrice;

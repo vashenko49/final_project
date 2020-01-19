@@ -39,7 +39,7 @@ export default function NavBarItem(props) {
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
-  }
+    }
 
     prevOpen.current = open;
   }, [open]);
@@ -53,7 +53,7 @@ export default function NavBarItem(props) {
         onClick={handleToggle}
       >
         {item.name}
-        <ExpandMoreIcon/>
+        <ExpandMoreIcon />
       </Button>
       <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
         {({ TransitionProps, placement }) => (
@@ -69,7 +69,10 @@ export default function NavBarItem(props) {
                     .map((child, index) =>
                       item._id === child.parentId ? (
                         <MenuItem key={index} onClick={handleClose}>
-                          <Link className="header-navbar-links" to={{ pathname: `/catalog/${child._id}`}}>
+                          <Link
+                            className="header-navbar-links"
+                            to={{ pathname: `/catalog/${child._id}` }}
+                          >
                             {child.name}
                           </Link>
                         </MenuItem>

@@ -212,7 +212,7 @@ class ConfigSystem extends Component {
           Attention! Changes in the system can lead to critical errors!
         </Typography>
         <MaterialTable
-          title="Partner"
+          title="Configuration system"
           icons={tableIcons}
           columns={columns}
           data={data}

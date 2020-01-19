@@ -91,7 +91,9 @@ class Products extends Component {
             : '',
           nameProduct: product.nameProduct,
           numberProduct: product.itemNo,
-          categoryProduct: product._idChildCategory.name,
+          categoryProduct: _.isObject(product._idChildCategory)
+            ? product._idChildCategory.name
+            : '',
           priceProduct: Math.min(...product.model.map(i => i.currentPrice)),
           quantityProduct: _.sumBy(product.model, 'currentPrice'),
           enabled: product.enabled
@@ -115,6 +117,7 @@ class Products extends Component {
         data: preViewRes
       });
     } catch (err) {
+      console.log(err);
       this.setIsLoading(false);
 
       this.setState({

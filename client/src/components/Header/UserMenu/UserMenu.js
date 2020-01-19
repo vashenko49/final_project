@@ -50,8 +50,12 @@ class UserMenu extends Component {
             </Box>
           ) : (
             <div>
-              <Link className="sidebar-login-link" to={'/authorization'}>Login</Link>
-              <Button className="header-login-button" onClick={openWindowAuth}>Login</Button>
+              <Link className="sidebar-login-link" to={'/authorization'}>
+                Login
+              </Link>
+              <Button className="header-login-button" onClick={openWindowAuth}>
+                Login
+              </Button>
             </div>
           )}
           <Link to={`/cart`}>

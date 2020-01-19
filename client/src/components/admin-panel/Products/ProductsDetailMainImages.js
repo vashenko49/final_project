@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-
+import _ from 'lodash';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -101,67 +101,75 @@ const ProductsDetailMainImages = ({
       </label>
 
       {filtersImage &&
-        filtersImage.map(card => (
-          <Card className={classes.card} key={card.id}>
-            <input
-              accept="image/*"
-              id={`filtersImageReload${card.id}`}
-              type="file"
-              className={classes.input}
-              onChange={e => onChangeValue('filtersImageReload', e.currentTarget, card.id)}
-            />
-            <label htmlFor={`filtersImageReload${card.id}`}>
-              <IconButton aria-label="reload" className={classes.btnReload} component="span">
-                <CloudUploadIcon fontSize="small" />
-              </IconButton>
-            </label>
-
-            <IconButton
-              aria-label="delete"
-              className={classes.btnDelete}
-              onClick={() => onDeleteCardImg(card.id)}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-
-            <Box className={classes.mediaWrapper}>
-              <CardMedia
-                component="img"
-                className={classes.media}
-                image={
-                  typeof card.image[0] === 'object'
-                    ? URL.createObjectURL(card.image[0])
-                    : new cloudinary.Cloudinary({ cloud_name: cloudinaryCloudName }).url(
-                        card.image[0]
-                      )
-                }
+        filtersImage.map(card => {
+          return (
+            <Card className={classes.card} key={card.id}>
+              <input
+                accept="image/*"
+                id={`filtersImageReload${card.id}`}
+                type="file"
+                className={classes.input}
+                onChange={e => onChangeValue('filtersImageReload', e.currentTarget, card.id)}
               />
-            </Box>
+              <label htmlFor={`filtersImageReload${card.id}`}>
+                <IconButton aria-label="reload" className={classes.btnReload} component="span">
+                  <CloudUploadIcon fontSize="small" />
+                </IconButton>
+              </label>
 
-            <Autocomplete
-              id={`filtersImageSubFilter${card.id}`}
-              options={[
-                ...new Set(
-                  models.map(i => i.subFilters).reduce((flat, current) => flat.concat(current), [])
-                )
-              ]}
-              groupBy={option => option.parentServiceName}
-              getOptionLabel={option => (option.name ? option.name : '')}
-              value={card.subFilter}
-              filterSelectedOptions
-              onChange={(e, val) => onChangeValue('filtersImageSubFilter', val, card.id)}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="Sub Filter"
-                  placeholder="Choose..."
-                  fullWidth
+              <IconButton
+                aria-label="delete"
+                className={classes.btnDelete}
+                onClick={() => onDeleteCardImg(card.id)}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+
+              <Box className={classes.mediaWrapper}>
+                <CardMedia
+                  component="img"
+                  className={classes.media}
+                  image={
+                    typeof card.image[0] === 'object'
+                      ? URL.createObjectURL(card.image[0])
+                      : new cloudinary.Cloudinary({ cloud_name: cloudinaryCloudName }).url(
+                          card.image[0]
+                        )
+                  }
                 />
-              )}
-            />
-          </Card>
-        ))}
+              </Box>
+
+              <Autocomplete
+                id={`filtersImageSubFilter${card.id}`}
+                options={_.uniqBy(
+                  _.sortBy(
+                    [
+                      ...models
+                        .map(i => i.subFilters)
+                        .reduce((flat, current) => flat.concat(current), [])
+                    ],
+                    'parentType'
+                  ),
+                  'name'
+                )}
+                groupBy={option => option.parentType}
+                getOptionLabel={option => (option.name ? option.name : '')}
+                value={card.subFilter}
+                filterSelectedOptions
+                onChange={(e, val) => onChangeValue('filtersImageSubFilter', val, card.id)}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Sub Filter"
+                    placeholder="Choose..."
+                    fullWidth
+                  />
+                )}
+              />
+            </Card>
+          );
+        })}
     </form>
   );
 };

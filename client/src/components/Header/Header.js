@@ -44,16 +44,16 @@ class Header extends Component {
 
   handleClose = () => {
     this.setState(state => ({ anchorEl: null }));
-  }
+  };
 
-  onSearchResultsClick = (event) => {
+  onSearchResultsClick = event => {
     this.props.history.push(`/product/${event.target.id}`);
     this.handleClose();
-  }
+  };
 
   timerHandler = createRef();
 
-  onSearchInputChange = async (searchInput) => {
+  onSearchInputChange = async searchInput => {
     if (this.state.searchInput) {
       await this.props.findProductsBySearchInput(this.state.searchInput);
 
@@ -69,17 +69,20 @@ class Header extends Component {
         });
       }
     }
-  }
+  };
 
   onSearchIconClick = async () => {
     if (this.state.searchInput) {
       await this.props.findProductsBySearchIconClick(this.state.searchInput);
       this.props.history.push('/products/search');
     }
-  }
+  };
 
   agreeReplaceWithOnline = () => {
-    this.props.replaceWithOnlineCart();
+    const {
+      cart: { items }
+    } = this.props.authorization;
+    this.props.replaceWithOnlineCart(items);
     this.setState({ isLocalCart: false });
   };
 
@@ -197,7 +200,7 @@ class Header extends Component {
         >
           <DialogContent>
             <Typography variant={'h3'}>
-              You have the local cart. Do you want replace with the online cart?
+              You have the local cart. Do you want merge with the online cart?
             </Typography>
             <Typography variant={'body2'}>You can see the local cart in personal data</Typography>
             <Button onClick={degreeReplaceWithOnline}>Degree</Button>
