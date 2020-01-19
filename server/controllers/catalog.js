@@ -773,10 +773,33 @@ exports.getCatalogsAndProductForMainPage = async (req, res) => {
                 enabled: true
               })
               .populate({
-                path: "filterImg._idFilter",
-                select: "_id enabled type serviceName"
+                path: "_idChildCategory",
+                select: "-filters",
+                populate: {
+                  path: "parentId"
+                }
               })
-              .populate("filterImg._idSubFilters")
+              .populate({
+                path: "filters.filter",
+                select: "enabled _id type serviceName"
+              })
+              .populate({
+                path: "filters.subFilter"
+              })
+              .populate({
+                path: "model.filters.filter",
+                select: "enabled _id type serviceName"
+              })
+              .populate({
+                path: "model.filters.subFilter"
+              })
+              .populate({
+                path: 'filterImg._idFilter',
+                select: '_id enabled type serviceName'
+              })
+              .populate('filterImg._idSubFilters')
+
+
           )
         )
           .filter(prod => {

@@ -55,7 +55,7 @@ class MiniProduct extends Component {
   render() {
     const { cloudinary_cloud_name } = this.props.configuration;
     const { model, nameProduct, _id } = this.props;
-    const { currentImg, filterImg, selectedColor } = this.state;
+    let { currentImg, filterImg, selectedColor } = this.state;
     const { chooseColor } = this;
     const minPrice = Math.min.apply(
       null,
@@ -65,6 +65,18 @@ class MiniProduct extends Component {
       null,
       model.map(element => element.currentPrice)
     );
+    filterImg = filterImg.filter(item => {
+      const { name } = item;
+      return model.some(modItem => {
+        const { filters } = modItem;
+        return filters.some(filItem => {
+          const {
+            subFilter: { name: nameSubFilter }
+          } = filItem;
+          return name.toString() === nameSubFilter.toString();
+        });
+      });
+    });
     return (
       <Card className="card">
         {filterImg.length > 0 && (
