@@ -29,17 +29,11 @@ class Header extends Component {
     super(props);
     this.state = {
       searchInput: '',
-      anchorEl: false,
+      anchorEl: null,
       isLocalCart: false,
       sendDataStatus: 'success',
       sendDataMessage: ''
     };
-
-    this.handleCloseSnackBars = this.handleCloseSnackBars.bind(this);
-    this.onSearchInputChange = this.onSearchInputChange.bind(this);
-    this.onSearchIconClick = this.onSearchIconClick.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.onSearchResultsClick = this.onSearchResultsClick.bind(this);
   }
 
   handleCloseSnackBars = (event, reason) => {
@@ -48,22 +42,23 @@ class Header extends Component {
     this.setState({ sendDataMessage: '' });
   };
 
-  onSearchResultsClick(event) {
-    this.props.history.push(`/product/${event.target.id}`);
+  handleClose = () => {
+    this.setState(state => ({ anchorEl: null }));
   }
 
-  handleClose() {
-    this.setState(state => ({ anchorEl: false }));
+  onSearchResultsClick = (event) => {
+    this.props.history.push(`/product/${event.target.id}`);
+    this.handleClose();
   }
 
   timerHandler = createRef();
 
-  async onSearchInputChange() {
+  onSearchInputChange = async (searchInput) => {
     if (this.state.searchInput) {
       await this.props.findProductsBySearchInput(this.state.searchInput);
 
       if (this.props.foundProducts.length !== 0) {
-        this.setState(state => ({ anchorEl: true }));
+        this.setState(state => ({ anchorEl: searchInput }));
       } else {
         this.setState({
           sendDataStatus: 'error',
@@ -76,7 +71,7 @@ class Header extends Component {
     }
   }
 
-  async onSearchIconClick() {
+  onSearchIconClick = async () => {
     if (this.state.searchInput) {
       await this.props.findProductsBySearchIconClick(this.state.searchInput);
       this.props.history.push('/products/search');
@@ -117,7 +112,8 @@ class Header extends Component {
     const { isLocalCart } = this.state;
     const { rootCategories, childCategories, foundProducts, closeWindowAuth } = this.props;
     const { openWindowLogIn, isAuthorization } = this.props.authorization;
-    const popupId = this.state.anchorEl ? 'simple-popover' : undefined;
+    const openSearchPopover = Boolean(this.state.anchorEl);
+    const popupId = openSearchPopover ? 'simple-popover' : undefined;
     const { sendDataStatus, sendDataMessage } = this.state;
 
     return (
@@ -141,19 +137,20 @@ class Header extends Component {
             onChange={event => {
               clearTimeout(this.timerHandler.current);
               const inputValue = event.target.value;
+              const searchInput = event.currentTarget.parentNode.parentNode;
               this.timerHandler.current = setTimeout(() => {
                 this.setState(
                   state => ({ searchInput: inputValue }),
-                  () => this.onSearchInputChange()
+                  () => this.onSearchInputChange(searchInput)
                 );
               }, 700);
             }}
           />
           <Popover
             id={popupId}
-            open={this.state.anchorEl}
+            open={openSearchPopover}
             onClose={this.handleClose}
-            anchorEl={document.getElementById('header-search-input')}
+            anchorEl={this.state.anchorEl}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'center'
