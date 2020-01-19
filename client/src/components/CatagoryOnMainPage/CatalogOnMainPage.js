@@ -14,20 +14,22 @@ class CatalogOnMainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load: false,
       categories: []
     };
   }
 
   componentDidMount() {
+    this.setState({ load: true });
     CatalogAPI.getCategoriesForPreview().then(res => {
-      this.setState({ categories: res });
+      this.setState({ categories: res, load: false });
     });
   }
 
   render() {
-    const { categories } = this.state;
+    const { categories, load } = this.state;
 
-    return categories.length === 0 ? (
+    return load ? (
       <Grid container justify="center" alignItems="center">
         <CircularProgress />
       </Grid>
