@@ -23,7 +23,7 @@ class SelectedImg extends Component {
             className="img-selected"
             src={new cloudinary.Cloudinary({
               cloud_name: cloudinary_cloud_name
-            }).url(massImg[selectedIndexImg])}
+            }).url(massImg[selectedIndexImg] + '.jpeg')}
             alt={'not found'}
           />
         )}

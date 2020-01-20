@@ -106,7 +106,7 @@ class MiniProduct extends Component {
             component="img"
             src={new cloudinary.Cloudinary({
               cloud_name: cloudinary_cloud_name
-            }).url(currentImg)}
+            }).url(currentImg + '.jpeg')}
             height="200"
             className="CardMedia"
           />
