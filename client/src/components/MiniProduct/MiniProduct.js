@@ -80,6 +80,7 @@ class MiniProduct extends Component {
         });
       });
     });
+
     return (
       <Card className="card">
         {filterImg.length > 0 && (
@@ -104,7 +105,8 @@ class MiniProduct extends Component {
           <CardMedia
             component="img"
             src={new cloudinary.Cloudinary({
-              cloud_name: cloudinary_cloud_name
+              cloud_name: cloudinary_cloud_name,
+              format: 'jpeg'
             }).url(currentImg)}
             height="200"
             className="CardMedia"
