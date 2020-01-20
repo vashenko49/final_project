@@ -13,7 +13,7 @@ import './Cart.scss';
 class Item extends Component {
   render() {
     const { updateQuantity } = this.props;
-
+    const { cloudinary_cloud_name } = this.props.configuration;
     const {
       cart: { items }
     } = this.props.authorization;
@@ -34,13 +34,20 @@ class Item extends Component {
             items.map(v => {
               const { _id, filters: property, currentPrice, modelNo } = v.modelNo;
 
-              const { _id: parentId, nameProduct, productUrlImg, _idChildCategory } = v.idProduct;
+              const {
+                _id: parentId,
+                nameProduct,
+                productUrlImg,
+                _idChildCategory,
+                filterImg
+              } = v.idProduct;
+              console.log(filterImg);
               let quantity = v.quantity;
               return (
                 <div className="sneaker-item" key={_id}>
                   <Image
-                    cloudName="dxge5r7h2"
-                    publicId={productUrlImg[0]}
+                    cloudName={cloudinary_cloud_name}
+                    publicId={productUrlImg.length > 0 ? productUrlImg[0] : filterImg[0].urlImg[0]}
                     width="400"
                     crop="scale"
                   />
@@ -49,14 +56,6 @@ class Item extends Component {
                       <h2 className="info-title">{nameProduct}</h2>
                     </Link>
                     <p>{_idChildCategory.name}</p>
-                    <p>
-                      {property.map(v => {
-                        if (v.filter.type === 'Color') {
-                          return v.subFilter.name;
-                        }
-                        return [];
-                      })}
-                    </p>
                     <p>
                       Size{' '}
                       {property.map(v => {
@@ -97,7 +96,8 @@ class Item extends Component {
 
 function mapStateToProps(state) {
   return {
-    authorization: state.authorization
+    authorization: state.authorization,
+    configuration: state.configuration
   };
 }
 

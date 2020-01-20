@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import Brightness1Icon from '@material-ui/icons/Brightness1';
+import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import Button from '@material-ui/core/Button';
 import './FilterModel.scss';
 import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
@@ -110,18 +111,37 @@ class FilterModel extends Component {
                 {subFilters.map(itemSub => {
                   const { idSubFilter, nameSubFilter, statusSelect, statusDisable } = itemSub;
                   return nameFilter.toLowerCase() === 'color' ? (
-                    <Brightness1Icon
-                      data-idsubfilter={idSubFilter}
-                      className={`icon-choose-color ${statusDisable ? 'select-color-disable' : ''}`}
-                      key={idSubFilter}
-                      style={{
-                        color: nameSubFilter,
-                        border: `1px solid ${statusSelect ? nameSubFilter : 'transparent'}`
-                      }}
-                      onClick={e => {
-                        selectFilter(e, statusDisable);
-                      }}
-                    />
+                    !statusDisable ? (
+                      <Brightness1Icon
+                        data-idsubfilter={idSubFilter}
+                        className={`icon-choose-color ${
+                          statusDisable ? 'select-color-disable' : ''
+                        }`}
+                        key={idSubFilter}
+                        style={{
+                          color: nameSubFilter,
+                          border: `1px solid ${statusSelect ? nameSubFilter : 'transparent'}`
+                        }}
+                        onClick={e => {
+                          selectFilter(e, statusDisable);
+                        }}
+                      />
+                    ) : (
+                      <NotInterestedIcon
+                        data-idsubfilter={idSubFilter}
+                        className={`icon-choose-color ${
+                          statusDisable ? 'select-color-disable' : ''
+                        }`}
+                        key={idSubFilter}
+                        style={{
+                          color: nameSubFilter,
+                          border: `1px solid ${statusSelect ? nameSubFilter : 'transparent'}`
+                        }}
+                        onClick={e => {
+                          selectFilter(e, statusDisable);
+                        }}
+                      />
+                    )
                   ) : (
                     <div
                       data-idsubfilter={idSubFilter}
