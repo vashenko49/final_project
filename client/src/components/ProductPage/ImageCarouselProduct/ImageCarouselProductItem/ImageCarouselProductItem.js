@@ -26,7 +26,7 @@ class ImageCarouselProductItem extends Component {
           className="item-img"
           src={new cloudinary.Cloudinary({
             cloud_name: cloudinary_cloud_name
-          }).url(itemImf)}
+          }).url(itemImf + '.jpeg')}
           alt="not found"
         />
       </div>
