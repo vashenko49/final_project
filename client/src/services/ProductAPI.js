@@ -6,7 +6,7 @@ export default class ProductAPI {
       idCatalog: idCatalog,
       page: page,
       limit: limit,
-      sort: sort
+      sort: +sort
     };
     if (_.isArray(subfilters) && subfilters.length > 0) {
       data.subfilters = subfilters;

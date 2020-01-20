@@ -312,7 +312,6 @@ class Filter extends Component {
                       value={price}
                       onChange={handleChangePrice}
                       aria-labelledby="range-slider"
-                      valueLabelDisplay="auto"
                     />
                   </div>
                 </ExpansionPanelDetails>
