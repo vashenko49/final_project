@@ -80,6 +80,7 @@ class MiniProduct extends Component {
         });
       });
     });
+
     return (
       <Card className="card">
         {filterImg.length > 0 && (
