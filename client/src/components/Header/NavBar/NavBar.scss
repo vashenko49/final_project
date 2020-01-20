@@ -1,3 +1,8 @@
+.header-navbar-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
 .header-navbar-item {
   display: inline-block;
 }

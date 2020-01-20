@@ -23,8 +23,7 @@ class ReviewProduct extends Component {
     this.state = {
       isOpenWindowAddComment: false,
       score: 5,
-      text: '',
-      isCreated: false
+      text: ''
     };
   }
 
@@ -33,7 +32,7 @@ class ReviewProduct extends Component {
   };
 
   triggerCreateCommentWindow = () => {
-    this.setState({ isOpenWindowAddComment: !this.state.isOpenWindowAddComment, isCreated: false });
+    this.setState({ isOpenWindowAddComment: !this.state.isOpenWindowAddComment });
   };
 
   createNewComment = event => {
@@ -41,7 +40,7 @@ class ReviewProduct extends Component {
     const { score, text } = this.state;
     const { createComment } = this.props;
     const { productId, comments } = this.props.product.product;
-    this.setState({ isCreated: true, text: '' });
+    this.setState({ text: '', isOpenWindowAddComment: false });
     createComment(productId, score, text, comments);
   };
 
@@ -61,7 +60,7 @@ class ReviewProduct extends Component {
       setRating,
       onChangeComment
     } = this;
-    const { isOpenWindowAddComment, score, text, isCreated } = this.state;
+    const { isOpenWindowAddComment, score, text } = this.state;
     const { className } = this.props;
     const { rating, comments } = this.props.product.product;
     const { isAuthorization } = this.props.authorization;
@@ -130,37 +129,27 @@ class ReviewProduct extends Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogContent>
-            {isCreated ? (
-              <Typography variant={'h6'}>Your comment has been created</Typography>
-            ) : (
-              <>
-                <Typography variant={'h6'}>Enter your comment</Typography>
-                <ValidatorForm
-                  className="form-window-checkout"
-                  ref="form"
-                  onSubmit={createNewComment}
-                >
-                  <Rating name="simple-controlled" value={score} onChange={setRating} />
-                  <TextValidator
-                    margin="normal"
-                    label="Your comments"
-                    onChange={onChangeComment}
-                    name="text"
-                    fullWidth
-                    multiline={true}
-                    value={text}
-                    variant="outlined"
-                    validators={['required']}
-                    errorMessages={['This field is required']}
-                  />
-                  <Box mt={1} display={'flex'} justifyContent="flex-end">
-                    <Button type="submit" className="subfilter-button-selected" variant="contained">
-                      <AddCommentIcon /> Add comment
-                    </Button>
-                  </Box>
-                </ValidatorForm>
-              </>
-            )}
+            <Typography variant={'h6'}>Enter your comment</Typography>
+            <ValidatorForm className="form-window-checkout" ref="form" onSubmit={createNewComment}>
+              <Rating name="simple-controlled" value={score} onChange={setRating} />
+              <TextValidator
+                margin="normal"
+                label="Your comments"
+                onChange={onChangeComment}
+                name="text"
+                fullWidth
+                multiline={true}
+                value={text}
+                variant="outlined"
+                validators={['required']}
+                errorMessages={['This field is required']}
+              />
+              <Box mt={1} display={'flex'} justifyContent="flex-end">
+                <Button type="submit" className="subfilter-button-selected" variant="contained">
+                  <AddCommentIcon /> Add comment
+                </Button>
+              </Box>
+            </ValidatorForm>
           </DialogContent>
         </Dialog>
       </div>
