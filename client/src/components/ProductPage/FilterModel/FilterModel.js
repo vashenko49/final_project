@@ -46,17 +46,19 @@ class FilterModel extends Component {
   };
 
   selectFilter = (e, statusDisable) => {
+    const { selectFilter, selectedDisableFilter } = this.props;
+    const {
+      filtersByUser,
+      selectedFilter,
+      model,
+      productUrlImg,
+      filterImg
+    } = this.props.product.product;
     if (!statusDisable) {
-      const { selectFilter } = this.props;
-      const {
-        filtersByUser,
-        selectedFilter,
-        model,
-        productUrlImg,
-        filterImg
-      } = this.props.product.product;
       const { idsubfilter } = e.currentTarget.dataset;
       selectFilter(idsubfilter, filtersByUser, selectedFilter, model, productUrlImg, filterImg);
+    } else {
+      selectedDisableFilter(filtersByUser, model, productUrlImg, filterImg);
     }
   };
 
@@ -265,6 +267,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     selectFilter: bindActionCreators(ProductAction.selectFilter, dispatch),
+    selectedDisableFilter: bindActionCreators(ProductAction.selectedDisableFilter, dispatch),
     updateQuantity: bindActionCreators(authorizationAction.updateQuantity, dispatch),
     addToFavourites: bindActionCreators(ProductAction.addToFavourites, dispatch),
     removeFromFavourites: bindActionCreators(ProductAction.removeFromFavourites, dispatch)

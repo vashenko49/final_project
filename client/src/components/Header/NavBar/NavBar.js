@@ -7,7 +7,7 @@ export default class NavBar extends React.Component {
     const { rootCategories, childCategories } = this.props;
 
     return (
-      <div>
+      <div className="header-navbar-container">
         {rootCategories
           .filter(item => item.enabled === true)
           .map((item, index) => (

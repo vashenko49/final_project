@@ -59,7 +59,10 @@ class Item extends Component {
                     <p>
                       Size{' '}
                       {property.map(v => {
-                        if (v.filter.type === 'Sizes') {
+                        if (
+                          v.filter.type.toLowerCase() === 'sizes' ||
+                          v.filter.type.toLowerCase() === 'size'
+                        ) {
                           return v.subFilter.name;
                         }
                         return [];

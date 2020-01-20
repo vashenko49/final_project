@@ -196,13 +196,16 @@ export const selectFilter = (
     filtersByUser = filtersByUser.map(item => {
       let { subFilters } = item;
       subFilters = subFilters.map(itemSubFilter => {
-        const { idSubFilter } = itemSubFilter;
+        const { idSubFilter, statusSelect } = itemSubFilter;
         const fitIdSubFilter = _.findIndex(fitSubfilter, function(o) {
           return o.toString() === idSubFilter.toString();
         });
         const selectedIdSubFilter = _.findIndex(selectedFilter, function(o) {
           return o.toString() === idSubFilter;
         });
+        if (statusSelect === true && idSubFilter.toString() === subFilterId.toString()) {
+          itemSubFilter.statusSelect = false;
+        }
         if (selectedIdSubFilter >= 0) {
           itemSubFilter.statusSelect = true;
         }
@@ -298,6 +301,54 @@ export const selectFilter = (
       }
     });
   }
+};
+
+export const selectedDisableFilter = (
+  filtersByUser,
+  model,
+  productUrlImg,
+  filterImg
+) => dispatch => {
+  let massImg = [];
+  filtersByUser = filtersByUser.map(item => {
+    let { subFilters } = item;
+    subFilters = subFilters.map(itemSubFilter => {
+      return {
+        ...itemSubFilter,
+        statusSelect: false,
+        statusDisable: false
+      };
+    });
+
+    return {
+      ...item,
+      subFilters: subFilters
+    };
+  });
+
+  const minPrice = _.minBy(model, function(o) {
+    return o.currentPrice;
+  }).currentPrice;
+  const maxPrice = _.maxBy(model, function(o) {
+    return o.currentPrice;
+  }).currentPrice;
+
+  filterImg.forEach(item => {
+    massImg.push(...item.urlImg);
+  });
+  massImg.push(...productUrlImg);
+
+  dispatch({
+    type: SELECT_FILTER,
+    payload: {
+      massImg: massImg,
+      filtersByUser: filtersByUser,
+      selectedFilter: [],
+      fitModelCount: 0,
+      pretenderModel: {},
+      price: `${maxPrice === minPrice ? minPrice : `${minPrice}-${maxPrice}`}`
+    }
+  });
 };
 
 export const getIsFavourites = productId => async dispatch => {
