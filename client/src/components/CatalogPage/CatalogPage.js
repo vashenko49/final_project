@@ -15,7 +15,6 @@ import './CatalogPage.scss';
 import ListGrow from '../common/listGrow/listGrow';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 
 class CatalogPage extends Component {
   constructor(props) {

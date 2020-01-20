@@ -23,7 +23,7 @@ export const getCurrentProduct = productId => async dispatch => {
     });
     const massImg = [];
     let filtersByUser = [];
-    const {
+    let {
       enabled,
       description,
       comments,
@@ -40,6 +40,10 @@ export const getCurrentProduct = productId => async dispatch => {
       itemNo,
       htmlPage
     } = res;
+
+    model = model.filter(itwm => {
+      return itwm.enabled;
+    });
 
     filterImg.forEach(item => {
       massImg.push(...item.urlImg);
@@ -230,8 +234,6 @@ export const selectFilter = (
       }
     });
     newMassImg.push(...productUrlImg);
-
-    console.log(model);
 
     const minPrice = _.minBy(model, function(o) {
       return o.currentPrice;

@@ -53,10 +53,11 @@
 }
 .img-checkout-window{
   grid-area: img-checkout-window;
-  max-width: 183px;
+  width: 100%;
 }
 .information-about-product-window{
   grid-area: information-about-product-window;
+  width: 100%;
 }
 .buttons-about-product-window{
   display: flex;
@@ -76,5 +77,22 @@
   .service-button:first-child{
     margin: 0 0 10px 0  !important;
   }
-
+  .addedToBag{
+    grid-template-areas: "CloseIcon CloseIcon"
+    "Typography-add-to-bag Typography-add-to-bag"
+    "img-checkout-window img-checkout-window"
+    "information-about-product-window information-about-product-window"
+    "buttons-about-product-window buttons-about-product-window";
+  }
+  .buttons-about-product-window{
+    flex-direction: column;
+    align-items: center;
+  }
+  .buttons-about-product-window >a:first-child{
+    margin-bottom: 10px;
+  }
+  .buttons-about-product-window >a, .button-about-product-window
+  {
+    width: 100%;
+  }
 }

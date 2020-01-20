@@ -190,11 +190,13 @@ class FilterModel extends Component {
                   alt="not found"
                 />
                 <div className="information-about-product-window">
-                  <Typography variant={'h6'}>{nameProduct}</Typography>
-                  <Typography variant={'subtitle2'}>{nameChildCatalog}</Typography>
-                  <Typography variant={'subtitle2'}>
-                    Price $ {currentPrice * quantityToBag}
-                  </Typography>
+                  <div>
+                    <Typography variant={'h6'}>{nameProduct}</Typography>
+                    <Typography variant={'subtitle2'}>{nameChildCatalog}</Typography>
+                    <Typography variant={'subtitle2'}>
+                      Price $ {currentPrice * quantityToBag}
+                    </Typography>
+                  </div>
                   <TextValidator
                     margin="normal"
                     label="Quantity"
