@@ -36,7 +36,8 @@ class CatalogPage extends Component {
       price: [0, 0],
       subfilters: [],
       panel: false,
-      error: false
+      error: false,
+      sortByOpt: ['Newest', 'Price: High - Low', 'Price: Low - High ']
     };
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -68,8 +69,8 @@ class CatalogPage extends Component {
 
   componentDidMount() {
     this.setState({ load: false, loadProduct: false });
-    const { id, limit, page } = this.state;
-    this.getProductAndFilter(id, limit, page).then(() => {});
+    const { limit, page } = this.state;
+    this.getProductAndFilter(this.props.match.params.id, limit, page).then(() => {});
   }
 
   getProductAndFilter = (id, limit, page) => {
@@ -194,7 +195,13 @@ class CatalogPage extends Component {
     )
       .then(res => {
         const { docs, totalDocs, page } = res;
-        this.setState({ products: docs, totalDocs: totalDocs, loadProduct: true, page: page });
+        this.setState({
+          products: docs,
+          totalDocs: totalDocs,
+          loadProduct: true,
+          page: page,
+          sortBy: sortBy
+        });
       })
       .catch(() => {
         this.setState({
@@ -223,7 +230,9 @@ class CatalogPage extends Component {
       subfilters,
       panel,
       error,
-      loadProduct
+      loadProduct,
+      sortByOpt,
+      sortBy
     } = this.state;
     const {
       handleClickPagination,
@@ -279,9 +288,9 @@ class CatalogPage extends Component {
               <ListGrow
                 changePropsParent={changePropsSortBy}
                 title={'Sort by'}
-                menuItem={['Newest', 'Price: High - Low', 'Price: Low - High ']}
+                menuItem={sortByOpt}
                 isCurrentData={false}
-                titleButton={'Sort By'}
+                titleButton={sortByOpt[sortBy]}
               />
             </div>
           </div>

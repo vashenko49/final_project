@@ -1,4 +1,4 @@
-const Order =  require("../models/Order");
+const Order = require("../models/Order");
 const Cart = require('../models/Cart');
 const Favourites = require('../models/Favourites');
 const Slider = require('../models/Slider');
@@ -438,27 +438,27 @@ exports.deleteProduct = async (req, res, next) => {
       });
     }
 
-    const orders = await Order.find({'products.productId':id});
-    if(orders.length>0){
+    const orders = await Order.find({'products.productId': id});
+    if (orders.length > 0) {
       return res.status(400).json({
         message: `Product with id ${id} use in order. You can deactivate product`
       });
     }
-    const carts = await Order.find({'products.idProduct':id});
-    if(carts.length>0){
+    const carts = await Order.find({'products.idProduct': id});
+    if (carts.length > 0) {
       return res.status(400).json({
         message: `Product with id ${id} use in carts. You can deactivate product`
       });
     }
 
-    const favourites = await Favourites.find({'idProduct':id});
-    if(favourites.length>0){
+    const favourites = await Favourites.find({'idProduct': id});
+    if (favourites.length > 0) {
       return res.status(400).json({
         message: `Product with id ${id} use in Favourites. You can deactivate product`
       });
     }
-    const slider = await Slider.find({'product':id});
-    if(slider.length>0){
+    const slider = await Slider.find({'product': id});
+    if (slider.length > 0) {
       return res.status(400).json({
         message: `Product with id ${id} use in slider. You can deactivate product`
       });
@@ -521,14 +521,14 @@ exports.deleteModelProduct = async (req, res) => {
       });
     }
 
-    const orders = await Order.find({'products.modelNo':modelno});
-    if(orders.length>0){
+    const orders = await Order.find({'products.modelNo': modelno});
+    if (orders.length > 0) {
       return res.status(400).json({
         message: `Model with id ${id} use in order. You can deactivate product`
       });
     }
-    const carts = await Order.find({'products.modelNo':modelno});
-    if(carts.length>0){
+    const carts = await Order.find({'products.modelNo': modelno});
+    if (carts.length > 0) {
       return res.status(400).json({
         message: `Modelno with id ${id} use in carts. You can deactivate product`
       });
@@ -669,7 +669,7 @@ exports.getProductById = async (req, res, next) => {
       })
       .populate('filterImg._idSubFilters')
       .populate({
-        path:'comments',
+        path: 'comments',
         populate: {
           path: "authorId",
           select: 'firstName lastName'
@@ -779,7 +779,6 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
     let {subfilters, idCatalog, page, limit, sort, price} = req.body;
 
-
     if (_.isArray(subfilters)) {
       subfilters = subfilters.filter(element => {
         return mongoose.Types.ObjectId(element);
@@ -799,9 +798,9 @@ exports.getProductsFilterParams = async (req, res, next) => {
 
     if (_.isArray(price) && price.length === 2) {
       query.$and.push({
-        'model.currentPrice': {$gt: +price[0]}
+        'model.currentPrice': {$gt: +price[0]-2}
       }, {
-        'model.currentPrice': {$lt: +price[1]}
+        'model.currentPrice': {$lt: +price[1]+2}
       },)
     }
     if (_.isArray(subfilters) && subfilters.length > 0) {
@@ -817,12 +816,13 @@ exports.getProductsFilterParams = async (req, res, next) => {
       })
     }
 
+
     const Products = await Product.paginate(query,
       {
         page: _.isNumber(page) ? page : 1,
         limit: _.isNumber(limit) ? limit : 9,
-        sort: _.isNumber(sort) ? 0 : sort === 0 ? {'date': 1} : {
-          'model.currentPrice': 1 ? 1 : -1
+        sort: sort === 0 || !_.isNumber(sort) ?  {'date': -1} : {
+          'model.currentPrice': +sort === 1 ? -1 : 1
         },
         populate: [
           {
@@ -888,14 +888,14 @@ exports.activateOrDeactivateProduct = async (req, res) => {
 
     const {enabled: enabledProd} = product;
 
-    if(enabledProd===status){
+    if (enabledProd === status) {
       return res.status(400).json({
-        message: `Product with ID ${_idProduct} is already ${status?'active':'deactive'}`
+        message: `Product with ID ${_idProduct} is already ${status ? 'active' : 'deactive'}`
       });
     }
 
     if (status) {
-       let filter = product.filters.map(element => {
+      let filter = product.filters.map(element => {
         const {filter, subFilter} = element;
         return {filter, subFilter};
       });
@@ -990,7 +990,7 @@ exports.activateOrDeactivateProductModel = async (req, res) => {
         }
       });
 
-      if (indexModel<0) {
+      if (indexModel < 0) {
         return res.status(400).json({
           message: `model with id ${product} is not found`
         });
@@ -1016,8 +1016,7 @@ exports.activateOrDeactivateProductModel = async (req, res) => {
         commonProduct.addNewSubFilterToCategory(filter, childCatalog);
         await childCatalog.save();
 
-      }
-      else {
+      } else {
 
         let filter = [];
         product.model.forEach((element, index) => {
