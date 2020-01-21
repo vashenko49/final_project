@@ -209,6 +209,7 @@ class ShippingMethodDetail extends Component {
 
   submit = event => {
     event.preventDefault();
+    const { address } = this.state;
     const { submit } = this.props;
 
     const options = {
@@ -225,6 +226,9 @@ class ShippingMethodDetail extends Component {
     newData.address = newData.address.map(element => {
       return element._id;
     });
+    if (address.length <= 0) {
+      delete newData.address;
+    }
 
     if (_.isObject(this.props.rowData)) {
       newData.idShippingMethod = this.props.rowData._id;
