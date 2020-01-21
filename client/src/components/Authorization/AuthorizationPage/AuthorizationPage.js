@@ -8,6 +8,13 @@ import * as AuthorizationActions from '../../../actions/authorizationAction';
 import Box from '@material-ui/core/Box';
 
 class AuthorizationPage extends Component {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { isAuthorization } = this.props.authorization;
+    if (isAuthorization) {
+      this.props.history.replace('/');
+    }
+  }
+
   render() {
     const { isAuthorization } = this.props.authorization;
     const { signOut, resetCart } = this.props;
