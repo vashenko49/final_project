@@ -22,6 +22,6 @@ export default class AdminSliderAPI {
   }
 
   static changeStatusSlider(id, status) {
-    return axios.put(`/activateordeactivate`, { idSlides: id, status });
+    return axios.put(`/api/slider/activateordeactivate`, { idSlides: id, status });
   }
 }
