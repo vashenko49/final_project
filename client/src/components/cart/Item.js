@@ -27,6 +27,7 @@ class Item extends Component {
         </option>
       );
     }
+    console.log(items);
     return (
       <Fragment>
         <div className="bag-item">

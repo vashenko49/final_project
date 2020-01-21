@@ -41,7 +41,9 @@ class TableProduct extends Component {
                 productUrlImg.length > 0
                   ? productUrlImg[0]
                   : filterImg.length > 0
-                  ? filterImg[0]
+                  ? filterImg[0].urlImg.length > 0
+                    ? filterImg[0].urlImg[0]
+                    : 'final-project/products/product_without_photo_sample/product_without_phot_ldw3px'
                   : 'final-project/products/product_without_photo_sample/product_without_phot_ldw3px';
               return (
                 <TableRow key={_id + modelNo}>
