@@ -78,7 +78,6 @@ class LastViewProduct extends Component {
   render() {
     const { lastProduct } = this.state;
     const { className } = this.props;
-    console.log(this.state);
     return (
       <div
         className={`last-view-product-container ${
