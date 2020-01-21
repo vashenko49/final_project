@@ -137,12 +137,14 @@ exports.getConfigById = (req, res, next) => {
 exports.getConfigForClient = async (req, res) => {
   try {
 
+
     const data = {
       cloudinary_cloud_name: process.env.cloudinary_cloud_name,
       google_clientID: process.env.google_clientID,
       facebook_clientID: process.env.facebook_clientID,
       github_clientID: process.env.github_clientID,
     };
+
 
     res.status(200).send(data)
 
