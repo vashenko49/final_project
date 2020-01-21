@@ -8,7 +8,6 @@ import * as Configuration from '../actions/configurationAction';
 
 export function configureStore(initState) {
   let store = createStore(reducers, {}, applyMiddleware(thunk));
-  console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
     const logger = createLogger();
     store = createStore(reducers, {}, composeWithDevTools(applyMiddleware(logger, thunk)));

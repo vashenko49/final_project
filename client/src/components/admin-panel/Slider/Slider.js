@@ -51,15 +51,17 @@ class Slider extends Component {
         title: 'Enabled',
         field: 'enabled',
         disableClick: true,
-        render: rowData => (
-          <Switch
-            checked={rowData.enabled}
-            onChange={(e, val) => this.handleEnabled(val, rowData)}
-            value="enabled"
-            color="primary"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        )
+        render: rowData => {
+          return (
+            <Switch
+              checked={rowData.enabled}
+              onChange={(e, val) => this.handleEnabled(val, rowData)}
+              value="enabled"
+              color="primary"
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          );
+        }
       }
     ],
     data: [],
@@ -153,14 +155,7 @@ class Slider extends Component {
 
       await AdminSliderAPI.changeStatusSlider(id._id, val);
 
-      this.setState({
-        data: this.state.data.map(i => {
-          if (id.id === i.id) {
-            i.enabled = val;
-          }
-          return i;
-        })
-      });
+      await this.onRefreshData();
 
       this.setIsLoading(false);
     } catch (err) {
