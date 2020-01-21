@@ -68,6 +68,7 @@ exports.placeOrder = async (req, res) => {
     await generatorHTMLTableToOrder(response._id, email);
     res.status(200).json(response);
   } catch (e) {
+    console.log(e);
     res.status(400).json({
       message: `Server error ${e.message}`
     });

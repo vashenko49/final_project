@@ -14,7 +14,13 @@ exports.generatorHTMLTableToOrder = async (idOrder, email) => {
 
   products.forEach(element => {
     const {quantity, currentPrice, modelNo, productId: {itemNo, nameProduct, filterImg, productUrlImg}} = element;
-    const img = _.isArray(productUrlImg) && productUrlImg.length > 0 ? productUrlImg[0] : _.isArray(filterImg) && filterImg.length > 0 ? filterImg[0] : 'final-project/products/product_without_photo_sample/product_without_phot_ldw3px';
+    const img = _.isArray(productUrlImg) &&   productUrlImg.length > 0
+      ? productUrlImg[0]
+      : filterImg.length > 0
+        ? filterImg[0].urlImg.length > 0
+          ? filterImg[0].urlImg[0]
+          : 'final-project/products/product_without_photo_sample/product_without_phot_ldw3px'
+        : 'final-project/products/product_without_photo_sample/product_without_phot_ldw3px';
 
     const urlImg = new cloudinary.Cloudinary({
       cloud_name: process.env.cloudinary_cloud_name

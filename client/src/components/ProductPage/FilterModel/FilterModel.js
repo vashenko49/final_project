@@ -54,8 +54,8 @@ class FilterModel extends Component {
       productUrlImg,
       filterImg
     } = this.props.product.product;
+    const { idsubfilter } = e.currentTarget.dataset;
     if (!statusDisable) {
-      const { idsubfilter } = e.currentTarget.dataset;
       selectFilter(idsubfilter, filtersByUser, selectedFilter, model, productUrlImg, filterImg);
     } else {
       selectedDisableFilter(filtersByUser, model, productUrlImg, filterImg);

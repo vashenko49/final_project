@@ -52,7 +52,6 @@ class Deliver extends Component {
       houseNumber
     } = this.props.checkout.order.delivery;
     ShippingMethodAPI.getActiveShippingMethod().then(res => {
-      console.log(res);
       this.setState({ deliver: res });
       if (res.length > 0) {
         this.setState({
