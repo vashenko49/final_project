@@ -141,7 +141,7 @@ exports.getLinkByCustomId = async (req, res, next) => {
   try {
     const { _id } = req.query;
 
-    const links = await Links.findOne({ _id: _id });
+    const links = await Links.findOne({ "links.customId":req.params.customId });
 
     const content = links.links.find(elem => elem.customId === req.params.customId);
 
