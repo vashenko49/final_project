@@ -5,10 +5,10 @@ export default class shippingMethodAPI {
     return axios.get('/api/shippingmethods/active').then(value => value.data);
   };
   static getShippingMethod = () => {
-    return axios.get('/api//shippingmethods').then(res => res.data);
+    return axios.get('/api/shippingmethods').then(res => res.data);
   };
   static getShippingMethodById = id => {
-    return axios.get(`/api//shippingmethods/${id}`).then(res => res.data);
+    return axios.get(`/api/shippingmethods/${id}`).then(res => res.data);
   };
   static updateShippingMethod = data => {
     return axios.put('/api/shippingmethods', data).then(res => res.data);
