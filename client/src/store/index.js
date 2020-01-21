@@ -7,8 +7,12 @@ import * as Authorization from '../actions/authorizationAction';
 import * as Configuration from '../actions/configurationAction';
 
 export function configureStore(initState) {
-  const logger = createLogger();
-  const store = createStore(reducers, {}, composeWithDevTools(applyMiddleware(logger, thunk)));
+  let store = createStore(reducers, {}, applyMiddleware(thunk));
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === 'development') {
+    const logger = createLogger();
+    store = createStore(reducers, {}, composeWithDevTools(applyMiddleware(logger, thunk)));
+  }
   store.dispatch(Configuration.getConfigForSystem());
   store.dispatch(
     Authorization.AuthorizationThroughLocalStorage(localStorage.getItem('Authorization'))
