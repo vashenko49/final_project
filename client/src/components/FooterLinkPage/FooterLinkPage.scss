@@ -1,11 +1,14 @@
 .footer-link-page {
   padding: 10%;
 }
-.footer-link-page p{
-  font-size: 13px;
+.footer-link-page h3, .footer-link-page p{
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
-.footer-link-page h3{;
+.footer-link-page p{
+  font-size: 15px;
+}
+.footer-link-page h3{
   margin: 5px 0;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
 }
