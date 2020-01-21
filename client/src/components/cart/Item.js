@@ -27,7 +27,6 @@ class Item extends Component {
         </option>
       );
     }
-    console.log(items);
     return (
       <Fragment>
         <div className="bag-item">
@@ -42,7 +41,6 @@ class Item extends Component {
                 _idChildCategory,
                 filterImg
               } = v.idProduct;
-              console.log(filterImg);
               let quantity = v.quantity;
               return (
                 <div className="sneaker-item" key={_id}>
