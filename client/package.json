@@ -17,6 +17,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/helper-call-delegate": "^7.8.7",
+    "@babel/runtime": "^7.9.2",
     "@material-ui/core": "^4.7.2",
     "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.36",
@@ -31,6 +33,7 @@
     "html-react-parser": "^0.10.0",
     "i": "^0.3.6",
     "is-color": "^1.0.2",
+    "js-levenshtein": "^1.1.6",
     "lodash": "^4.17.15",
     "material-table": "^1.54.1",
     "material-ui-flat-pagination": "^4.0.0",
