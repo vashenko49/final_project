@@ -10,6 +10,7 @@ class ImageCarouselItem extends Component {
   render() {
     const { cloudinary_cloud_name } = this.props.configuration;
     const { title, htmlContent, childCatalogs, product } = this.props.item;
+    console.log(product);
     return (
       <Paper
         className="image-carousel-item"
@@ -27,15 +28,6 @@ class ImageCarouselItem extends Component {
         ) : (
           <div className="caption">
             <h2 className="caption__text">{title}</h2>
-            <StyledLink
-              to={
-                _.isObject(childCatalogs)
-                  ? `/catalog/${childCatalogs._id}`
-                  : `/product/${product._id}`
-              }
-            >
-              <Button className="caption__btn">Show more</Button>
-            </StyledLink>
           </div>
         )}
       </Paper>
