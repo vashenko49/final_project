@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { Button, Paper } from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 import cloudinary from 'cloudinary-core';
 import { connect } from 'react-redux';
 import parse from 'html-react-parser';
 import _ from 'lodash';
-import StyledLink from '../common/styled/StyledLink';
 
 class ImageCarouselItem extends Component {
   render() {
     const { cloudinary_cloud_name } = this.props.configuration;
-    const { title, htmlContent, childCatalogs, product } = this.props.item;
+    const { title, htmlContent, product } = this.props.item;
     console.log(product);
     return (
       <Paper
